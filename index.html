@@ -699,28 +699,58 @@
         let gameBgmBuffer = null;
         let gameBgmSource = null;
 
-        const bgmTitle    = new Audio('./bgm_title.mp3');
-        bgmTitle.loop     = true;
-        bgmTitle.volume   = 0.6;
+        // 모든 효과음을 Web Audio API 버퍼로 관리
+        const sfxBuffers = {};
+        const sfxFiles = {
+            countdown:     './countdown.mp3',
+            start:         './start.mp3',
+            gameover:      './gameover.mp3',
+            throw:         './throw.mp3',
+            throw_hit:     './throw_hit.mp3',
+            fireball:      './fireball.mp3',
+            throw_fireball:'./throw_fireball.mp3',
+            bgm_title:     './bgm_title.mp3',
+        };
+        Object.entries(sfxFiles).forEach(([key, url]) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 0) {
+                    audioCtx.decodeAudioData(xhr.response).then(buf => { sfxBuffers[key] = buf; }).catch(() => {});
+                }
+            };
+            xhr.send();
+        });
 
-        // HTMLAudioElement 폴백 (Web Audio API 로드 실패 시 사용)
-        const bgmGameEl   = new Audio('./bgm_game.wav');
-        bgmGameEl.loop    = true;
-        bgmGameEl.volume  = 0.7;
-        let bgmGameUseEl  = false; // 폴백 사용 여부
+        function playSfx(key, volume) {
+            const buf = sfxBuffers[key];
+            if (!buf) return;
+            audioCtx.resume().then(() => {
+                const src = audioCtx.createBufferSource();
+                src.buffer = buf;
+                const gain = audioCtx.createGain();
+                gain.gain.value = volume !== undefined ? volume : 1.0;
+                src.connect(gain);
+                gain.connect(audioCtx.destination);
+                src.start(0);
+            });
+        }
 
-        const sfxCountdown     = new Audio('./countdown.mp3');
-        const sfxStart         = new Audio('./start.mp3');
-        const sfxGameOver      = new Audio('./gameover.mp3');
-        const sfxThrowBase     = new Audio('./throw.mp3');
-        const sfxThrowHit      = new Audio('./throw_hit.mp3');
-        const sfxFireball      = new Audio('./fireball.mp3');
-        const sfxThrowFireball = new Audio('./throw_fireball.mp3');
+        // bgm_title: GainNode로 볼륨/페이드 제어
+        let titleBgmSource = null;
+        let titleGain = audioCtx.createGain();
+        titleGain.gain.value = 0.6;
+        titleGain.connect(audioCtx.destination);
+
+        // HTMLAudioElement 폴백 (bgm_game.wav Web Audio API 실패 시)
+        const bgmGameEl  = new Audio('./bgm_game.wav');
+        bgmGameEl.loop   = true;
+        bgmGameEl.volume = 0.7;
+        let bgmGameUseEl = false;
 
         function playThrow() {
-            const s = sfxThrowBase.cloneNode();
-            s.volume = 0.7;
-            s.play().catch(() => {});
+            playSfx('throw', 0.7);
         }
 
         // fetch 대신 XHR 사용 — file:// 프로토콜에서도 동작
@@ -769,55 +799,41 @@
 
         function stopAllBgm() {
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
-            bgmTitle.pause();
-            bgmTitle.currentTime = 0;
-            bgmTitle.volume = 0.6;
-            // Web Audio API 루프 정지
-            if (gameBgmSource) {
-                try { gameBgmSource.stop(); } catch(e) {}
-                gameBgmSource = null;
-            }
-            // HTMLAudioElement 폴백 정지
+            if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+            titleGain.gain.value = 0.6;
+            if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
             bgmGameEl.pause();
             bgmGameEl.currentTime = 0;
         }
 
         function playTitleBgm() {
-            bgmTitle.volume = 0.6;
-            bgmTitle.currentTime = 0;
-            bgmTitle.play().catch(() => {});
+            if (!sfxBuffers['bgm_title']) return;
+            audioCtx.resume().then(() => {
+                if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
+                titleGain.gain.value = 0.6;
+                const src = audioCtx.createBufferSource();
+                src.buffer = sfxBuffers['bgm_title'];
+                src.loop = true;
+                src.connect(titleGain);
+                src.start(0);
+                titleBgmSource = src;
+            });
         }
 
-        // duration(ms) 동안 bgmTitle 볼륨을 0으로 페이드아웃 후 정지
         function fadeTitleBgm(duration) {
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
             const steps = 30;
             const interval = duration / steps;
-            const delta = bgmTitle.volume / steps;
+            const delta = titleGain.gain.value / steps;
             fadeTimer = setInterval(() => {
-                bgmTitle.volume = Math.max(0, bgmTitle.volume - delta);
-                if (bgmTitle.volume <= 0) {
+                titleGain.gain.value = Math.max(0, titleGain.gain.value - delta);
+                if (titleGain.gain.value <= 0) {
                     clearInterval(fadeTimer);
                     fadeTimer = null;
-                    bgmTitle.pause();
-                    bgmTitle.currentTime = 0;
-                    bgmTitle.volume = 0.6; // 다음 재생을 위해 복원
+                    if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+                    titleGain.gain.value = 0.6;
                 }
             }, interval);
-        }
-
-        // 스플래시 → 인트로: 스타트 버튼이 스플래시 역할 겸임
-        // 스플래시 화면의 스타트 버튼을 눌러서 인트로로 이동
-        // 모바일에서 HTMLAudioElement 전체 unlock
-        const allSfx = [sfxCountdown, sfxStart, sfxGameOver, sfxThrowBase, sfxThrowHit, sfxFireball, sfxThrowFireball, bgmTitle, bgmGameEl];
-        function unlockAudio() {
-            allSfx.forEach(el => {
-                el.muted = true;
-                el.play().catch(() => {});
-                el.pause();
-                el.muted = false;
-                el.currentTime = 0;
-            });
         }
 
         const splashScreen = document.getElementById('splash-screen');
@@ -831,9 +847,8 @@
                 silentSrc.buffer = silentBuf;
                 silentSrc.connect(audioCtx.destination);
                 silentSrc.start(0);
+                playTitleBgm();
             });
-            unlockAudio();
-            playTitleBgm();
         });
 
         function playGameBgm() {
@@ -860,13 +875,11 @@
         }
 
         function playCountdownSfx() {
-            sfxCountdown.currentTime = 0;
-            sfxCountdown.play().catch(() => {});
+            playSfx('countdown', 1.0);
         }
 
         function playStartSfx() {
-            sfxStart.currentTime = 0;
-            sfxStart.play().catch(() => {});
+            playSfx('start', 1.0);
         }
 
         /**
@@ -1089,14 +1102,17 @@
                     countdownText.classList.add('countdown-animate');
 
                     // start.mp3 재생 → 끝나는 순간 bgm_game 시작
-                    sfxStart.currentTime = 0;
-                    sfxStart.onended = () => {
-                        sfxStart.onended = null;
-                        playGameBgm();
-                    };
-                    sfxStart.play().catch(() => {
-                        // 재생 실패 시에도 bgm_game은 시작
-                        playGameBgm();
+                    audioCtx.resume().then(() => {
+                        const buf = sfxBuffers['start'];
+                        if (buf) {
+                            const src = audioCtx.createBufferSource();
+                            src.buffer = buf;
+                            src.connect(audioCtx.destination);
+                            src.onended = () => { playGameBgm(); };
+                            src.start(0);
+                        } else {
+                            playGameBgm();
+                        }
                     });
 
                     count--;
@@ -1165,8 +1181,7 @@
         function gameOver() {
             gameState = 'GAMEOVER';
             stopAllBgm();
-            sfxGameOver.currentTime = 0;
-            sfxGameOver.play().catch(() => {});
+            playSfx('gameover', 1.0);
             document.getElementById('game-over-screen').classList.remove('hidden');
             finalScoreEl.innerText = score;
             evaluateScore(score);
@@ -1188,8 +1203,7 @@
                 column: Math.floor(player.x / (width / 10))
             });
             if (isFireball) {
-                sfxThrowFireball.currentTime = 0;
-                sfxThrowFireball.play().catch(() => {});
+                playSfx('throw_fireball', 1.0);
             } else {
                 playThrow();
             }
@@ -1241,8 +1255,7 @@
                     // 파이어볼 차징: 0.8초 딜레이 후 발사
                     fireballCharging = true;
                     fireballColumn   = Math.floor(player.x / (width / 10));
-                    sfxFireball.currentTime = 0;
-                    sfxFireball.play().catch(() => {});
+                    playSfx('fireball', 1.0);
 
                     // 화면 중앙 FIREBALL 알림 애니메이션
                     const fbAnnounce = document.getElementById('fireball-announce');
@@ -1290,8 +1303,7 @@
                             b.activated = true;
                             blk.active = false;
                             score++;
-                            sfxThrowHit.currentTime = 0;
-                            sfxThrowHit.play().catch(() => {});
+                            playSfx('throw_hit', 1.0);
                             advanceExpected();
                             updateUI();
                             checkRowClear();
@@ -1299,9 +1311,7 @@
                             // 활성화 이후: 열의 나머지 블록 전부 파괴 + hit 사운드
                             blk.active = false;
                             destroyedNumbers.add(blk.num);
-                            const hitClone = sfxThrowHit.cloneNode();
-                            hitClone.volume = 0.5;
-                            hitClone.play().catch(() => {});
+                            playSfx('throw_hit', 0.5);
                         }
                     }
                     // nextExpectedNumber가 파괴된 번호면 건너뜀
@@ -1328,8 +1338,7 @@
                                 score++;
                                 advanceExpected();
                                 balls.splice(i, 1);
-                                sfxThrowHit.currentTime = 0;
-                                sfxThrowHit.play().catch(() => {});
+                                playSfx('throw_hit', 1.0);
                                 updateUI();
                                 checkRowClear();
                                 collided = true;
