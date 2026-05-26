@@ -918,7 +918,6 @@
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
         const pitchInterval = 1000;
-        const FIREBALL_EVERY = 31; // 매 31번째 투구마다 파이어볼
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
         let blocks = [];
@@ -926,12 +925,12 @@
         let scrollY = 0;
         let targetScrollY = 0;
 
-        let pitchCount        = 0;
         let destroyedNumbers  = new Set();
         let fireballCharging  = false;
         let fireballActive    = false;
         let fireballColumn    = -1;
-        let mirrorballActive  = false;    // 101번 히트 후 200번 통과 전까지 true
+        let mirrorballActive  = false;
+        let mirrorballStart   = 0; // mirrorball 발동 시점 nextExpectedNumber (101, 201, 301...)
 
         // Firebase 설정
         const firebaseConfig = {
@@ -1059,12 +1058,12 @@
             balls = [];
             scrollY = 0;
             targetScrollY = 0;
-            pitchCount       = 0;
             destroyedNumbers = new Set();
             fireballCharging = false;
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
+            mirrorballStart  = 0;
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
@@ -1153,11 +1152,11 @@
 
             nextExpectedNumber = n;
             score = target;
-            pitchCount = n - 1;
             fireballCharging = false;
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
+            mirrorballStart  = 0;
 
             // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
             const blockSize     = width / 10;
@@ -1199,8 +1198,9 @@
                 radius: isFireball ? 14 : 8,
                 speed: isFireball ? 12 : 10,
                 isFireball: !!isFireball,
-                activated: false, // 파이어볼이 nextExpectedNumber에 처음 닿으면 true
-                column: Math.floor(player.x / (width / 10))
+                activated: false,
+                column: Math.floor(player.x / (width / 10)),
+                fireballStart: isFireball ? nextExpectedNumber : 0
             });
             if (isFireball) {
                 playSfx('throw_fireball', 1.0);
@@ -1210,15 +1210,15 @@
         }
 
         function mirrorDisplay(num) {
-            // 101~200 범위에서 자릿수 반전해서 표시용 문자열 반환
-            if (mirrorballActive && num >= 102 && num <= 200) {
+            if (mirrorballActive && num > mirrorballStart && num <= mirrorballStart + 99) {
                 return String(num).split('').reverse().join('');
             }
             return String(num);
         }
 
-        function triggerMirrorball() {
+        function triggerMirrorball(triggerNum) {
             mirrorballActive = true;
+            mirrorballStart  = triggerNum;
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
             void mbAnnounce.offsetWidth;
@@ -1232,13 +1232,13 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // 101번 히트 → 미러볼 발동 + 2초 딜레이
-            if (prev === 101) {
-                triggerMirrorball();
+            // 101, 201, 301... → 미러볼 발동 + 2초 딜레이
+            if ((prev - 101) % 100 === 0 && prev >= 101) {
+                triggerMirrorball(prev);
                 lastPitchTime = performance.now() + 1000;
             }
-            // 200번을 넘어가면 미러볼 해제
-            if (mirrorballActive && nextExpectedNumber > 200) {
+            // 미러볼 사이클 끝 (mirrorballStart+100 초과) → 해제
+            if (mirrorballActive && nextExpectedNumber > mirrorballStart + 100) {
                 mirrorballActive = false;
             }
         }
@@ -1248,19 +1248,19 @@
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
             if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > pitchInterval) {
-                pitchCount++;
                 lastPitchTime = timestamp;
 
-                if (pitchCount % FIREBALL_EVERY === 0) {
+                // 31, 131, 231... → 파이어볼
+                const isFireballTurn = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                if (isFireballTurn) {
                     // 파이어볼 차징: 0.8초 딜레이 후 발사
                     fireballCharging = true;
                     fireballColumn   = Math.floor(player.x / (width / 10));
                     playSfx('fireball', 1.0);
 
-                    // 화면 중앙 FIREBALL 알림 애니메이션
                     const fbAnnounce = document.getElementById('fireball-announce');
                     fbAnnounce.classList.remove('show');
-                    void fbAnnounce.offsetWidth; // reflow
+                    void fbAnnounce.offsetWidth;
                     fbAnnounce.classList.add('show');
 
                     setTimeout(() => {
@@ -1281,7 +1281,8 @@
 
                 if (b.isFireball) {
                     // 파이어볼: 같은 열에서 공이 닿은 블록 처리
-                    // 아직 활성화 전(첫 블록 미접촉)이면 nextExpectedNumber인지 검사
+                    // 파괴 범위: 해당 사이클 끝까지 (31번→1~130, 131번→131~230...)
+                    const fbCycleEnd = b.fireballStart + 99; // fireballStart = 파이어볼 발사 시점 nextExpectedNumber
                     let spliced = false;
                     for (let j = 0; j < blocks.length; j++) {
                         let blk = blocks[j];
@@ -1292,14 +1293,11 @@
                         if (!(b.y < blkY + blk.size && b.y > blkY - b.radius)) continue;
 
                         if (!b.activated) {
-                            // 첫 번째로 닿는 블록 — nextExpectedNumber여야만 함
                             if (blk.num !== nextExpectedNumber) {
-                                // 틀린 번호에 먼저 닿음 → 게임오버
                                 gameOver();
                                 spliced = true;
                                 break;
                             }
-                            // 올바른 번호: 파이어볼 활성화
                             b.activated = true;
                             blk.active = false;
                             score++;
@@ -1308,10 +1306,12 @@
                             updateUI();
                             checkRowClear();
                         } else {
-                            // 활성화 이후: 열의 나머지 블록 전부 파괴 + hit 사운드
-                            blk.active = false;
-                            destroyedNumbers.add(blk.num);
-                            playSfx('throw_hit', 0.5);
+                            // 사이클 범위 내 블록만 파괴
+                            if (blk.num <= fbCycleEnd) {
+                                blk.active = false;
+                                destroyedNumbers.add(blk.num);
+                                playSfx('throw_hit', 0.5);
+                            }
                         }
                     }
                     // nextExpectedNumber가 파괴된 번호면 건너뜀
@@ -1421,7 +1421,9 @@
                 if (drawY > height || drawY < -blk.size) return;
 
                 const isNext = blk.num === nextExpectedNumber;
-                const isGuide = isNext && (nextExpectedNumber === 1 || nextExpectedNumber === 31 || nextExpectedNumber === 101);
+                const isFireballNext = isNext && (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                const isMirrorNext   = isNext && (nextExpectedNumber - 101) % 100 === 0 && nextExpectedNumber >= 101;
+                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
 
