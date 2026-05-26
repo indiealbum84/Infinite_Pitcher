@@ -705,7 +705,7 @@
             countdown:     './countdown.mp3',
             start:         './start.mp3',
             gameover:      './gameover.mp3',
-            throw:         './throw.mp3',
+            ball_throw:    './throw.mp3',
             throw_hit:     './throw_hit.mp3',
             fireball:      './fireball.mp3',
             throw_fireball:'./throw_fireball.mp3',
@@ -750,7 +750,7 @@
         let bgmGameUseEl = false;
 
         function playThrow() {
-            playSfx('throw', 0.7);
+            playSfx('ball_throw', 0.7);
         }
 
         // fetch 대신 XHR 사용 — file:// 프로토콜에서도 동작
