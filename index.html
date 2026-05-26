@@ -929,8 +929,7 @@
         let fireballCharging  = false;
         let fireballActive    = false;
         let fireballColumn    = -1;
-        let mirrorballActive  = false;
-        let mirrorballStart   = 0; // mirrorball 발동 시점 nextExpectedNumber (101, 201, 301...)
+        let mirrorballActive  = false; // 현재 숫자 반전 중 여부
 
         // Firebase 설정
         const firebaseConfig = {
@@ -1063,7 +1062,6 @@
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
-            mirrorballStart  = 0;
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
@@ -1156,7 +1154,6 @@
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
-            mirrorballStart  = 0;
 
             // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
             const blockSize     = width / 10;
@@ -1210,15 +1207,14 @@
         }
 
         function mirrorDisplay(num) {
-            if (mirrorballActive && num > mirrorballStart && num <= mirrorballStart + 99) {
+            if (mirrorballActive) {
                 return String(num).split('').reverse().join('');
             }
             return String(num);
         }
 
-        function triggerMirrorball(triggerNum) {
-            mirrorballActive = true;
-            mirrorballStart  = triggerNum;
+        function triggerMirrorball() {
+            mirrorballActive = !mirrorballActive; // 50단위마다 ON/OFF 토글
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
             void mbAnnounce.offsetWidth;
@@ -1232,14 +1228,10 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // 101, 201, 301... → 미러볼 발동 + 2초 딜레이
-            if ((prev - 101) % 100 === 0 && prev >= 101) {
-                triggerMirrorball(prev);
+            // 101, 151, 201, 251... (50단위) → 미러볼 토글 + 2초 딜레이
+            if (prev >= 101 && (prev - 101) % 50 === 0) {
+                triggerMirrorball();
                 lastPitchTime = performance.now() + 1000;
-            }
-            // 미러볼 사이클 끝 (mirrorballStart+100 초과) → 해제
-            if (mirrorballActive && nextExpectedNumber > mirrorballStart + 100) {
-                mirrorballActive = false;
             }
         }
 
