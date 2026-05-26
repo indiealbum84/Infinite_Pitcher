@@ -1413,8 +1413,8 @@
                 if (drawY > height || drawY < -blk.size) return;
 
                 const isNext = blk.num === nextExpectedNumber;
-                const isFireballNext = isNext && (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isMirrorNext   = isNext && (nextExpectedNumber - 101) % 100 === 0 && nextExpectedNumber >= 101;
+                const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                const isMirrorNext   = (nextExpectedNumber - 101) % 50 === 0 && nextExpectedNumber >= 101;
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
