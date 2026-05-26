@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>無限投手: 世界一への道</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Bangers&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-neon: #ccff00;
+            --bg-dark: #0f172a;
+            --block-bg: #1e293b;
+            --text-white: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f1f5f9;
+            font-family: 'Noto Sans JP', sans-serif;
+            overflow: hidden;
+            color: #0f172a;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            background-color: #ffffff;
+            z-index: 20;
+            gap: 0;
+            cursor: pointer;
+            touch-action: auto !important;
+        }
+
+
+        .splash-title {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 60px;
+        }
+
+        .splash-title-sub {
+            font-size: 26px;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 6px 18px;
+            display: inline-block;
+            transform: rotate(-3deg);
+            margin-bottom: 10px;
+            font-weight: 900;
+            border-radius: 4px;
+            box-shadow: 4px 4px 0px var(--primary-neon);
+        }
+
+        .splash-title-main {
+            font-size: 64px;
+            color: #000000;
+            display: block;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-shadow: 5px 5px 0px var(--primary-neon), 8px 8px 0px rgba(0,0,0,0.1);
+        }
+
+        .splash-touch-hint {
+            font-size: 18px;
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: 0.5px;
+            animation: blink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.25; }
+        }
+
+        /* Intro Screen */
+        #intro-screen {
+            background-color: #ffffff;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Game Title Styling */
+        .game-title {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            color: #000;
+            margin: -20px 0 25px 0;
+            line-height: 1.2;
+        }
+
+        .game-title-sub {
+            font-size: 18px;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 4px 12px;
+            display: inline-block;
+            transform: rotate(-3deg);
+            margin-bottom: 6px;
+            font-weight: 900;
+            border-radius: 4px;
+            box-shadow: 3px 3px 0px var(--primary-neon);
+        }
+
+        .game-title-main {
+            font-size: 36px;
+            color: #000000;
+            display: block;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-shadow: 3px 3px 0px var(--primary-neon), 5px 5px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .character-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            position: relative;
+            background: #000000;
+            border-radius: 20px;
+            padding: 15px 25px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            line-height: 1.5;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #000000 transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+            transform: translateX(-50%);
+        }
+
+        /* 캐릭터 이미지 영역 */
+        .main-character-img {
+            width: 220px;
+            height: 300px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('./character.png');
+            margin: 0 auto;
+        }
+
+        .start-btn {
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 12px 50px;
+            font-size: 24px;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 var(--primary-neon), 0 6px 0 2px #000000;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-family: 'Noto Sans JP', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--primary-neon), 0 2px 0 2px #000000;
+        }
+
+        /* Game UI */
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 8px 18px;
+            border-radius: 15px;
+            border: 2px solid #000000;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 900;
+            font-family: 'Bangers';
+            color: #000000;
+        }
+
+        /* Game Over Screen */
+        #game-over-screen {
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+
+        .game-over-title {
+            font-family: 'Bangers';
+            font-size: 64px;
+            color: #ff4444;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .final-score {
+            font-size: 48px;
+            margin: 20px 0;
+            color: var(--primary-neon);
+        }
+
+        .leaderboard-btn {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            margin-top: 15px;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+        }
+
+        /* Leaderboard Modal */
+        #leaderboard-modal {
+            background: #1e293b;
+            border: 3px solid var(--primary-neon);
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-height: 70%;
+            overflow-y: auto;
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .rank-num {
+            font-weight: 900;
+            color: var(--primary-neon);
+            width: 40px;
+        }
+
+        .rank-score {
+            font-family: 'Bangers';
+            color: #fff;
+        }
+
+        .rank-name {
+            flex: 1;
+            color: #e2e8f0;
+            text-align: left;
+            padding-left: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        /* Name Entry */
+        #rank-entry {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .rank-announce {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--primary-neon);
+            margin: 0 0 14px;
+            text-shadow: 0 0 12px rgba(204, 255, 0, 0.7);
+        }
+
+        .rank-announce span {
+            font-family: 'Bangers';
+            font-size: 32px;
+        }
+
+        .name-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--primary-neon);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 10px 20px;
+            text-align: center;
+            width: 240px;
+            margin-bottom: 14px;
+            font-family: 'Noto Sans JP', sans-serif;
+            outline: none;
+            -webkit-user-select: text;
+            user-select: text;
+            touch-action: auto;
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+        }
+
+        #action-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* input 태그에 전역 touch/select 제한 해제 */
+        input {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+        }
+
+        /* Fireball 알림 오버레이 */
+        #fireball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #fireball-announce.show {
+            animation: fbAnnounce 1.2s ease-out forwards;
+        }
+
+        @keyframes fbAnnounce {
+            0%   { opacity: 0; transform: scale(0.4); }
+            20%  { opacity: 1; transform: scale(1.15); }
+            50%  { opacity: 1; transform: scale(1.0); }
+            80%  { opacity: 1; transform: scale(1.0); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+
+        .fb-flames {
+            font-size: 48px;
+            letter-spacing: 8px;
+            animation: flicker 0.15s infinite alternate;
+            margin-bottom: -10px;
+        }
+
+        @keyframes flicker {
+            0%   { transform: scaleY(1.0) skewX(-2deg); }
+            100% { transform: scaleY(1.1) skewX(2deg); }
+        }
+
+        .fb-text {
+            font-family: 'Bangers', cursive;
+            font-size: 72px;
+            letter-spacing: 4px;
+            color: #fff7a0;
+            text-shadow:
+                0 0 10px #ffcc00,
+                0 0 25px #ff6600,
+                0 0 50px #ff2200,
+                4px 4px 0px #cc2200,
+                6px 6px 0px rgba(0,0,0,0.4);
+            -webkit-text-stroke: 2px #ff4400;
+            animation: textPulse 0.3s infinite alternate;
+        }
+
+        @keyframes textPulse {
+            0%   { text-shadow: 0 0 10px #ffcc00, 0 0 25px #ff6600, 0 0 50px #ff2200, 4px 4px 0 #cc2200; }
+            100% { text-shadow: 0 0 20px #ffee00, 0 0 40px #ff8800, 0 0 80px #ff3300, 4px 4px 0 #cc2200; }
+        }
+
+        .fb-sub {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff6600, 2px 2px 0 #000;
+            margin-top: 6px;
+        }
+
+        /* Mirrorball 알림 오버레이 */
+        #mirrorball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #mirrorball-announce.show {
+            animation: fbAnnounce 1.8s ease-out forwards;
+        }
+
+        .mb-disco {
+            font-size: 52px;
+            letter-spacing: 6px;
+            animation: spin 0.6s linear infinite;
+            margin-bottom: -8px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg) scale(1.0); }
+            to   { transform: rotate(360deg) scale(1.1); }
+        }
+
+        .mb-text {
+            font-family: 'Bangers', cursive;
+            font-size: 64px;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow:
+                0 0 10px #ff00ff,
+                0 0 25px #00ffff,
+                0 0 50px #ffff00,
+                4px 4px 0px #6600cc,
+                6px 6px 0px rgba(0,0,0,0.4);
+            -webkit-text-stroke: 2px #cc00ff;
+            animation: rainbowPulse 0.4s infinite alternate;
+        }
+
+        @keyframes rainbowPulse {
+            0%   { text-shadow: 0 0 15px #ff00ff, 0 0 35px #00ffff, 0 0 60px #ffff00, 4px 4px 0 #6600cc; }
+            100% { text-shadow: 0 0 25px #00ffff, 0 0 50px #ff00ff, 0 0 80px #ff66ff, 4px 4px 0 #6600cc; }
+        }
+
+        .mb-sub {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            color: #ffff99;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #cc00ff, 2px 2px 0 #000;
+            margin-top: 8px;
+        }
+
+        /* 테스트 시작 번호 선택 */
+        #test-start-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .test-sel-btn {
+            background: #f1f5f9;
+            color: #475569;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 7px 18px;
+            cursor: pointer;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: all 0.15s;
+        }
+
+        .test-sel-btn.active {
+            background: #000000;
+            color: #ccff00;
+            border-color: #000000;
+            box-shadow: 0 3px 0 var(--primary-neon);
+        }
+
+        /* Countdown Screen */
+        #countdown-screen {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 15;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        #countdown-text {
+            font-family: 'Bangers', cursive;
+            font-size: 100px;
+            color: var(--primary-neon);
+            text-shadow: 0 0 20px rgba(204, 255, 0, 0.8), 0 0 40px rgba(204, 255, 0, 0.4);
+            transition: transform 0.1s ease-out;
+            transform: scale(1);
+        }
+
+        .countdown-animate {
+            animation: popIn 0.8s ease-out forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.0);
+                opacity: 1;
+            }
+        }
+
+        #canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-wrapper">
+        <div id="ui-layer" class="hidden">
+            <div class="stat-box">
+                <span class="stat-label">NEXT NUMBER</span>
+                <span id="next-num" class="stat-value">1</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">SCORE</span>
+                <span id="score" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <div id="splash-screen" class="screen">
+            <h1 class="splash-title">
+                <span class="splash-title-sub">超特訓！</span>
+                <span class="splash-title-main">無限ピッチング</span>
+            </h1>
+            <p class="splash-touch-hint">どこでもタッチしてスタート</p>
+        </div>
+
+        <div id="intro-screen" class="screen hidden">
+            <h1 class="game-title">
+                <span class="game-title-sub">超特訓！</span>
+                <span class="game-title-main">無限ピッチング</span>
+            </h1>
+            <div class="speech-bubble">
+                よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
+            </div>
+            <div class="character-box">
+                <div class="main-character-img"></div>
+            </div>
+            <button id="start-btn-id" class="start-btn">スタート</button>
+            <div id="test-start-row">
+                <button class="test-sel-btn" id="test-btn-31"  onclick="selectTestStart(31)">🔥 31</button>
+                <button class="test-sel-btn" id="test-btn-101" onclick="selectTestStart(101)">🪩 101</button>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="screen hidden">
+            <h2 class="game-over-title">GAME OVER</h2>
+            <div class="final-score">SCORE: <span id="final-score-val">0</span></div>
+
+            <!-- 100위 안에 들었을 때 표시 -->
+            <div id="rank-entry" class="hidden">
+                <p class="rank-announce"><span id="my-rank-val">1</span>위 달성!</p>
+                <input id="player-name-input" class="name-input" type="text" maxlength="12" placeholder="이름을 입력하세요 (최대 12자)" />
+            </div>
+
+            <div id="action-buttons">
+                <button id="register-btn" class="start-btn hidden" onclick="registerName()">登録して続ける</button>
+                <button class="start-btn" onclick="startGame()">リトライ</button>
+                <button class="leaderboard-btn" onclick="toggleLeaderboard()">ランキング</button>
+            </div>
+
+            <div id="leaderboard-modal" class="hidden">
+                <h3 style="margin-top:0">TOP 100</h3>
+                <div id="rank-list"></div>
+                <button class="leaderboard-btn" onclick="toggleLeaderboard()">閉じる</button>
+            </div>
+        </div>
+
+        <div id="countdown-screen" class="screen hidden">
+            <div id="countdown-text">3</div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <!-- 미러볼 알림 오버레이 -->
+        <div id="mirrorball-announce">
+            <div class="mb-disco">🪩✨🪩</div>
+            <div class="mb-text">MIRRORBALL</div>
+            <div class="mb-sub">数字が反転！</div>
+            <div class="mb-disco">✨🪩✨</div>
+        </div>
+
+        <!-- 파이어볼 알림 오버레이 -->
+        <div id="fireball-announce">
+            <div class="fb-flames">🔥🔥🔥</div>
+            <div class="fb-text">FIREBALL</div>
+            <div class="fb-sub">特殊投球！</div>
+            <div class="fb-flames">🔥🔥🔥</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        /**
+         * IMAGES
+         */
+        const cartImg = new Image();
+        cartImg.src = './cart.png';
+
+        const pitcherImg = new Image();
+        pitcherImg.src = './pitcher.png';
+
+        /**
+         * AUDIO SYSTEM
+         */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let gameBgmBuffer = null;
+        let gameBgmSource = null;
+
+        const bgmTitle    = new Audio('./bgm_title.mp3');
+        bgmTitle.loop     = true;
+        bgmTitle.volume   = 0.6;
+
+        // HTMLAudioElement 폴백 (Web Audio API 로드 실패 시 사용)
+        const bgmGameEl   = new Audio('./bgm_game.wav');
+        bgmGameEl.loop    = true;
+        bgmGameEl.volume  = 0.7;
+        let bgmGameUseEl  = false; // 폴백 사용 여부
+
+        const sfxCountdown     = new Audio('./countdown.mp3');
+        const sfxStart         = new Audio('./start.mp3');
+        const sfxGameOver      = new Audio('./gameover.mp3');
+        const sfxThrowBase     = new Audio('./throw.mp3');
+        const sfxThrowHit      = new Audio('./throw_hit.mp3');
+        const sfxFireball      = new Audio('./fireball.mp3');
+        const sfxThrowFireball = new Audio('./throw_fireball.mp3');
+
+        function playThrow() {
+            const s = sfxThrowBase.cloneNode();
+            s.volume = 0.7;
+            s.play().catch(() => {});
+        }
+
+        // fetch 대신 XHR 사용 — file:// 프로토콜에서도 동작
+        // 버퍼 끝의 무음 구간을 건너뛰기 위한 실제 루프 끝 지점 계산
+        function detectLoopEnd(buffer) {
+            const threshold = 0.001;
+            // 모든 채널 중 가장 늦게 소리가 있는 샘플 위치를 찾음
+            let lastSample = 0;
+            for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+                const data = buffer.getChannelData(ch);
+                for (let i = data.length - 1; i >= 0; i--) {
+                    if (Math.abs(data[i]) > threshold) {
+                        if (i > lastSample) lastSample = i;
+                        break;
+                    }
+                }
+            }
+            // 약간의 여유(0.01초)를 두고 잘라냄
+            return Math.min((lastSample + Math.floor(buffer.sampleRate * 0.01)) / buffer.sampleRate, buffer.duration);
+        }
+
+        let gameBgmLoopEnd = 0;
+
+        (function loadGameBgm() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', './bgm_game.wav', true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 0) {
+                    audioCtx.decodeAudioData(xhr.response)
+                        .then(decoded => {
+                            gameBgmBuffer = decoded;
+                            gameBgmLoopEnd = detectLoopEnd(decoded);
+                            console.log('[BGM] loopEnd:', gameBgmLoopEnd, '/ duration:', decoded.duration);
+                        })
+                        .catch(() => { bgmGameUseEl = true; });
+                } else {
+                    bgmGameUseEl = true;
+                }
+            };
+            xhr.onerror = () => { bgmGameUseEl = true; };
+            xhr.send();
+        })();
+
+        let fadeTimer = null;
+
+        function stopAllBgm() {
+            if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+            bgmTitle.pause();
+            bgmTitle.currentTime = 0;
+            bgmTitle.volume = 0.6;
+            // Web Audio API 루프 정지
+            if (gameBgmSource) {
+                try { gameBgmSource.stop(); } catch(e) {}
+                gameBgmSource = null;
+            }
+            // HTMLAudioElement 폴백 정지
+            bgmGameEl.pause();
+            bgmGameEl.currentTime = 0;
+        }
+
+        function playTitleBgm() {
+            bgmTitle.volume = 0.6;
+            bgmTitle.currentTime = 0;
+            bgmTitle.play().catch(() => {});
+        }
+
+        // duration(ms) 동안 bgmTitle 볼륨을 0으로 페이드아웃 후 정지
+        function fadeTitleBgm(duration) {
+            if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+            const steps = 30;
+            const interval = duration / steps;
+            const delta = bgmTitle.volume / steps;
+            fadeTimer = setInterval(() => {
+                bgmTitle.volume = Math.max(0, bgmTitle.volume - delta);
+                if (bgmTitle.volume <= 0) {
+                    clearInterval(fadeTimer);
+                    fadeTimer = null;
+                    bgmTitle.pause();
+                    bgmTitle.currentTime = 0;
+                    bgmTitle.volume = 0.6; // 다음 재생을 위해 복원
+                }
+            }, interval);
+        }
+
+        // 스플래시 → 인트로: 스타트 버튼이 스플래시 역할 겸임
+        // 스플래시 화면의 스타트 버튼을 눌러서 인트로로 이동
+        const splashScreen = document.getElementById('splash-screen');
+        splashScreen.addEventListener('click', function onSplashClick() {
+            splashScreen.classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            splashScreen.removeEventListener('click', onSplashClick);
+            audioCtx.resume().then(() => {
+                const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+                const silentSrc = audioCtx.createBufferSource();
+                silentSrc.buffer = silentBuf;
+                silentSrc.connect(audioCtx.destination);
+                silentSrc.start(0);
+            });
+            playTitleBgm();
+        });
+
+        function playGameBgm() {
+            stopAllBgm();
+            console.log('[BGM] playGameBgm called. buffer:', !!gameBgmBuffer, '/ audioCtx.state:', audioCtx.state);
+            if (gameBgmBuffer) {
+                audioCtx.resume().then(() => {
+                    console.log('[BGM] AudioContext resumed, starting Web Audio loop');
+                    const src = audioCtx.createBufferSource();
+                    src.buffer    = gameBgmBuffer;
+                    src.loop      = true;
+                    src.loopStart = 0;
+                    src.loopEnd   = gameBgmLoopEnd;
+                    src.connect(audioCtx.destination);
+                    src.start(0);
+                    gameBgmSource = src;
+                });
+            } else {
+                console.log('[BGM] buffer null → fallback HTMLAudioElement');
+                bgmGameUseEl = true;
+                bgmGameEl.currentTime = 0;
+                bgmGameEl.play().catch(e => console.warn('[BGM] fallback play failed:', e));
+            }
+        }
+
+        function playCountdownSfx() {
+            sfxCountdown.currentTime = 0;
+            sfxCountdown.play().catch(() => {});
+        }
+
+        function playStartSfx() {
+            sfxStart.currentTime = 0;
+            sfxStart.play().catch(() => {});
+        }
+
+        /**
+         * GAME CONFIGURATION & STATE
+         */
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const nextNumEl = document.getElementById('next-num');
+        const finalScoreEl = document.getElementById('final-score-val');
+        const startBtn = document.getElementById('start-btn-id');
+
+        let testStartNum = 1; // 1 = 기본, 31 or 101 = 테스트
+
+        function selectTestStart(n) {
+            const btn31  = document.getElementById('test-btn-31');
+            const btn101 = document.getElementById('test-btn-101');
+            if (testStartNum === n) {
+                testStartNum = 1;
+                btn31.classList.remove('active');
+                btn101.classList.remove('active');
+            } else {
+                testStartNum = n;
+                btn31.classList.toggle('active', n === 31);
+                btn101.classList.toggle('active', n === 101);
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (gameState === 'INTRO') startGame();
+        });
+
+        let width, height;
+        let gameState = 'INTRO'; // INTRO, PLAYING, GAMEOVER
+        let score = 0;
+        let nextExpectedNumber = 1;
+        let lastPitchTime = 0;
+        const pitchInterval = 1000;
+        const FIREBALL_EVERY = 31; // 매 31번째 투구마다 파이어볼
+
+        let player = { x: 0, y: 0, width: 60, height: 80 };
+        let blocks = [];
+        let balls = [];
+        let scrollY = 0;
+        let targetScrollY = 0;
+
+        let pitchCount        = 0;
+        let destroyedNumbers  = new Set();
+        let fireballCharging  = false;
+        let fireballActive    = false;
+        let fireballColumn    = -1;
+        let mirrorballActive  = false;    // 101번 히트 후 200번 통과 전까지 true
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            databaseURL: "YOUR_DB_URL",
+            projectId: "YOUR_PROJECT_ID"
+        };
+        // firebase.initializeApp(firebaseConfig);
+
+        /**
+         * INITIALIZATION
+         */
+        function resize() {
+            width = canvas.width = window.innerWidth > 500 ? 500 : window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            player.x = width / 2;
+            player.y = height - Math.round(height * 0.13);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+
+        /**
+         * BLOCK MANAGEMENT
+         */
+        function createRow(startNum) {
+            let row = [];
+            let numbers = [];
+            for (let i = 0; i < 10; i++) numbers.push(startNum + i);
+            // Shuffle inside row
+            numbers.sort(() => Math.random() - 0.5);
+
+            const blockSize = width / 10;
+            for (let i = 0; i < 10; i++) {
+                row.push({
+                    x: i * blockSize,
+                    y: 0,
+                    num: numbers[i],
+                    active: true,
+                    size: blockSize
+                });
+            }
+            return row;
+        }
+
+        function initBlocks() {
+            blocks = [];
+            for (let r = 0; r < 10; r++) {
+                let row = createRow(r * 10 + 1);
+                row.forEach(b => b.y = (9 - r) * (width / 10)); // 역순 배치
+                blocks.push(...row);
+            }
+        }
+
+        /**
+         * INPUT HANDLING
+         */
+        let isDragging = false;
+
+        function handleStart(clientX) {
+            if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
+            isDragging = true;
+            updatePlayerPosition(clientX);
+        }
+
+        function handleMove(clientX) {
+            if (!isDragging) return;
+            if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
+            updatePlayerPosition(clientX);
+        }
+
+        function handleEnd() {
+            isDragging = false;
+        }
+
+        function updatePlayerPosition(clientX) {
+            const rect = canvas.getBoundingClientRect();
+            const canvasX = ((clientX - rect.left) / rect.width) * width;
+            player.x = Math.max(8, Math.min(width - 8, canvasX));
+        }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', (e) => {
+            handleStart(e.clientX);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            handleMove(e.clientX);
+        });
+
+        window.addEventListener('mouseup', () => {
+            handleEnd();
+        });
+
+        // Touch Events — 터치 시 AudioContext resume (iOS 요구사항)
+        canvas.addEventListener('touchstart', (e) => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (e.touches.length > 0) {
+                handleStart(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length > 0) {
+                handleMove(e.touches[0].clientX);
+                if (e.cancelable) e.preventDefault();
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            handleEnd();
+        });
+
+        window.addEventListener('touchcancel', () => {
+            handleEnd();
+        });
+
+        /**
+         * GAME LOGIC
+         */
+        function startCountdown() {
+            gameState = 'COUNTDOWN';
+            score = 0;
+            nextExpectedNumber = 1;
+            balls = [];
+            scrollY = 0;
+            targetScrollY = 0;
+            pitchCount       = 0;
+            destroyedNumbers = new Set();
+            fireballCharging = false;
+            fireballActive   = false;
+            fireballColumn   = -1;
+            mirrorballActive = false;
+            initBlocks();
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('ui-layer').classList.remove('hidden');
+            updateUI();
+
+            const countdownScreen = document.getElementById('countdown-screen');
+            const countdownText = document.getElementById('countdown-text');
+            countdownScreen.classList.remove('hidden');
+
+            let count = 3;
+            // 카운트다운 시작과 동시에 타이틀 BGM 3초 페이드아웃
+            fadeTitleBgm(3000);
+
+            const runTick = () => {
+                if (count > 0) {
+                    countdownText.innerText = count;
+                    countdownText.style.color = 'var(--primary-neon)';
+                    countdownText.style.textShadow = '0 0 20px rgba(204, 255, 0, 0.8)';
+
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+
+                    playCountdownSfx();
+                    count--;
+                    setTimeout(runTick, 1000);
+                } else if (count === 0) {
+                    countdownText.innerText = 'START!';
+                    countdownText.style.color = '#ff4444';
+                    countdownText.style.textShadow = '0 0 20px rgba(255, 68, 68, 0.8)';
+
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+
+                    // start.mp3 재생 → 끝나는 순간 bgm_game 시작
+                    sfxStart.currentTime = 0;
+                    sfxStart.onended = () => {
+                        sfxStart.onended = null;
+                        playGameBgm();
+                    };
+                    sfxStart.play().catch(() => {
+                        // 재생 실패 시에도 bgm_game은 시작
+                        playGameBgm();
+                    });
+
+                    count--;
+                    setTimeout(runTick, 1000);
+                } else {
+                    countdownScreen.classList.add('hidden');
+                    gameState = 'PLAYING';
+                    lastPitchTime = performance.now();
+                    // 테스트 시작 번호 적용
+                    if (testStartNum > 1) {
+                        testSkipTo(testStartNum);
+                        testStartNum = 1;
+                        document.getElementById('test-btn-31').classList.remove('active');
+                        document.getElementById('test-btn-101').classList.remove('active');
+                    }
+                }
+            };
+
+            runTick();
+            requestAnimationFrame(gameLoop);
+        }
+
+
+
+        function startGame() {
+            startCountdown();
+        }
+
+        // 테스트용: n번부터 시작
+        function testSkipTo(n) {
+            if (gameState !== 'PLAYING') return;
+            const target = n - 1;
+
+            // 상태 초기화 후 재구성
+            balls = [];
+            destroyedNumbers = new Set();
+            for (let i = 1; i <= target; i++) destroyedNumbers.add(i);
+
+            nextExpectedNumber = n;
+            score = target;
+            pitchCount = n - 1;
+            fireballCharging = false;
+            fireballActive   = false;
+            fireballColumn   = -1;
+            mirrorballActive = false;
+
+            // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
+            const blockSize     = width / 10;
+            const clearedRows   = Math.floor(target / 10);
+            const firstRowStart = clearedRows * 10 + 1; // 화면에 나올 첫 행
+
+            blocks = [];
+            for (let r = 0; r < 10; r++) {
+                const row = createRow(firstRowStart + r * 10);
+                row.forEach(b => b.y = (9 - r) * blockSize);
+                blocks.push(...row);
+            }
+
+            // 스크롤 0으로 초기화 (블록을 새로 배치했으므로)
+            scrollY = 0;
+            targetScrollY = 0;
+
+            updateUI();
+        }
+
+        function gameOver() {
+            gameState = 'GAMEOVER';
+            stopAllBgm();
+            sfxGameOver.currentTime = 0;
+            sfxGameOver.play().catch(() => {});
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            finalScoreEl.innerText = score;
+            evaluateScore(score);
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score;
+            nextNumEl.innerText = nextExpectedNumber;
+        }
+
+        function pitchBall(isFireball) {
+            balls.push({
+                x: player.x,
+                y: player.y - 20,
+                radius: isFireball ? 14 : 8,
+                speed: isFireball ? 12 : 10,
+                isFireball: !!isFireball,
+                activated: false, // 파이어볼이 nextExpectedNumber에 처음 닿으면 true
+                column: Math.floor(player.x / (width / 10))
+            });
+            if (isFireball) {
+                sfxThrowFireball.currentTime = 0;
+                sfxThrowFireball.play().catch(() => {});
+            } else {
+                playThrow();
+            }
+        }
+
+        function mirrorDisplay(num) {
+            // 101~200 범위에서 자릿수 반전해서 표시용 문자열 반환
+            if (mirrorballActive && num >= 102 && num <= 200) {
+                return String(num).split('').reverse().join('');
+            }
+            return String(num);
+        }
+
+        function triggerMirrorball() {
+            mirrorballActive = true;
+            const mbAnnounce = document.getElementById('mirrorball-announce');
+            mbAnnounce.classList.remove('show');
+            void mbAnnounce.offsetWidth;
+            mbAnnounce.classList.add('show');
+        }
+
+        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 미러볼 트리거/해제
+        function advanceExpected() {
+            const prev = nextExpectedNumber;
+            nextExpectedNumber++;
+            while (destroyedNumbers.has(nextExpectedNumber)) {
+                nextExpectedNumber++;
+            }
+            // 101번 히트 → 미러볼 발동 + 2초 딜레이
+            if (prev === 101) {
+                triggerMirrorball();
+                lastPitchTime = performance.now() + 1000;
+            }
+            // 200번을 넘어가면 미러볼 해제
+            if (mirrorballActive && nextExpectedNumber > 200) {
+                mirrorballActive = false;
+            }
+        }
+
+        function update(timestamp) {
+            if (gameState !== 'PLAYING') return;
+
+            // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
+            if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > pitchInterval) {
+                pitchCount++;
+                lastPitchTime = timestamp;
+
+                if (pitchCount % FIREBALL_EVERY === 0) {
+                    // 파이어볼 차징: 0.8초 딜레이 후 발사
+                    fireballCharging = true;
+                    fireballColumn   = Math.floor(player.x / (width / 10));
+                    sfxFireball.currentTime = 0;
+                    sfxFireball.play().catch(() => {});
+
+                    // 화면 중앙 FIREBALL 알림 애니메이션
+                    const fbAnnounce = document.getElementById('fireball-announce');
+                    fbAnnounce.classList.remove('show');
+                    void fbAnnounce.offsetWidth; // reflow
+                    fbAnnounce.classList.add('show');
+
+                    setTimeout(() => {
+                        fireballCharging = false;
+                        fireballColumn   = -1;
+                        fireballActive   = true;
+                        pitchBall(true);
+                    }, 800);
+                } else {
+                    pitchBall(false);
+                }
+            }
+
+            // Update Balls
+            for (let i = balls.length - 1; i >= 0; i--) {
+                let b = balls[i];
+                b.y -= b.speed;
+
+                if (b.isFireball) {
+                    // 파이어볼: 같은 열에서 공이 닿은 블록 처리
+                    // 아직 활성화 전(첫 블록 미접촉)이면 nextExpectedNumber인지 검사
+                    let spliced = false;
+                    for (let j = 0; j < blocks.length; j++) {
+                        let blk = blocks[j];
+                        if (!blk.active) continue;
+                        let blkCol = Math.floor(blk.x / (width / 10));
+                        if (blkCol !== b.column) continue;
+                        let blkY = blk.y + scrollY;
+                        if (!(b.y < blkY + blk.size && b.y > blkY - b.radius)) continue;
+
+                        if (!b.activated) {
+                            // 첫 번째로 닿는 블록 — nextExpectedNumber여야만 함
+                            if (blk.num !== nextExpectedNumber) {
+                                // 틀린 번호에 먼저 닿음 → 게임오버
+                                gameOver();
+                                spliced = true;
+                                break;
+                            }
+                            // 올바른 번호: 파이어볼 활성화
+                            b.activated = true;
+                            blk.active = false;
+                            score++;
+                            sfxThrowHit.currentTime = 0;
+                            sfxThrowHit.play().catch(() => {});
+                            advanceExpected();
+                            updateUI();
+                            checkRowClear();
+                        } else {
+                            // 활성화 이후: 열의 나머지 블록 전부 파괴 + hit 사운드
+                            blk.active = false;
+                            destroyedNumbers.add(blk.num);
+                            const hitClone = sfxThrowHit.cloneNode();
+                            hitClone.volume = 0.5;
+                            hitClone.play().catch(() => {});
+                        }
+                    }
+                    // nextExpectedNumber가 파괴된 번호면 건너뜀
+                    while (destroyedNumbers.has(nextExpectedNumber)) {
+                        nextExpectedNumber++;
+                    }
+                    if (!spliced) updateUI();
+                    if (!spliced && b.y < -20) {
+                        balls.splice(i, 1);
+                        fireballActive = false;
+                        // 파이어볼 후 2초 딜레이
+                        lastPitchTime = performance.now() + 1000;
+                    }
+                } else {
+                    // 일반 공: 기존 충돌 처리
+                    let collided = false;
+                    for (let j = 0; j < blocks.length; j++) {
+                        let blk = blocks[j];
+                        if (!blk.active) continue;
+                        let blkY = blk.y + scrollY;
+                        if (b.x + b.radius > blk.x && b.x - b.radius < blk.x + blk.size && b.y + b.radius > blkY && b.y - b.radius < blkY + blk.size) {
+                            if (blk.num === nextExpectedNumber) {
+                                blk.active = false;
+                                score++;
+                                advanceExpected();
+                                balls.splice(i, 1);
+                                sfxThrowHit.currentTime = 0;
+                                sfxThrowHit.play().catch(() => {});
+                                updateUI();
+                                checkRowClear();
+                                collided = true;
+                            } else {
+                                gameOver();
+                                return;
+                            }
+                            break;
+                        }
+                    }
+                    if (!collided && b.y < -20) balls.splice(i, 1);
+                }
+            }
+
+            // Smooth Scrolling
+            if (scrollY < targetScrollY) {
+                scrollY += 2;
+            }
+        }
+
+        function checkRowClear() {
+            const targetRowsCleared = Math.floor((nextExpectedNumber - 1) / 10);
+            const currentRowsCleared = Math.round(targetScrollY / (width / 10));
+
+            if (targetRowsCleared > currentRowsCleared) {
+                targetScrollY = targetRowsCleared * (width / 10);
+                const maxNum = Math.max(...blocks.map(b => b.num));
+                let newRow = createRow(maxNum + 1);
+                const topMostY = Math.min(...blocks.map(b => b.y));
+                newRow.forEach(b => b.y = topMostY - (width / 10));
+                blocks.push(...newRow);
+            }
+        }
+
+        /**
+         * RENDERING
+         */
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
+            const stripeW = width / 10;
+            const stripeColors = ['#2d7a2d', '#3a8f3a'];
+            for (let i = 0; i < 10; i++) {
+                ctx.fillStyle = stripeColors[i % 2];
+                ctx.fillRect(i * stripeW, 0, stripeW, height);
+            }
+
+            // 잔디 질감 — 세로 방향 미세 하이라이트
+            for (let i = 0; i < 10; i++) {
+                const gx = i * stripeW;
+                const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
+                grad.addColorStop(0,   'rgba(255,255,255,0.04)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
+                grad.addColorStop(1,   'rgba(255,255,255,0.04)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(gx, 0, stripeW, height);
+            }
+
+            // 흰색 세로 라인
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * stripeW, 0);
+                ctx.lineTo(i * stripeW, height);
+                ctx.stroke();
+            }
+
+            // 파이어볼 차징 중: 해당 열 강조
+            if (fireballCharging && fireballColumn >= 0) {
+                ctx.fillStyle = 'rgba(255, 120, 0, 0.25)';
+                ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
+            }
+
+            // Draw Blocks
+            blocks.forEach(blk => {
+                if (!blk.active) return;
+                let drawY = blk.y + scrollY;
+                if (drawY > height || drawY < -blk.size) return;
+
+                const isNext = blk.num === nextExpectedNumber;
+                const isGuide = isNext && (nextExpectedNumber === 1 || nextExpectedNumber === 31 || nextExpectedNumber === 101);
+                ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
+                ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
+
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(mirrorDisplay(blk.num), blk.x + blk.size / 2, drawY + blk.size / 2);
+            });
+
+            // Draw Balls
+            balls.forEach(b => {
+                if (b.isFireball) {
+                    // 불꽃 외곽 글로우
+                    const glowGrad = ctx.createRadialGradient(b.x, b.y, b.radius * 0.5, b.x, b.y, b.radius * 3.5);
+                    glowGrad.addColorStop(0,   'rgba(255, 220, 50, 0.9)');
+                    glowGrad.addColorStop(0.4, 'rgba(255, 100, 0, 0.6)');
+                    glowGrad.addColorStop(1,   'rgba(255, 30, 0, 0)');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius * 3.5, 0, Math.PI * 2);
+                    ctx.fillStyle = glowGrad;
+                    ctx.fill();
+
+                    // 불꽃 튀기 파티클 (고정 시드 패턴)
+                    const spikes = 8;
+                    for (let s = 0; s < spikes; s++) {
+                        const angle  = (s / spikes) * Math.PI * 2 + performance.now() * 0.005;
+                        const len    = b.radius * (2.2 + Math.sin(performance.now() * 0.02 + s) * 0.8);
+                        ctx.beginPath();
+                        ctx.moveTo(b.x, b.y);
+                        ctx.lineTo(b.x + Math.cos(angle) * len, b.y + Math.sin(angle) * len);
+                        ctx.strokeStyle = `rgba(255, ${100 + s * 15}, 0, 0.8)`;
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                    }
+
+                    // 파이어볼 본체
+                    const fbGrad = ctx.createRadialGradient(b.x - b.radius * 0.3, b.y - b.radius * 0.3, 1, b.x, b.y, b.radius);
+                    fbGrad.addColorStop(0,   '#fff7a0');
+                    fbGrad.addColorStop(0.4, '#ff9900');
+                    fbGrad.addColorStop(1,   '#cc2200');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = fbGrad;
+                    ctx.fill();
+                } else {
+                    // 일반 야구공
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    ctx.strokeStyle = '#ff3b30';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(b.x - b.radius * 0.7, b.y, b.radius * 0.8, -Math.PI/3, Math.PI/3);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(b.x + b.radius * 0.7, b.y, b.radius * 0.8, 2*Math.PI/3, 4*Math.PI/3);
+                    ctx.stroke();
+                }
+            });
+
+            // Draw Player & Cart
+            drawPlayer();
+        }
+
+        function drawPlayer() {
+            const px = player.x;
+            const py = player.y;
+
+            // cart.png — 화면 너비 비율로 크기 조정
+            const cartW = width * 0.16;
+            const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : 50;
+            ctx.drawImage(cartImg, px - cartW / 2, py - cartH, cartW, cartH);
+
+            // pitcher.png — 카트 바로 아래 중앙 정렬
+            const pitcherW = width * 0.16;
+            const pitcherH = pitcherImg.naturalHeight ? (pitcherW * pitcherImg.naturalHeight / pitcherImg.naturalWidth) : 100;
+            ctx.drawImage(pitcherImg, px - pitcherW / 2, py, pitcherW, pitcherH);
+        }
+
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        function gameLoop(timestamp) {
+            update(timestamp);
+            draw();
+            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') requestAnimationFrame(gameLoop);
+        }
+
+        /**
+         * LEADERBOARD
+         */
+        let pendingScore = null; // 이름 등록 전 임시 점수
+
+        function getRanks() {
+            return JSON.parse(localStorage.getItem('infinitePitcherRanks') || '[]');
+        }
+
+        function saveRanks(ranks) {
+            localStorage.setItem('infinitePitcherRanks', JSON.stringify(ranks));
+        }
+
+        // 점수를 받아 Top 100 순위를 계산하고 UI를 표시
+        function evaluateScore(newScore) {
+            pendingScore = newScore;
+            const ranks = getRanks();
+            const tempEntry = { score: newScore, name: '', date: new Date().toLocaleDateString() };
+            const merged = [...ranks, tempEntry].sort((a, b) => b.score - a.score).slice(0, 100);
+            const rank = merged.findIndex(r => r === tempEntry) + 1;
+
+            const entryEl = document.getElementById('rank-entry');
+            const registerBtn = document.getElementById('register-btn');
+            const rankVal = document.getElementById('my-rank-val');
+            const nameInput = document.getElementById('player-name-input');
+
+            if (rank >= 1 && rank <= 100) {
+                rankVal.innerText = rank;
+                nameInput.value = '';
+                entryEl.classList.remove('hidden');
+                registerBtn.classList.remove('hidden');
+                // 키보드 포커스
+                setTimeout(() => nameInput.focus(), 300);
+            } else {
+                entryEl.classList.add('hidden');
+                registerBtn.classList.add('hidden');
+            }
+        }
+
+        // 이름 등록 버튼
+        function registerName() {
+            const nameInput = document.getElementById('player-name-input');
+            const name = nameInput.value.trim() || 'NO NAME';
+            const ranks = getRanks();
+            ranks.push({ score: pendingScore, name, date: new Date().toLocaleDateString() });
+            ranks.sort((a, b) => b.score - a.score);
+            saveRanks(ranks.slice(0, 100));
+            pendingScore = null;
+
+            document.getElementById('rank-entry').classList.add('hidden');
+            document.getElementById('register-btn').classList.add('hidden');
+
+            // 등록 후 랭킹 바로 열기
+            const modal = document.getElementById('leaderboard-modal');
+            modal.classList.remove('hidden');
+            renderRankList(name);
+        }
+
+        function renderRankList(highlightName) {
+            const list = document.getElementById('rank-list');
+            const ranks = getRanks();
+            list.innerHTML = ranks.map((r, i) => {
+                const isMe = highlightName && r.name === highlightName && i === ranks.findIndex(x => x.name === highlightName && x.score === r.score);
+                return `
+                <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
+                    <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
+                    <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
+                    <span class="rank-score">${r.score} PTS</span>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleLeaderboard() {
+            const modal = document.getElementById('leaderboard-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderRankList(null);
+            }
+        }
+
+        draw(); 
+    </script>
+
+</body>
+
+</html>
