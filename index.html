@@ -808,6 +808,18 @@
 
         // 스플래시 → 인트로: 스타트 버튼이 스플래시 역할 겸임
         // 스플래시 화면의 스타트 버튼을 눌러서 인트로로 이동
+        // 모바일에서 HTMLAudioElement 전체 unlock
+        const allSfx = [sfxCountdown, sfxStart, sfxGameOver, sfxThrowBase, sfxThrowHit, sfxFireball, sfxThrowFireball, bgmTitle, bgmGameEl];
+        function unlockAudio() {
+            allSfx.forEach(el => {
+                el.muted = true;
+                el.play().catch(() => {});
+                el.pause();
+                el.muted = false;
+                el.currentTime = 0;
+            });
+        }
+
         const splashScreen = document.getElementById('splash-screen');
         splashScreen.addEventListener('click', function onSplashClick() {
             splashScreen.classList.add('hidden');
@@ -820,6 +832,7 @@
                 silentSrc.connect(audioCtx.destination);
                 silentSrc.start(0);
             });
+            unlockAudio();
             playTitleBgm();
         });
 
