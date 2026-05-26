@@ -1352,7 +1352,7 @@
         }
 
         function checkRowClear() {
-            const targetRowsCleared = Math.floor((nextExpectedNumber - 1) / 10);
+            const targetRowsCleared = Math.floor(score / 10);
             const currentRowsCleared = Math.round(targetScrollY / (width / 10));
 
             if (targetRowsCleared > currentRowsCleared) {
