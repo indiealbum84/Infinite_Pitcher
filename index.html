@@ -725,7 +725,7 @@
 
         function playSfx(key, volume) {
             const buf = sfxBuffers[key];
-            if (!buf) return;
+            if (!buf) { console.warn('[SFX] buffer not loaded:', key); return; }
             audioCtx.resume().then(() => {
                 const src = audioCtx.createBufferSource();
                 src.buffer = buf;
@@ -1497,12 +1497,12 @@
             const py = player.y;
 
             // cart.png — 화면 너비 비율로 크기 조정
-            const cartW = width * 0.16;
+            const cartW = Math.min(width * 0.16, 80);
             const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : 50;
             ctx.drawImage(cartImg, px - cartW / 2, py - cartH, cartW, cartH);
 
             // pitcher.png — 카트 바로 아래 중앙 정렬
-            const pitcherW = width * 0.16;
+            const pitcherW = Math.min(width * 0.16, 80);
             const pitcherH = pitcherImg.naturalHeight ? (pitcherW * pitcherImg.naturalHeight / pitcherImg.naturalWidth) : 100;
             ctx.drawImage(pitcherImg, px - pitcherW / 2, py, pitcherW, pitcherH);
         }
