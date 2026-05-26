@@ -1296,9 +1296,9 @@
                             playSfx('throw_hit', 1.0);
                             advanceExpected();
                             updateUI();
-                            checkRowClear();
+                            checkRowClear(); // 맞춘 블록(31번)에서만 1번 스크롤 체크
                         } else {
-                            // 사이클 범위 내 블록만 파괴
+                            // 사이클 범위 내 블록만 파괴 — score에 포함 안 함
                             if (blk.num <= fbCycleEnd) {
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
