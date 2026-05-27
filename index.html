@@ -1353,30 +1353,36 @@
                         lastPitchTime = performance.now();
                     }
                 } else {
-                    // 일반 공: 기존 충돌 처리
-                    let collided = false;
+                    // 일반 공: 겹침 면적이 가장 넓은 블록으로 판정
+                    let bestBlk = null;
+                    let bestArea = 0;
                     for (let j = 0; j < blocks.length; j++) {
                         let blk = blocks[j];
                         if (!blk.active) continue;
                         let blkY = blk.y + scrollY;
-                        if (b.x + b.radius > blk.x && b.x - b.radius < blk.x + blk.size && b.y + b.radius > blkY && b.y - b.radius < blkY + blk.size) {
-                            if (blk.num === nextExpectedNumber) {
-                                blk.active = false;
-                                score++;
-                                advanceExpected();
-                                balls.splice(i, 1);
-                                playSfx('throw_hit', 1.0);
-                                updateUI();
-                                checkRowClear();
-                                collided = true;
-                            } else {
-                                gameOver();
-                                return;
-                            }
-                            break;
+                        const overlapX = Math.min(b.x + b.radius, blk.x + blk.size) - Math.max(b.x - b.radius, blk.x);
+                        const overlapY = Math.min(b.y + b.radius, blkY + blk.size) - Math.max(b.y - b.radius, blkY);
+                        if (overlapX > 0 && overlapY > 0) {
+                            const area = overlapX * overlapY;
+                            if (area > bestArea) { bestArea = area; bestBlk = blk; }
                         }
                     }
-                    if (!collided && b.y < -20) balls.splice(i, 1);
+                    if (bestBlk) {
+                        if (bestBlk.num === nextExpectedNumber) {
+                            bestBlk.active = false;
+                            score++;
+                            advanceExpected();
+                            balls.splice(i, 1);
+                            playSfx('throw_hit', 1.0);
+                            updateUI();
+                            checkRowClear();
+                        } else {
+                            gameOver();
+                            return;
+                        }
+                    } else if (b.y < -20) {
+                        balls.splice(i, 1);
+                    }
                 }
             }
 
