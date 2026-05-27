@@ -31,11 +31,11 @@
             font-family: 'Noto Sans JP', sans-serif;
             overflow: hidden;
             color: #0f172a;
-            height: 100vh;
+            height: 100svh;
             width: 100vw;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
 
         #game-wrapper {
@@ -957,11 +957,17 @@
             player.x = width / 2;
             player.y = height - 105;
 
-            // 화면 크기에 맞게 game-wrapper 스케일
-            const scaleX = window.innerWidth / BASE_W;
-            const scaleY = window.innerHeight / BASE_H;
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const scaleX = vw / BASE_W;
+            const scaleY = vh / BASE_H;
             const scale = Math.min(scaleX, scaleY);
-            document.getElementById('game-wrapper').style.transform = `scale(${scale})`;
+            const wrapper = document.getElementById('game-wrapper');
+            wrapper.style.transform = `scale(${scale})`;
+            // 세로 여백을 직접 계산해 위쪽에 붙이되, 남는 공간은 균등 분배
+            const scaledH = BASE_H * scale;
+            const topOffset = Math.max(0, (vh - scaledH) / 2);
+            wrapper.style.marginTop = topOffset + 'px';
         }
         window.addEventListener('resize', resize);
         resize();
