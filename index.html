@@ -1251,8 +1251,7 @@
                     if (!spliced && b.y < -20) {
                         balls.splice(i, 1);
                         fireballActive = false;
-                        // 파이어볼 후 2초 딜레이
-                        lastPitchTime = performance.now() + 1000;
+                        lastPitchTime = performance.now();
                     }
                 } else {
                     // 일반 공: 기존 충돌 처리
