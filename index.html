@@ -292,6 +292,12 @@
         /* Game Over Screen */
         #game-over-screen {
             background-color: rgba(0, 0, 0, 0.85);
+            justify-content: flex-start;
+            overflow-y: auto;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         .game-over-title {
@@ -303,8 +309,8 @@
         }
 
         .final-score {
-            font-size: 48px;
-            margin: 20px 0;
+            font-size: 42px;
+            margin: 10px 0;
             color: var(--primary-neon);
         }
 
