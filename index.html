@@ -574,8 +574,8 @@
 
         <div id="intro-screen" class="screen hidden">
             <h1 class="game-title">
-                <span class="game-title-sub">超特訓！</span>
-                <span class="game-title-main">無限ピッチング</span>
+                <span class="game-title-sub" id="intro-title-sub">超特訓！</span>
+                <span class="game-title-main" id="intro-title-main">無限ピッチング</span>
             </h1>
             <div class="speech-bubble" id="intro-bubble">
                 よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
@@ -794,6 +794,8 @@
 
         const TEXTS = {
             ja: {
+                titleSub:    '超特訓！',
+                titleMain:   '無限ピッチング',
                 introBubble: 'よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！',
                 startBtn:    'スタート',
                 rankSuffix:  '位達成！',
@@ -805,6 +807,8 @@
                 instruction: 'ドラッグして数字の順番に\nボールを当てよう！',
             },
             ko: {
+                titleSub:    '초특훈！',
+                titleMain:   '무한 피칭',
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해,<br>오늘도 특훈이다!',
                 startBtn:    '스타트',
                 rankSuffix:  '위 달성!',
@@ -820,13 +824,15 @@
         function applyLang(lang) {
             currentLang = lang;
             const t = TEXTS[lang];
-            document.getElementById('intro-bubble').innerHTML  = t.introBubble;
-            document.getElementById('start-btn-id').innerText  = t.startBtn;
-            document.getElementById('rank-suffix').innerText   = t.rankSuffix;
+            document.getElementById('intro-title-sub').innerText   = t.titleSub;
+            document.getElementById('intro-title-main').innerText  = t.titleMain;
+            document.getElementById('intro-bubble').innerHTML      = t.introBubble;
+            document.getElementById('start-btn-id').innerText      = t.startBtn;
+            document.getElementById('rank-suffix').innerText       = t.rankSuffix;
             document.getElementById('player-name-input').placeholder = t.nameHolder;
-            document.getElementById('register-btn').innerText  = t.registerBtn;
-            document.getElementById('retry-btn').innerText     = t.retryBtn;
-            document.getElementById('ranking-btn').innerText   = t.rankingBtn;
+            document.getElementById('register-btn').innerText      = t.registerBtn;
+            document.getElementById('retry-btn').innerText         = t.retryBtn;
+            document.getElementById('ranking-btn').innerText       = t.rankingBtn;
             document.getElementById('close-ranking-btn').innerText = t.closeBtn;
         }
 
