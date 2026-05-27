@@ -27,7 +27,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #f1f5f9;
+            background-color: #000000;
             font-family: 'Noto Sans JP', sans-serif;
             overflow: hidden;
             color: #0f172a;
@@ -40,13 +40,13 @@
 
         #game-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 100%;
+            width: 390px;
+            height: 844px;
             background-color: #ffffff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             border: 1px solid #e2e8f0;
+            transform-origin: center center;
         }
 
         /* --- Screens --- */
@@ -857,11 +857,20 @@
         /**
          * INITIALIZATION
          */
+        const BASE_W = 390;
+        const BASE_H = 844;
+
         function resize() {
-            width = canvas.width = window.innerWidth > 500 ? 500 : window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            width = canvas.width = BASE_W;
+            height = canvas.height = BASE_H;
             player.x = width / 2;
             player.y = height - Math.round(height * 0.13);
+
+            // 화면 크기에 맞게 game-wrapper 스케일
+            const scaleX = window.innerWidth / BASE_W;
+            const scaleY = window.innerHeight / BASE_H;
+            const scale = Math.min(scaleX, scaleY);
+            document.getElementById('game-wrapper').style.transform = `scale(${scale})`;
         }
         window.addEventListener('resize', resize);
         resize();
