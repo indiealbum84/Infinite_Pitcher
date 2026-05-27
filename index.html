@@ -1175,7 +1175,8 @@
             }
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
-            if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > pitchInterval) {
+            const currentPitchInterval = nextExpectedNumber <= 30 ? 1200 : pitchInterval;
+            if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
                 // 31, 131, 231... → 파이어볼
