@@ -1476,11 +1476,18 @@
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
 
-                ctx.fillStyle = '#000000';
-                ctx.font = 'bold 16px Arial';
+                ctx.font = '900 17px "Noto Sans JP", Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(mirrorDisplay(blk.num), blk.x + blk.size / 2, drawY + blk.size / 2);
+                const tx = blk.x + blk.size / 2;
+                const ty = drawY + blk.size / 2;
+                const label = mirrorDisplay(blk.num);
+                ctx.strokeStyle = isGuide ? '#000000' : '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.lineJoin = 'round';
+                ctx.strokeText(label, tx, ty);
+                ctx.fillStyle = '#000000';
+                ctx.fillText(label, tx, ty);
             });
 
             // Draw Balls
