@@ -651,6 +651,9 @@
         const pitcherImg = new Image();
         pitcherImg.src = './pitcher.png';
 
+        const mirrorballImg = new Image();
+        mirrorballImg.src = './mirrorball.png';
+
         /**
          * AUDIO SYSTEM
          */
@@ -1137,18 +1140,22 @@
         }
 
         function pitchBall(isFireball) {
+            const isMirrorBall = !isFireball && nextExpectedNumber === 101;
             balls.push({
                 x: player.x,
                 y: player.y - 20,
                 radius: isFireball ? 14 : 8,
                 speed: isFireball ? 12 : 10,
                 isFireball: !!isFireball,
+                isMirrorBall: isMirrorBall,
                 activated: false,
                 column: Math.floor(player.x / (width / 10)),
                 fireballStart: isFireball ? nextExpectedNumber : 0
             });
             if (isFireball) {
                 playSfx('throw_fireball', 1.0);
+            } else if (isMirrorBall) {
+                playSfx('throw_mirrorball', 1.0);
             } else if (mirrorballActive) {
                 playSfx('throw_mirrorball', 1.0);
             } else {
@@ -1423,6 +1430,10 @@
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fillStyle = fbGrad;
                     ctx.fill();
+                } else if (b.isMirrorBall && mirrorballImg.naturalWidth) {
+                    // 101번 공 — mirrorball.png 이미지
+                    const mbSize = b.radius * 2.5;
+                    ctx.drawImage(mirrorballImg, b.x - mbSize / 2, b.y - mbSize / 2, mbSize, mbSize);
                 } else {
                     // 일반 야구공
                     ctx.beginPath();
