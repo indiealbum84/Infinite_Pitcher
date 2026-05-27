@@ -1147,7 +1147,7 @@
             // 101번 딱 한 번만 미러볼 발동
             if (prev === 101) {
                 triggerMirrorball();
-                lastPitchTime = performance.now() + 1000;
+                lastPitchTime = performance.now() + 3800; // 애니메이션 1.8초 + 2초
             }
         }
 
@@ -1182,12 +1182,13 @@
                     void fbAnnounce.offsetWidth;
                     fbAnnounce.classList.add('show');
 
+                    // 애니메이션 1.2초 + 2초 딜레이 후 발사
                     setTimeout(() => {
                         fireballCharging = false;
                         fireballColumn   = -1;
                         fireballActive   = true;
                         pitchBall(true);
-                    }, 800);
+                    }, 3200);
                 } else {
                     pitchBall(false);
                 }
