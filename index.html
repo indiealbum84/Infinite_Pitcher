@@ -1164,7 +1164,7 @@
         }
 
         function triggerMirrorball() {
-            mirrorballActive = !mirrorballActive;
+            mirrorballActive = true;
             playSfx('mirrorball', 1.0);
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
@@ -1179,8 +1179,8 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // 101, 151, 201, 251... (50단위) → 미러볼 토글 + 2초 딜레이
-            if (prev >= 101 && (prev - 101) % 50 === 0) {
+            // 101번 딱 한 번만 미러볼 발동
+            if (prev === 101) {
                 triggerMirrorball();
                 lastPitchTime = performance.now() + 1000;
             }
@@ -1376,7 +1376,7 @@
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isMirrorNext   = (nextExpectedNumber - 101) % 50 === 0 && nextExpectedNumber >= 101;
+                const isMirrorNext   = nextExpectedNumber === 101;
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
