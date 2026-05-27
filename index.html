@@ -928,11 +928,16 @@
 
         // Firebase 설정
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            databaseURL: "YOUR_DB_URL",
-            projectId: "YOUR_PROJECT_ID"
+            apiKey: "AIzaSyDZ8_PYjpQxnKYcQJWx9DUHeHUSQ1cVSsA",
+            authDomain: "infinite-pitcher.firebaseapp.com",
+            projectId: "infinite-pitcher",
+            storageBucket: "infinite-pitcher.firebasestorage.app",
+            messagingSenderId: "134868428008",
+            appId: "1:134868428008:web:ef83005b900899c606d55d",
+            databaseURL: "https://infinite-pitcher-default-rtdb.firebaseio.com"
         };
-        // firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         /**
          * INITIALIZATION
@@ -1595,58 +1600,51 @@
         }
 
         /**
-         * LEADERBOARD
+         * LEADERBOARD — Firebase Realtime Database
          */
-        let pendingScore = null; // 이름 등록 전 임시 점수
+        let pendingScore = null;
+        const ranksRef = db.ref('ranks');
 
-        function getRanks() {
-            return JSON.parse(localStorage.getItem('infinitePitcherRanks') || '[]');
-        }
-
-        function saveRanks(ranks) {
-            localStorage.setItem('infinitePitcherRanks', JSON.stringify(ranks));
-        }
-
-        // 점수를 받아 Top 100 순위를 계산하고 UI를 표시
+        // 점수를 받아 Firebase에서 Top100 계산 후 UI 표시
         function evaluateScore(newScore) {
             pendingScore = newScore;
-            const ranks = getRanks();
-            const tempEntry = { score: newScore, name: '', date: new Date().toLocaleDateString() };
-            const merged = [...ranks, tempEntry].sort((a, b) => b.score - a.score).slice(0, 100);
-            const rank = merged.findIndex(r => r === tempEntry) + 1;
+            ranksRef.orderByChild('score').limitToLast(100).once('value', snapshot => {
+                const ranks = [];
+                snapshot.forEach(child => ranks.push(child.val()));
+                ranks.sort((a, b) => b.score - a.score);
 
-            const entryEl = document.getElementById('rank-entry');
-            const registerBtn = document.getElementById('register-btn');
-            const rankVal = document.getElementById('my-rank-val');
-            const nameInput = document.getElementById('player-name-input');
+                const tempEntry = { score: newScore, name: '', date: new Date().toLocaleDateString() };
+                const merged = [...ranks, tempEntry].sort((a, b) => b.score - a.score).slice(0, 100);
+                const rank = merged.findIndex(r => r === tempEntry) + 1;
 
-            if (rank >= 1 && rank <= 100) {
-                rankVal.innerText = rank;
-                nameInput.value = '';
-                entryEl.classList.remove('hidden');
-                registerBtn.classList.remove('hidden');
-                // 키보드 포커스
-                setTimeout(() => nameInput.focus(), 300);
-            } else {
-                entryEl.classList.add('hidden');
-                registerBtn.classList.add('hidden');
-            }
+                const entryEl    = document.getElementById('rank-entry');
+                const registerBtn = document.getElementById('register-btn');
+                const rankVal    = document.getElementById('my-rank-val');
+                const nameInput  = document.getElementById('player-name-input');
+
+                if (rank >= 1 && rank <= 100) {
+                    rankVal.innerText = rank;
+                    nameInput.value = '';
+                    entryEl.classList.remove('hidden');
+                    registerBtn.classList.remove('hidden');
+                    setTimeout(() => nameInput.focus(), 300);
+                } else {
+                    entryEl.classList.add('hidden');
+                    registerBtn.classList.add('hidden');
+                }
+            });
         }
 
-        // 이름 등록 버튼
+        // 이름 등록 → Firebase에 push
         function registerName() {
             const nameInput = document.getElementById('player-name-input');
             const name = nameInput.value.trim() || 'NO NAME';
-            const ranks = getRanks();
-            ranks.push({ score: pendingScore, name, date: new Date().toLocaleDateString() });
-            ranks.sort((a, b) => b.score - a.score);
-            saveRanks(ranks.slice(0, 100));
+            ranksRef.push({ score: pendingScore, name, date: new Date().toLocaleDateString() });
             pendingScore = null;
 
             document.getElementById('rank-entry').classList.add('hidden');
             document.getElementById('register-btn').classList.add('hidden');
 
-            // 등록 후 랭킹 바로 열기
             const modal = document.getElementById('leaderboard-modal');
             modal.classList.remove('hidden');
             renderRankList(name);
@@ -1654,16 +1652,25 @@
 
         function renderRankList(highlightName) {
             const list = document.getElementById('rank-list');
-            const ranks = getRanks();
-            list.innerHTML = ranks.map((r, i) => {
-                const isMe = highlightName && r.name === highlightName && i === ranks.findIndex(x => x.name === highlightName && x.score === r.score);
-                return `
-                <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
-                    <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
-                    <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
-                    <span class="rank-score">${r.score} PTS</span>
-                </div>`;
-            }).join('');
+            list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
+            ranksRef.orderByChild('score').limitToLast(100).once('value', snapshot => {
+                const ranks = [];
+                snapshot.forEach(child => ranks.push(child.val()));
+                ranks.sort((a, b) => b.score - a.score);
+                if (ranks.length === 0) {
+                    list.innerHTML = '<div style="color:#aaa;padding:20px;">아직 기록이 없습니다</div>';
+                    return;
+                }
+                list.innerHTML = ranks.map((r, i) => {
+                    const isMe = highlightName && r.name === highlightName;
+                    return `
+                    <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
+                        <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
+                        <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
+                        <span class="rank-score">${r.score} PTS</span>
+                    </div>`;
+                }).join('');
+            });
         }
 
         function toggleLeaderboard() {
