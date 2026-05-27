@@ -338,8 +338,32 @@
         .rank-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 10px 6px;
             border-bottom: 1px solid #334155;
+            border-radius: 8px;
+        }
+
+        .rank-item.is-me {
+            background: rgba(204, 255, 0, 0.12);
+            border: 2px solid var(--primary-neon);
+            box-shadow: 0 0 10px rgba(204, 255, 0, 0.3);
+        }
+
+        .rank-item.is-me .rank-num,
+        .rank-item.is-me .rank-name {
+            color: var(--primary-neon);
+            font-weight: 900;
+        }
+
+        #my-rank-badge {
+            display: none;
+            background: var(--primary-neon);
+            color: #000;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 20px;
+            padding: 6px 20px;
+            margin-bottom: 8px;
         }
 
         .rank-num {
@@ -613,6 +637,7 @@
 
             <div id="leaderboard-modal" class="hidden">
                 <h3 style="margin-top:0">TOP 100</h3>
+                <div id="my-rank-badge"></div>
                 <div id="rank-list"></div>
                 <button id="close-ranking-btn" class="leaderboard-btn" onclick="toggleLeaderboard()">閉じる</button>
             </div>
@@ -1675,44 +1700,72 @@
         function registerName() {
             const nameInput = document.getElementById('player-name-input');
             const name = nameInput.value.trim() || 'NO NAME';
-            ranksRef.push({ score: pendingScore, name, date: new Date().toLocaleDateString() });
+            const score = pendingScore;
             pendingScore = null;
 
             document.getElementById('rank-entry').classList.add('hidden');
             document.getElementById('register-btn').classList.add('hidden');
 
+            const list = document.getElementById('rank-list');
+            list.innerHTML = '<div style="color:#aaa;padding:20px;">등록 중...</div>';
             const modal = document.getElementById('leaderboard-modal');
             modal.classList.remove('hidden');
-            renderRankList(name);
+
+            // push 완료 후 최신 데이터 렌더링
+            ranksRef.push({ score, name, date: new Date().toLocaleDateString() })
+                .then(() => fetchRanks(ranks => renderRankRows(list, ranks, name, score)))
+                .catch(() => fetchRanks(ranks => renderRankRows(list, ranks, name, score)));
         }
 
         function renderRankList(highlightName) {
             const list = document.getElementById('rank-list');
-            // 캐시 먼저 즉시 표시
             const cached = getCachedRanks();
-            if (cached.length > 0) renderRankRows(list, cached, highlightName);
+            if (cached.length > 0) renderRankRows(list, cached, highlightName, null);
             else list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
 
-            // Firebase에서 최신 데이터 가져와 갱신
             fetchRanks(ranks => {
                 if (ranks.length === 0) {
                     list.innerHTML = '<div style="color:#aaa;padding:20px;">아직 기록이 없습니다</div>';
                     return;
                 }
-                renderRankRows(list, ranks, highlightName);
+                renderRankRows(list, ranks, highlightName, null);
             });
         }
 
-        function renderRankRows(list, ranks, highlightName) {
+        function renderRankRows(list, ranks, highlightName, highlightScore) {
+            const badge = document.getElementById('my-rank-badge');
+            let myRankIdx = -1;
+
+            if (highlightName) {
+                // 이름+점수가 모두 일치하는 첫 항목을 내 순위로 특정
+                myRankIdx = ranks.findIndex(r =>
+                    r.name === highlightName && (highlightScore === null || r.score === highlightScore)
+                );
+            }
+
+            if (myRankIdx >= 0 && badge) {
+                badge.style.display = 'block';
+                badge.innerText = `🏆 ${myRankIdx + 1}위 달성!`;
+            } else if (badge) {
+                badge.style.display = 'none';
+            }
+
             list.innerHTML = ranks.map((r, i) => {
-                const isMe = highlightName && r.name === highlightName;
-                return `
-                <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
-                    <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
-                    <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
+                const isMe = i === myRankIdx;
+                return `<div class="rank-item${isMe ? ' is-me' : ''}">
+                    <span class="rank-num">#${i + 1}</span>
+                    <span class="rank-name">${r.name || 'NO NAME'}</span>
                     <span class="rank-score">${r.score} PTS</span>
                 </div>`;
             }).join('');
+
+            // 내 순위로 자동 스크롤
+            if (myRankIdx >= 0) {
+                setTimeout(() => {
+                    const items = list.querySelectorAll('.rank-item');
+                    if (items[myRankIdx]) items[myRankIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }, 100);
+            }
         }
 
         function toggleLeaderboard() {
