@@ -1343,6 +1343,17 @@
                 ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
             }
 
+            // Draw pitch guide line
+            ctx.save();
+            ctx.setLineDash([6, 8]);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y - 20);
+            ctx.lineTo(player.x, 0);
+            ctx.stroke();
+            ctx.restore();
+
             // Draw Blocks
             blocks.forEach(blk => {
                 if (!blk.active) return;
