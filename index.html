@@ -440,46 +440,9 @@
             animation: fbAnnounce 1.8s ease-out forwards;
         }
 
-        .mb-disco {
-            font-size: 52px;
-            letter-spacing: 6px;
-            animation: spin 0.6s linear infinite;
-            margin-bottom: -8px;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg) scale(1.0); }
-            to   { transform: rotate(360deg) scale(1.1); }
-        }
-
-        .mb-text {
-            font-family: 'Bangers', cursive;
-            font-size: 64px;
-            letter-spacing: 3px;
-            color: #ffffff;
-            text-shadow:
-                0 0 10px #ff00ff,
-                0 0 25px #00ffff,
-                0 0 50px #ffff00,
-                4px 4px 0px #6600cc,
-                6px 6px 0px rgba(0,0,0,0.4);
-            -webkit-text-stroke: 2px #cc00ff;
-            animation: rainbowPulse 0.4s infinite alternate;
-        }
-
-        @keyframes rainbowPulse {
-            0%   { text-shadow: 0 0 15px #ff00ff, 0 0 35px #00ffff, 0 0 60px #ffff00, 4px 4px 0 #6600cc; }
-            100% { text-shadow: 0 0 25px #00ffff, 0 0 50px #ff00ff, 0 0 80px #ff66ff, 4px 4px 0 #6600cc; }
-        }
-
-        .mb-sub {
-            font-family: 'Noto Sans JP', sans-serif;
-            font-size: 16px;
-            font-weight: 900;
-            color: #ffff99;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px #cc00ff, 2px 2px 0 #000;
-            margin-top: 8px;
+        #mirrorball-announce-img {
+            width: 60%;
+            max-width: 280px;
         }
 
         /* 테스트 시작 번호 선택 */
@@ -626,10 +589,7 @@
 
         <!-- 미러볼 알림 오버레이 -->
         <div id="mirrorball-announce">
-            <div class="mb-disco">🪩✨🪩</div>
-            <div class="mb-text">MIRRORBALL</div>
-            <div class="mb-sub">数字が反転！</div>
-            <div class="mb-disco">✨🪩✨</div>
+            <img src="./mirrorball.png" id="mirrorball-announce-img">
         </div>
 
         <!-- 파이어볼 알림 오버레이 -->
@@ -651,8 +611,6 @@
         const pitcherImg = new Image();
         pitcherImg.src = './pitcher.png';
 
-        const mirrorballImg = new Image();
-        mirrorballImg.src = './mirrorball.png';
 
         /**
          * AUDIO SYSTEM
@@ -1430,10 +1388,37 @@
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fillStyle = fbGrad;
                     ctx.fill();
-                } else if (b.isMirrorBall && mirrorballImg.naturalWidth) {
-                    // 101번 공 — mirrorball.png 이미지
-                    const mbSize = b.radius * 2.5;
-                    ctx.drawImage(mirrorballImg, b.x - mbSize / 2, b.y - mbSize / 2, mbSize, mbSize);
+                } else if (b.isMirrorBall) {
+                    // 101번 공 — 손거울 모양
+                    const r = b.radius;
+                    ctx.save();
+                    ctx.translate(b.x, b.y);
+                    // 거울 원형 부분
+                    const mirGrad = ctx.createRadialGradient(-r*0.3, -r*0.3, 1, 0, 0, r);
+                    mirGrad.addColorStop(0, '#ffffff');
+                    mirGrad.addColorStop(0.4, '#c8e8ff');
+                    mirGrad.addColorStop(1, '#7ab8d8');
+                    ctx.beginPath();
+                    ctx.arc(0, -r * 0.3, r, 0, Math.PI * 2);
+                    ctx.fillStyle = mirGrad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#888888';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    // 반짝임
+                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                    ctx.beginPath();
+                    ctx.arc(-r * 0.35, -r * 0.6, r * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 손잡이
+                    ctx.beginPath();
+                    ctx.roundRect(-r * 0.25, r * 0.6, r * 0.5, r * 0.9, r * 0.15);
+                    ctx.fillStyle = '#a0785a';
+                    ctx.fill();
+                    ctx.strokeStyle = '#7a5a3a';
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                    ctx.restore();
                 } else {
                     // 일반 야구공
                     ctx.beginPath();
