@@ -998,18 +998,21 @@
             const countdownText = document.getElementById('countdown-text');
             countdownScreen.classList.remove('hidden');
 
-            // 안내 문구 2초 표시 후 카운트다운 시작
-            countdownText.innerText = 'ドラッグして数字順にボールを当てよう！';
+            // 안내 문구 표시 — 클릭/터치하면 카운트다운 시작
+            countdownText.innerText = '드래그하여 숫자 순서대로\n공을 맞추세요.';
             countdownText.style.color = '#ffffff';
             countdownText.style.textShadow = 'none';
-            countdownText.style.fontSize = '18px';
+            countdownText.style.fontSize = '20px';
+            countdownText.style.whiteSpace = 'pre-line';
 
             let count = 3;
-            // 카운트다운 시작과 동시에 타이틀 BGM 페이드아웃
             fadeTitleBgm(5000);
 
-            setTimeout(() => {
-            countdownText.style.fontSize = '';
+            const startCountdownTick = () => {
+                countdownText.style.fontSize = '';
+                countdownText.style.whiteSpace = '';
+                countdownScreen.removeEventListener('click', startCountdownTick);
+                countdownScreen.removeEventListener('touchstart', startCountdownTick);
 
             const runTick = () => {
                 if (count > 0) {
@@ -1058,7 +1061,10 @@
 
             runTick();
             requestAnimationFrame(gameLoop);
-            }, 2000); // 안내 문구 2초 후 카운트다운 시작
+            };
+
+            countdownScreen.addEventListener('click', startCountdownTick);
+            countdownScreen.addEventListener('touchstart', startCountdownTick, { passive: true });
         }
 
 
