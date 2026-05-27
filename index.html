@@ -708,7 +708,9 @@
             throw_hit:     './throw_hit.mp3',
             fireball:      './fireball.mp3',
             throw_fireball:'./throw_fireball.mp3',
-            bgm_title:     './bgm_title.mp3',
+            bgm_title:        './bgm_title.mp3',
+            mirrorball:       './mirrorball.mp3',
+            throw_mirrorball: './throw_mirrorball.mp3',
         };
         Object.entries(sfxFiles).forEach(([key, url]) => {
             const xhr = new XMLHttpRequest();
@@ -1187,6 +1189,8 @@
             });
             if (isFireball) {
                 playSfx('throw_fireball', 1.0);
+            } else if (mirrorballActive) {
+                playSfx('throw_mirrorball', 1.0);
             } else {
                 playThrow();
             }
@@ -1200,7 +1204,8 @@
         }
 
         function triggerMirrorball() {
-            mirrorballActive = !mirrorballActive; // 50단위마다 ON/OFF 토글
+            mirrorballActive = !mirrorballActive;
+            playSfx('mirrorball', 1.0);
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
             void mbAnnounce.offsetWidth;
