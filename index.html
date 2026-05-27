@@ -1570,12 +1570,12 @@
             // cart.png — 아래쪽 (크기 축소)
             const cartW = Math.min(width * 0.13, 65);
             const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : 40;
-            ctx.drawImage(cartImg, px - cartW / 2, py, cartW, cartH);
+            ctx.drawImage(cartImg, px - cartW / 2, py + 10, cartW, cartH);
 
             // pitcher.png — 카트 바로 위에 붙임
             const pitcherW = Math.min(width * 0.16, 80);
             const pitcherH = pitcherImg.naturalHeight ? (pitcherW * pitcherImg.naturalHeight / pitcherImg.naturalWidth) : 100;
-            ctx.drawImage(pitcherImg, px - pitcherW / 2, py - pitcherH - cartH + 30, pitcherW, pitcherH);
+            ctx.drawImage(pitcherImg, px - pitcherW / 2, py - pitcherH - cartH + 50, pitcherW, pitcherH);
         }
 
         function varColor(name) {
