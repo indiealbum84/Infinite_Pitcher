@@ -1487,15 +1487,15 @@
             const px = player.x;
             const py = player.y;
 
-            // cart.png — 화면 너비 비율로 크기 조정
-            const cartW = Math.min(width * 0.16, 80);
-            const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : 50;
-            ctx.drawImage(cartImg, px - cartW / 2, py - cartH, cartW, cartH);
-
-            // pitcher.png — 카트 바로 아래 중앙 정렬
+            // pitcher.png — 위쪽
             const pitcherW = Math.min(width * 0.16, 80);
             const pitcherH = pitcherImg.naturalHeight ? (pitcherW * pitcherImg.naturalHeight / pitcherImg.naturalWidth) : 100;
-            ctx.drawImage(pitcherImg, px - pitcherW / 2, py, pitcherW, pitcherH);
+            ctx.drawImage(pitcherImg, px - pitcherW / 2, py - pitcherH, pitcherW, pitcherH);
+
+            // cart.png — pitcher 바로 아래
+            const cartW = Math.min(width * 0.16, 80);
+            const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : 50;
+            ctx.drawImage(cartImg, px - cartW / 2, py, cartW, cartH);
         }
 
         function varColor(name) {
