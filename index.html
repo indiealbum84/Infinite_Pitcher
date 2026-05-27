@@ -628,8 +628,7 @@
             </div>
             <button id="start-btn-id" class="start-btn">スタート</button>
             <div id="test-start-row">
-                <button class="test-sel-btn" id="test-btn-31"  onclick="selectTestStart(31)">🔥 31</button>
-                <button class="test-sel-btn" id="test-btn-101" onclick="selectTestStart(101)">🪩 101</button>
+                <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
             </div>
         </div>
 
@@ -892,20 +891,11 @@
         const finalScoreEl = document.getElementById('final-score-val');
         const startBtn = document.getElementById('start-btn-id');
 
-        let testStartNum = 1; // 1 = 기본, 31 or 101 = 테스트
+        let testMode = false;
 
-        function selectTestStart(n) {
-            const btn31  = document.getElementById('test-btn-31');
-            const btn101 = document.getElementById('test-btn-101');
-            if (testStartNum === n) {
-                testStartNum = 1;
-                btn31.classList.remove('active');
-                btn101.classList.remove('active');
-            } else {
-                testStartNum = n;
-                btn31.classList.toggle('active', n === 31);
-                btn101.classList.toggle('active', n === 101);
-            }
+        function selectTestMode() {
+            testMode = !testMode;
+            document.getElementById('test-btn').classList.toggle('active', testMode);
         }
 
         startBtn.addEventListener('click', () => {
@@ -990,12 +980,14 @@
         let isDragging = false;
 
         function handleStart(clientX) {
+            if (testMode) return;
             if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             isDragging = true;
             updatePlayerPosition(clientX);
         }
 
         function handleMove(clientX) {
+            if (testMode) return;
             if (!isDragging) return;
             if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             updatePlayerPosition(clientX);
@@ -1118,13 +1110,6 @@
                     countdownScreen.classList.add('hidden');
                     gameState = 'PLAYING';
                     lastPitchTime = performance.now();
-                    // 테스트 시작 번호 적용
-                    if (testStartNum > 1) {
-                        testSkipTo(testStartNum);
-                        testStartNum = 1;
-                        document.getElementById('test-btn-31').classList.remove('active');
-                        document.getElementById('test-btn-101').classList.remove('active');
-                    }
                 }
             };
 
@@ -1175,6 +1160,7 @@
         }
 
         function gameOver() {
+            if (testMode) return; // 테스트 모드에서는 게임오버 없음
             gameState = 'GAMEOVER';
             stopAllBgm();
             playSfx('gameover', 1.0);
@@ -1237,6 +1223,17 @@
 
         function update(timestamp) {
             if (gameState !== 'PLAYING') return;
+
+            // 테스트 모드: nextExpectedNumber 블록 위치로 자동 이동
+            if (testMode) {
+                const targetBlk = blocks.find(b => b.active && b.num === nextExpectedNumber);
+                if (targetBlk) {
+                    const targetX = targetBlk.x + targetBlk.size / 2;
+                    const diff = targetX - player.x;
+                    player.x += diff * 0.15; // 부드럽게 이동
+                    player.x = Math.max(8, Math.min(width - 8, player.x));
+                }
+            }
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
             if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > pitchInterval) {
