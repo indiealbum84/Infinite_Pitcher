@@ -1623,23 +1623,41 @@
          */
         let pendingScore = null;
         const ranksRef = db.ref('ranks');
+        const CACHE_KEY = 'infinitePitcherRanksCache';
 
-        // 점수를 받아 Firebase에서 Top100 계산 후 UI 표시
+        function getCachedRanks() {
+            try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '[]'); } catch(e) { return []; }
+        }
+        function setCachedRanks(ranks) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify(ranks)); } catch(e) {}
+        }
+
+        function fetchRanks(callback) {
+            ranksRef.orderByChild('score').limitToLast(100).once('value')
+                .then(snapshot => {
+                    const ranks = [];
+                    snapshot.forEach(child => ranks.push(child.val()));
+                    ranks.sort((a, b) => b.score - a.score);
+                    setCachedRanks(ranks);
+                    callback(ranks);
+                })
+                .catch(() => {
+                    // 네트워크 오류 시 캐시 사용
+                    callback(getCachedRanks());
+                });
+        }
+
         function evaluateScore(newScore) {
             pendingScore = newScore;
-            ranksRef.orderByChild('score').limitToLast(100).once('value', snapshot => {
-                const ranks = [];
-                snapshot.forEach(child => ranks.push(child.val()));
-                ranks.sort((a, b) => b.score - a.score);
-
+            fetchRanks(ranks => {
                 const tempEntry = { score: newScore, name: '', date: new Date().toLocaleDateString() };
                 const merged = [...ranks, tempEntry].sort((a, b) => b.score - a.score).slice(0, 100);
                 const rank = merged.findIndex(r => r === tempEntry) + 1;
 
-                const entryEl    = document.getElementById('rank-entry');
+                const entryEl     = document.getElementById('rank-entry');
                 const registerBtn = document.getElementById('register-btn');
-                const rankVal    = document.getElementById('my-rank-val');
-                const nameInput  = document.getElementById('player-name-input');
+                const rankVal     = document.getElementById('my-rank-val');
+                const nameInput   = document.getElementById('player-name-input');
 
                 if (rank >= 1 && rank <= 100) {
                     rankVal.innerText = rank;
@@ -1654,7 +1672,6 @@
             });
         }
 
-        // 이름 등록 → Firebase에 push
         function registerName() {
             const nameInput = document.getElementById('player-name-input');
             const name = nameInput.value.trim() || 'NO NAME';
@@ -1671,25 +1688,31 @@
 
         function renderRankList(highlightName) {
             const list = document.getElementById('rank-list');
-            list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
-            ranksRef.orderByChild('score').limitToLast(100).once('value', snapshot => {
-                const ranks = [];
-                snapshot.forEach(child => ranks.push(child.val()));
-                ranks.sort((a, b) => b.score - a.score);
+            // 캐시 먼저 즉시 표시
+            const cached = getCachedRanks();
+            if (cached.length > 0) renderRankRows(list, cached, highlightName);
+            else list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
+
+            // Firebase에서 최신 데이터 가져와 갱신
+            fetchRanks(ranks => {
                 if (ranks.length === 0) {
                     list.innerHTML = '<div style="color:#aaa;padding:20px;">아직 기록이 없습니다</div>';
                     return;
                 }
-                list.innerHTML = ranks.map((r, i) => {
-                    const isMe = highlightName && r.name === highlightName;
-                    return `
-                    <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
-                        <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
-                        <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
-                        <span class="rank-score">${r.score} PTS</span>
-                    </div>`;
-                }).join('');
+                renderRankRows(list, ranks, highlightName);
             });
+        }
+
+        function renderRankRows(list, ranks, highlightName) {
+            list.innerHTML = ranks.map((r, i) => {
+                const isMe = highlightName && r.name === highlightName;
+                return `
+                <div class="rank-item" style="${isMe ? 'background:rgba(204,255,0,0.15);border-radius:8px;padding:10px 6px;' : ''}">
+                    <span class="rank-num" style="${isMe ? 'color:#ccff00' : ''}">#${i + 1}</span>
+                    <span class="rank-name" style="${isMe ? 'color:#ccff00;font-weight:900;' : ''}">${r.name || 'NO NAME'}</span>
+                    <span class="rank-score">${r.score} PTS</span>
+                </div>`;
+            }).join('');
         }
 
         function toggleLeaderboard() {
