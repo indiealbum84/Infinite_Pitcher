@@ -423,9 +423,11 @@
             margin-bottom: 14px;
             font-family: 'Noto Sans JP', sans-serif;
             outline: none;
-            -webkit-user-select: text;
-            user-select: text;
-            touch-action: auto;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
         }
 
         .name-input::placeholder {
@@ -1656,13 +1658,16 @@
             ranksRef.orderByChild('score').limitToLast(100).once('value')
                 .then(snapshot => {
                     const ranks = [];
-                    snapshot.forEach(child => ranks.push(child.val()));
+                    snapshot.forEach(child => {
+                        const v = child.val();
+                        // 이름 없거나 점수 0인 더미 데이터 제외
+                        if (v && v.score > 0 && v.name && v.name.trim() !== '') ranks.push(v);
+                    });
                     ranks.sort((a, b) => b.score - a.score);
                     setCachedRanks(ranks);
                     callback(ranks);
                 })
                 .catch(() => {
-                    // 네트워크 오류 시 캐시 사용
                     callback(getCachedRanks());
                 });
         }
