@@ -1679,14 +1679,16 @@
             fetchRanks(ranks => {
                 const tempEntry = { score: newScore, name: '', date: new Date().toLocaleDateString() };
                 const merged = [...ranks, tempEntry].sort((a, b) => b.score - a.score).slice(0, 100);
-                const rank = merged.findIndex(r => r === tempEntry) + 1;
+                const tempIdx = merged.findIndex(r => r === tempEntry);
+                // 공동순위: 같은 점수 중 가장 앞 인덱스 기준
+                const rank = merged.findIndex(r => r.score === newScore) + 1;
 
                 const entryEl     = document.getElementById('rank-entry');
                 const registerBtn = document.getElementById('register-btn');
                 const rankVal     = document.getElementById('my-rank-val');
                 const nameInput   = document.getElementById('player-name-input');
 
-                if (rank >= 1 && rank <= 100) {
+                if (tempIdx >= 0 && tempIdx < 100) {
                     rankVal.innerText = rank;
                     nameInput.value = '';
                     entryEl.classList.remove('hidden');
@@ -1736,10 +1738,21 @@
 
         function renderRankRows(list, ranks, highlightName, highlightScore) {
             const badge = document.getElementById('my-rank-badge');
-            let myRankIdx = -1;
 
+            // 공동순위 계산: 앞 항목과 점수 같으면 같은 순위
+            const displayRanks = [];
+            let currentRank = 1;
+            ranks.forEach((r, i) => {
+                if (i > 0 && r.score === ranks[i - 1].score) {
+                    displayRanks.push(displayRanks[i - 1]);
+                } else {
+                    currentRank = i + 1;
+                    displayRanks.push(currentRank);
+                }
+            });
+
+            let myRankIdx = -1;
             if (highlightName) {
-                // 이름+점수가 모두 일치하는 첫 항목을 내 순위로 특정
                 myRankIdx = ranks.findIndex(r =>
                     r.name === highlightName && (highlightScore === null || r.score === highlightScore)
                 );
@@ -1747,7 +1760,7 @@
 
             if (myRankIdx >= 0 && badge) {
                 badge.style.display = 'block';
-                badge.innerText = `🏆 ${myRankIdx + 1}위 달성!`;
+                badge.innerText = `🏆 ${displayRanks[myRankIdx]}위 달성!`;
             } else if (badge) {
                 badge.style.display = 'none';
             }
@@ -1755,7 +1768,7 @@
             list.innerHTML = ranks.map((r, i) => {
                 const isMe = i === myRankIdx;
                 return `<div class="rank-item${isMe ? ' is-me' : ''}">
-                    <span class="rank-num">#${i + 1}</span>
+                    <span class="rank-num">#${displayRanks[i]}</span>
                     <span class="rank-name">${r.name || 'NO NAME'}</span>
                     <span class="rank-score">${r.score} PTS</span>
                 </div>`;
