@@ -875,7 +875,7 @@
                 <button class="start-btn" id="battle-join-btn" onclick="joinBattleRoom()">참가</button>
             </div>
 
-            <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;" id="battle-cancel-btn">취소</button>
+            <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;" id="battle-cancel-btn">메인메뉴</button>
         </div>
 
         <!-- 대전 중 상단 HUD -->
@@ -2145,7 +2145,7 @@
             const isKo = currentLang === 'ko';
             document.getElementById('battle-screen-title').innerText   = isKo ? '1:1 대전' : '1:1 バトル';
             document.getElementById('battle-waiting-text').innerText   = isKo ? '상대방을 기다리는 중...' : '相手を待っています...';
-            document.getElementById('battle-cancel-btn').innerText     = isKo ? '취소' : 'キャンセル';
+            document.getElementById('battle-cancel-btn').innerText     = isKo ? '메인메뉴' : 'メインへ';
             document.getElementById('battle-join-btn').innerText       = isKo ? '참가' : '参加';
             document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
         }
