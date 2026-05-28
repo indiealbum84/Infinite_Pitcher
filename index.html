@@ -2011,6 +2011,12 @@
             }
         }
 
+        // 탭 숨김 / 창 닫힘 시 BGM 정지
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') stopAllBgm();
+        });
+        window.addEventListener('pagehide', () => stopAllBgm());
+
         draw();
 
         /**
