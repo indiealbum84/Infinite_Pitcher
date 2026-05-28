@@ -505,6 +505,154 @@
             object-fit: cover;
         }
 
+        /* ── 1:1 대전 ── */
+        #battle-screen {
+            background-color: #ffffff;
+            z-index: 18;
+            gap: 18px;
+        }
+
+        .battle-title {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            font-size: 26px;
+            color: #000;
+            margin: 0 0 4px;
+        }
+
+        .battle-code-box {
+            background: #000;
+            color: var(--primary-neon);
+            font-family: 'Bangers', cursive;
+            font-size: 56px;
+            letter-spacing: 10px;
+            border-radius: 16px;
+            padding: 10px 30px;
+            text-align: center;
+            box-shadow: 0 6px 0 var(--primary-neon);
+        }
+
+        .battle-waiting {
+            color: #475569;
+            font-size: 14px;
+            font-weight: 700;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+
+        .battle-divider {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .battle-input {
+            background: #f1f5f9;
+            border: 2px solid #000;
+            border-radius: 10px;
+            font-size: 28px;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 6px;
+            text-align: center;
+            width: 180px;
+            padding: 8px 16px;
+            outline: none;
+            color: #000;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
+        }
+
+        /* 게임 중 상대 점수 HUD */
+        #battle-hud {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            z-index: 6;
+            pointer-events: none;
+        }
+
+        .battle-hud-box {
+            background: rgba(0,0,0,0.75);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 0 0 10px 10px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .battle-hud-box span {
+            display: block;
+            font-family: 'Bangers', cursive;
+            font-size: 20px;
+            color: var(--primary-neon);
+            letter-spacing: 1px;
+        }
+
+        .battle-hud-vs {
+            background: #000;
+            color: var(--primary-neon);
+            font-family: 'Bangers', cursive;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* 대전 결과 화면 */
+        #battle-result-screen {
+            background: rgba(0,0,0,0.92);
+            z-index: 25;
+        }
+
+        .battle-result-title {
+            font-family: 'Bangers', cursive;
+            font-size: 72px;
+            margin: 0;
+        }
+
+        .battle-result-title.win  { color: var(--primary-neon); text-shadow: 0 0 30px rgba(204,255,0,0.8); }
+        .battle-result-title.lose { color: #ff4444; text-shadow: 0 0 30px rgba(255,68,68,0.6); }
+        .battle-result-title.draw { color: #fff; }
+
+        .battle-scores {
+            display: flex;
+            gap: 20px;
+            margin: 14px 0;
+        }
+
+        .battle-score-card {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            padding: 12px 22px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .battle-score-card.winner {
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 16px rgba(204,255,0,0.4);
+        }
+
+        .battle-score-card .bsc-name {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .battle-score-card .bsc-score {
+            font-family: 'Bangers', cursive;
+            font-size: 38px;
+            color: #fff;
+        }
+
         /* 테스트 시작 번호 선택 */
         #test-start-row {
             display: flex;
@@ -616,6 +764,7 @@
                 <div class="main-character-img"></div>
             </div>
             <button id="start-btn-id" class="start-btn">スタート</button>
+            <button id="battle-btn" class="leaderboard-btn" onclick="openBattleScreen()" style="margin-top:6px;" >1:1 대전</button>
             <div id="test-start-row">
                 <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
             </div>
@@ -643,6 +792,58 @@
                 <div id="rank-list"></div>
                 <button id="close-ranking-btn" class="leaderboard-btn" onclick="toggleLeaderboard()">閉じる</button>
             </div>
+        </div>
+
+        <!-- 1:1 대전 매칭 화면 -->
+        <div id="battle-screen" class="screen hidden">
+            <p class="battle-title" id="battle-screen-title">1:1 대전</p>
+
+            <!-- 방 만들기 섹션 -->
+            <div id="battle-create-section">
+                <p style="font-size:13px;color:#475569;font-weight:700;margin:0 0 6px;">내 방 코드</p>
+                <div class="battle-code-box" id="battle-room-code">----</div>
+                <p class="battle-waiting" id="battle-waiting-text">상대방을 기다리는 중...</p>
+            </div>
+
+            <p class="battle-divider">── 또는 ──</p>
+
+            <!-- 코드 입력 섹션 -->
+            <div id="battle-join-section" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <p style="font-size:13px;color:#475569;font-weight:700;margin:0;">코드 입력</p>
+                <input id="battle-code-input" class="battle-input" type="text" maxlength="4" placeholder="0000" />
+                <button class="start-btn" id="battle-join-btn" onclick="joinBattleRoom()">참가</button>
+            </div>
+
+            <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;" id="battle-cancel-btn">취소</button>
+        </div>
+
+        <!-- 대전 중 상단 HUD -->
+        <div id="battle-hud">
+            <div class="battle-hud-box" id="hud-me">
+                나
+                <span id="hud-my-score">0</span>
+            </div>
+            <div class="battle-hud-vs">VS</div>
+            <div class="battle-hud-box" id="hud-opp">
+                상대
+                <span id="hud-opp-score">0</span>
+            </div>
+        </div>
+
+        <!-- 대전 결과 화면 -->
+        <div id="battle-result-screen" class="screen hidden">
+            <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
+            <div class="battle-scores">
+                <div class="battle-score-card" id="bsc-me">
+                    <div class="bsc-name" id="bsc-me-name">나</div>
+                    <div class="bsc-score" id="bsc-me-score">0</div>
+                </div>
+                <div class="battle-score-card" id="bsc-opp">
+                    <div class="bsc-name" id="bsc-opp-name">상대</div>
+                    <div class="bsc-score" id="bsc-opp-score">0</div>
+                </div>
+            </div>
+            <button class="start-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
         </div>
 
         <div id="countdown-screen" class="screen hidden">
@@ -1231,18 +1432,24 @@
         }
 
         function gameOver() {
-            if (testMode) return; // 테스트 모드에서는 게임오버 없음
+            if (testMode) return;
             gameState = 'GAMEOVER';
             stopAllBgm();
             playSfx('gameover', 1.0);
-            document.getElementById('game-over-screen').classList.remove('hidden');
             finalScoreEl.innerText = score;
-            evaluateScore(score);
+            if (battleMode) {
+                // 대전 모드: 랭킹 화면 대신 대전 결과 처리
+                battleGameOver();
+            } else {
+                document.getElementById('game-over-screen').classList.remove('hidden');
+                evaluateScore(score);
+            }
         }
 
         function updateUI() {
             scoreEl.innerText = score;
             nextNumEl.innerText = nextExpectedNumber;
+            if (battleMode) battleSyncScore();
         }
 
         function pitchBall(isFireball) {
@@ -1791,7 +1998,179 @@
             }
         }
 
-        draw(); 
+        draw();
+
+        /**
+         * 1:1 BATTLE
+         */
+        const battleRef = db.ref('battles');
+        let battleRoomId   = null;  // 현재 참가 중인 방 ID
+        let battleRole     = null;  // 'host' | 'guest'
+        let battleMyName   = 'ME';
+        let battleOppName  = '상대';
+        let battleListener = null;
+        let battleMode     = false;
+
+        function genCode() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        function openBattleScreen() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-screen').classList.remove('hidden');
+            applyBattleLang();
+
+            // 방 코드 생성 & Firebase에 등록
+            const code = genCode();
+            battleRoomId = code;
+            battleRole   = 'host';
+            battleRef.child(code).set({
+                code,
+                host:  { score: 0, done: false, name: '' },
+                guest: { score: 0, done: false, name: '' },
+                status: 'waiting',
+                createdAt: Date.now()
+            });
+
+            document.getElementById('battle-room-code').innerText = code;
+
+            // 게스트 참가 감지
+            battleListener = battleRef.child(code + '/status').on('value', snap => {
+                if (snap.val() === 'playing') startBattle();
+            });
+        }
+
+        function joinBattleRoom() {
+            const code = document.getElementById('battle-code-input').value.trim();
+            if (code.length !== 4) return;
+            battleRef.child(code).once('value').then(snap => {
+                if (!snap.exists() || snap.val().status !== 'waiting') {
+                    alert('방을 찾을 수 없습니다.');
+                    return;
+                }
+                battleRoomId = code;
+                battleRole   = 'guest';
+                battleRef.child(code + '/guest/name').set('guest');
+                battleRef.child(code + '/status').set('playing');
+            });
+        }
+
+        function applyBattleLang() {
+            const isKo = currentLang === 'ko';
+            document.getElementById('battle-screen-title').innerText   = isKo ? '1:1 대전' : '1:1 バトル';
+            document.getElementById('battle-waiting-text').innerText   = isKo ? '상대방을 기다리는 중...' : '相手を待っています...';
+            document.getElementById('battle-cancel-btn').innerText     = isKo ? '취소' : 'キャンセル';
+            document.getElementById('battle-join-btn').innerText       = isKo ? '참가' : '参加';
+            document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
+        }
+
+        function startBattle() {
+            // 리스너 정리
+            if (battleListener) {
+                battleRef.child(battleRoomId + '/status').off('value', battleListener);
+                battleListener = null;
+            }
+            battleMode = true;
+
+            // HUD 표시
+            const hud = document.getElementById('battle-hud');
+            hud.style.display = 'flex';
+            document.getElementById('hud-me').querySelector('div,span')?.remove?.();
+
+            // 매칭 화면 숨기고 게임 시작
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.add('hidden');
+
+            // 상대 점수 실시간 감시
+            const oppRole = battleRole === 'host' ? 'guest' : 'host';
+            battleRef.child(battleRoomId + '/' + oppRole + '/score').on('value', snap => {
+                const v = snap.val();
+                if (v !== null) document.getElementById('hud-opp-score').innerText = v;
+            });
+            battleRef.child(battleRoomId + '/' + oppRole + '/done').on('value', snap => {
+                if (snap.val() === true) checkBattleEnd();
+            });
+
+            startGame();
+        }
+
+        // 게임 중 내 점수를 Firebase에 계속 업데이트
+        function battleSyncScore() {
+            if (!battleMode || !battleRoomId) return;
+            battleRef.child(battleRoomId + '/' + battleRole + '/score').set(score);
+            document.getElementById('hud-my-score').innerText = score;
+        }
+
+        function battleGameOver() {
+            if (!battleMode || !battleRoomId) return;
+            battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true });
+            document.getElementById('hud-my-score').innerText = score;
+            checkBattleEnd();
+        }
+
+        function checkBattleEnd() {
+            battleRef.child(battleRoomId).once('value').then(snap => {
+                const room = snap.val();
+                if (!room) return;
+                if (room.host.done && room.guest.done) showBattleResult(room);
+            });
+        }
+
+        function showBattleResult(room) {
+            document.getElementById('battle-hud').style.display = 'none';
+            document.getElementById('game-over-screen').classList.add('hidden');
+
+            const myRole  = battleRole;
+            const oppRole = myRole === 'host' ? 'guest' : 'host';
+            const myScore  = room[myRole].score;
+            const oppScore = room[oppRole].score;
+
+            const isKo = currentLang === 'ko';
+            let resultText, resultClass;
+            if      (myScore > oppScore)  { resultText = isKo ? '승리!' : 'WIN!';   resultClass = 'win';  }
+            else if (myScore < oppScore)  { resultText = isKo ? '패배...' : 'LOSE'; resultClass = 'lose'; }
+            else                          { resultText = isKo ? '무승부' : 'DRAW';  resultClass = 'draw'; }
+
+            const titleEl = document.getElementById('battle-result-title');
+            titleEl.innerText = resultText;
+            titleEl.className = 'battle-result-title ' + resultClass;
+
+            document.getElementById('bsc-me-name').innerText  = isKo ? '나' : '自分';
+            document.getElementById('bsc-opp-name').innerText = isKo ? '상대' : '相手';
+            document.getElementById('bsc-me-score').innerText  = myScore;
+            document.getElementById('bsc-opp-score').innerText = oppScore;
+
+            // 이긴 쪽 카드 강조
+            document.getElementById('bsc-me').className  = 'battle-score-card' + (myScore  >= oppScore ? ' winner' : '');
+            document.getElementById('bsc-opp').className = 'battle-score-card' + (oppScore >= myScore  ? ' winner' : '');
+
+            document.getElementById('battle-result-screen').classList.remove('hidden');
+
+            // 방 정리
+            battleRef.child(battleRoomId).remove();
+        }
+
+        function cancelBattle() {
+            if (battleRoomId) battleRef.child(battleRoomId).remove();
+            battleRoomId = null;
+            battleRole   = null;
+            battleMode   = false;
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function exitBattle() {
+            battleMode   = false;
+            battleRoomId = null;
+            battleRole   = null;
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
+        }
+
     </script>
 
 </body>
