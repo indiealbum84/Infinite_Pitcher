@@ -1339,6 +1339,7 @@
                 countdownScreen.removeEventListener('click', startCountdownTick);
                 countdownScreen.removeEventListener('touchstart', startCountdownTick);
                 countdownScreen.style.pointerEvents = 'none';
+                countdownScreen.dataset.waiting = 'false';
 
             const runTick = () => {
                 if (count > 0) {
@@ -1389,9 +1390,15 @@
             requestAnimationFrame(gameLoop);
             };
 
-            countdownScreen.style.pointerEvents = 'auto';
-            countdownScreen.addEventListener('click', startCountdownTick);
-            countdownScreen.addEventListener('touchstart', startCountdownTick, { passive: true });
+            // 대전 모드에서는 안내 문구 없이 바로 카운트다운 시작
+            if (battleMode) {
+                startCountdownTick();
+            } else {
+                countdownScreen.dataset.waiting = 'true';
+                countdownScreen.style.pointerEvents = 'auto';
+                countdownScreen.addEventListener('click', startCountdownTick);
+                countdownScreen.addEventListener('touchstart', startCountdownTick, { passive: true });
+            }
         }
 
 
