@@ -1291,10 +1291,16 @@
         let fireballCharging  = false;
         let fireballActive    = false;
         let fireballColumn    = -1;
-        let mirrorballActive  = false; // 현재 숫자 반전 중 여부
-        let flashballActive   = false; // 숫자 깜빡임 중 여부
-        let flashballVisible  = true;  // 깜빡임 현재 표시 여부
-        let flashballTimer    = null;  // 깜빡임 타이머
+        let mirrorballActive   = false; // 현재 숫자 반전 중 여부
+        let mirrorballCharging = false; // 미러볼 노티 중 (투구 차단)
+        let mirrorballTriggered = false; // 이미 발동했는지
+        let mirrorballTriggerNum = 101; // 미러볼 발동 번호 (101, 파괴 시 다음 번호)
+        let flashballActive    = false; // 숫자 깜빡임 중 여부
+        let flashballCharging  = false; // 플래시볼 노티 중 (투구 차단)
+        let flashballTriggered = false; // 이미 발동했는지
+        let flashballTriggerNum = 201;  // 플래시볼 발동 번호 (201, 파괴 시 다음 번호)
+        let flashballVisible   = true;  // 깜빡임 현재 표시 여부
+        let flashballTimer     = null;  // 깜빡임 타이머
 
         // Firebase 설정
         const firebaseConfig = {
@@ -1440,10 +1446,16 @@
             scrollY = 0;
             targetScrollY = 0;
             destroyedNumbers = new Set();
-            fireballCharging = false;
-            fireballActive   = false;
-            fireballColumn   = -1;
-            mirrorballActive = false;
+            fireballCharging    = false;
+            fireballActive      = false;
+            fireballColumn      = -1;
+            mirrorballActive    = false;
+            mirrorballCharging  = false;
+            mirrorballTriggered = false;
+            mirrorballTriggerNum = 101;
+            flashballCharging   = false;
+            flashballTriggered  = false;
+            flashballTriggerNum = 201;
             stopFlashball();
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
@@ -1551,10 +1563,16 @@
 
             nextExpectedNumber = n;
             score = target;
-            fireballCharging = false;
-            fireballActive   = false;
-            fireballColumn   = -1;
-            mirrorballActive = false;
+            fireballCharging    = false;
+            fireballActive      = false;
+            fireballColumn      = -1;
+            mirrorballActive    = false;
+            mirrorballCharging  = false;
+            mirrorballTriggered = false;
+            mirrorballTriggerNum = 101;
+            flashballCharging   = false;
+            flashballTriggered  = false;
+            flashballTriggerNum = 201;
             stopFlashball();
 
             // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
@@ -1629,7 +1647,8 @@
         }
 
         function triggerMirrorball() {
-            mirrorballActive = true;
+            mirrorballActive    = true;
+            mirrorballTriggered = true;
             playSfx('mirrorball', 1.0);
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
@@ -1638,8 +1657,9 @@
         }
 
         function triggerFlashball() {
-            flashballActive  = true;
-            flashballVisible = true;
+            flashballActive   = true;
+            flashballTriggered = true;
+            flashballVisible  = true;
             const fbAnnounce = document.getElementById('flashball-announce');
             fbAnnounce.classList.remove('show');
             void fbAnnounce.offsetWidth;
@@ -1670,16 +1690,6 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // 101번 딱 한 번만 미러볼 발동
-            if (prev === 101) {
-                triggerMirrorball();
-                lastPitchTime = performance.now() + 3800; // 애니메이션 1.8초 + 2초
-            }
-            // 201번 딱 한 번만 플래시볼 발동
-            if (prev === 201) {
-                triggerFlashball();
-                lastPitchTime = performance.now() + 3800;
-            }
         }
 
         function update(timestamp) {
@@ -1698,28 +1708,43 @@
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
             const currentPitchInterval = getPitchInterval(nextExpectedNumber);
-            if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > currentPitchInterval) {
+            if (!fireballCharging && !fireballActive && !mirrorballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
                 // 31, 131, 231... → 파이어볼
                 const isFireballTurn = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                // 101 (또는 101번이 파괴된 경우 다음 번호) → 미러볼 (한 번만)
+                const isMirrorTurn = !mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum;
+                // 201 (또는 201번이 파괴된 경우 다음 번호) → 플래시볼 (한 번만)
+                const isFlashTurn  = !flashballTriggered  && nextExpectedNumber === flashballTriggerNum;
+
                 if (isFireballTurn) {
-                    // 파이어볼 차징: 0.8초 딜레이 후 발사
                     fireballCharging = true;
                     fireballColumn   = Math.floor(player.x / (width / 10));
                     playSfx('fireball', 1.0);
-
                     const fbAnnounce = document.getElementById('fireball-announce');
                     fbAnnounce.classList.remove('show');
                     void fbAnnounce.offsetWidth;
                     fbAnnounce.classList.add('show');
-
-                    // 애니메이션 1.2초 + 2초 딜레이 후 발사
                     setTimeout(() => {
                         fireballCharging = false;
                         fireballColumn   = -1;
                         fireballActive   = true;
                         pitchBall(true);
+                    }, 3200);
+                } else if (isMirrorTurn) {
+                    mirrorballCharging = true;
+                    triggerMirrorball();
+                    setTimeout(() => {
+                        mirrorballCharging = false;
+                        pitchBall(false);
+                    }, 3200);
+                } else if (isFlashTurn) {
+                    flashballCharging = true;
+                    triggerFlashball();
+                    setTimeout(() => {
+                        flashballCharging = false;
+                        pitchBall(false);
                     }, 3200);
                 } else {
                     pitchBall(false);
@@ -1763,6 +1788,13 @@
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
                                 playSfx('throw_hit', 0.5);
+                                // 미러볼/플래시볼 트리거 번호가 파괴되면 다음 번호로 밀기
+                                if (!mirrorballTriggered && blk.num === mirrorballTriggerNum) {
+                                    mirrorballTriggerNum++;
+                                }
+                                if (!flashballTriggered && blk.num === flashballTriggerNum) {
+                                    flashballTriggerNum++;
+                                }
                             }
                         }
                     }
