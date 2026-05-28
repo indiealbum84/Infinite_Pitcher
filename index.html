@@ -1605,10 +1605,9 @@
             flashballTriggerNum = 201;
             stopFlashball();
 
-            // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
+            // initBlocks와 완전히 동일하게 재배치 (scrollY=0 기준, n번부터 시작)
             const blockSize     = width / 10;
-            const clearedRows   = Math.floor(target / 10);
-            const firstRowStart = clearedRows * 10 + 1; // 화면에 나올 첫 행
+            const firstRowStart = n; // n번이 맨 아래 행 시작
 
             blocks = [];
             for (let r = 0; r < 10; r++) {
@@ -1617,9 +1616,8 @@
                 blocks.push(...row);
             }
 
-            // 스크롤을 clearedRows만큼 이미 올라간 상태로 맞춤
-            scrollY = clearedRows * blockSize;
-            targetScrollY = scrollY;
+            scrollY = 0;
+            targetScrollY = 0;
 
             updateUI();
         }
