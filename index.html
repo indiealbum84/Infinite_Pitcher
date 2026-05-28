@@ -1516,10 +1516,12 @@
                 const tx = blk.x + blk.size / 2;
                 const ty = drawY + blk.size / 2;
                 const label = mirrorDisplay(blk.num);
-                ctx.strokeStyle = isGuide ? '#000000' : '#ffffff';
-                ctx.lineWidth = 3;
-                ctx.lineJoin = 'round';
-                ctx.strokeText(label, tx, ty);
+                if (!isGuide) {
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 3;
+                    ctx.lineJoin = 'round';
+                    ctx.strokeText(label, tx, ty);
+                }
                 ctx.fillStyle = '#000000';
                 ctx.fillText(label, tx, ty);
             });
