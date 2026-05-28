@@ -756,8 +756,16 @@
         /* 테스트 시작 번호 선택 */
         #test-start-row {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 14px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #test-num-row {
+            display: flex;
+            gap: 6px;
         }
 
         .test-sel-btn {
@@ -869,6 +877,12 @@
             <button id="battle-btn" class="start-btn" onclick="openBattleScreen()" style="margin-top:8px;background:#1e293b;box-shadow:0 6px 0 var(--primary-neon),0 6px 0 2px #000;">1:1 대전</button>
             <div id="test-start-row">
                 <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
+                <div id="test-num-row" style="display:none;gap:6px;align-items:center;">
+                    <button class="test-sel-btn active" id="test-num-1"   onclick="setTestStart(1)">1</button>
+                    <button class="test-sel-btn"        id="test-num-30"  onclick="setTestStart(30)">30</button>
+                    <button class="test-sel-btn"        id="test-num-100" onclick="setTestStart(100)">100</button>
+                    <button class="test-sel-btn"        id="test-num-200" onclick="setTestStart(200)">200</button>
+                </div>
             </div>
         </div>
 
@@ -1256,10 +1270,21 @@
         const startBtn = document.getElementById('start-btn-id');
 
         let testMode = false;
+        let testStartNum = 1;
 
         function selectTestMode() {
             testMode = !testMode;
             document.getElementById('test-btn').classList.toggle('active', testMode);
+            const numRow = document.getElementById('test-num-row');
+            numRow.style.display = testMode ? 'flex' : 'none';
+            if (!testMode) testStartNum = 1;
+        }
+
+        function setTestStart(n) {
+            testStartNum = n;
+            [1, 30, 100, 200].forEach(v => {
+                document.getElementById('test-num-' + v).classList.toggle('active', v === n);
+            });
         }
 
         startBtn.addEventListener('click', () => {
@@ -1440,7 +1465,7 @@
         /**
          * GAME LOGIC
          */
-        function startCountdown() {
+        function startCountdown(skipToNum) {
             gameState = 'COUNTDOWN';
             score = 0;
             nextExpectedNumber = 1;
@@ -1530,6 +1555,7 @@
                     countdownScreen.classList.add('hidden');
                     gameState = 'PLAYING';
                     lastPitchTime = performance.now();
+                    if (skipToNum && skipToNum > 1) testSkipTo(skipToNum);
                 }
             };
 
@@ -1551,7 +1577,7 @@
 
 
         function startGame() {
-            startCountdown();
+            startCountdown(testMode && testStartNum > 1 ? testStartNum : null);
         }
 
         // 테스트용: n번부터 시작
