@@ -2106,8 +2106,12 @@
                 const v = snap.val();
                 if (v !== null) document.getElementById('hud-opp-score').innerText = v;
             });
-            battleRef.child(battleRoomId + '/' + oppRole + '/done').on('value', snap => {
-                if (snap.val() === true) checkBattleEnd();
+            battleRef.child(battleRoomId + '/status').on('value', snap => {
+                if (snap.val() === 'ended' && battleMode) {
+                    gameState = 'GAMEOVER';
+                    stopAllBgm();
+                    checkBattleEnd();
+                }
             });
 
             startGame();
@@ -2122,16 +2126,17 @@
 
         function battleGameOver() {
             if (!battleMode || !battleRoomId) return;
+            // done: true로 설정 → 상대방도 즉시 종료되도록 status를 'ended'로
             battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true });
+            battleRef.child(battleRoomId + '/status').set('ended');
             document.getElementById('hud-my-score').innerText = score;
-            checkBattleEnd();
         }
 
         function checkBattleEnd() {
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();
                 if (!room) return;
-                if (room.host.done && room.guest.done) showBattleResult(room);
+                if (room.status === 'ended') showBattleResult(room);
             });
         }
 
