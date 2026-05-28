@@ -2079,20 +2079,24 @@
             document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
         }
 
+        let battleStarted = false;
         function startBattle() {
-            // 리스너 정리
+            if (battleStarted) return; // 중복 호출 방지
+            battleStarted = true;
+
+            // 호스트 리스너 정리
             if (battleListener) {
                 battleRef.child(battleRoomId + '/status').off('value', battleListener);
                 battleListener = null;
             }
             battleMode = true;
 
-            // HUD 표시
-            const hud = document.getElementById('battle-hud');
-            hud.style.display = 'flex';
-            document.getElementById('hud-me').querySelector('div,span')?.remove?.();
+            // HUD 표시 (내부 요소 건드리지 않음)
+            document.getElementById('battle-hud').style.display = 'flex';
+            document.getElementById('hud-my-score').innerText = '0';
+            document.getElementById('hud-opp-score').innerText = '0';
 
-            // 매칭 화면 숨기고 게임 시작
+            // 모든 화면 숨기기
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.add('hidden');
 
@@ -2167,17 +2171,19 @@
 
         function cancelBattle() {
             if (battleRoomId) battleRef.child(battleRoomId).remove();
-            battleRoomId = null;
-            battleRole   = null;
-            battleMode   = false;
+            battleRoomId  = null;
+            battleRole    = null;
+            battleMode    = false;
+            battleStarted = false;
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
         }
 
         function exitBattle() {
-            battleMode   = false;
-            battleRoomId = null;
-            battleRole   = null;
+            battleMode    = false;
+            battleStarted = false;
+            battleRoomId  = null;
+            battleRole    = null;
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             stopAllBgm();
