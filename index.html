@@ -2323,6 +2323,10 @@
         }
 
         function openBattleScreen() {
+            if (testMode) {
+                alert('TEST 모드에서는 1:1 대전을 이용할 수 없습니다.');
+                return;
+            }
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             applyBattleLang();
