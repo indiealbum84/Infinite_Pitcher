@@ -152,8 +152,13 @@
         /* Intro Screen */
         #intro-screen {
             background-color: #ffffff;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            overflow-y: auto;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Game Title Styling */
