@@ -491,6 +491,30 @@
             object-fit: cover;
         }
 
+        /* Flashball 알림 오버레이 */
+        #flashball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #flashball-announce.show {
+            animation: fbAnnounce 1.8s ease-out forwards;
+        }
+
+        #flashball-announce-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Mirrorball 알림 오버레이 */
         #mirrorball-announce {
             position: absolute;
@@ -921,6 +945,10 @@
         <canvas id="canvas"></canvas>
 
         <!-- 미러볼 알림 오버레이 -->
+        <div id="flashball-announce">
+            <img src="./flashball.png" id="flashball-announce-img">
+        </div>
+
         <div id="mirrorball-announce">
             <img src="./mirrorball.png" id="mirrorball-announce-img">
         </div>
@@ -1242,6 +1270,9 @@
         let fireballActive    = false;
         let fireballColumn    = -1;
         let mirrorballActive  = false; // 현재 숫자 반전 중 여부
+        let flashballActive   = false; // 숫자 깜빡임 중 여부
+        let flashballVisible  = true;  // 깜빡임 현재 표시 여부
+        let flashballTimer    = null;  // 깜빡임 타이머
 
         // Firebase 설정
         const firebaseConfig = {
@@ -1391,6 +1422,7 @@
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
+            stopFlashball();
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
@@ -1501,6 +1533,7 @@
             fireballActive   = false;
             fireballColumn   = -1;
             mirrorballActive = false;
+            stopFlashball();
 
             // 블록 완전 재생성 — initBlocks와 동일한 방식으로 10행 배치
             const blockSize     = width / 10;
@@ -1543,7 +1576,8 @@
         }
 
         function pitchBall(isFireball) {
-            const isMirrorBall = !isFireball && nextExpectedNumber === 101;
+            const isMirrorBall  = !isFireball && nextExpectedNumber === 101;
+            const isFlashBall   = !isFireball && nextExpectedNumber === 201;
             balls.push({
                 x: player.x,
                 y: player.y - 20,
@@ -1551,6 +1585,7 @@
                 speed: isFireball ? 12 : 10,
                 isFireball: !!isFireball,
                 isMirrorBall: isMirrorBall,
+                isFlashBall: isFlashBall,
                 activated: false,
                 column: Math.floor(player.x / (width / 10)),
                 fireballStart: isFireball ? nextExpectedNumber : 0
@@ -1580,6 +1615,32 @@
             mbAnnounce.classList.add('show');
         }
 
+        function triggerFlashball() {
+            flashballActive  = true;
+            flashballVisible = true;
+            const fbAnnounce = document.getElementById('flashball-announce');
+            fbAnnounce.classList.remove('show');
+            void fbAnnounce.offsetWidth;
+            fbAnnounce.classList.add('show');
+            // 0.4초 보임 → 0.2초 숨김 루프
+            function tick() {
+                if (!flashballActive) return;
+                flashballVisible = true;
+                flashballTimer = setTimeout(() => {
+                    if (!flashballActive) return;
+                    flashballVisible = false;
+                    flashballTimer = setTimeout(tick, 200);
+                }, 400);
+            }
+            tick();
+        }
+
+        function stopFlashball() {
+            flashballActive  = false;
+            flashballVisible = true;
+            if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
+        }
+
         // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 미러볼 트리거/해제
         function advanceExpected() {
             const prev = nextExpectedNumber;
@@ -1591,6 +1652,11 @@
             if (prev === 101) {
                 triggerMirrorball();
                 lastPitchTime = performance.now() + 3800; // 애니메이션 1.8초 + 2초
+            }
+            // 201번 딱 한 번만 플래시볼 발동
+            if (prev === 201) {
+                triggerFlashball();
+                lastPitchTime = performance.now() + 3800;
             }
         }
 
@@ -1813,14 +1879,17 @@
                 const tx = blk.x + blk.size / 2;
                 const ty = drawY + blk.size / 2;
                 const label = mirrorDisplay(blk.num);
-                if (!isGuide) {
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 3;
-                    ctx.lineJoin = 'round';
-                    ctx.strokeText(label, tx, ty);
+                const showLabel = !flashballActive || flashballVisible || isGuide;
+                if (showLabel) {
+                    if (!isGuide) {
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 3;
+                        ctx.lineJoin = 'round';
+                        ctx.strokeText(label, tx, ty);
+                    }
+                    ctx.fillStyle = '#000000';
+                    ctx.fillText(label, tx, ty);
                 }
-                ctx.fillStyle = '#000000';
-                ctx.fillText(label, tx, ty);
             });
 
             // Draw Balls
@@ -1858,6 +1927,32 @@
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fillStyle = fbGrad;
                     ctx.fill();
+                } else if (b.isFlashBall) {
+                    // 201번 공 — 번쩍이는 플래시볼
+                    const r = b.radius;
+                    const t = performance.now() * 0.01;
+                    const spikes = 8;
+                    for (let s = 0; s < spikes; s++) {
+                        const angle = (s / spikes) * Math.PI * 2 + t;
+                        const len   = r * (2.0 + Math.sin(t * 2 + s) * 0.5);
+                        ctx.beginPath();
+                        ctx.moveTo(b.x, b.y);
+                        ctx.lineTo(b.x + Math.cos(angle) * len, b.y + Math.sin(angle) * len);
+                        ctx.strokeStyle = `rgba(255, 255, ${100 + s * 20}, 0.9)`;
+                        ctx.lineWidth = 2.5;
+                        ctx.stroke();
+                    }
+                    const flGrad = ctx.createRadialGradient(b.x - r * 0.3, b.y - r * 0.3, 1, b.x, b.y, r);
+                    flGrad.addColorStop(0,   '#ffffff');
+                    flGrad.addColorStop(0.4, '#ffffaa');
+                    flGrad.addColorStop(1,   '#ffcc00');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = flGrad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffee00';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
                 } else if (b.isMirrorBall) {
                     // 101번 공 — 손거울 모양
                     const r = b.radius;
