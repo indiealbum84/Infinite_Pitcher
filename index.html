@@ -895,6 +895,7 @@
             countdown:     './countdown.mp3',
             start:         './start.mp3',
             gameover:      './gameover.mp3',
+            win:           './win.mp3',
             ball_throw:    './throw.mp3',
             throw_hit:     './throw_hit.mp3',
             fireball:      './fireball.mp3',
@@ -1447,12 +1448,12 @@
             if (testMode) return;
             gameState = 'GAMEOVER';
             stopAllBgm();
-            playSfx('gameover', 1.0);
             finalScoreEl.innerText = score;
             if (battleMode) {
-                // 대전 모드: 랭킹 화면 대신 대전 결과 처리
+                // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
                 battleGameOver();
             } else {
+                playSfx('gameover', 1.0);
                 document.getElementById('game-over-screen').classList.remove('hidden');
                 evaluateScore(score);
             }
@@ -2174,6 +2175,10 @@
             if      (myScore > oppScore)  { resultText = isKo ? '승리!' : 'WIN!';   resultClass = 'win';  }
             else if (myScore < oppScore)  { resultText = isKo ? '패배...' : 'LOSE'; resultClass = 'lose'; }
             else                          { resultText = isKo ? '무승부' : 'DRAW';  resultClass = 'draw'; }
+
+            // 효과음
+            if (resultClass === 'win') playSfx('win', 1.0);
+            else                       playSfx('gameover', 1.0);
 
             const titleEl = document.getElementById('battle-result-title');
             titleEl.innerText = resultText;
