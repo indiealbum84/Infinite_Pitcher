@@ -1363,9 +1363,8 @@
         let fireballActive    = false;
         let fireballColumn    = -1;
         let mirrorballActive    = false; // 현재 숫자 반전 중 여부
-        let mirrorballCharging  = false; // 미러볼 노티 중 (투구 차단)
-        let mirrorballTriggered = false; // 이미 발동했는지
-        let mirrorballTriggerNum = 101;  // 미러볼 발동 번호
+        let mirrorballCharging  = false; // 미러볼 노티+웨이브 중 (투구 차단)
+        let mirrorballDoneCount = 0;     // 미러볼이 발동된 횟수 (100점마다 1회)
         let mirrorWaveStart     = 0;     // 웨이브 시작 타임스탬프 (0=비활성)
         const MIRROR_WAVE_DURATION = 2000; // 웨이브 총 시간(ms)
         let flashballActive    = false; // 숫자 깜빡임 중 여부
@@ -1524,8 +1523,7 @@
             fireballColumn      = -1;
             mirrorballActive    = false;
             mirrorballCharging  = false;
-            mirrorballTriggered = false;
-            mirrorballTriggerNum = 101;
+            mirrorballDoneCount = 0;
             mirrorWaveStart     = 0;
             flashballCharging   = false;
             flashballTriggered  = false;
@@ -1643,8 +1641,7 @@
             fireballColumn      = -1;
             mirrorballActive    = false;
             mirrorballCharging  = false;
-            mirrorballTriggered = false;
-            mirrorballTriggerNum = 101;
+            mirrorballDoneCount = 0;
             mirrorWaveStart     = 0;
             flashballCharging   = false;
             flashballTriggered  = false;
@@ -1690,7 +1687,7 @@
         }
 
         function pitchBall(isFireball) {
-            const isMirrorBall  = !isFireball && !mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum;
+            const isMirrorBall  = !isFireball && mirrorballCharging;
             const isFlashBall   = !isFireball && !flashballTriggered  && nextExpectedNumber === flashballTriggerNum;
             balls.push({
                 x: player.x,
@@ -1721,7 +1718,7 @@
         }
 
         function triggerMirrorball() {
-            mirrorballTriggered = true;
+            mirrorballDoneCount++;
             playSfx('mirrorball', 1.0);
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
@@ -1731,14 +1728,13 @@
 
         // 미러볼 공이 블록에 맞는 순간 호출 — 웨이브 시작
         function startMirrorWave() {
-            mirrorWaveStart    = performance.now();
-            mirrorballCharging = true; // 웨이브+대기 동안 투구 차단
+            mirrorWaveStart = performance.now();
             // 웨이브 2초 완료 후 반전 확정
             setTimeout(() => {
                 mirrorWaveStart  = 0;
                 mirrorballActive = true;
             }, MIRROR_WAVE_DURATION);
-            // 웨이브 2초 + 대기 2초 후 투구 재개
+            // 웨이브 2초 + 대기 2초 후 투구 차단 해제 + 즉시 투구
             setTimeout(() => {
                 mirrorballCharging = false;
                 lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
@@ -1772,23 +1768,27 @@
             if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
         }
 
-        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 특수볼 노티 즉시 발동
+        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 특수볼 노티 발동
         function advanceExpected() {
             nextExpectedNumber++;
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // 100번 맞힌 직후 → 즉시 노티, 1초 후 101번 공 발사
-            if (!mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum) {
+            // score가 100의 배수 → 미러볼 노티 즉시 발동 (mirrorballDoneCount로 중복 방지)
+            const expectedMirrorCount = Math.floor(score / 100);
+            if (expectedMirrorCount > mirrorballDoneCount && !mirrorballCharging) {
                 mirrorballCharging = true;
                 triggerMirrorball();
-                // 1초 후: 공 발사 허용 (pitch loop가 즉시 101번 공 던짐)
+                // 노티 1.2초 애니메이션 + 1초 후 공 발사
                 setTimeout(() => {
-                    mirrorballCharging = false;
-                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber); // 즉시 투구
-                }, 1000);
+                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                    // mirrorballCharging은 공이 블록에 맞을 때까지 유지 (pitchBall에서 isMirrorBall 판정)
+                    // 공 발사 후 mirrorballCharging을 잠시 false로 바꿔서 pitch loop가 공을 던지게 함
+                    // 단, startMirrorWave 호출 전까지만
+                    mirrorballCharging = false; // pitch loop가 공 던지도록 허용
+                }, 2200); // 1.2s 애니 + 1s 대기
             }
-            // 200번 맞힌 직후 nextExpectedNumber === flashballTriggerNum → 즉시 노티 + 투구 차단
+            // score가 200의 배수(정확히 200) → 플래시볼 노티
             if (!flashballTriggered && nextExpectedNumber === flashballTriggerNum) {
                 flashballCharging = true;
                 triggerFlashball();
@@ -1877,10 +1877,7 @@
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
                                 playSfx('throw_hit', 0.5);
-                                // 미러볼/플래시볼 트리거 번호가 파괴되면 다음 번호로 밀기
-                                if (!mirrorballTriggered && blk.num === mirrorballTriggerNum) {
-                                    mirrorballTriggerNum++;
-                                }
+                                // 플래시볼 트리거 번호가 파괴되면 다음 번호로 밀기
                                 if (!flashballTriggered && blk.num === flashballTriggerNum) {
                                     flashballTriggerNum++;
                                 }
@@ -1922,7 +1919,10 @@
                             playSfx('throw_hit', 1.0);
                             updateUI();
                             checkRowClear();
-                            if (wasMirrorBall) startMirrorWave();
+                            if (wasMirrorBall) {
+                                mirrorballCharging = true; // 웨이브+대기 동안 다시 차단
+                                startMirrorWave();
+                            }
                         } else {
                             gameOver();
                             return;
@@ -2013,7 +2013,7 @@
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isMirrorNext   = !mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum;
+                const isMirrorNext   = mirrorballCharging;
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
