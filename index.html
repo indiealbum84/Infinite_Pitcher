@@ -658,6 +658,50 @@
             color: #fff;
         }
 
+        /* 메인화면 랭킹 버튼 */
+        #intro-ranking-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #000;
+            color: #fff;
+            border: 2px solid #000;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 6px 14px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 var(--primary-neon);
+            font-family: 'Noto Sans JP', sans-serif;
+            z-index: 2;
+            touch-action: auto !important;
+        }
+
+        /* 메인화면 랭킹 모달 */
+        #intro-ranking-modal {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.88);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19;
+            padding: 30px 20px;
+        }
+
+        #intro-ranking-modal .modal-inner {
+            background: #1e293b;
+            border: 3px solid var(--primary-neon);
+            border-radius: 20px;
+            width: 100%;
+            max-height: 80%;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y !important;
+        }
+
         /* 테스트 시작 번호 선택 */
         #test-start-row {
             display: flex;
@@ -758,6 +802,8 @@
         </div>
 
         <div id="intro-screen" class="screen hidden">
+            <button id="intro-ranking-btn" onclick="toggleIntroRanking()">🏆 TOP 100</button>
+
             <h1 class="game-title">
                 <span class="game-title-sub" id="intro-title-sub">超特訓！</span>
                 <span class="game-title-main" id="intro-title-main">無限ピッチング</span>
@@ -772,6 +818,15 @@
             <button id="battle-btn" class="start-btn" onclick="openBattleScreen()" style="margin-top:8px;background:#1e293b;box-shadow:0 6px 0 var(--primary-neon),0 6px 0 2px #000;">1:1 대전</button>
             <div id="test-start-row">
                 <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
+            </div>
+        </div>
+
+        <!-- 메인화면 랭킹 모달 -->
+        <div id="intro-ranking-modal" class="hidden">
+            <div class="modal-inner">
+                <h3 style="margin:0 0 10px;color:#fff;text-align:center;">TOP 100</h3>
+                <div id="intro-rank-list"></div>
+                <button id="intro-ranking-close-btn" class="leaderboard-btn" style="margin-top:12px;display:block;width:100%;" onclick="toggleIntroRanking()">閉じる</button>
             </div>
         </div>
 
@@ -1046,6 +1101,7 @@
                 rankingBtn:  'ランキング',
                 closeBtn:    '閉じる',
                 homeBtn:     'メイン画面へ',
+                rankingClose:'閉じる',
                 instruction: 'ドラッグして数字の順番に\nボールを当てよう！',
             },
             ko: {
@@ -1060,6 +1116,7 @@
                 rankingBtn:  '랭킹',
                 closeBtn:    '닫기',
                 homeBtn:     '메인화면',
+                rankingClose:'닫기',
                 instruction: '드래그하여 숫자 순서대로\n공을 맞추세요.',
             }
         };
@@ -1077,7 +1134,8 @@
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('ranking-btn').innerText       = t.rankingBtn;
             document.getElementById('close-ranking-btn').innerText = t.closeBtn;
-            document.getElementById('home-btn').innerText          = t.homeBtn;
+            document.getElementById('home-btn').innerText               = t.homeBtn;
+            document.getElementById('intro-ranking-close-btn').innerText = t.rankingClose;
         }
 
         function onLangSelect(lang) {
@@ -2208,6 +2266,25 @@
             battleStarted = false;
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function toggleIntroRanking() {
+            const modal = document.getElementById('intro-ranking-modal');
+            const isHidden = modal.classList.contains('hidden');
+            if (isHidden) {
+                modal.classList.remove('hidden');
+                const list = document.getElementById('intro-rank-list');
+                list.innerHTML = '<div style="color:#aaa;padding:20px;text-align:center;">불러오는 중...</div>';
+                fetchRanks(ranks => {
+                    if (ranks.length === 0) {
+                        list.innerHTML = '<div style="color:#aaa;padding:20px;text-align:center;">아직 기록이 없습니다</div>';
+                        return;
+                    }
+                    renderRankRows(list, ranks, null, null);
+                });
+            } else {
+                modal.classList.add('hidden');
+            }
         }
 
         function goToMain() {
