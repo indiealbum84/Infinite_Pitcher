@@ -747,10 +747,47 @@
             border-radius: 20px;
             width: 100%;
             max-height: 80%;
-            overflow-y: auto;
+            overflow-y: scroll;
             padding: 20px;
+            position: relative;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y !important;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-neon) #334155;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar-track {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar-thumb {
+            background: var(--primary-neon);
+            border-radius: 3px;
+        }
+
+        #intro-ranking-close-x {
+            position: sticky;
+            top: 0;
+            float: right;
+            width: 28px;
+            height: 28px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid var(--primary-neon);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 8px;
+            flex-shrink: 0;
+            z-index: 10;
         }
 
         /* 테스트 시작 번호 선택 */
@@ -889,9 +926,9 @@
         <!-- 메인화면 랭킹 모달 -->
         <div id="intro-ranking-modal" class="hidden">
             <div class="modal-inner">
+                <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
                 <h3 style="margin:0 0 10px;color:#fff;text-align:center;">TOP 100</h3>
                 <div id="intro-rank-list"></div>
-                <button id="intro-ranking-close-btn" class="leaderboard-btn" style="margin-top:12px;display:block;width:100%;" onclick="toggleIntroRanking()">閉じる</button>
             </div>
         </div>
 
@@ -1206,7 +1243,6 @@
             document.getElementById('ranking-btn').innerText       = t.rankingBtn;
             document.getElementById('close-ranking-btn').innerText = t.closeBtn;
             document.getElementById('home-btn').innerText               = t.homeBtn;
-            document.getElementById('intro-ranking-close-btn').innerText = t.rankingClose;
         }
 
         function onLangSelect(lang) {
