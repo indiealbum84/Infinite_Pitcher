@@ -904,7 +904,9 @@
                     <div class="bsc-score" id="bsc-opp-score">0</div>
                 </div>
             </div>
-            <button class="start-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
+            <button class="start-btn" id="battle-rematch-btn" onclick="requestRematch()" style="margin-bottom:8px;">다시하기 (<span id="rematch-countdown">10</span>)</button>
+            <p id="rematch-status" style="color:#94a3b8;font-size:13px;font-weight:700;margin:0 0 8px;min-height:18px;"></p>
+            <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
         </div>
 
         <div id="countdown-screen" class="screen hidden">
@@ -2246,8 +2248,8 @@
 
             document.getElementById('battle-result-screen').classList.remove('hidden');
 
-            // 방 30초 후 정리 (상대방도 결과를 읽을 시간 확보)
-            if (battleRoomId) setTimeout(() => battleRef.child(battleRoomId).remove(), 30000);
+            // 리매치 카운트다운 시작
+            startRematchCountdown();
         }
 
         function showBattleResult(room) {
@@ -2266,6 +2268,78 @@
             battleStarted = false;
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        /**
+         * REMATCH
+         */
+        let rematchTimer   = null;
+        let rematchSeconds = 10;
+
+        function startRematchCountdown() {
+            rematchSeconds = 10;
+            document.getElementById('rematch-countdown').innerText = rematchSeconds;
+            document.getElementById('rematch-status').innerText = '';
+            document.getElementById('battle-rematch-btn').disabled = false;
+
+            rematchTimer = setInterval(() => {
+                rematchSeconds--;
+                document.getElementById('rematch-countdown').innerText = rematchSeconds;
+                if (rematchSeconds <= 0) {
+                    clearInterval(rematchTimer);
+                    rematchTimer = null;
+                    // 시간 초과 → 버튼 비활성화, 방 정리
+                    document.getElementById('battle-rematch-btn').disabled = true;
+                    document.getElementById('rematch-status').innerText =
+                        currentLang === 'ko' ? '시간이 초과됐습니다.' : '時間切れです。';
+                    if (battleRoomId) battleRef.child(battleRoomId + '/rematch').remove();
+                }
+            }, 1000);
+
+            // 상대방 rematch 요청 감시
+            battleRef.child(battleRoomId + '/rematch').on('value', snap => {
+                const val = snap.val();
+                if (!val) return;
+                const oppRole = battleRole === 'host' ? 'guest' : 'host';
+                const myReady  = val[battleRole]  === true;
+                const oppReady = val[oppRole] === true;
+
+                if (oppReady && !myReady) {
+                    document.getElementById('rematch-status').innerText =
+                        currentLang === 'ko' ? '상대방이 다시하기를 눌렀습니다!' : '相手がリマッチを要求しました！';
+                }
+                if (myReady && oppReady) {
+                    clearInterval(rematchTimer);
+                    rematchTimer = null;
+                    battleRef.child(battleRoomId + '/rematch').off();
+                    doRematch();
+                }
+            });
+        }
+
+        function requestRematch() {
+            document.getElementById('battle-rematch-btn').disabled = true;
+            document.getElementById('rematch-status').innerText =
+                currentLang === 'ko' ? '상대방을 기다리는 중...' : '相手を待っています...';
+            battleRef.child(battleRoomId + '/rematch/' + battleRole).set(true);
+        }
+
+        function doRematch() {
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            // 상태 초기화 후 재경기
+            battleStarted = false;
+            battleMode    = false;
+            battleOppScore = 0;
+            // 방 리셋 (host가 처리)
+            if (battleRole === 'host') {
+                battleRef.child(battleRoomId).update({
+                    host:   { score: 0, done: false, name: '' },
+                    guest:  { score: 0, done: false, name: '' },
+                    status: 'playing',
+                    rematch: null
+                });
+            }
+            startBattle();
         }
 
         function toggleIntroRanking() {
@@ -2298,8 +2372,14 @@
         }
 
         function exitBattle() {
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+            if (battleRoomId) {
+                battleRef.child(battleRoomId + '/rematch').off();
+                battleRef.child(battleRoomId).remove();
+            }
             battleMode    = false;
             battleStarted = false;
+            battleOppScore = 0;
             battleRoomId  = null;
             battleRole    = null;
             document.getElementById('battle-result-screen').classList.add('hidden');
