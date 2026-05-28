@@ -1278,6 +1278,10 @@
             const numRow = document.getElementById('test-num-row');
             numRow.style.display = testMode ? 'flex' : 'none';
             if (!testMode) testStartNum = 1;
+            const battleBtn = document.getElementById('battle-btn');
+            battleBtn.disabled = testMode;
+            battleBtn.style.opacity = testMode ? '0.3' : '1';
+            battleBtn.style.pointerEvents = testMode ? 'none' : '';
         }
 
         function setTestStart(n) {
