@@ -2108,9 +2108,13 @@
             });
             battleRef.child(battleRoomId + '/status').on('value', snap => {
                 if (snap.val() === 'ended' && battleMode) {
+                    battleMode = false; // 중복 처리 방지
                     gameState = 'GAMEOVER';
                     stopAllBgm();
-                    checkBattleEnd();
+                    // 내 최종 점수를 먼저 저장한 뒤 결과 표시
+                    battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true })
+                        .then(() => checkBattleEnd())
+                        .catch(() => checkBattleEnd());
                 }
             });
 
@@ -2126,18 +2130,34 @@
 
         function battleGameOver() {
             if (!battleMode || !battleRoomId) return;
-            // done: true로 설정 → 상대방도 즉시 종료되도록 status를 'ended'로
-            battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true });
-            battleRef.child(battleRoomId + '/status').set('ended');
+            battleMode = false; // 중복 처리 방지
+            // 내 점수 저장 → 상대방 종료 신호
+            battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true })
+                .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
+                .then(() => checkBattleEnd());
             document.getElementById('hud-my-score').innerText = score;
         }
 
         function checkBattleEnd() {
-            battleRef.child(battleRoomId).once('value').then(snap => {
-                const room = snap.val();
-                if (!room) return;
-                if (room.status === 'ended') showBattleResult(room);
-            });
+            // 최신 데이터를 읽어서 결과 표시 (재시도 최대 5회)
+            let attempts = 0;
+            const tryShow = () => {
+                battleRef.child(battleRoomId).once('value').then(snap => {
+                    const room = snap.val();
+                    if (!room) return;
+                    const hostScore  = room.host  ? room.host.score  : null;
+                    const guestScore = room.guest ? room.guest.score : null;
+                    // 두 점수가 모두 숫자로 있을 때만 결과 표시
+                    if (typeof hostScore === 'number' && typeof guestScore === 'number') {
+                        showBattleResult(room);
+                    } else if (attempts++ < 5) {
+                        setTimeout(tryShow, 500);
+                    } else {
+                        showBattleResult(room); // 5회 후에는 그냥 표시
+                    }
+                });
+            };
+            tryShow();
         }
 
         function showBattleResult(room) {
