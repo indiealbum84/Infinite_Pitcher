@@ -2056,7 +2056,10 @@
                 battleRoomId = code;
                 battleRole   = 'guest';
                 battleRef.child(code + '/guest/name').set('guest');
-                battleRef.child(code + '/status').set('playing');
+                // status를 playing으로 바꾼 후 게스트도 바로 startBattle
+                battleRef.child(code + '/status').set('playing').then(() => {
+                    startBattle();
+                });
             });
         }
 
