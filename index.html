@@ -1683,12 +1683,29 @@
             if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
         }
 
-        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 미러볼 트리거/해제
+        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 특수볼 노티 즉시 발동
         function advanceExpected() {
-            const prev = nextExpectedNumber;
             nextExpectedNumber++;
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
+            }
+            // 100번 맞힌 직후 nextExpectedNumber === mirrorballTriggerNum → 즉시 노티 + 투구 차단
+            if (!mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum) {
+                mirrorballCharging = true;
+                triggerMirrorball();
+                setTimeout(() => {
+                    mirrorballCharging = false;
+                    lastPitchTime = performance.now(); // 노티 끝나자마자 투구 재개
+                }, 3200);
+            }
+            // 200번 맞힌 직후 nextExpectedNumber === flashballTriggerNum → 즉시 노티 + 투구 차단
+            if (!flashballTriggered && nextExpectedNumber === flashballTriggerNum) {
+                flashballCharging = true;
+                triggerFlashball();
+                setTimeout(() => {
+                    flashballCharging = false;
+                    lastPitchTime = performance.now();
+                }, 3200);
             }
         }
 
@@ -1713,10 +1730,6 @@
 
                 // 31, 131, 231... → 파이어볼
                 const isFireballTurn = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                // 101 (또는 101번이 파괴된 경우 다음 번호) → 미러볼 (한 번만)
-                const isMirrorTurn = !mirrorballTriggered && nextExpectedNumber === mirrorballTriggerNum;
-                // 201 (또는 201번이 파괴된 경우 다음 번호) → 플래시볼 (한 번만)
-                const isFlashTurn  = !flashballTriggered  && nextExpectedNumber === flashballTriggerNum;
 
                 if (isFireballTurn) {
                     fireballCharging = true;
@@ -1731,20 +1744,6 @@
                         fireballColumn   = -1;
                         fireballActive   = true;
                         pitchBall(true);
-                    }, 3200);
-                } else if (isMirrorTurn) {
-                    mirrorballCharging = true;
-                    triggerMirrorball();
-                    setTimeout(() => {
-                        mirrorballCharging = false;
-                        pitchBall(false);
-                    }, 3200);
-                } else if (isFlashTurn) {
-                    flashballCharging = true;
-                    triggerFlashball();
-                    setTimeout(() => {
-                        flashballCharging = false;
-                        pitchBall(false);
                     }, 3200);
                 } else {
                     pitchBall(false);
