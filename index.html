@@ -2081,6 +2081,7 @@
         }
 
         let battleStarted = false;
+        let battleOppScore = 0; // 상대 최종 점수 로컬 저장
         function startBattle() {
             if (battleStarted) return; // 중복 호출 방지
             battleStarted = true;
@@ -2105,17 +2106,27 @@
             const oppRole = battleRole === 'host' ? 'guest' : 'host';
             battleRef.child(battleRoomId + '/' + oppRole + '/score').on('value', snap => {
                 const v = snap.val();
-                if (v !== null) document.getElementById('hud-opp-score').innerText = v;
+                if (typeof v === 'number') {
+                    battleOppScore = v;
+                    document.getElementById('hud-opp-score').innerText = v;
+                }
             });
             battleRef.child(battleRoomId + '/status').on('value', snap => {
                 if (snap.val() === 'ended' && battleMode) {
-                    battleMode = false; // 중복 처리 방지
+                    battleMode = false;
                     gameState = 'GAMEOVER';
                     stopAllBgm();
-                    // 내 최종 점수를 먼저 저장한 뒤 결과 표시
-                    battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true })
-                        .then(() => checkBattleEnd())
-                        .catch(() => checkBattleEnd());
+                    // 내 최종 점수 저장 후 상대 점수 읽어서 결과 표시
+                    const savedScore = score;
+                    battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
+                        .then(() => {
+                            // 상대 점수 직접 읽기
+                            battleRef.child(battleRoomId + '/' + oppRole + '/score').once('value').then(s => {
+                                const oppS = typeof s.val() === 'number' ? s.val() : battleOppScore;
+                                showBattleResultDirect(savedScore, oppS);
+                            }).catch(() => showBattleResultDirect(savedScore, battleOppScore));
+                        })
+                        .catch(() => showBattleResultDirect(savedScore, battleOppScore));
                 }
             });
 
@@ -2131,52 +2142,25 @@
 
         function battleGameOver() {
             if (!battleMode || !battleRoomId) return;
-            battleMode = false; // 중복 처리 방지
-            // 내 점수 저장 → 상대방 종료 신호
-            battleRef.child(battleRoomId + '/' + battleRole).update({ score, done: true })
+            battleMode = false;
+            const savedScore = score;
+            document.getElementById('hud-my-score').innerText = savedScore;
+            // 내 점수 저장 → 종료 신호 → 결과 표시
+            battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
                 .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
-                .then(() => checkBattleEnd());
-            document.getElementById('hud-my-score').innerText = score;
+                .then(() => showBattleResultDirect(savedScore, battleOppScore));
         }
 
-        function checkBattleEnd() {
-            // 최신 데이터를 읽어서 결과 표시 (재시도 최대 5회)
-            let attempts = 0;
-            const tryShow = () => {
-                battleRef.child(battleRoomId).once('value').then(snap => {
-                    const room = snap.val();
-                    if (!room) return;
-                    const hostScore  = room.host  ? room.host.score  : null;
-                    const guestScore = room.guest ? room.guest.score : null;
-                    // 두 점수가 모두 숫자로 있을 때만 결과 표시
-                    if (typeof hostScore === 'number' && typeof guestScore === 'number') {
-                        showBattleResult(room);
-                    } else if (attempts++ < 5) {
-                        setTimeout(tryShow, 500);
-                    } else {
-                        showBattleResult(room); // 5회 후에는 그냥 표시
-                    }
-                });
-            };
-            tryShow();
-        }
-
-        function showBattleResult(room) {
+        function showBattleResultDirect(myScore, oppScore) {
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('hidden');
 
-            const myRole  = battleRole;
-            const oppRole = myRole === 'host' ? 'guest' : 'host';
-            const myScore  = room[myRole].score;
-            const oppScore = room[oppRole].score;
-
             const isKo = currentLang === 'ko';
             let resultText, resultClass;
-            if      (myScore > oppScore)  { resultText = isKo ? '승리!' : 'WIN!';   resultClass = 'win';  }
-            else if (myScore < oppScore)  { resultText = isKo ? '패배...' : 'LOSE'; resultClass = 'lose'; }
-            else                          { resultText = isKo ? '무승부' : 'DRAW';  resultClass = 'draw'; }
+            if      (myScore > oppScore)  { resultText = isKo ? '승리!' : 'WIN!';    resultClass = 'win';  }
+            else if (myScore < oppScore)  { resultText = isKo ? '패배...' : 'LOSE';  resultClass = 'lose'; }
+            else                          { resultText = isKo ? '무승부' : 'DRAW';   resultClass = 'draw'; }
 
-            // 효과음
             if (resultClass === 'win') playSfx('win', 1.0);
             else                       playSfx('gameover', 1.0);
 
@@ -2184,19 +2168,26 @@
             titleEl.innerText = resultText;
             titleEl.className = 'battle-result-title ' + resultClass;
 
-            document.getElementById('bsc-me-name').innerText  = isKo ? '나' : '自分';
-            document.getElementById('bsc-opp-name').innerText = isKo ? '상대' : '相手';
+            document.getElementById('bsc-me-name').innerText   = isKo ? '나' : '自分';
+            document.getElementById('bsc-opp-name').innerText  = isKo ? '상대' : '相手';
             document.getElementById('bsc-me-score').innerText  = myScore;
             document.getElementById('bsc-opp-score').innerText = oppScore;
 
-            // 이긴 쪽 카드 강조
             document.getElementById('bsc-me').className  = 'battle-score-card' + (myScore  >= oppScore ? ' winner' : '');
             document.getElementById('bsc-opp').className = 'battle-score-card' + (oppScore >= myScore  ? ' winner' : '');
 
             document.getElementById('battle-result-screen').classList.remove('hidden');
 
-            // 방 정리
-            battleRef.child(battleRoomId).remove();
+            // 방 30초 후 정리 (상대방도 결과를 읽을 시간 확보)
+            if (battleRoomId) setTimeout(() => battleRef.child(battleRoomId).remove(), 30000);
+        }
+
+        function showBattleResult(room) {
+            const myRole  = battleRole;
+            const oppRole = myRole === 'host' ? 'guest' : 'host';
+            const myScore  = room[myRole] ? room[myRole].score : 0;
+            const oppScore = room[oppRole] ? room[oppRole].score : 0;
+            showBattleResultDirect(myScore, oppScore);
         }
 
         function cancelBattle() {
