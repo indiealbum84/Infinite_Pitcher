@@ -748,12 +748,18 @@
             width: 100%;
             max-height: 80%;
             overflow-y: scroll;
+            overflow-x: hidden;
             padding: 20px;
             position: relative;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y !important;
             scrollbar-width: thin;
             scrollbar-color: var(--primary-neon) #334155;
+        }
+
+        #intro-ranking-modal .modal-inner,
+        #intro-ranking-modal .modal-inner * {
+            touch-action: pan-y !important;
         }
 
         #intro-ranking-modal .modal-inner::-webkit-scrollbar {
@@ -2615,6 +2621,22 @@
             const isHidden = modal.classList.contains('hidden');
             if (isHidden) {
                 modal.classList.remove('hidden');
+                const inner = modal.querySelector('.modal-inner');
+                inner.scrollTop = 0;
+                // 터치 드래그 스크롤 직접 구현
+                if (!inner._touchBound) {
+                    inner._touchBound = true;
+                    let startY = 0, startScroll = 0;
+                    inner.addEventListener('touchstart', e => {
+                        startY = e.touches[0].clientY;
+                        startScroll = inner.scrollTop;
+                    }, { passive: true });
+                    inner.addEventListener('touchmove', e => {
+                        const dy = startY - e.touches[0].clientY;
+                        inner.scrollTop = startScroll + dy;
+                        e.stopPropagation();
+                    }, { passive: true });
+                }
                 const list = document.getElementById('intro-rank-list');
                 list.innerHTML = '<div style="color:#aaa;padding:20px;text-align:center;">불러오는 중...</div>';
                 fetchRanks(ranks => {
