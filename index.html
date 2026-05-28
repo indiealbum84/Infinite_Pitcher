@@ -1221,7 +1221,15 @@
         let score = 0;
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
-        const pitchInterval = 1000;
+        function getPitchInterval(n) {
+            if (n < 31)  return 1200;
+            if (n < 131) return 1000;
+            if (n < 231) return 900;
+            if (n < 331) return 800;
+            if (n < 431) return 700;
+            if (n < 531) return 600;
+            return 500;
+        }
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
         let blocks = [];
@@ -1601,7 +1609,7 @@
             }
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
-            const currentPitchInterval = nextExpectedNumber <= 30 ? 1200 : pitchInterval;
+            const currentPitchInterval = getPitchInterval(nextExpectedNumber);
             if (!fireballCharging && !fireballActive && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
