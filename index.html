@@ -789,6 +789,7 @@
                 <button id="register-btn" class="start-btn hidden" onclick="registerName()">登録して続ける</button>
                 <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
                 <button id="ranking-btn" class="leaderboard-btn" onclick="toggleLeaderboard()">ランキング</button>
+                <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
             </div>
 
             <div id="leaderboard-modal" class="hidden">
@@ -1044,6 +1045,7 @@
                 retryBtn:    'リトライ',
                 rankingBtn:  'ランキング',
                 closeBtn:    '閉じる',
+                homeBtn:     'メイン画面へ',
                 instruction: 'ドラッグして数字の順番に\nボールを当てよう！',
             },
             ko: {
@@ -1057,6 +1059,7 @@
                 retryBtn:    '다시 하기',
                 rankingBtn:  '랭킹',
                 closeBtn:    '닫기',
+                homeBtn:     '메인화면',
                 instruction: '드래그하여 숫자 순서대로\n공을 맞추세요.',
             }
         };
@@ -1074,6 +1077,7 @@
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('ranking-btn').innerText       = t.rankingBtn;
             document.getElementById('close-ranking-btn').innerText = t.closeBtn;
+            document.getElementById('home-btn').innerText          = t.homeBtn;
         }
 
         function onLangSelect(lang) {
@@ -2204,6 +2208,16 @@
             battleStarted = false;
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function goToMain() {
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+            document.getElementById('ui-layer').classList.add('hidden');
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
         }
 
         function exitBattle() {
