@@ -1617,9 +1617,9 @@
                 blocks.push(...row);
             }
 
-            // 스크롤 0으로 초기화 (블록을 새로 배치했으므로)
-            scrollY = 0;
-            targetScrollY = 0;
+            // 스크롤을 clearedRows만큼 이미 올라간 상태로 맞춤
+            scrollY = clearedRows * blockSize;
+            targetScrollY = scrollY;
 
             updateUI();
         }
