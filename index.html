@@ -618,6 +618,46 @@
             animation: blink 1.2s ease-in-out infinite;
         }
 
+        .battle-profile-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: 280px;
+        }
+
+        .battle-small-label {
+            font-size: 13px;
+            color: #475569;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .battle-name-input {
+            background: #f8fafc;
+            border: 2px solid #000;
+            border-radius: 8px;
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 900;
+            width: 220px;
+            padding: 9px 12px;
+            text-align: center;
+            outline: none;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
+        }
+
+        .battle-name-hint {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            margin: 0;
+        }
+
         .battle-player-list {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -761,15 +801,20 @@
             min-width: 72px;
         }
 
-        .battle-score-card.winner {
+        .battle-score-card.me {
             border-color: var(--primary-neon);
             box-shadow: 0 0 16px rgba(204,255,0,0.4);
+            background: rgba(204,255,0,0.12);
         }
 
         .battle-score-card .bsc-name {
             font-size: 13px;
             color: #94a3b8;
             font-weight: 700;
+        }
+
+        .battle-score-card.me .bsc-name {
+            color: var(--primary-neon);
         }
 
         .battle-score-card .bsc-score {
@@ -1036,9 +1081,15 @@
         <div id="battle-screen" class="screen hidden">
             <p class="battle-title" id="battle-screen-title">최대 8인 대전</p>
 
+            <div class="battle-profile-panel">
+                <p class="battle-small-label" id="battle-name-label">내 닉네임</p>
+                <input id="battle-name-input" class="battle-name-input" type="text" maxlength="10" placeholder="닉네임 입력" oninput="handleBattleNameInput()" onblur="commitBattleNickname()" />
+                <p class="battle-name-hint" id="battle-name-hint">한글 5자 / 영어 10자까지</p>
+            </div>
+
             <!-- 방 만들기 섹션 -->
             <div id="battle-create-section">
-                <p style="font-size:13px;color:#475569;font-weight:700;margin:0 0 6px;">내 방 코드</p>
+                <p class="battle-small-label" id="battle-code-label" style="margin:0 0 6px;">내 방 코드</p>
                 <div class="battle-code-box" id="battle-room-code">----</div>
                 <p class="battle-waiting" id="battle-waiting-text">상대방을 기다리는 중...</p>
                 <div class="battle-player-list" id="battle-player-list"></div>
@@ -1049,7 +1100,7 @@
 
             <!-- 코드 입력 섹션 -->
             <div id="battle-join-section" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-                <p style="font-size:13px;color:#475569;font-weight:700;margin:0;">코드 입력</p>
+                <p class="battle-small-label" id="battle-join-label">코드 입력</p>
                 <input id="battle-code-input" class="battle-input" type="text" maxlength="4" placeholder="0000" />
                 <button class="start-btn" id="battle-join-btn" onclick="joinBattleRoom()">참가</button>
             </div>
@@ -2666,6 +2717,8 @@
         let rematchTimer = null;
         let rematchSeconds = 10;
         let rematchListener = null;
+        const BATTLE_NAME_STORAGE_KEY = 'infinitePitcherBattleName';
+        const BATTLE_NAME_MAX_WEIGHT = 10;
 
         function genCode() {
             return Math.floor(1000 + Math.random() * 9000).toString();
@@ -2679,6 +2732,67 @@
             return String(value).replace(/[&<>"']/g, ch => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
             }[ch]));
+        }
+
+        function getBattleNameWeight(char) {
+            return /^[\x20-\x7E]$/.test(char) ? 1 : 2;
+        }
+
+        function clampBattleName(value) {
+            const cleaned = String(value || '').replace(/[\r\n\t]/g, ' ').replace(/\s{2,}/g, ' ');
+            let next = '';
+            let weight = 0;
+            for (const char of cleaned) {
+                const charWeight = getBattleNameWeight(char);
+                if (weight + charWeight > BATTLE_NAME_MAX_WEIGHT) break;
+                next += char;
+                weight += charWeight;
+            }
+            return next;
+        }
+
+        function getBattleNickname() {
+            const input = document.getElementById('battle-name-input');
+            return clampBattleName(input ? input.value : '').trim();
+        }
+
+        function getSavedBattleNickname() {
+            try {
+                return clampBattleName(localStorage.getItem(BATTLE_NAME_STORAGE_KEY) || '').trim();
+            } catch(e) {
+                return '';
+            }
+        }
+
+        function saveBattleNickname(name) {
+            try { localStorage.setItem(BATTLE_NAME_STORAGE_KEY, name); } catch(e) {}
+        }
+
+        function hydrateBattleNameInput() {
+            const input = document.getElementById('battle-name-input');
+            if (!input) return;
+            input.value = getSavedBattleNickname();
+        }
+
+        function handleBattleNameInput() {
+            const input = document.getElementById('battle-name-input');
+            if (!input) return;
+
+            const clamped = clampBattleName(input.value);
+            if (input.value !== clamped) input.value = clamped;
+            commitBattleNickname();
+        }
+
+        function commitBattleNickname() {
+            const name = getBattleNickname();
+            const input = document.getElementById('battle-name-input');
+            if (input && input.value !== name) input.value = name;
+
+            saveBattleNickname(name);
+
+            if (!battleRoomId || !battlePlayerId || !battlePlayers[battlePlayerId]) return;
+            battlePlayers[battlePlayerId].name = name;
+            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/name').set(name);
         }
 
         function getBattlePlayerList(room = null) {
@@ -2698,6 +2812,8 @@
         }
 
         function getBattlePlayerLabel(player, index) {
+            const name = String(player.name || '').trim();
+            if (name) return name;
             if (player.id === battlePlayerId) return currentLang === 'ko' ? '나' : '自分';
             if (player.isHost) return currentLang === 'ko' ? '방장' : 'ホスト';
             return player.name || `P${index + 1}`;
@@ -2771,17 +2887,19 @@
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-code-input').value = '';
+            hydrateBattleNameInput();
             applyBattleLang();
 
             const code = genCode();
             const playerId = genBattlePlayerId();
+            const hostName = getBattleNickname();
             const hostPlayer = {
                 score: 0,
                 done: false,
                 rank: null,
                 finishOrder: null,
                 finishedAt: null,
-                name: 'HOST',
+                name: hostName,
                 isHost: true,
                 joinedAt: Date.now()
             };
@@ -2812,6 +2930,7 @@
 
             const playerId = genBattlePlayerId();
             const joinedAt = Date.now();
+            const nickname = getBattleNickname();
             battleRef.child(code).once('value').then(snap => {
                 const room = snap.val();
                 if (!room || room.status !== 'waiting' || room.joinLocked) {
@@ -2830,7 +2949,7 @@
                         rank: null,
                         finishOrder: null,
                         finishedAt: null,
-                        name: `P${playerCount + 1}`,
+                        name: nickname || `P${playerCount + 1}`,
                         isHost: false,
                         joinedAt
                     };
@@ -2995,6 +3114,11 @@
             document.getElementById('battle-join-btn').innerText       = isKo ? '참가' : '参加';
             document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
             document.getElementById('battle-start-btn').innerText      = isKo ? '게임 시작' : 'ゲーム開始';
+            document.getElementById('battle-name-label').innerText     = isKo ? '내 닉네임' : 'ニックネーム';
+            document.getElementById('battle-name-input').placeholder   = isKo ? '닉네임 입력' : 'ニックネーム';
+            document.getElementById('battle-name-hint').innerText      = isKo ? '한글 5자 / 영어 10자까지' : '日本語5文字 / 英字10文字まで';
+            document.getElementById('battle-code-label').innerText     = isKo ? '내 방 코드' : '自分のルームコード';
+            document.getElementById('battle-join-label').innerText     = isKo ? '코드 입력' : 'コード入力';
         }
 
         function startBattle() {
@@ -3145,8 +3269,8 @@
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const scoreText = Number(player.score || 0);
                 const rankText = player.rank ? player.rank : index + 1;
-                const winnerClass = Number(player.rank || 0) === 1 ? ' winner' : '';
-                return `<div class="battle-score-card${winnerClass}">
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-score-card${meClass}">
                     <div class="bsc-name">${rankText}. ${label}</div>
                     <div class="bsc-score">${scoreText}</div>
                 </div>`;
