@@ -1039,6 +1039,7 @@
                     <button class="test-sel-btn"        id="test-num-30"  onclick="setTestStart(30)">30</button>
                     <button class="test-sel-btn"        id="test-num-100" onclick="setTestStart(100)">100</button>
                     <button class="test-sel-btn"        id="test-num-200" onclick="setTestStart(200)">200</button>
+                    <button class="test-sel-btn"        id="test-num-300" onclick="setTestStart(300)">300</button>
                 </div>
             </div>
         </div>
@@ -1083,8 +1084,9 @@
 
             <div class="battle-profile-panel">
                 <p class="battle-small-label" id="battle-name-label">내 닉네임</p>
-                <input id="battle-name-input" class="battle-name-input" type="text" maxlength="10" placeholder="닉네임 입력" oninput="handleBattleNameInput()" onblur="commitBattleNickname()" />
+                <input id="battle-name-input" class="battle-name-input" type="text" maxlength="10" placeholder="닉네임 입력" oninput="handleBattleNameInput()" onblur="commitBattleNickname()" onkeydown="if(event.key==='Enter') submitBattleNickname()" />
                 <p class="battle-name-hint" id="battle-name-hint">한글 5자 / 영어 10자까지</p>
+                <button class="start-btn" id="battle-name-next-btn" onclick="submitBattleNickname()" style="width:220px;padding:10px 18px;font-size:20px;">확인</button>
             </div>
 
             <!-- 방 만들기 섹션 -->
@@ -1096,7 +1098,7 @@
                 <button class="start-btn" id="battle-start-btn" onclick="startBattleRoom()" disabled>게임 시작</button>
             </div>
 
-            <p class="battle-divider">── 또는 ──</p>
+            <p class="battle-divider" id="battle-divider">── 또는 ──</p>
 
             <!-- 코드 입력 섹션 -->
             <div id="battle-join-section" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
@@ -1509,7 +1511,7 @@
 
         function setTestStart(n) {
             testStartNum = n;
-            [1, 30, 100, 200].forEach(v => {
+            [1, 30, 100, 200, 300].forEach(v => {
                 document.getElementById('test-num-' + v).classList.toggle('active', v === n);
             });
         }
@@ -1826,6 +1828,7 @@
         function getTestStartScore(n, targetNumber) {
             if (n === 100) return 93;
             if (n === 200) return 174;
+            if (n === 300) return 255;
             return targetNumber;
         }
 
@@ -2714,6 +2717,7 @@
         let battleResultShown = false;
         let battleResultListener = null;
         let battleRematchStarted = false;
+        let battleProfileReady = false;
         let rematchTimer = null;
         let rematchSeconds = 10;
         let rematchListener = null;
@@ -2774,6 +2778,22 @@
             input.value = getSavedBattleNickname();
         }
 
+        function showBattleProfileStep() {
+            battleProfileReady = false;
+            document.querySelector('.battle-profile-panel').style.display = 'flex';
+            document.getElementById('battle-create-section').style.display = 'none';
+            document.getElementById('battle-divider').style.display = 'none';
+            document.getElementById('battle-join-section').style.display = 'none';
+        }
+
+        function showBattleRoomStep() {
+            battleProfileReady = true;
+            document.querySelector('.battle-profile-panel').style.display = 'none';
+            document.getElementById('battle-create-section').style.display = 'block';
+            document.getElementById('battle-divider').style.display = 'block';
+            document.getElementById('battle-join-section').style.display = 'flex';
+        }
+
         function handleBattleNameInput() {
             const input = document.getElementById('battle-name-input');
             if (!input) return;
@@ -2793,6 +2813,22 @@
             if (!battleRoomId || !battlePlayerId || !battlePlayers[battlePlayerId]) return;
             battlePlayers[battlePlayerId].name = name;
             battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/name').set(name);
+        }
+
+        function submitBattleNickname() {
+            const name = getBattleNickname();
+            const input = document.getElementById('battle-name-input');
+            if (!name) {
+                alert(currentLang === 'ko' ? '닉네임을 입력해주세요.' : 'ニックネームを入力してください。');
+                if (input) input.focus();
+                return;
+            }
+
+            if (input) input.value = name;
+            saveBattleNickname(name);
+            showBattleRoomStep();
+            if (!battleRoomId) createBattleRoom(name);
+            else commitBattleNickname();
         }
 
         function getBattlePlayerList(room = null) {
@@ -2863,6 +2899,7 @@
             battleStarted = false;
             battleResultShown = false;
             battleRematchStarted = false;
+            battleProfileReady = false;
         }
 
         function returnToIntroAfterBattle(removeHostRoom = false) {
@@ -2887,12 +2924,19 @@
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-code-input').value = '';
+            document.getElementById('battle-room-code').innerText = '----';
+            document.getElementById('battle-player-list').innerHTML = '';
             hydrateBattleNameInput();
             applyBattleLang();
+            showBattleProfileStep();
 
+            const nameInput = document.getElementById('battle-name-input');
+            setTimeout(() => nameInput && nameInput.focus(), 50);
+        }
+
+        function createBattleRoom(hostName) {
             const code = genCode();
             const playerId = genBattlePlayerId();
-            const hostName = getBattleNickname();
             const hostPlayer = {
                 score: 0,
                 done: false,
@@ -2931,6 +2975,14 @@
             const playerId = genBattlePlayerId();
             const joinedAt = Date.now();
             const nickname = getBattleNickname();
+            if (!nickname) {
+                alert(currentLang === 'ko' ? '닉네임을 입력해주세요.' : 'ニックネームを入力してください。');
+                showBattleProfileStep();
+                const input = document.getElementById('battle-name-input');
+                if (input) input.focus();
+                return;
+            }
+
             battleRef.child(code).once('value').then(snap => {
                 const room = snap.val();
                 if (!room || room.status !== 'waiting' || room.joinLocked) {
@@ -2967,7 +3019,9 @@
                     battleStarted = false;
                     battleResultShown = false;
                     battleRematchStarted = false;
+                    battleProfileReady = true;
                     document.getElementById('battle-room-code').innerText = code;
+                    showBattleRoomStep();
                     listenBattleRoom(code);
                 });
             }).catch(() => {
@@ -3039,6 +3093,7 @@
                     document.getElementById('battle-hud').style.display = 'none';
                     document.getElementById('battle-screen').classList.remove('hidden');
                     document.getElementById('intro-screen').classList.add('hidden');
+                    showBattleRoomStep();
                     renderBattleLobby(room);
                     return;
                 }
@@ -3117,6 +3172,7 @@
             document.getElementById('battle-name-label').innerText     = isKo ? '내 닉네임' : 'ニックネーム';
             document.getElementById('battle-name-input').placeholder   = isKo ? '닉네임 입력' : 'ニックネーム';
             document.getElementById('battle-name-hint').innerText      = isKo ? '한글 5자 / 영어 10자까지' : '日本語5文字 / 英字10文字まで';
+            document.getElementById('battle-name-next-btn').innerText  = isKo ? '확인' : '決定';
             document.getElementById('battle-code-label').innerText     = isKo ? '내 방 코드' : '自分のルームコード';
             document.getElementById('battle-join-label').innerText     = isKo ? '코드 입력' : 'コード入力';
         }
