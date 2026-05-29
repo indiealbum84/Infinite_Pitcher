@@ -532,6 +532,30 @@
             object-fit: cover;
         }
 
+        /* Stripeball 알림 오버레이 */
+        #stripeball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #stripeball-announce.show {
+            animation: fbAnnounce 1.2s ease-out forwards;
+        }
+
+        #stripeball-announce-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Mirrorball 알림 오버레이 */
         #mirrorball-announce {
             position: absolute;
@@ -1056,6 +1080,10 @@
             <img src="./flashball.png" id="flashball-announce-img">
         </div>
 
+        <div id="stripeball-announce">
+            <img src="./stripeball.png" id="stripeball-announce-img">
+        </div>
+
         <div id="mirrorball-announce">
             <img src="./mirrorball.png" id="mirrorball-announce-img">
         </div>
@@ -1481,13 +1509,22 @@
         const MIRRORBALL_ANNOUNCE_DURATION = 1200;
         const MIRRORBALL_POST_ANNOUNCE_DELAY = 1000;
         const MIRROR_WAVE_DURATION = 2000; // 웨이브 총 시간(ms)
+        let stripeballActive      = false; // 10개 줄 단위 교차 표시 여부
+        let stripeballCharging    = false; // 스트라이프볼 노티+웨이브 중 (투구 차단)
+        let stripeballShotPending = false; // 다음 일반 투구를 스트라이프볼로 처리
+        let stripeballTriggered   = false; // 이미 발동했는지
+        let stripeWaveStart       = 0;     // 스트라이프 웨이브 시작 타임스탬프
+        const STRIPEBALL_TRIGGER_NUMBER = 201;
+        const STRIPEBALL_BASE_ROW_INDEX = 20; // 201~210 줄부터 정상/미러 교차
+        const STRIPEBALL_ANNOUNCE_DURATION = 1200;
+        const STRIPEBALL_POST_ANNOUNCE_DELAY = 1000;
         let flashballActive      = false; // 숫자 깜빡임 중 여부
         let flashballCharging    = false; // 플래시볼 노티 중 (투구 차단)
         let flashballShotPending = false; // 다음 일반 투구를 플래시볼로 처리
         let flashballTriggered   = false; // 이미 발동했는지
         let flashballVisible     = true;  // 깜빡임 현재 표시 여부
         let flashballTimer       = null;  // 깜빡임 타이머
-        const FLASHBALL_TRIGGER_SCORE = 175;
+        const FLASHBALL_TRIGGER_NUMBER = 301;
         const FLASHBALL_SHOT_DELAY = 3200;
 
         // Firebase 설정
@@ -1642,6 +1679,11 @@
             mirrorballShotPending = false;
             mirrorballDoneCount = 0;
             mirrorWaveStart     = 0;
+            stripeballActive    = false;
+            stripeballCharging  = false;
+            stripeballShotPending = false;
+            stripeballTriggered = false;
+            stripeWaveStart     = 0;
             flashballCharging   = false;
             flashballShotPending = false;
             flashballTriggered  = false;
@@ -1761,10 +1803,15 @@
             mirrorballShotPending = false;
             mirrorballDoneCount = mirrorballResolved ? 1 : 0;
             mirrorWaveStart     = 0;
+            stripeballActive    = n > STRIPEBALL_TRIGGER_NUMBER;
+            stripeballCharging  = false;
+            stripeballShotPending = false;
+            stripeballTriggered = n > STRIPEBALL_TRIGGER_NUMBER;
+            stripeWaveStart     = 0;
             flashballCharging   = false;
             flashballShotPending = false;
             stopFlashball();
-            if (testScore > FLASHBALL_TRIGGER_SCORE) {
+            if (n > FLASHBALL_TRIGGER_NUMBER) {
                 flashballTriggered = true;
                 startFlashballBlink();
             } else {
@@ -1788,6 +1835,7 @@
 
             updateUI();
             scheduleMirrorballIfNeeded();
+            scheduleStripeballIfNeeded();
             scheduleFlashballIfNeeded();
         }
 
@@ -1814,10 +1862,15 @@
 
         function pitchBall(isFireball) {
             const isMirrorBall  = !isFireball && mirrorballShotPending;
-            const isFlashBall   = !isFireball && flashballShotPending;
+            const isStripeBall  = !isFireball && !isMirrorBall && stripeballShotPending;
+            const isFlashBall   = !isFireball && !isMirrorBall && !isStripeBall && flashballShotPending;
             if (isMirrorBall) {
                 mirrorballShotPending = false;
                 mirrorballCharging = true; // 미러볼이 맞고 웨이브가 끝날 때까지 다음 투구 차단
+            }
+            if (isStripeBall) {
+                stripeballShotPending = false;
+                stripeballCharging = true; // 스트라이프 웨이브가 끝날 때까지 다음 투구 차단
             }
             if (isFlashBall) {
                 flashballShotPending = false;
@@ -1829,6 +1882,7 @@
                 speed: isFireball ? 12 : 10,
                 isFireball: !!isFireball,
                 isMirrorBall: isMirrorBall,
+                isStripeBall: isStripeBall,
                 isFlashBall: isFlashBall,
                 activated: false,
                 column: Math.floor(player.x / (width / 10)),
@@ -1837,6 +1891,8 @@
             if (isFireball) {
                 playSfx('throw_fireball', 1.0);
             } else if (isMirrorBall) {
+                playSfx('throw_mirrorball', 1.0);
+            } else if (isStripeBall) {
                 playSfx('throw_mirrorball', 1.0);
             } else {
                 playThrow();
@@ -1888,6 +1944,46 @@
             }, MIRROR_WAVE_DURATION + 2000);
         }
 
+        function isStripeNormalRow(num) {
+            const rowIndex = Math.floor((num - 1) / 10);
+            if (rowIndex < STRIPEBALL_BASE_ROW_INDEX) return false;
+            return (rowIndex - STRIPEBALL_BASE_ROW_INDEX) % 2 === 0;
+        }
+
+        function triggerStripeball() {
+            stripeballTriggered = true;
+            playSfx('mirrorball', 1.0);
+            const sbAnnounce = document.getElementById('stripeball-announce');
+            sbAnnounce.classList.remove('show');
+            void sbAnnounce.offsetWidth;
+            sbAnnounce.classList.add('show');
+        }
+
+        function scheduleStripeballIfNeeded() {
+            if (nextExpectedNumber < STRIPEBALL_TRIGGER_NUMBER || stripeballTriggered || stripeballCharging || stripeballShotPending) return;
+
+            stripeballCharging = true;
+            triggerStripeball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                stripeballShotPending = true;
+                stripeballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, STRIPEBALL_ANNOUNCE_DURATION + STRIPEBALL_POST_ANNOUNCE_DELAY);
+        }
+
+        function startStripeWave() {
+            stripeWaveStart = performance.now();
+            setTimeout(() => {
+                stripeWaveStart = 0;
+                stripeballActive = true;
+            }, MIRROR_WAVE_DURATION);
+            setTimeout(() => {
+                stripeballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRROR_WAVE_DURATION + 2000);
+        }
+
         function triggerFlashball() {
             flashballTriggered = true;
             const fbAnnounce = document.getElementById('flashball-announce');
@@ -1915,7 +2011,7 @@
         }
 
         function scheduleFlashballIfNeeded() {
-            if (score < FLASHBALL_TRIGGER_SCORE || flashballTriggered || flashballCharging || flashballShotPending) return;
+            if (nextExpectedNumber < FLASHBALL_TRIGGER_NUMBER || flashballTriggered || flashballCharging || flashballShotPending) return;
 
             flashballCharging = true;
             triggerFlashball();
@@ -1940,6 +2036,7 @@
                 nextExpectedNumber++;
             }
             scheduleMirrorballIfNeeded();
+            scheduleStripeballIfNeeded();
             scheduleFlashballIfNeeded();
         }
 
@@ -1959,7 +2056,7 @@
 
             // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
             const currentPitchInterval = getPitchInterval(nextExpectedNumber);
-            if (!fireballCharging && !fireballActive && !mirrorballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
+            if (!fireballCharging && !fireballActive && !mirrorballCharging && !stripeballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
                 // 31, 131, 231... → 파이어볼
@@ -2054,6 +2151,7 @@
                             bestBlk.active = false;
                             score++;
                             const wasMirrorBall = b.isMirrorBall;
+                            const wasStripeBall = b.isStripeBall;
                             advanceExpected();
                             balls.splice(i, 1);
                             playSfx('throw_hit', 1.0);
@@ -2062,6 +2160,9 @@
                             if (wasMirrorBall) {
                                 mirrorballCharging = true; // 웨이브+대기 동안 다시 차단
                                 startMirrorWave();
+                            } else if (wasStripeBall) {
+                                stripeballCharging = true; // 웨이브+대기 동안 다시 차단
+                                startStripeWave();
                             }
                         } else {
                             gameOver();
@@ -2070,6 +2171,10 @@
                     } else if (b.y < -20) {
                         if (b.isMirrorBall) {
                             mirrorballCharging = false;
+                            lastPitchTime = performance.now();
+                        }
+                        if (b.isStripeBall) {
+                            stripeballCharging = false;
                             lastPitchTime = performance.now();
                         }
                         balls.splice(i, 1);
@@ -2150,6 +2255,7 @@
             ctx.restore();
 
             const mirrorGuideActive = mirrorballShotPending || balls.some(b => b.isMirrorBall && !b.activated);
+            const stripeGuideActive = stripeballShotPending || balls.some(b => b.isStripeBall && !b.activated);
             const flashGuideActive  = flashballShotPending || balls.some(b => b.isFlashBall && !b.activated);
 
             // Draw Blocks
@@ -2160,7 +2266,7 @@
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || flashGuideActive);
+                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
 
@@ -2170,11 +2276,10 @@
                 const tx = blk.x + blk.size / 2;
                 const ty = drawY + blk.size / 2;
 
-                // 웨이브 중: 아래 행부터 위로 순차 뒤집힘
-                let waveFlipped = false;
-                if (mirrorWaveStart > 0) {
-                    const elapsed = performance.now() - mirrorWaveStart;
-                    const progress = Math.min(elapsed / MIRROR_WAVE_DURATION, 1); // 0→1
+                // 웨이브 중: 아래 행부터 위로 순차 적용
+                let mirrorWaveFlipped = false;
+                let stripeWaveApplied = false;
+                if (mirrorWaveStart > 0 || stripeWaveStart > 0) {
                     // drawY 범위를 실제 블록 영역으로 정규화
                     const activeBlocks = blocks.filter(b => b.active);
                     const minY = activeBlocks.length ? Math.min(...activeBlocks.map(b => b.y + scrollY)) : 0;
@@ -2182,9 +2287,21 @@
                     const range = maxY - minY || 1;
                     // 아래 행(drawY 큼)일수록 rowNorm 큰 값 → progress가 작아도 먼저 뒤집힘
                     const rowNorm = (drawY - minY) / range; // 0(위)~1(아래)
-                    waveFlipped = (1 - rowNorm) <= progress; // 아래부터 뒤집힘
+                    if (mirrorWaveStart > 0) {
+                        const elapsed = performance.now() - mirrorWaveStart;
+                        const progress = Math.min(elapsed / MIRROR_WAVE_DURATION, 1); // 0→1
+                        mirrorWaveFlipped = (1 - rowNorm) <= progress; // 아래부터 뒤집힘
+                    }
+                    if (stripeWaveStart > 0) {
+                        const elapsed = performance.now() - stripeWaveStart;
+                        const progress = Math.min(elapsed / MIRROR_WAVE_DURATION, 1); // 0→1
+                        stripeWaveApplied = (1 - rowNorm) <= progress; // 아래부터 스트라이프 적용
+                    }
                 }
-                const isReversed = mirrorballActive || waveFlipped;
+                let isReversed = mirrorballActive || mirrorWaveFlipped;
+                if ((stripeballActive || stripeWaveApplied) && isStripeNormalRow(blk.num)) {
+                    isReversed = false;
+                }
                 const label = isReversed ? String(blk.num).split('').reverse().join('') : String(blk.num);
 
                 const showLabel = !flashballActive || flashballVisible || isGuide;
@@ -2235,8 +2352,40 @@
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fillStyle = fbGrad;
                     ctx.fill();
+                } else if (b.isStripeBall) {
+                    // 스트라이프볼 — 줄무늬 야구공
+                    const r = b.radius;
+                    ctx.save();
+                    ctx.translate(b.x, b.y);
+                    ctx.rotate(performance.now() * 0.008);
+
+                    const stripeGrad = ctx.createRadialGradient(-r * 0.35, -r * 0.35, 1, 0, 0, r);
+                    stripeGrad.addColorStop(0, '#ffffff');
+                    stripeGrad.addColorStop(0.55, '#f6f8ff');
+                    stripeGrad.addColorStop(1, '#b8c6d8');
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r, 0, Math.PI * 2);
+                    ctx.fillStyle = stripeGrad;
+                    ctx.fill();
+                    ctx.clip();
+
+                    ctx.lineWidth = r * 0.35;
+                    ctx.strokeStyle = '#111827';
+                    for (let sx = -r * 2; sx <= r * 2; sx += r * 0.75) {
+                        ctx.beginPath();
+                        ctx.moveTo(sx, -r * 1.8);
+                        ctx.lineTo(sx + r * 1.2, r * 1.8);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#ccff00';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
                 } else if (b.isFlashBall) {
-                    // 201번 공 — 번쩍이는 플래시볼
+                    // 301번 공 — 번쩍이는 플래시볼
                     const r = b.radius;
                     const t = performance.now() * 0.01;
                     const spikes = 8;
@@ -2513,6 +2662,7 @@
         let battleStarted = false;
         let battleResultShown = false;
         let battleResultListener = null;
+        let battleRematchStarted = false;
         let rematchTimer = null;
         let rematchSeconds = 10;
         let rematchListener = null;
@@ -2537,6 +2687,9 @@
                 id,
                 score: 0,
                 done: false,
+                rank: null,
+                finishOrder: null,
+                finishedAt: null,
                 name: '',
                 isHost: false,
                 joinedAt: 0,
@@ -2593,6 +2746,7 @@
             battleMode = false;
             battleStarted = false;
             battleResultShown = false;
+            battleRematchStarted = false;
         }
 
         function returnToIntroAfterBattle(removeHostRoom = false) {
@@ -2624,6 +2778,9 @@
             const hostPlayer = {
                 score: 0,
                 done: false,
+                rank: null,
+                finishOrder: null,
+                finishedAt: null,
                 name: 'HOST',
                 isHost: true,
                 joinedAt: Date.now()
@@ -2655,36 +2812,47 @@
 
             const playerId = genBattlePlayerId();
             const joinedAt = Date.now();
-            battleRef.child(code).transaction(room => {
-                if (!room || room.status !== 'waiting') return;
-                if (room.joinLocked) return;
-                const players = room.players || {};
-                const playerCount = Object.keys(players).length;
-                if (playerCount >= MAX_BATTLE_PLAYERS) return;
-
-                players[playerId] = {
-                    score: 0,
-                    done: false,
-                    name: `P${playerCount + 1}`,
-                    isHost: false,
-                    joinedAt
-                };
-                room.players = players;
-                return room;
-            }, (error, committed) => {
-                if (error || !committed) {
+            battleRef.child(code).once('value').then(snap => {
+                const room = snap.val();
+                if (!room || room.status !== 'waiting' || room.joinLocked) {
                     alert(currentLang === 'ko' ? '방을 찾을 수 없거나 가득 찼습니다.' : '部屋が見つからないか満員です。');
                     return;
                 }
 
-                leaveBattleRoom(true);
-                battleRoomId = code;
-                battleRole = 'guest';
-                battlePlayerId = playerId;
-                battleStarted = false;
-                battleResultShown = false;
-                document.getElementById('battle-room-code').innerText = code;
-                listenBattleRoom(code);
+                battleRef.child(code + '/players').transaction(players => {
+                    players = players || {};
+                    const playerCount = Object.keys(players).length;
+                    if (playerCount >= MAX_BATTLE_PLAYERS) return;
+
+                    players[playerId] = {
+                        score: 0,
+                        done: false,
+                        rank: null,
+                        finishOrder: null,
+                        finishedAt: null,
+                        name: `P${playerCount + 1}`,
+                        isHost: false,
+                        joinedAt
+                    };
+                    return players;
+                }, (error, committed) => {
+                    if (error || !committed) {
+                        alert(currentLang === 'ko' ? '방을 찾을 수 없거나 가득 찼습니다.' : '部屋が見つからないか満員です。');
+                        return;
+                    }
+
+                    leaveBattleRoom(true);
+                    battleRoomId = code;
+                    battleRole = 'guest';
+                    battlePlayerId = playerId;
+                    battleStarted = false;
+                    battleResultShown = false;
+                    battleRematchStarted = false;
+                    document.getElementById('battle-room-code').innerText = code;
+                    listenBattleRoom(code);
+                });
+            }).catch(() => {
+                alert(currentLang === 'ko' ? '방을 찾을 수 없거나 가득 찼습니다.' : '部屋が見つからないか満員です。');
             });
         }
 
@@ -2701,11 +2869,16 @@
                 const updates = {
                     status: 'playing',
                     startedAt: Date.now(),
+                    endedAt: null,
+                    finishCounter: 0,
                     rematch: null
                 };
                 players.forEach(player => {
                     updates['players/' + player.id + '/score'] = 0;
                     updates['players/' + player.id + '/done'] = false;
+                    updates['players/' + player.id + '/rank'] = null;
+                    updates['players/' + player.id + '/finishOrder'] = null;
+                    updates['players/' + player.id + '/finishedAt'] = null;
                 });
                 battleRef.child(battleRoomId).update(updates);
             });
@@ -2742,6 +2915,7 @@
                     battleStarted = false;
                     battleMode = false;
                     battleResultShown = false;
+                    battleRematchStarted = false;
                     document.getElementById('battle-result-screen').classList.add('hidden');
                     document.getElementById('battle-hud').style.display = 'none';
                     document.getElementById('battle-screen').classList.remove('hidden');
@@ -2752,7 +2926,16 @@
 
                 if (room.status === 'playing') {
                     renderBattleHud(room);
-                    startBattle();
+                    if (battlePlayers[battlePlayerId].done) {
+                        if (battleMode) {
+                            battleMode = false;
+                            gameState = 'GAMEOVER';
+                            stopAllBgm();
+                        }
+                        showBattleResult(room);
+                    } else {
+                        startBattle();
+                    }
                     return;
                 }
 
@@ -2762,13 +2945,8 @@
                         battleMode = false;
                         gameState = 'GAMEOVER';
                         stopAllBgm();
-                        const savedScore = score;
-                        battleRef.child(roomId + '/players/' + battlePlayerId).update({ score: savedScore, done: true })
-                            .then(() => waitForBattleFinalResult())
-                            .catch(() => waitForBattleFinalResult());
-                    } else if (battleStarted && !battleResultShown) {
-                        waitForBattleFinalResult();
                     }
+                    showBattleResult(room);
                 }
             };
             battleRef.child(roomId).on('value', battleListener);
@@ -2823,6 +3001,7 @@
             if (battleStarted) return;
             battleStarted = true;
             battleResultShown = false;
+            battleRematchStarted = false;
             clearBattleResultListener();
             clearRematchListener();
             battleMode = true;
@@ -2855,59 +3034,108 @@
                 battlePlayers[battlePlayerId].done = true;
                 renderBattleHud({ players: battlePlayers });
             }
-            battleRef.child(battleRoomId + '/players/' + battlePlayerId).update({ score: savedScore, done: true })
-                .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
-                .then(() => waitForBattleFinalResult())
-                .catch(() => waitForBattleFinalResult());
+            finishBattlePlayer(savedScore);
         }
 
-        function waitForBattleFinalResult() {
-            if (!battleRoomId || !battlePlayerId || battleResultShown || battleResultListener) return;
-
+        function finishBattlePlayer(finalScore) {
             const roomId = battleRoomId;
-            battleResultListener = snap => {
-                if (battleResultShown) return;
-                const room = snap.val();
-                if (!room || !room.players) return;
-                const players = getBattlePlayerList(room);
-                if (players.length < 2 || !players.every(player => player.done)) return;
+            const playerId = battlePlayerId;
+            const finishedAt = Date.now();
+            battleRef.child(roomId).transaction(room => {
+                if (!room || !room.players || !room.players[playerId]) return room;
+                if (room.players[playerId].done) return room;
 
-                battleResultShown = true;
-                clearBattleResultListener(roomId);
-                showBattleResult(room);
-            };
-            battleRef.child(roomId).on('value', battleResultListener);
+                const players = room.players;
+                const ids = Object.keys(players);
+                const total = ids.length;
+                const doneCount = ids.filter(id => players[id].done).length;
+                const finishOrder = doneCount + 1;
+
+                players[playerId] = {
+                    ...players[playerId],
+                    score: finalScore,
+                    done: true,
+                    finishOrder,
+                    rank: total - finishOrder + 1,
+                    finishedAt
+                };
+
+                const remainingIds = ids.filter(id => !players[id].done);
+                let finishCounter = finishOrder;
+                if (remainingIds.length === 1) {
+                    const winnerId = remainingIds[0];
+                    players[winnerId] = {
+                        ...players[winnerId],
+                        done: true,
+                        finishOrder: total,
+                        rank: 1,
+                        finishedAt,
+                        score: Number(players[winnerId].score || 0)
+                    };
+                    room.status = 'ended';
+                    room.endedAt = finishedAt;
+                    finishCounter = total;
+                } else if (remainingIds.length === 0) {
+                    room.status = 'ended';
+                    room.endedAt = finishedAt;
+                }
+
+                room.players = players;
+                room.finishCounter = finishCounter;
+                return room;
+            }, (error, committed, snap) => {
+                const room = snap && snap.val();
+                if (!error && committed && room) {
+                    battlePlayers = room.players || {};
+                    showBattleResult(room);
+                }
+            });
         }
 
         function showBattleResult(room) {
+            const firstResultRender = !battleResultShown;
             battlePlayers = room.players || {};
             const players = getBattlePlayerList(room).sort((a, b) => {
+                const rankA = Number(a.rank || 999);
+                const rankB = Number(b.rank || 999);
+                const rankDiff = rankA - rankB;
                 const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
-                return scoreDiff || ((a.joinedAt || 0) - (b.joinedAt || 0));
+                return rankDiff || scoreDiff || ((a.joinedAt || 0) - (b.joinedAt || 0));
             });
             const myPlayer = players.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
+            const myRank = Number(myPlayer.rank || 0);
             const topScore = players.length ? Number(players[0].score || 0) : 0;
-            const topCount = players.filter(player => Number(player.score || 0) === topScore).length;
 
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('hidden');
 
             const isKo = currentLang === 'ko';
             let resultText, resultClass;
-            if (myScore === topScore && topCount === 1) {
+            if (myRank === 1) {
                 resultText = isKo ? '승리!' : 'WIN!';
                 resultClass = 'win';
-            } else if (myScore === topScore) {
-                resultText = isKo ? '무승부' : 'DRAW';
-                resultClass = 'draw';
-            } else {
-                resultText = isKo ? '패배...' : 'LOSE';
+            } else if (myRank > 1) {
+                resultText = isKo ? `${myRank}위` : `${myRank}位`;
                 resultClass = 'lose';
+            } else {
+                const topCount = players.filter(player => Number(player.score || 0) === topScore).length;
+                if (myScore === topScore && topCount === 1) {
+                    resultText = isKo ? '승리!' : 'WIN!';
+                    resultClass = 'win';
+                } else if (myScore === topScore) {
+                    resultText = isKo ? '무승부' : 'DRAW';
+                    resultClass = 'draw';
+                } else {
+                    resultText = isKo ? '패배...' : 'LOSE';
+                    resultClass = 'lose';
+                }
             }
 
-            if (resultClass === 'win') playSfx('win', 1.0);
-            else playSfx('gameover', 1.0);
+            if (firstResultRender) {
+                if (resultClass === 'win') playSfx('win', 1.0);
+                else playSfx('gameover', 1.0);
+            }
 
             const titleEl = document.getElementById('battle-result-title');
             titleEl.innerText = resultText;
@@ -2916,15 +3144,24 @@
             document.getElementById('battle-score-list').innerHTML = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const scoreText = Number(player.score || 0);
-                const winnerClass = scoreText === topScore ? ' winner' : '';
+                const rankText = player.rank ? player.rank : index + 1;
+                const winnerClass = Number(player.rank || 0) === 1 ? ' winner' : '';
                 return `<div class="battle-score-card${winnerClass}">
-                    <div class="bsc-name">${index + 1}. ${label}</div>
+                    <div class="bsc-name">${rankText}. ${label}</div>
                     <div class="bsc-score">${scoreText}</div>
                 </div>`;
             }).join('');
 
             document.getElementById('battle-result-screen').classList.remove('hidden');
-            startRematchCountdown();
+            battleResultShown = true;
+            if (room.status === 'ended') {
+                if (!battleRematchStarted) startRematchCountdown();
+            } else {
+                document.getElementById('battle-rematch-btn').disabled = true;
+                document.getElementById('rematch-countdown').innerText = '-';
+                document.getElementById('rematch-status').innerText =
+                    isKo ? '다른 플레이어 경기 중...' : '他のプレイヤーがプレイ中...';
+            }
         }
 
         function cancelBattle() {
@@ -2937,6 +3174,7 @@
         function startRematchCountdown() {
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+            battleRematchStarted = true;
 
             rematchSeconds = 10;
             document.getElementById('rematch-countdown').innerText = rematchSeconds;
@@ -3005,6 +3243,9 @@
                             ...room.players[id],
                             score: 0,
                             done: false,
+                            rank: null,
+                            finishOrder: null,
+                            finishedAt: null,
                             isHost: id === hostId
                         };
                     });
@@ -3013,6 +3254,7 @@
                     players: nextPlayers,
                     status: 'waiting',
                     joinLocked: true,
+                    finishCounter: 0,
                     rematch: null,
                     startedAt: null
                 });
