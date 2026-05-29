@@ -2543,9 +2543,13 @@
 
         let battleStarted = false;
         let battleOppScore = 0; // 상대 최종 점수 로컬 저장
+        let battleResultShown = false;
+        let battleResultListener = null;
         function startBattle() {
             if (battleStarted) return; // 중복 호출 방지
             battleStarted = true;
+            battleResultShown = false;
+            clearBattleResultListener();
 
             // 호스트 리스너 정리
             if (battleListener) {
@@ -2577,17 +2581,10 @@
                     battleMode = false;
                     gameState = 'GAMEOVER';
                     stopAllBgm();
-                    // 내 최종 점수 저장 후 상대 점수 읽어서 결과 표시
                     const savedScore = score;
                     battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
-                        .then(() => {
-                            // 상대 점수 직접 읽기
-                            battleRef.child(battleRoomId + '/' + oppRole + '/score').once('value').then(s => {
-                                const oppS = typeof s.val() === 'number' ? s.val() : battleOppScore;
-                                showBattleResultDirect(savedScore, oppS);
-                            }).catch(() => showBattleResultDirect(savedScore, battleOppScore));
-                        })
-                        .catch(() => showBattleResultDirect(savedScore, battleOppScore));
+                        .then(() => waitForBattleFinalResult())
+                        .catch(() => waitForBattleFinalResult());
                 }
             });
 
@@ -2606,10 +2603,33 @@
             battleMode = false;
             const savedScore = score;
             document.getElementById('hud-my-score').innerText = savedScore;
-            // 내 점수 저장 → 종료 신호 → 결과 표시
             battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
                 .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
-                .then(() => showBattleResultDirect(savedScore, battleOppScore));
+                .then(() => waitForBattleFinalResult())
+                .catch(() => waitForBattleFinalResult());
+        }
+
+        function waitForBattleFinalResult() {
+            if (!battleRoomId || !battleRole || battleResultShown || battleResultListener) return;
+
+            const roomId = battleRoomId;
+            battleResultListener = snap => {
+                if (battleResultShown) return;
+                const room = snap.val();
+                if (!room || !room.host || !room.guest) return;
+                if (!room.host.done || !room.guest.done) return;
+
+                battleResultShown = true;
+                clearBattleResultListener(roomId);
+                showBattleResult(room);
+            };
+            battleRef.child(roomId).on('value', battleResultListener);
+        }
+
+        function clearBattleResultListener(roomId = battleRoomId) {
+            if (!battleResultListener || !roomId) return;
+            battleRef.child(roomId).off('value', battleResultListener);
+            battleResultListener = null;
         }
 
         function showBattleResultDirect(myScore, oppScore) {
@@ -2652,11 +2672,13 @@
         }
 
         function cancelBattle() {
+            clearBattleResultListener();
             if (battleRoomId) battleRef.child(battleRoomId).remove();
             battleRoomId  = null;
             battleRole    = null;
             battleMode    = false;
             battleStarted = false;
+            battleResultShown = false;
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('intro-screen').classList.remove('hidden');
         }
@@ -2716,11 +2738,13 @@
         }
 
         function doRematch() {
+            clearBattleResultListener();
             document.getElementById('battle-result-screen').classList.add('hidden');
             // 상태 초기화 후 재경기
             battleStarted = false;
             battleMode    = false;
             battleOppScore = 0;
+            battleResultShown = false;
             // 방 리셋 (host가 처리)
             if (battleRole === 'host') {
                 battleRef.child(battleRoomId).update({
@@ -2780,6 +2804,7 @@
 
         function exitBattle() {
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+            clearBattleResultListener();
             if (battleRoomId) {
                 battleRef.child(battleRoomId + '/rematch').off();
                 battleRef.child(battleRoomId).remove();
@@ -2787,6 +2812,7 @@
             battleMode    = false;
             battleStarted = false;
             battleOppScore = 0;
+            battleResultShown = false;
             battleRoomId  = null;
             battleRole    = null;
             document.getElementById('battle-result-screen').classList.add('hidden');
