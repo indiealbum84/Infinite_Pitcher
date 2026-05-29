@@ -556,7 +556,7 @@
             object-fit: cover;
         }
 
-        /* ── 1:1 대전 ── */
+        /* ── 다인 대전 ── */
         #battle-screen {
             background-color: #ffffff;
             z-index: 18;
@@ -594,6 +594,46 @@
             animation: blink 1.2s ease-in-out infinite;
         }
 
+        .battle-player-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            width: 280px;
+            margin: -2px 0 2px;
+        }
+
+        .battle-player-pill {
+            background: #f1f5f9;
+            border: 2px solid #1e293b;
+            border-radius: 8px;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 6px 8px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .battle-player-pill.me {
+            background: var(--primary-neon);
+            color: #000;
+        }
+
+        #battle-start-btn {
+            width: 220px;
+            padding: 10px 18px;
+            font-size: 20px;
+        }
+
+        #battle-start-btn:disabled {
+            opacity: 0.35;
+            transform: none;
+            box-shadow: 0 6px 0 #94a3b8, 0 6px 0 2px #000;
+            pointer-events: none;
+        }
+
         .battle-divider {
             font-size: 13px;
             color: #94a3b8;
@@ -621,14 +661,16 @@
             pointer-events: auto !important;
         }
 
-        /* 게임 중 상대 점수 HUD */
+        /* 게임 중 점수 HUD */
         #battle-hud {
             position: absolute;
             top: 0; left: 0; right: 0;
             display: none;
             justify-content: center;
             align-items: center;
-            gap: 0;
+            gap: 4px;
+            flex-wrap: wrap;
+            padding: 0 6px;
             z-index: 6;
             pointer-events: none;
         }
@@ -638,10 +680,15 @@
             color: #fff;
             font-size: 11px;
             font-weight: 900;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 0 0 10px 10px;
             text-align: center;
-            min-width: 90px;
+            min-width: 52px;
+        }
+
+        .battle-hud-box.me {
+            background: rgba(204,255,0,0.9);
+            color: #000;
         }
 
         .battle-hud-box span {
@@ -652,13 +699,8 @@
             letter-spacing: 1px;
         }
 
-        .battle-hud-vs {
-            background: #000;
-            color: var(--primary-neon);
-            font-family: 'Bangers', cursive;
-            font-size: 16px;
-            padding: 4px 8px;
-            border-radius: 0 0 8px 8px;
+        .battle-hud-box.me span {
+            color: #000;
         }
 
         /* 대전 결과 화면 */
@@ -679,17 +721,20 @@
 
         .battle-scores {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
             margin: 14px 0;
+            max-width: 340px;
         }
 
         .battle-score-card {
             background: rgba(255,255,255,0.08);
             border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 14px;
-            padding: 12px 22px;
+            border-radius: 8px;
+            padding: 10px 12px;
             text-align: center;
-            min-width: 100px;
+            min-width: 72px;
         }
 
         .battle-score-card.winner {
@@ -917,7 +962,7 @@
                 <div class="main-character-img"></div>
             </div>
             <button id="start-btn-id" class="start-btn">スタート</button>
-            <button id="battle-btn" class="start-btn" onclick="openBattleScreen()" style="margin-top:8px;background:#1e293b;box-shadow:0 6px 0 var(--primary-neon),0 6px 0 2px #000;">1:1 대전</button>
+            <button id="battle-btn" class="start-btn" onclick="openBattleScreen()" style="margin-top:8px;background:#1e293b;box-shadow:0 6px 0 var(--primary-neon),0 6px 0 2px #000;">대전</button>
             <div id="test-start-row">
                 <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
                 <div id="test-num-row" style="display:none;gap:6px;align-items:center;">
@@ -963,15 +1008,17 @@
             </div>
         </div>
 
-        <!-- 1:1 대전 매칭 화면 -->
+        <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
-            <p class="battle-title" id="battle-screen-title">1:1 대전</p>
+            <p class="battle-title" id="battle-screen-title">최대 8인 대전</p>
 
             <!-- 방 만들기 섹션 -->
             <div id="battle-create-section">
                 <p style="font-size:13px;color:#475569;font-weight:700;margin:0 0 6px;">내 방 코드</p>
                 <div class="battle-code-box" id="battle-room-code">----</div>
                 <p class="battle-waiting" id="battle-waiting-text">상대방을 기다리는 중...</p>
+                <div class="battle-player-list" id="battle-player-list"></div>
+                <button class="start-btn" id="battle-start-btn" onclick="startBattleRoom()" disabled>게임 시작</button>
             </div>
 
             <p class="battle-divider">── 또는 ──</p>
@@ -987,31 +1034,12 @@
         </div>
 
         <!-- 대전 중 상단 HUD -->
-        <div id="battle-hud">
-            <div class="battle-hud-box" id="hud-me">
-                나
-                <span id="hud-my-score">0</span>
-            </div>
-            <div class="battle-hud-vs">VS</div>
-            <div class="battle-hud-box" id="hud-opp">
-                상대
-                <span id="hud-opp-score">0</span>
-            </div>
-        </div>
+        <div id="battle-hud"></div>
 
         <!-- 대전 결과 화면 -->
         <div id="battle-result-screen" class="screen hidden">
             <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
-            <div class="battle-scores">
-                <div class="battle-score-card" id="bsc-me">
-                    <div class="bsc-name" id="bsc-me-name">나</div>
-                    <div class="bsc-score" id="bsc-me-score">0</div>
-                </div>
-                <div class="battle-score-card" id="bsc-opp">
-                    <div class="bsc-name" id="bsc-opp-name">상대</div>
-                    <div class="bsc-score" id="bsc-opp-score">0</div>
-                </div>
-            </div>
+            <div class="battle-scores" id="battle-score-list"></div>
             <button class="start-btn" id="battle-rematch-btn" onclick="requestRematch()" style="margin-bottom:8px;">다시하기 (<span id="rematch-countdown">10</span>)</button>
             <p id="rematch-status" style="color:#94a3b8;font-size:13px;font-weight:700;margin:0 0 8px;min-height:18px;"></p>
             <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
@@ -1873,14 +1901,14 @@
             if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
             flashballActive  = true;
             flashballVisible = true;
-            // 0.4초 보임 → 0.2초 숨김 루프
+            // 0.4초 보임 -> 0.4초 숨김 루프
             function tick() {
                 if (!flashballActive) return;
                 flashballVisible = true;
                 flashballTimer = setTimeout(() => {
                     if (!flashballActive) return;
                     flashballVisible = false;
-                    flashballTimer = setTimeout(tick, 200);
+                    flashballTimer = setTimeout(tick, 400);
                 }, 400);
             }
             tick();
@@ -2121,6 +2149,9 @@
             ctx.stroke();
             ctx.restore();
 
+            const mirrorGuideActive = mirrorballShotPending || balls.some(b => b.isMirrorBall && !b.activated);
+            const flashGuideActive  = flashballShotPending || balls.some(b => b.isFlashBall && !b.activated);
+
             // Draw Blocks
             blocks.forEach(blk => {
                 if (!blk.active) return;
@@ -2129,9 +2160,7 @@
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isMirrorNext   = mirrorballShotPending;
-                const isFlashNext    = flashballShotPending;
-                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext || isFlashNext);
+                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || flashGuideActive);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
 
@@ -2471,159 +2500,60 @@
         draw();
 
         /**
-         * 1:1 BATTLE
+         * BATTLE
          */
         const battleRef = db.ref('battles');
-        let battleRoomId   = null;  // 현재 참가 중인 방 ID
-        let battleRole     = null;  // 'host' | 'guest'
-        let battleMyName   = 'ME';
-        let battleOppName  = '상대';
+        const MAX_BATTLE_PLAYERS = 8;
+        let battleRoomId = null;
+        let battleRole = null; // 'host' | 'guest'
+        let battlePlayerId = null;
+        let battlePlayers = {};
         let battleListener = null;
-        let battleMode     = false;
+        let battleMode = false;
+        let battleStarted = false;
+        let battleResultShown = false;
+        let battleResultListener = null;
+        let rematchTimer = null;
+        let rematchSeconds = 10;
+        let rematchListener = null;
 
         function genCode() {
             return Math.floor(1000 + Math.random() * 9000).toString();
         }
 
-        function openBattleScreen() {
-            if (testMode) {
-                alert('TEST 모드에서는 1:1 대전을 이용할 수 없습니다.');
-                return;
-            }
-            document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('battle-screen').classList.remove('hidden');
-            applyBattleLang();
-
-            // 방 코드 생성 & Firebase에 등록
-            const code = genCode();
-            battleRoomId = code;
-            battleRole   = 'host';
-            battleRef.child(code).set({
-                code,
-                host:  { score: 0, done: false, name: '' },
-                guest: { score: 0, done: false, name: '' },
-                status: 'waiting',
-                createdAt: Date.now()
-            });
-
-            document.getElementById('battle-room-code').innerText = code;
-
-            // 게스트 참가 감지
-            battleListener = battleRef.child(code + '/status').on('value', snap => {
-                if (snap.val() === 'playing') startBattle();
-            });
+        function genBattlePlayerId() {
+            return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
         }
 
-        function joinBattleRoom() {
-            const code = document.getElementById('battle-code-input').value.trim();
-            if (code.length !== 4) return;
-            battleRef.child(code).once('value').then(snap => {
-                if (!snap.exists() || snap.val().status !== 'waiting') {
-                    alert('방을 찾을 수 없습니다.');
-                    return;
-                }
-                battleRoomId = code;
-                battleRole   = 'guest';
-                battleRef.child(code + '/guest/name').set('guest');
-                // status를 playing으로 바꾼 후 게스트도 바로 startBattle
-                battleRef.child(code + '/status').set('playing').then(() => {
-                    startBattle();
-                });
-            });
+        function escapeBattleText(value) {
+            return String(value).replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[ch]));
         }
 
-        function applyBattleLang() {
-            const isKo = currentLang === 'ko';
-            document.getElementById('battle-screen-title').innerText   = isKo ? '1:1 대전' : '1:1 バトル';
-            document.getElementById('battle-waiting-text').innerText   = isKo ? '상대방을 기다리는 중...' : '相手を待っています...';
-            document.getElementById('battle-cancel-btn').innerText     = isKo ? '메인메뉴' : 'メインへ';
-            document.getElementById('battle-join-btn').innerText       = isKo ? '참가' : '参加';
-            document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
+        function getBattlePlayerList(room = null) {
+            const players = room && room.players ? room.players : battlePlayers;
+            return Object.keys(players || {}).map(id => ({
+                id,
+                score: 0,
+                done: false,
+                name: '',
+                isHost: false,
+                joinedAt: 0,
+                ...players[id]
+            })).sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
         }
 
-        let battleStarted = false;
-        let battleOppScore = 0; // 상대 최종 점수 로컬 저장
-        let battleResultShown = false;
-        let battleResultListener = null;
-        function startBattle() {
-            if (battleStarted) return; // 중복 호출 방지
-            battleStarted = true;
-            battleResultShown = false;
-            clearBattleResultListener();
-
-            // 호스트 리스너 정리
-            if (battleListener) {
-                battleRef.child(battleRoomId + '/status').off('value', battleListener);
-                battleListener = null;
-            }
-            battleMode = true;
-
-            // HUD 표시 (내부 요소 건드리지 않음)
-            document.getElementById('battle-hud').style.display = 'flex';
-            document.getElementById('hud-my-score').innerText = '0';
-            document.getElementById('hud-opp-score').innerText = '0';
-
-            // 모든 화면 숨기기
-            document.getElementById('battle-screen').classList.add('hidden');
-            document.getElementById('intro-screen').classList.add('hidden');
-
-            // 상대 점수 실시간 감시
-            const oppRole = battleRole === 'host' ? 'guest' : 'host';
-            battleRef.child(battleRoomId + '/' + oppRole + '/score').on('value', snap => {
-                const v = snap.val();
-                if (typeof v === 'number') {
-                    battleOppScore = v;
-                    document.getElementById('hud-opp-score').innerText = v;
-                }
-            });
-            battleRef.child(battleRoomId + '/status').on('value', snap => {
-                if (snap.val() === 'ended' && battleMode) {
-                    battleMode = false;
-                    gameState = 'GAMEOVER';
-                    stopAllBgm();
-                    const savedScore = score;
-                    battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
-                        .then(() => waitForBattleFinalResult())
-                        .catch(() => waitForBattleFinalResult());
-                }
-            });
-
-            startGame();
+        function getBattlePlayerLabel(player, index) {
+            if (player.id === battlePlayerId) return currentLang === 'ko' ? '나' : '自分';
+            if (player.isHost) return currentLang === 'ko' ? '방장' : 'ホスト';
+            return player.name || `P${index + 1}`;
         }
 
-        // 게임 중 내 점수를 Firebase에 계속 업데이트
-        function battleSyncScore() {
-            if (!battleMode || !battleRoomId) return;
-            battleRef.child(battleRoomId + '/' + battleRole + '/score').set(score);
-            document.getElementById('hud-my-score').innerText = score;
-        }
-
-        function battleGameOver() {
-            if (!battleMode || !battleRoomId) return;
-            battleMode = false;
-            const savedScore = score;
-            document.getElementById('hud-my-score').innerText = savedScore;
-            battleRef.child(battleRoomId + '/' + battleRole).update({ score: savedScore, done: true })
-                .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
-                .then(() => waitForBattleFinalResult())
-                .catch(() => waitForBattleFinalResult());
-        }
-
-        function waitForBattleFinalResult() {
-            if (!battleRoomId || !battleRole || battleResultShown || battleResultListener) return;
-
-            const roomId = battleRoomId;
-            battleResultListener = snap => {
-                if (battleResultShown) return;
-                const room = snap.val();
-                if (!room || !room.host || !room.guest) return;
-                if (!room.host.done || !room.guest.done) return;
-
-                battleResultShown = true;
-                clearBattleResultListener(roomId);
-                showBattleResult(room);
-            };
-            battleRef.child(roomId).on('value', battleResultListener);
+        function clearBattleRoomListener(roomId = battleRoomId) {
+            if (!battleListener || !roomId) return;
+            battleRef.child(roomId).off('value', battleListener);
+            battleListener = null;
         }
 
         function clearBattleResultListener(roomId = battleRoomId) {
@@ -2632,64 +2562,382 @@
             battleResultListener = null;
         }
 
-        function showBattleResultDirect(myScore, oppScore) {
+        function clearRematchListener(roomId = battleRoomId) {
+            if (!rematchListener || !roomId) return;
+            battleRef.child(roomId + '/rematch').off('value', rematchListener);
+            rematchListener = null;
+        }
+
+        function leaveBattleRoom(removeHostRoom) {
+            const roomId = battleRoomId;
+            const playerId = battlePlayerId;
+            const role = battleRole;
+
+            clearBattleRoomListener(roomId);
+            clearBattleResultListener(roomId);
+            clearRematchListener(roomId);
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+
+            if (roomId) {
+                if (role === 'host' && removeHostRoom) {
+                    battleRef.child(roomId).remove();
+                } else if (playerId) {
+                    battleRef.child(roomId + '/players/' + playerId).remove();
+                }
+            }
+
+            battleRoomId = null;
+            battleRole = null;
+            battlePlayerId = null;
+            battlePlayers = {};
+            battleMode = false;
+            battleStarted = false;
+            battleResultShown = false;
+        }
+
+        function returnToIntroAfterBattle(removeHostRoom = false) {
+            leaveBattleRoom(removeHostRoom);
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
+        }
+
+        function openBattleScreen() {
+            if (testMode) {
+                alert('TEST 모드에서는 대전을 이용할 수 없습니다.');
+                return;
+            }
+
+            leaveBattleRoom(true);
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-screen').classList.remove('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-code-input').value = '';
+            applyBattleLang();
+
+            const code = genCode();
+            const playerId = genBattlePlayerId();
+            const hostPlayer = {
+                score: 0,
+                done: false,
+                name: 'HOST',
+                isHost: true,
+                joinedAt: Date.now()
+            };
+
+            battleRoomId = code;
+            battleRole = 'host';
+            battlePlayerId = playerId;
+            battlePlayers = { [playerId]: hostPlayer };
+
+            battleRef.child(code).set({
+                code,
+                hostId: playerId,
+                maxPlayers: MAX_BATTLE_PLAYERS,
+                players: battlePlayers,
+                status: 'waiting',
+                joinLocked: false,
+                createdAt: Date.now()
+            }).then(() => listenBattleRoom(code));
+
+            document.getElementById('battle-room-code').innerText = code;
+            renderBattleLobby({ players: battlePlayers, status: 'waiting' });
+        }
+
+        function joinBattleRoom() {
+            const code = document.getElementById('battle-code-input').value.trim();
+            if (code.length !== 4) return;
+            if (battleRoomId === code) return;
+
+            const playerId = genBattlePlayerId();
+            const joinedAt = Date.now();
+            battleRef.child(code).transaction(room => {
+                if (!room || room.status !== 'waiting') return;
+                if (room.joinLocked) return;
+                const players = room.players || {};
+                const playerCount = Object.keys(players).length;
+                if (playerCount >= MAX_BATTLE_PLAYERS) return;
+
+                players[playerId] = {
+                    score: 0,
+                    done: false,
+                    name: `P${playerCount + 1}`,
+                    isHost: false,
+                    joinedAt
+                };
+                room.players = players;
+                return room;
+            }, (error, committed) => {
+                if (error || !committed) {
+                    alert(currentLang === 'ko' ? '방을 찾을 수 없거나 가득 찼습니다.' : '部屋が見つからないか満員です。');
+                    return;
+                }
+
+                leaveBattleRoom(true);
+                battleRoomId = code;
+                battleRole = 'guest';
+                battlePlayerId = playerId;
+                battleStarted = false;
+                battleResultShown = false;
+                document.getElementById('battle-room-code').innerText = code;
+                listenBattleRoom(code);
+            });
+        }
+
+        function startBattleRoom() {
+            if (!battleRoomId || battleRole !== 'host') return;
+            battleRef.child(battleRoomId).once('value').then(snap => {
+                const room = snap.val();
+                const players = getBattlePlayerList(room);
+                if (!room || room.status !== 'waiting' || players.length < 2) {
+                    alert(currentLang === 'ko' ? '2명 이상 모이면 시작할 수 있습니다.' : '2人以上で開始できます。');
+                    return;
+                }
+
+                const updates = {
+                    status: 'playing',
+                    startedAt: Date.now(),
+                    rematch: null
+                };
+                players.forEach(player => {
+                    updates['players/' + player.id + '/score'] = 0;
+                    updates['players/' + player.id + '/done'] = false;
+                });
+                battleRef.child(battleRoomId).update(updates);
+            });
+        }
+
+        function listenBattleRoom(roomId) {
+            clearBattleRoomListener(roomId);
+            battleListener = snap => {
+                const room = snap.val();
+                if (!room) {
+                    if (battleRoomId === roomId) {
+                        returnToIntroAfterBattle();
+                    }
+                    return;
+                }
+
+                battlePlayers = room.players || {};
+                if (!battlePlayers[battlePlayerId]) {
+                    if (room.status === 'waiting' || room.status === 'playing' || room.status === 'closed') {
+                        returnToIntroAfterBattle();
+                    }
+                    return;
+                }
+
+                if (room.status === 'closed') {
+                    returnToIntroAfterBattle(battleRole === 'host');
+                    return;
+                }
+
+                if (room.status === 'waiting') {
+                    clearBattleResultListener();
+                    clearRematchListener();
+                    if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+                    battleStarted = false;
+                    battleMode = false;
+                    battleResultShown = false;
+                    document.getElementById('battle-result-screen').classList.add('hidden');
+                    document.getElementById('battle-hud').style.display = 'none';
+                    document.getElementById('battle-screen').classList.remove('hidden');
+                    document.getElementById('intro-screen').classList.add('hidden');
+                    renderBattleLobby(room);
+                    return;
+                }
+
+                if (room.status === 'playing') {
+                    renderBattleHud(room);
+                    startBattle();
+                    return;
+                }
+
+                if (room.status === 'ended') {
+                    renderBattleHud(room);
+                    if (battleMode) {
+                        battleMode = false;
+                        gameState = 'GAMEOVER';
+                        stopAllBgm();
+                        const savedScore = score;
+                        battleRef.child(roomId + '/players/' + battlePlayerId).update({ score: savedScore, done: true })
+                            .then(() => waitForBattleFinalResult())
+                            .catch(() => waitForBattleFinalResult());
+                    } else if (battleStarted && !battleResultShown) {
+                        waitForBattleFinalResult();
+                    }
+                }
+            };
+            battleRef.child(roomId).on('value', battleListener);
+        }
+
+        function renderBattleLobby(room) {
+            const players = getBattlePlayerList(room);
+            const isKo = currentLang === 'ko';
+            const isHost = battleRole === 'host';
+            const waitingEl = document.getElementById('battle-waiting-text');
+            const startBtn = document.getElementById('battle-start-btn');
+            const listEl = document.getElementById('battle-player-list');
+
+            waitingEl.innerText = isHost
+                ? (isKo ? `참가자 ${players.length}/${MAX_BATTLE_PLAYERS}명 - 2명부터 시작 가능` : `参加者 ${players.length}/${MAX_BATTLE_PLAYERS} - 2人から開始可能`)
+                : (isKo ? `참가자 ${players.length}/${MAX_BATTLE_PLAYERS}명 - 방장 시작 대기 중` : `参加者 ${players.length}/${MAX_BATTLE_PLAYERS} - ホストの開始待ち`);
+
+            startBtn.style.display = isHost ? 'block' : 'none';
+            startBtn.disabled = !isHost || players.length < 2;
+            startBtn.innerText = isKo ? '게임 시작' : 'ゲーム開始';
+
+            listEl.innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-player-pill${meClass}">${label}</div>`;
+            }).join('');
+        }
+
+        function renderBattleHud(room) {
+            const hud = document.getElementById('battle-hud');
+            const players = getBattlePlayerList(room);
+            hud.innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const scoreText = Number(player.score || 0);
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-hud-box${meClass}">${label}<span>${scoreText}</span></div>`;
+            }).join('');
+        }
+
+        function applyBattleLang() {
+            const isKo = currentLang === 'ko';
+            document.getElementById('battle-btn').innerText            = isKo ? '대전' : 'バトル';
+            document.getElementById('battle-screen-title').innerText   = isKo ? '최대 8인 대전' : '最大8人バトル';
+            document.getElementById('battle-waiting-text').innerText   = isKo ? '상대방을 기다리는 중...' : '相手を待っています...';
+            document.getElementById('battle-cancel-btn').innerText     = isKo ? '메인메뉴' : 'メインへ';
+            document.getElementById('battle-join-btn').innerText       = isKo ? '참가' : '参加';
+            document.getElementById('battle-exit-btn').innerText       = isKo ? '돌아가기' : '戻る';
+            document.getElementById('battle-start-btn').innerText      = isKo ? '게임 시작' : 'ゲーム開始';
+        }
+
+        function startBattle() {
+            if (battleStarted) return;
+            battleStarted = true;
+            battleResultShown = false;
+            clearBattleResultListener();
+            clearRematchListener();
+            battleMode = true;
+
+            document.getElementById('battle-hud').style.display = 'flex';
+            renderBattleHud({ players: battlePlayers });
+
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+
+            startGame();
+        }
+
+        function battleSyncScore() {
+            if (!battleMode || !battleRoomId || !battlePlayerId) return;
+            if (battlePlayers[battlePlayerId]) {
+                battlePlayers[battlePlayerId].score = score;
+                renderBattleHud({ players: battlePlayers });
+            }
+            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/score').set(score);
+        }
+
+        function battleGameOver() {
+            if (!battleMode || !battleRoomId || !battlePlayerId) return;
+            battleMode = false;
+            const savedScore = score;
+            if (battlePlayers[battlePlayerId]) {
+                battlePlayers[battlePlayerId].score = savedScore;
+                battlePlayers[battlePlayerId].done = true;
+                renderBattleHud({ players: battlePlayers });
+            }
+            battleRef.child(battleRoomId + '/players/' + battlePlayerId).update({ score: savedScore, done: true })
+                .then(() => battleRef.child(battleRoomId + '/status').set('ended'))
+                .then(() => waitForBattleFinalResult())
+                .catch(() => waitForBattleFinalResult());
+        }
+
+        function waitForBattleFinalResult() {
+            if (!battleRoomId || !battlePlayerId || battleResultShown || battleResultListener) return;
+
+            const roomId = battleRoomId;
+            battleResultListener = snap => {
+                if (battleResultShown) return;
+                const room = snap.val();
+                if (!room || !room.players) return;
+                const players = getBattlePlayerList(room);
+                if (players.length < 2 || !players.every(player => player.done)) return;
+
+                battleResultShown = true;
+                clearBattleResultListener(roomId);
+                showBattleResult(room);
+            };
+            battleRef.child(roomId).on('value', battleResultListener);
+        }
+
+        function showBattleResult(room) {
+            battlePlayers = room.players || {};
+            const players = getBattlePlayerList(room).sort((a, b) => {
+                const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
+                return scoreDiff || ((a.joinedAt || 0) - (b.joinedAt || 0));
+            });
+            const myPlayer = players.find(player => player.id === battlePlayerId) || { score: 0 };
+            const myScore = Number(myPlayer.score || 0);
+            const topScore = players.length ? Number(players[0].score || 0) : 0;
+            const topCount = players.filter(player => Number(player.score || 0) === topScore).length;
+
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('hidden');
 
             const isKo = currentLang === 'ko';
             let resultText, resultClass;
-            if      (myScore > oppScore)  { resultText = isKo ? '승리!' : 'WIN!';    resultClass = 'win';  }
-            else if (myScore < oppScore)  { resultText = isKo ? '패배...' : 'LOSE';  resultClass = 'lose'; }
-            else                          { resultText = isKo ? '무승부' : 'DRAW';   resultClass = 'draw'; }
+            if (myScore === topScore && topCount === 1) {
+                resultText = isKo ? '승리!' : 'WIN!';
+                resultClass = 'win';
+            } else if (myScore === topScore) {
+                resultText = isKo ? '무승부' : 'DRAW';
+                resultClass = 'draw';
+            } else {
+                resultText = isKo ? '패배...' : 'LOSE';
+                resultClass = 'lose';
+            }
 
             if (resultClass === 'win') playSfx('win', 1.0);
-            else                       playSfx('gameover', 1.0);
+            else playSfx('gameover', 1.0);
 
             const titleEl = document.getElementById('battle-result-title');
             titleEl.innerText = resultText;
             titleEl.className = 'battle-result-title ' + resultClass;
 
-            document.getElementById('bsc-me-name').innerText   = isKo ? '나' : '自分';
-            document.getElementById('bsc-opp-name').innerText  = isKo ? '상대' : '相手';
-            document.getElementById('bsc-me-score').innerText  = myScore;
-            document.getElementById('bsc-opp-score').innerText = oppScore;
-
-            document.getElementById('bsc-me').className  = 'battle-score-card' + (myScore  >= oppScore ? ' winner' : '');
-            document.getElementById('bsc-opp').className = 'battle-score-card' + (oppScore >= myScore  ? ' winner' : '');
+            document.getElementById('battle-score-list').innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const scoreText = Number(player.score || 0);
+                const winnerClass = scoreText === topScore ? ' winner' : '';
+                return `<div class="battle-score-card${winnerClass}">
+                    <div class="bsc-name">${index + 1}. ${label}</div>
+                    <div class="bsc-score">${scoreText}</div>
+                </div>`;
+            }).join('');
 
             document.getElementById('battle-result-screen').classList.remove('hidden');
-
-            // 리매치 카운트다운 시작
             startRematchCountdown();
         }
 
-        function showBattleResult(room) {
-            const myRole  = battleRole;
-            const oppRole = myRole === 'host' ? 'guest' : 'host';
-            const myScore  = room[myRole] ? room[myRole].score : 0;
-            const oppScore = room[oppRole] ? room[oppRole].score : 0;
-            showBattleResultDirect(myScore, oppScore);
-        }
-
         function cancelBattle() {
-            clearBattleResultListener();
-            if (battleRoomId) battleRef.child(battleRoomId).remove();
-            battleRoomId  = null;
-            battleRole    = null;
-            battleMode    = false;
-            battleStarted = false;
-            battleResultShown = false;
+            leaveBattleRoom(true);
             document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('intro-screen').classList.remove('hidden');
         }
 
-        /**
-         * REMATCH
-         */
-        let rematchTimer   = null;
-        let rematchSeconds = 10;
-
         function startRematchCountdown() {
+            clearRematchListener();
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+
             rematchSeconds = 10;
             document.getElementById('rematch-countdown').innerText = rematchSeconds;
             document.getElementById('rematch-status').innerText = '';
@@ -2701,60 +2949,74 @@
                 if (rematchSeconds <= 0) {
                     clearInterval(rematchTimer);
                     rematchTimer = null;
-                    // 시간 초과 → 버튼 비활성화, 방 정리
                     document.getElementById('battle-rematch-btn').disabled = true;
                     document.getElementById('rematch-status').innerText =
-                        currentLang === 'ko' ? '시간이 초과됐습니다.' : '時間切れです。';
-                    if (battleRoomId) battleRef.child(battleRoomId + '/rematch').remove();
+                        currentLang === 'ko' ? '방장 시작 대기 중...' : 'ホストの開始待ち...';
+                    if (battleRole === 'host') setTimeout(finalizeRematchLobby, 300);
                 }
             }, 1000);
 
-            // 상대방 rematch 요청 감시
-            battleRef.child(battleRoomId + '/rematch').on('value', snap => {
-                const val = snap.val();
-                if (!val) return;
-                const oppRole = battleRole === 'host' ? 'guest' : 'host';
-                const myReady  = val[battleRole]  === true;
-                const oppReady = val[oppRole] === true;
+            rematchListener = snap => {
+                const val = snap.val() || {};
+                const players = getBattlePlayerList({ players: battlePlayers });
+                const readyCount = players.filter(player => val[player.id] === true).length;
+                const myReady = val[battlePlayerId] === true;
 
-                if (oppReady && !myReady) {
+                if (rematchTimer || myReady) {
                     document.getElementById('rematch-status').innerText =
-                        currentLang === 'ko' ? '상대방이 다시하기를 눌렀습니다!' : '相手がリマッチを要求しました！';
+                        currentLang === 'ko'
+                            ? `다시하기 참가 ${readyCount}/${players.length}`
+                            : `リマッチ参加 ${readyCount}/${players.length}`;
                 }
-                if (myReady && oppReady) {
-                    clearInterval(rematchTimer);
-                    rematchTimer = null;
-                    battleRef.child(battleRoomId + '/rematch').off();
-                    doRematch();
-                }
-            });
+            };
+            battleRef.child(battleRoomId + '/rematch').on('value', rematchListener);
         }
 
         function requestRematch() {
+            if (!battleRoomId || !battlePlayerId) return;
             document.getElementById('battle-rematch-btn').disabled = true;
             document.getElementById('rematch-status').innerText =
-                currentLang === 'ko' ? '상대방을 기다리는 중...' : '相手を待っています...';
-            battleRef.child(battleRoomId + '/rematch/' + battleRole).set(true);
+                currentLang === 'ko' ? '다시하기 참가 완료' : 'リマッチ参加完了';
+            battleRef.child(battleRoomId + '/rematch/' + battlePlayerId).set(true);
         }
 
-        function doRematch() {
-            clearBattleResultListener();
-            document.getElementById('battle-result-screen').classList.add('hidden');
-            // 상태 초기화 후 재경기
-            battleStarted = false;
-            battleMode    = false;
-            battleOppScore = 0;
-            battleResultShown = false;
-            // 방 리셋 (host가 처리)
-            if (battleRole === 'host') {
+        function finalizeRematchLobby() {
+            if (!battleRoomId || battleRole !== 'host') return;
+            battleRef.child(battleRoomId).once('value').then(snap => {
+                const room = snap.val();
+                if (!room || room.status !== 'ended' || !room.players) return;
+
+                const rematch = room.rematch || {};
+                const readyIds = Object.keys(rematch).filter(id => rematch[id] === true && room.players[id]);
+                const hostId = room.hostId;
+                if (!readyIds.includes(hostId) || readyIds.length < 2) {
+                    battleRef.child(battleRoomId).update({
+                        status: 'closed',
+                        rematch: null
+                    });
+                    return;
+                }
+
+                const nextPlayers = {};
+                readyIds
+                    .sort((a, b) => (room.players[a].joinedAt || 0) - (room.players[b].joinedAt || 0))
+                    .forEach(id => {
+                        nextPlayers[id] = {
+                            ...room.players[id],
+                            score: 0,
+                            done: false,
+                            isHost: id === hostId
+                        };
+                    });
+
                 battleRef.child(battleRoomId).update({
-                    host:   { score: 0, done: false, name: '' },
-                    guest:  { score: 0, done: false, name: '' },
-                    status: 'playing',
-                    rematch: null
+                    players: nextPlayers,
+                    status: 'waiting',
+                    joinLocked: true,
+                    rematch: null,
+                    startedAt: null
                 });
-            }
-            startBattle();
+            });
         }
 
         function toggleIntroRanking() {
@@ -2803,18 +3065,7 @@
         }
 
         function exitBattle() {
-            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
-            clearBattleResultListener();
-            if (battleRoomId) {
-                battleRef.child(battleRoomId + '/rematch').off();
-                battleRef.child(battleRoomId).remove();
-            }
-            battleMode    = false;
-            battleStarted = false;
-            battleOppScore = 0;
-            battleResultShown = false;
-            battleRoomId  = null;
-            battleRole    = null;
+            leaveBattleRoom(false);
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             stopAllBgm();
