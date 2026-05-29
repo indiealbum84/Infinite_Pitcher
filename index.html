@@ -547,7 +547,7 @@
         }
 
         #mirrorball-announce.show {
-            animation: fbAnnounce 1.8s ease-out forwards;
+            animation: fbAnnounce 1.2s ease-out forwards;
         }
 
         #mirrorball-announce-img {
@@ -1061,7 +1061,9 @@
 
         // 모든 효과음을 Web Audio API 버퍼로 관리
         const sfxBuffers = {};
+        const sfxAudioEls = {};
         const sfxFiles = {
+            click:         './click.mp3',
             countdown:     './countdown.mp3',
             start:         './start.mp3',
             gameover:      './gameover.mp3',
@@ -1075,20 +1077,51 @@
             throw_mirrorball: './throw_mirrorball.mp3',
         };
         Object.entries(sfxFiles).forEach(([key, url]) => {
+            const audio = new Audio(url);
+            audio.preload = 'auto';
+            sfxAudioEls[key] = audio;
+            try { audio.load(); } catch(e) {}
+
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.responseType = 'arraybuffer';
             xhr.onload = () => {
                 if (xhr.status === 200 || xhr.status === 0) {
-                    audioCtx.decodeAudioData(xhr.response).then(buf => { sfxBuffers[key] = buf; }).catch(() => {});
+                    audioCtx.decodeAudioData(xhr.response)
+                        .then(buf => { sfxBuffers[key] = buf; })
+                        .catch(e => console.warn('[SFX] Web Audio decode failed, using HTMLAudio fallback:', key, e));
+                } else {
+                    console.warn('[SFX] load failed, using HTMLAudio fallback:', key, xhr.status);
                 }
             };
+            xhr.onerror = () => console.warn('[SFX] XHR failed, using HTMLAudio fallback:', key);
             xhr.send();
         });
 
-        function playSfx(key, volume) {
+        function playHtmlSfx(key, volume, onended) {
+            const base = sfxAudioEls[key];
+            if (!base) {
+                console.warn('[SFX] missing audio element:', key);
+                if (onended) onended();
+                return false;
+            }
+
+            const el = base.cloneNode(true);
+            el.volume = volume !== undefined ? volume : 1.0;
+            if (onended) el.addEventListener('ended', onended, { once: true });
+            el.play().catch(e => {
+                console.warn('[SFX] HTMLAudio play failed:', key, e);
+                if (onended) onended();
+            });
+            return true;
+        }
+
+        function playSfx(key, volume, onended) {
             const buf = sfxBuffers[key];
-            if (!buf) { console.warn('[SFX] buffer not loaded:', key); return; }
+            if (!buf) {
+                playHtmlSfx(key, volume, onended);
+                return;
+            }
             audioCtx.resume().then(() => {
                 const src = audioCtx.createBufferSource();
                 src.buffer = buf;
@@ -1096,12 +1129,20 @@
                 gain.gain.value = volume !== undefined ? volume : 1.0;
                 src.connect(gain);
                 gain.connect(audioCtx.destination);
+                if (onended) src.onended = onended;
                 src.start(0);
-            });
+            }).catch(() => playHtmlSfx(key, volume, onended));
         }
+
+        function playClickSfx() {
+            playSfx('click', 0.8);
+        }
+
+        document.addEventListener('click', playClickSfx, true);
 
         // bgm_title: GainNode로 볼륨/페이드 제어
         let titleBgmSource = null;
+        let titleBgmEl = null;
         let titleGain = audioCtx.createGain();
         titleGain.gain.value = 0.6;
         titleGain.connect(audioCtx.destination);
@@ -1163,6 +1204,11 @@
         function stopAllBgm() {
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
             if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+            if (titleBgmEl) {
+                titleBgmEl.pause();
+                titleBgmEl.currentTime = 0;
+                titleBgmEl = null;
+            }
             titleGain.gain.value = 0.6;
             if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
             bgmGameEl.pause();
@@ -1170,9 +1216,26 @@
         }
 
         function playTitleBgm() {
-            if (!sfxBuffers['bgm_title']) return;
+            if (!sfxBuffers['bgm_title']) {
+                if (titleBgmEl) {
+                    titleBgmEl.pause();
+                    titleBgmEl.currentTime = 0;
+                }
+                const base = sfxAudioEls['bgm_title'];
+                if (!base) return;
+                titleBgmEl = base.cloneNode(true);
+                titleBgmEl.loop = true;
+                titleBgmEl.volume = 0.6;
+                titleBgmEl.play().catch(e => console.warn('[BGM] title fallback play failed:', e));
+                return;
+            }
             audioCtx.resume().then(() => {
                 if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
+                if (titleBgmEl) {
+                    titleBgmEl.pause();
+                    titleBgmEl.currentTime = 0;
+                    titleBgmEl = null;
+                }
                 titleGain.gain.value = 0.6;
                 const src = audioCtx.createBufferSource();
                 src.buffer = sfxBuffers['bgm_title'];
@@ -1187,13 +1250,24 @@
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
             const steps = 30;
             const interval = duration / steps;
-            const delta = titleGain.gain.value / steps;
+            const startVolume = titleBgmEl ? titleBgmEl.volume : titleGain.gain.value;
+            const delta = startVolume / steps;
             fadeTimer = setInterval(() => {
-                titleGain.gain.value = Math.max(0, titleGain.gain.value - delta);
-                if (titleGain.gain.value <= 0) {
+                if (titleBgmEl) {
+                    titleBgmEl.volume = Math.max(0, titleBgmEl.volume - delta);
+                } else {
+                    titleGain.gain.value = Math.max(0, titleGain.gain.value - delta);
+                }
+                const currentVolume = titleBgmEl ? titleBgmEl.volume : titleGain.gain.value;
+                if (currentVolume <= 0) {
                     clearInterval(fadeTimer);
                     fadeTimer = null;
                     if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+                    if (titleBgmEl) {
+                        titleBgmEl.pause();
+                        titleBgmEl.currentTime = 0;
+                        titleBgmEl = null;
+                    }
                     titleGain.gain.value = 0.6;
                 }
             }, interval);
@@ -1352,6 +1426,14 @@
             return 500;
         }
 
+        function getTestMoveFactor(n) {
+            if (n < 31)  return 0.15;
+            if (n < 131) return 0.24;
+            if (n < 231) return 0.32;
+            if (n < 331) return 0.40;
+            return 0.50;
+        }
+
         let player = { x: 0, y: 0, width: 60, height: 80 };
         let blocks = [];
         let balls = [];
@@ -1362,17 +1444,23 @@
         let fireballCharging  = false;
         let fireballActive    = false;
         let fireballColumn    = -1;
-        let mirrorballActive    = false; // 현재 숫자 반전 중 여부
-        let mirrorballCharging  = false; // 미러볼 노티+웨이브 중 (투구 차단)
-        let mirrorballDoneCount = 0;     // 미러볼이 발동된 횟수 (100점마다 1회)
-        let mirrorWaveStart     = 0;     // 웨이브 시작 타임스탬프 (0=비활성)
+        let mirrorballActive      = false; // 현재 숫자 반전 중 여부
+        let mirrorballCharging    = false; // 미러볼 노티+웨이브 중 (투구 차단)
+        let mirrorballShotPending = false; // 다음 일반 투구를 미러볼로 처리
+        let mirrorballDoneCount   = 0;     // 미러볼 발동 횟수
+        let mirrorWaveStart       = 0;     // 웨이브 시작 타임스탬프 (0=비활성)
+        const MIRRORBALL_TRIGGER_SCORE = 94;
+        const MIRRORBALL_ANNOUNCE_DURATION = 1200;
+        const MIRRORBALL_POST_ANNOUNCE_DELAY = 1000;
         const MIRROR_WAVE_DURATION = 2000; // 웨이브 총 시간(ms)
-        let flashballActive    = false; // 숫자 깜빡임 중 여부
-        let flashballCharging  = false; // 플래시볼 노티 중 (투구 차단)
-        let flashballTriggered = false; // 이미 발동했는지
-        let flashballTriggerNum = 201;  // 플래시볼 발동 번호 (201, 파괴 시 다음 번호)
-        let flashballVisible   = true;  // 깜빡임 현재 표시 여부
-        let flashballTimer     = null;  // 깜빡임 타이머
+        let flashballActive      = false; // 숫자 깜빡임 중 여부
+        let flashballCharging    = false; // 플래시볼 노티 중 (투구 차단)
+        let flashballShotPending = false; // 다음 일반 투구를 플래시볼로 처리
+        let flashballTriggered   = false; // 이미 발동했는지
+        let flashballVisible     = true;  // 깜빡임 현재 표시 여부
+        let flashballTimer       = null;  // 깜빡임 타이머
+        const FLASHBALL_TRIGGER_SCORE = 175;
+        const FLASHBALL_SHOT_DELAY = 3200;
 
         // Firebase 설정
         const firebaseConfig = {
@@ -1523,11 +1611,12 @@
             fireballColumn      = -1;
             mirrorballActive    = false;
             mirrorballCharging  = false;
+            mirrorballShotPending = false;
             mirrorballDoneCount = 0;
             mirrorWaveStart     = 0;
             flashballCharging   = false;
+            flashballShotPending = false;
             flashballTriggered  = false;
-            flashballTriggerNum = 201;
             stopFlashball();
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
@@ -1580,18 +1669,7 @@
                     countdownText.classList.add('countdown-animate');
 
                     // start.mp3 재생 → 끝나는 순간 bgm_game 시작
-                    audioCtx.resume().then(() => {
-                        const buf = sfxBuffers['start'];
-                        if (buf) {
-                            const src = audioCtx.createBufferSource();
-                            src.buffer = buf;
-                            src.connect(audioCtx.destination);
-                            src.onended = () => { playGameBgm(); };
-                            src.start(0);
-                        } else {
-                            playGameBgm();
-                        }
-                    });
+                    playSfx('start', 1.0, () => { playGameBgm(); });
 
                     count--;
                     setTimeout(runTick, 1000);
@@ -1624,45 +1702,65 @@
             startCountdown(testMode && testStartNum > 1 ? testStartNum : null);
         }
 
-        // 테스트용: n번부터 시작
+        function getTestStartScore(n, targetNumber) {
+            if (n === 100) return 93;
+            if (n === 200) return 174;
+            return targetNumber;
+        }
+
+        // 테스트용: 실제로 n번 직전까지 진행한 상태에서 시작
         function testSkipTo(n) {
             if (gameState !== 'PLAYING') return;
-            const target = n - 1;
+            const targetNumber = n - 1;
+            const testScore = getTestStartScore(n, targetNumber);
+            const blockSize = width / 10;
+            const rowsCleared = Math.floor(targetNumber / 10);
+            const firstVisibleRowStart = rowsCleared * 10 + 1;
 
             // 상태 초기화 후 재구성
             balls = [];
             destroyedNumbers = new Set();
-            for (let i = 1; i <= target; i++) destroyedNumbers.add(i);
+            for (let i = 1; i <= targetNumber; i++) destroyedNumbers.add(i);
 
             nextExpectedNumber = n;
-            score = target;
+            score = testScore;
             fireballCharging    = false;
             fireballActive      = false;
             fireballColumn      = -1;
-            mirrorballActive    = false;
+            const mirrorballResolved = testScore > MIRRORBALL_TRIGGER_SCORE;
+            mirrorballActive    = mirrorballResolved;
             mirrorballCharging  = false;
-            mirrorballDoneCount = 0;
+            mirrorballShotPending = false;
+            mirrorballDoneCount = mirrorballResolved ? 1 : 0;
             mirrorWaveStart     = 0;
             flashballCharging   = false;
-            flashballTriggered  = false;
-            flashballTriggerNum = 201;
+            flashballShotPending = false;
             stopFlashball();
+            if (testScore > FLASHBALL_TRIGGER_SCORE) {
+                flashballTriggered = true;
+                startFlashballBlink();
+            } else {
+                flashballTriggered = false;
+            }
 
-            // initBlocks와 완전히 동일하게 재배치 (scrollY=0 기준, n번부터 시작)
-            const blockSize     = width / 10;
-            const firstRowStart = n; // n번이 맨 아래 행 시작
-
+            // 실제로 target까지 진행한 것처럼 현재 줄부터 10줄을 배치한다.
             blocks = [];
             for (let r = 0; r < 10; r++) {
-                const row = createRow(firstRowStart + r * 10);
-                row.forEach(b => b.y = (9 - r) * blockSize);
+                const logicalRow = rowsCleared + r;
+                const row = createRow(firstVisibleRowStart + r * 10);
+                row.forEach(b => {
+                    b.y = (9 - logicalRow) * blockSize;
+                    b.active = b.num > targetNumber;
+                });
                 blocks.push(...row);
             }
 
-            scrollY = 0;
-            targetScrollY = 0;
+            targetScrollY = rowsCleared * blockSize;
+            scrollY = targetScrollY;
 
             updateUI();
+            scheduleMirrorballIfNeeded();
+            scheduleFlashballIfNeeded();
         }
 
         function gameOver() {
@@ -1687,8 +1785,15 @@
         }
 
         function pitchBall(isFireball) {
-            const isMirrorBall  = !isFireball && mirrorballCharging;
-            const isFlashBall   = !isFireball && !flashballTriggered  && nextExpectedNumber === flashballTriggerNum;
+            const isMirrorBall  = !isFireball && mirrorballShotPending;
+            const isFlashBall   = !isFireball && flashballShotPending;
+            if (isMirrorBall) {
+                mirrorballShotPending = false;
+                mirrorballCharging = true; // 미러볼이 맞고 웨이브가 끝날 때까지 다음 투구 차단
+            }
+            if (isFlashBall) {
+                flashballShotPending = false;
+            }
             balls.push({
                 x: player.x,
                 y: player.y - 20,
@@ -1726,6 +1831,20 @@
             mbAnnounce.classList.add('show');
         }
 
+        function scheduleMirrorballIfNeeded() {
+            const expectedMirrorCount = score >= MIRRORBALL_TRIGGER_SCORE ? 1 : 0;
+            if (expectedMirrorCount <= mirrorballDoneCount || mirrorballCharging || mirrorballShotPending) return;
+
+            mirrorballCharging = true;
+            triggerMirrorball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                mirrorballShotPending = true;
+                mirrorballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRRORBALL_ANNOUNCE_DURATION + MIRRORBALL_POST_ANNOUNCE_DELAY);
+        }
+
         // 미러볼 공이 블록에 맞는 순간 호출 — 웨이브 시작
         function startMirrorWave() {
             mirrorWaveStart = performance.now();
@@ -1742,13 +1861,18 @@
         }
 
         function triggerFlashball() {
-            flashballActive   = true;
             flashballTriggered = true;
-            flashballVisible  = true;
             const fbAnnounce = document.getElementById('flashball-announce');
             fbAnnounce.classList.remove('show');
             void fbAnnounce.offsetWidth;
             fbAnnounce.classList.add('show');
+            startFlashballBlink();
+        }
+
+        function startFlashballBlink() {
+            if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
+            flashballActive  = true;
+            flashballVisible = true;
             // 0.4초 보임 → 0.2초 숨김 루프
             function tick() {
                 if (!flashballActive) return;
@@ -1760,6 +1884,19 @@
                 }, 400);
             }
             tick();
+        }
+
+        function scheduleFlashballIfNeeded() {
+            if (score < FLASHBALL_TRIGGER_SCORE || flashballTriggered || flashballCharging || flashballShotPending) return;
+
+            flashballCharging = true;
+            triggerFlashball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                flashballShotPending = true;
+                flashballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, FLASHBALL_SHOT_DELAY);
         }
 
         function stopFlashball() {
@@ -1774,29 +1911,8 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            // score가 100의 배수 → 미러볼 노티 즉시 발동 (mirrorballDoneCount로 중복 방지)
-            const expectedMirrorCount = Math.floor(score / 100);
-            if (expectedMirrorCount > mirrorballDoneCount && !mirrorballCharging) {
-                mirrorballCharging = true;
-                triggerMirrorball();
-                // 노티 1.2초 애니메이션 + 1초 후 공 발사
-                setTimeout(() => {
-                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
-                    // mirrorballCharging은 공이 블록에 맞을 때까지 유지 (pitchBall에서 isMirrorBall 판정)
-                    // 공 발사 후 mirrorballCharging을 잠시 false로 바꿔서 pitch loop가 공을 던지게 함
-                    // 단, startMirrorWave 호출 전까지만
-                    mirrorballCharging = false; // pitch loop가 공 던지도록 허용
-                }, 2200); // 1.2s 애니 + 1s 대기
-            }
-            // score가 200의 배수(정확히 200) → 플래시볼 노티
-            if (!flashballTriggered && nextExpectedNumber === flashballTriggerNum) {
-                flashballCharging = true;
-                triggerFlashball();
-                setTimeout(() => {
-                    flashballCharging = false;
-                    lastPitchTime = performance.now();
-                }, 3200);
-            }
+            scheduleMirrorballIfNeeded();
+            scheduleFlashballIfNeeded();
         }
 
         function update(timestamp) {
@@ -1808,7 +1924,7 @@
                 if (targetBlk) {
                     const targetX = targetBlk.x + targetBlk.size / 2;
                     const diff = targetX - player.x;
-                    player.x += diff * 0.15; // 부드럽게 이동
+                    player.x += diff * getTestMoveFactor(nextExpectedNumber); // 투구 속도에 맞춰 자동 이동
                     player.x = Math.max(8, Math.min(width - 8, player.x));
                 }
             }
@@ -1877,10 +1993,6 @@
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
                                 playSfx('throw_hit', 0.5);
-                                // 플래시볼 트리거 번호가 파괴되면 다음 번호로 밀기
-                                if (!flashballTriggered && blk.num === flashballTriggerNum) {
-                                    flashballTriggerNum++;
-                                }
                             }
                         }
                     }
@@ -1928,6 +2040,10 @@
                             return;
                         }
                     } else if (b.y < -20) {
+                        if (b.isMirrorBall) {
+                            mirrorballCharging = false;
+                            lastPitchTime = performance.now();
+                        }
                         balls.splice(i, 1);
                     }
                 }
@@ -2013,8 +2129,9 @@
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
-                const isMirrorNext   = mirrorballCharging;
-                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext);
+                const isMirrorNext   = mirrorballShotPending;
+                const isFlashNext    = flashballShotPending;
+                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || isMirrorNext || isFlashNext);
                 ctx.fillStyle = isGuide ? varColor('--primary-neon') : '#ffffff';
                 ctx.fillRect(blk.x + 2, drawY + 2, blk.size - 4, blk.size - 4);
 
