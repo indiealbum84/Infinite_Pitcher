@@ -1,0 +1,4998 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>無限投手: 世界一への道</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-neon: #ccff00;
+            --bg-dark: #0f172a;
+            --block-bg: #1e293b;
+            --text-white: #f8fafc;
+            --palette-mint: #35c98f;
+            --palette-blue: #40b7f2;
+            --palette-pink: #f59bd4;
+            --palette-yellow: #ffe85c;
+            --palette-purple: #8d72f6;
+            --palette-ink: #111827;
+            --palette-cream: #fff7d8;
+            --palette-soft-mint: #d8f8df;
+            --palette-soft-blue: #d7f3ff;
+            --palette-soft-pink: #ffd8ef;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            overflow: hidden;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            overflow: hidden;
+            color: #0f172a;
+            height: 100%;
+            min-height: 100dvh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 1080px;
+            height: 1920px;
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            background-color: #ffffff;
+            background-image: url('./splash.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 20;
+            gap: 0;
+            cursor: pointer;
+            touch-action: auto !important;
+        }
+
+        #splash-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 0;
+        }
+
+        #splash-screen > * {
+            position: relative;
+            z-index: 1;
+        }
+
+
+        .splash-title-art {
+            width: min(760px, 116%);
+            height: auto;
+            display: block;
+            margin: 0 auto 60px;
+            transform: translateX(-32px);
+            pointer-events: none;
+        }
+
+        .splash-touch-hint {
+            font-size: 18px;
+            font-weight: 700;
+            color: #475569;
+            letter-spacing: 0.5px;
+            animation: blink 1.4s ease-in-out infinite;
+        }
+
+        .splash-start-btn {
+            background: transparent;
+            color: var(--palette-ink);
+            border: 0;
+            cursor: pointer;
+            box-shadow: none;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 32px;
+            letter-spacing: 1px;
+            padding: 0;
+            text-shadow: 2px 2px 0 #ffffff;
+            touch-action: auto !important;
+            transition: transform 0.1s;
+        }
+
+        .splash-start-btn:active {
+            transform: scale(0.96);
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 16px;
+            left: 12px;
+            display: flex;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .lang-switch-btn {
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 2px solid #000000;
+            border-radius: 10px;
+            box-shadow: 0 3px 0 var(--palette-blue), 0 3px 0 1px #000000;
+            cursor: pointer;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            min-width: 48px;
+            padding: 6px 7px;
+            touch-action: auto !important;
+        }
+
+        .lang-switch-btn.active {
+            background: var(--palette-yellow);
+            box-shadow: 0 3px 0 var(--palette-pink), 0 3px 0 1px #000000;
+        }
+
+        .lang-switch-btn[data-lang="ja"] {
+            font-family: 'Zen Maru Gothic', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0.45px currentColor;
+        }
+
+        .lang-switch-btn[data-lang="en"] {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0;
+        }
+
+        .lang-switch-btn[data-lang="ko"] {
+            font-family: 'Gamja Flower', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0.45px currentColor;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.25; }
+        }
+
+        /* Intro Screen */
+        #intro-screen {
+            background: #b9ecff url('./main_background.png') center -40px / cover no-repeat;
+            justify-content: flex-start;
+            align-items: center;
+            overflow: hidden;
+            padding: 0;
+            touch-action: auto !important;
+        }
+
+        .title-art {
+            position: absolute;
+            top: 58px;
+            left: 50%;
+            width: min(760px, 116%);
+            height: auto;
+            display: block;
+            margin: 0;
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            position: absolute;
+            top: 270px;
+            left: 50%;
+            background: var(--palette-yellow);
+            border: 3px solid #000000;
+            border-radius: 20px;
+            padding: 15px 18px;
+            color: var(--palette-ink);
+            font-weight: 900;
+            font-size: 16px;
+            width: max-content;
+            max-width: calc(100% - 14px);
+            margin: 0;
+            transform: translateX(-50%);
+            box-shadow: 0 6px 0 var(--palette-pink), 0 8px 0 2px #000000;
+            line-height: 1.5;
+            z-index: 2;
+        }
+
+        .speech-bubble .bubble-nowrap {
+            white-space: nowrap;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: var(--palette-yellow) transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+            transform: translateX(-50%);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            border-width: 20px 20px 0;
+            border-style: solid;
+            border-color: #000000 transparent;
+            display: block;
+            width: 0;
+            z-index: 0;
+            transform: translateX(-50%);
+        }
+
+        .start-btn {
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            padding: 12px 50px;
+            font-size: 24px;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 var(--primary-neon), 0 6px 0 2px #000000;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .intro-menu {
+            position: absolute;
+            left: 50%;
+            bottom: 72px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 0;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .intro-main-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #intro-screen .intro-main-actions .start-btn {
+            width: 142px;
+            min-height: 50px;
+            padding: 8px 12px;
+            margin-top: 0;
+            font-size: 24px;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        #intro-screen #start-btn-id {
+            background-color: var(--palette-mint);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+        }
+
+        #intro-screen #battle-btn {
+            background-color: var(--palette-blue);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+        }
+
+        html[lang="ja"] #intro-screen #battle-btn {
+            font-size: 19px;
+        }
+
+        html[lang="ja"] body,
+        html[lang="ja"] .start-btn,
+        html[lang="ja"] #rank-suffix,
+        html[lang="ja"] .name-input,
+        html[lang="ja"] .battle-title,
+        html[lang="ja"] .battle-result-title,
+        html[lang="ja"] .battle-hud-box span,
+        html[lang="ja"] .test-sel-btn {
+            font-family: 'Zen Maru Gothic', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0.45px currentColor;
+        }
+
+        html[lang="ko"] body,
+        html[lang="ko"] .start-btn,
+        html[lang="ko"] #rank-suffix,
+        html[lang="ko"] .name-input,
+        html[lang="ko"] .battle-title,
+        html[lang="ko"] .battle-result-title,
+        html[lang="ko"] .battle-hud-box span,
+        html[lang="ko"] .test-sel-btn {
+            font-family: 'Gamja Flower', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0.45px currentColor;
+        }
+
+        html[lang="ja"] #countdown-text.countdown-instruction {
+            font-family: 'Zen Maru Gothic', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0;
+        }
+
+        html[lang="ko"] #countdown-text.countdown-instruction {
+            font-family: 'Gamja Flower', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            -webkit-text-stroke: 0;
+        }
+
+        html[lang="ja"] .game-over-title,
+        html[lang="ko"] .game-over-title,
+        html[lang="ja"] .final-score,
+        html[lang="ko"] .final-score {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-weight: 900;
+            -webkit-text-stroke: 0;
+        }
+
+        #intro-screen #start-btn-id:active {
+            box-shadow: 0 2px 0 var(--palette-pink), 0 2px 0 2px #000000;
+        }
+
+        #intro-screen #battle-btn:active {
+            box-shadow: 0 2px 0 var(--palette-pink), 0 2px 0 2px #000000;
+        }
+
+        .start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--primary-neon), 0 2px 0 2px #000000;
+        }
+
+        /* Game UI */
+        #ui-layer {
+            position: absolute;
+            top: 56px;
+            left: 56px;
+            right: 56px;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .stat-box {
+            background: linear-gradient(180deg, #fffdf2 0%, var(--palette-cream) 100%);
+            padding: 17px 44px;
+            border-radius: 39px;
+            border: 8px solid #000000;
+            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000;
+        }
+
+        .stat-label {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #5f6472;
+            display: block;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 66px;
+            font-weight: 900;
+            font-family: 'Fredoka', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            color: var(--palette-blue);
+            text-shadow: 6px 6px 0 #ffffff;
+            letter-spacing: 5px;
+        }
+
+        #score {
+            display: block;
+            text-align: right;
+        }
+
+        /* Game Over Screen */
+        #game-over-screen {
+            background: linear-gradient(rgba(185, 236, 255, 0.88), rgba(255, 247, 216, 0.92)), url('./main_background.png') center top / cover no-repeat;
+            justify-content: flex-start;
+            overflow-y: auto;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .game-over-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 56px;
+            color: #ff5a91;
+            margin: 0;
+            white-space: nowrap;
+            text-shadow: 4px 4px 0 #ffe85c, 7px 7px 0 #000000;
+        }
+
+        .final-score {
+            font-size: 42px;
+            margin: 10px 0;
+            color: var(--palette-ink);
+            background: var(--palette-yellow);
+            border: 3px solid #000000;
+            border-radius: 18px;
+            padding: 4px 22px;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+        }
+
+        #final-score-val {
+            font-family: 'Fredoka', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+        }
+
+        .leaderboard-btn {
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 3px solid #000000;
+            margin-top: 15px;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 900;
+            box-shadow: 0 4px 0 var(--palette-blue), 0 4px 0 2px #000000;
+        }
+
+        /* Result Leaderboard */
+        #leaderboard-modal {
+            background: var(--palette-cream);
+            border: 3px solid #000000;
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-height: 300px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 2px #000000;
+        }
+
+        #rank-list {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            touch-action: pan-y !important;
+        }
+
+        #rank-list,
+        #rank-list * {
+            touch-action: pan-y !important;
+        }
+
+        .leaderboard-login-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 10px;
+            color: var(--palette-ink);
+            text-align: center;
+        }
+
+        .leaderboard-login-prompt p {
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        .leaderboard-login-help {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .leaderboard-login-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .leaderboard-login-btn {
+            border: 3px solid #000000;
+            border-radius: 14px;
+            padding: 10px 18px;
+            background: var(--palette-yellow);
+            color: var(--palette-ink);
+            box-shadow: 0 4px 0 var(--palette-pink);
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .leaderboard-login-btn.retry {
+            background: #ffffff;
+            box-shadow: 0 4px 0 var(--palette-blue);
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 6px;
+            border-bottom: 2px solid rgba(64, 183, 242, 0.35);
+            border-radius: 8px;
+            color: var(--palette-ink);
+        }
+
+        .rank-item.is-me {
+            background: var(--palette-soft-pink);
+            border: 2px solid #000000;
+            box-shadow: 0 3px 0 var(--palette-yellow);
+        }
+
+        .rank-item.is-me .rank-num,
+        .rank-item.is-me .rank-name {
+            color: var(--palette-ink);
+            font-weight: 900;
+        }
+
+        #my-rank-badge {
+            display: none;
+            background: var(--palette-cream);
+            color: #000;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 20px;
+            padding: 6px 20px;
+            margin-bottom: 8px;
+        }
+
+        .rank-badge-number {
+            color: var(--palette-yellow);
+            font-size: 22px;
+            text-shadow: 2px 2px 0 #ff5a91, 4px 4px 0 #000000;
+        }
+
+        .rank-num {
+            font-weight: 900;
+            color: var(--palette-pink);
+            width: 40px;
+        }
+
+        .rank-score {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--palette-blue);
+            letter-spacing: 0.5px;
+        }
+
+        .rank-name {
+            flex: 1;
+            color: var(--palette-ink);
+            text-align: left;
+            padding-left: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        /* Name Entry */
+        #rank-entry {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .rank-announce {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            font-family: 'Fredoka', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 30px;
+            font-weight: 900;
+            color: #ff5a91;
+            margin: 0 0 14px;
+            padding-left: 52px;
+            text-shadow: none;
+        }
+
+        .rank-announce span {
+            font-family: inherit;
+            font-size: 42px;
+        }
+
+        #my-rank-val {
+            color: #000000;
+            display: inline-block;
+            font-size: 54px;
+            line-height: 0.9;
+            text-shadow: none;
+        }
+
+        #rank-suffix {
+            color: #ff5a91;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 21px;
+            line-height: 1.1;
+            text-shadow: none;
+        }
+
+        .name-input {
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            color: var(--palette-ink);
+            font-size: 20px;
+            font-weight: 700;
+            padding: 10px 20px;
+            text-align: center;
+            width: 240px;
+            margin-bottom: 14px;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            outline: none;
+            box-shadow: 0 4px 0 var(--palette-mint), 0 4px 0 2px #000000;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
+        }
+
+        .name-input::placeholder {
+            color: #8c8f98;
+            font-size: 14px;
+        }
+
+        #game-over-screen .start-btn {
+            background: var(--palette-mint);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+        }
+
+        #action-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #game-over-footer {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        /* input 태그에 전역 touch/select 제한 해제 */
+        input {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+        }
+
+        /* Fireball 알림 오버레이 */
+        #fireball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #fireball-announce.show {
+            animation: fbAnnounce 1.2s ease-out forwards;
+        }
+
+        @keyframes fbAnnounce {
+            0%   { opacity: 0; transform: scale(0.4); }
+            20%  { opacity: 1; transform: scale(1.15); }
+            50%  { opacity: 1; transform: scale(1.0); }
+            80%  { opacity: 1; transform: scale(1.0); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+
+        #fireball-announce-img {
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            transform: translateX(-3%);
+        }
+
+        /* Flashball 알림 오버레이 */
+        #flashball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #flashball-announce.show {
+            animation: fbAnnounce 1.8s ease-out forwards;
+        }
+
+        #flashball-announce-img {
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            transform: translateX(-3%);
+        }
+
+        /* Stripeball 알림 오버레이 */
+        #stripeball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #stripeball-announce.show {
+            animation: fbAnnounce 1.2s ease-out forwards;
+        }
+
+        #stripeball-announce-img {
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            transform: translateX(-1%);
+        }
+
+        /* Mirrorball 알림 오버레이 */
+        #mirrorball-announce {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+        }
+
+        #mirrorball-announce.show {
+            animation: fbAnnounce 1.2s ease-out forwards;
+        }
+
+        #mirrorball-announce-img {
+            width: 120%;
+            height: 120%;
+            object-fit: contain;
+            transform: translateX(0.5%);
+        }
+
+        /* ── 다인 대전 ── */
+        #battle-screen {
+            background: linear-gradient(rgba(185, 236, 255, 0.88), rgba(255, 247, 216, 0.93)), url('./main_background.png') center top / cover no-repeat;
+            z-index: 18;
+            gap: 12px;
+            overflow-y: auto;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .battle-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-weight: 900;
+            font-size: 26px;
+            color: var(--palette-ink);
+            margin: 0 0 4px;
+            text-shadow: 3px 3px 0 var(--palette-yellow);
+        }
+
+        .battle-code-box {
+            background: #ffffff;
+            color: var(--palette-pink);
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 48px;
+            letter-spacing: 8px;
+            border-radius: 16px;
+            border: 3px solid #000000;
+            padding: 10px 30px;
+            text-align: center;
+            box-shadow: 0 6px 0 var(--palette-yellow), 0 6px 0 2px #000000;
+        }
+
+        .battle-waiting {
+            color: #586070;
+            font-size: 14px;
+            font-weight: 700;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+
+        .battle-profile-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            width: 280px;
+        }
+
+        .battle-small-label {
+            font-size: 13px;
+            color: #586070;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .battle-name-input {
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 900;
+            width: 220px;
+            padding: 9px 12px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 4px 0 var(--palette-mint), 0 4px 0 2px #000000;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
+        }
+
+        .battle-name-hint {
+            color: #6a7080;
+            font-size: 11px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .battle-player-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            width: 280px;
+            margin: -2px 0 2px;
+        }
+
+        .battle-player-pill {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 6px 8px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-shadow: 0 2px 0 var(--palette-blue);
+        }
+
+        .battle-player-pill.me {
+            background: var(--palette-yellow);
+            color: #000;
+        }
+
+        #battle-start-btn {
+            width: 220px;
+            padding: 10px 18px;
+            font-size: 20px;
+        }
+
+        #battle-screen .start-btn,
+        #battle-result-screen .start-btn {
+            background: var(--palette-blue);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+        }
+
+        #battle-name-next-btn,
+        #battle-start-btn {
+            background: var(--palette-mint) !important;
+        }
+
+        #battle-screen #battle-cancel-btn,
+        #battle-result-screen #battle-exit-btn {
+            background: #ffffff;
+            color: var(--palette-ink) !important;
+            border-color: #000000 !important;
+            box-shadow: 0 4px 0 var(--palette-blue), 0 4px 0 2px #000000;
+        }
+
+        #battle-start-btn:disabled {
+            opacity: 0.35;
+            transform: none;
+            box-shadow: 0 6px 0 #94a3b8, 0 6px 0 2px #000000;
+            pointer-events: none;
+        }
+
+        .battle-divider {
+            font-size: 13px;
+            color: #6a7080;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .battle-input {
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 14px;
+            font-size: 28px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-align: center;
+            width: 180px;
+            padding: 8px 16px;
+            outline: none;
+            color: #000;
+            box-shadow: 0 4px 0 var(--palette-blue), 0 4px 0 2px #000000;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            -webkit-touch-callout: default !important;
+            pointer-events: auto !important;
+        }
+
+        /* 게임 중 점수 HUD */
+        #battle-hud {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            padding: 0 6px;
+            z-index: 6;
+            pointer-events: none;
+        }
+
+        .battle-hud-box {
+            background: var(--palette-cream);
+            color: var(--palette-ink);
+            font-size: 11px;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 0 0 10px 10px;
+            border: 2px solid #000000;
+            border-top: 0;
+            box-shadow: 0 3px 0 var(--palette-pink);
+            text-align: center;
+            min-width: 52px;
+        }
+
+        .battle-hud-box.me {
+            background: var(--palette-yellow);
+            color: var(--palette-ink);
+        }
+
+        .battle-hud-box span {
+            display: block;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 20px;
+            color: var(--palette-blue);
+            letter-spacing: 1px;
+        }
+
+        .battle-hud-box.me span {
+            color: #000;
+        }
+
+        /* 대전 결과 화면 */
+        #battle-result-screen {
+            background: linear-gradient(rgba(185, 236, 255, 0.9), rgba(255, 247, 216, 0.94)), url('./main_background.png') center top / cover no-repeat;
+            z-index: 25;
+        }
+
+        .battle-result-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 72px;
+            margin: 0;
+            text-shadow: 4px 4px 0 #ffffff, 7px 7px 0 #000000;
+        }
+
+        .battle-result-title.win  { color: var(--palette-mint); }
+        .battle-result-title.lose { color: #ff5a91; }
+        .battle-result-title.draw { color: var(--palette-blue); }
+
+        .battle-scores {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 14px 0;
+            max-width: 340px;
+        }
+
+        .battle-score-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-align: center;
+            min-width: 72px;
+            box-shadow: 0 4px 0 var(--palette-blue);
+        }
+
+        .battle-score-card.me {
+            border-color: #000000;
+            box-shadow: 0 4px 0 var(--palette-pink), 0 4px 0 2px #000000;
+            background: var(--palette-yellow);
+        }
+
+        .battle-score-card .bsc-name {
+            font-size: 13px;
+            color: #586070;
+            font-weight: 700;
+        }
+
+        .battle-score-card.me .bsc-name {
+            color: var(--palette-ink);
+        }
+
+        .battle-score-card .bsc-score {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 38px;
+            color: var(--palette-blue);
+        }
+
+        /* 메인화면 랭킹 버튼 */
+        #intro-ranking-btn {
+            position: absolute;
+            top: 16px;
+            right: -41px;
+            width: 144px;
+            height: auto;
+            background: transparent;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            z-index: 2;
+            touch-action: auto !important;
+        }
+
+        .intro-ranking-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+        }
+
+        /* 메인화면 랭킹 모달 */
+        #intro-ranking-modal {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(185, 236, 255, 0.82);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 19;
+            padding: 30px 20px;
+        }
+
+        #intro-ranking-modal .modal-inner {
+            background: var(--palette-cream);
+            border: 3px solid #000000;
+            border-radius: 20px;
+            width: 100%;
+            max-height: 80%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            padding: 20px;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y !important;
+            scrollbar-width: thin;
+            scrollbar-color: var(--palette-pink) var(--palette-soft-blue);
+            box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 2px #000000;
+        }
+
+        #intro-ranking-modal .modal-inner,
+        #intro-ranking-modal .modal-inner * {
+            touch-action: pan-y !important;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar-track {
+            background: var(--palette-soft-blue);
+            border-radius: 3px;
+        }
+
+        #intro-ranking-modal .modal-inner::-webkit-scrollbar-thumb {
+            background: var(--palette-pink);
+            border-radius: 3px;
+        }
+
+        #intro-ranking-close-x {
+            position: sticky;
+            top: 0;
+            float: right;
+            width: 28px;
+            height: 28px;
+            background: var(--palette-pink);
+            border: 2px solid #000000;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 8px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        /* 테스트 시작 번호 선택 */
+        #test-start-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #test-num-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .test-sel-btn {
+            background: #fff7c7;
+            color: var(--palette-ink);
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 7px 18px;
+            cursor: pointer;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            transition: all 0.15s;
+            box-shadow: 0 3px 0 var(--palette-blue);
+        }
+
+        .test-sel-btn.active {
+            background: var(--palette-purple);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 3px 0 var(--palette-yellow);
+        }
+
+        /* 1080x1920 layout pass for non-gameplay screens */
+        .screen {
+            padding: 56px;
+        }
+
+        .splash-title-art {
+            width: min(1250px, 116%);
+            margin-bottom: 266px;
+            transform: translateX(-89px);
+        }
+
+        .splash-start-btn {
+            font-size: 60px;
+            letter-spacing: 3px;
+            text-shadow: 6px 6px 0 #ffffff;
+        }
+
+        .lang-switcher {
+            top: 44px;
+            left: 34px;
+            gap: 14px;
+        }
+
+        .lang-switch-btn {
+            min-width: 132px;
+            padding: 17px 19px;
+            border-width: 6px;
+            border-radius: 28px;
+            box-shadow: 0 8px 0 var(--palette-blue), 0 8px 0 3px #000000;
+            font-size: 28px;
+        }
+
+        .lang-switch-btn.active {
+            box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 3px #000000;
+        }
+
+        .title-art {
+            top: 160px;
+            width: min(1250px, 116%);
+            transform: translateX(calc(-50% - 10px));
+        }
+
+        .speech-bubble {
+            top: 670px;
+            background: var(--palette-yellow);
+            border-width: 8px;
+            border-radius: 50px;
+            padding: 22px 28px;
+            font-size: 33px;
+            line-height: 1.55;
+            max-width: calc(100% - 80px);
+            box-shadow: none;
+        }
+
+        .speech-bubble::after {
+            bottom: -40px;
+            border-width: 42px 42px 0;
+            border-color: var(--palette-yellow) transparent;
+        }
+
+        .speech-bubble::before {
+            bottom: -54px;
+            border-width: 52px 52px 0;
+            border-color: #000000 transparent;
+        }
+
+        .start-btn {
+            border-width: 6px;
+            padding: 33px 138px;
+            font-size: 66px;
+            border-radius: 33px;
+            box-shadow: 0 17px 0 var(--primary-neon), 0 17px 0 6px #000000;
+            letter-spacing: 3px;
+            margin-top: 28px;
+        }
+
+        .start-btn:active {
+            transform: translateY(11px);
+            box-shadow: 0 6px 0 var(--primary-neon), 0 6px 0 6px #000000;
+        }
+
+        .intro-menu {
+            bottom: 90px;
+        }
+
+        .intro-main-actions {
+            gap: 28px;
+        }
+
+        #intro-screen .intro-main-actions .start-btn {
+            width: 393px;
+            min-height: 138px;
+            padding: 22px 33px;
+            font-size: 66px;
+        }
+
+        html[lang="ja"] #intro-screen #battle-btn {
+            font-size: 52px;
+        }
+
+        #intro-screen #start-btn-id,
+        #intro-screen #battle-btn,
+        #battle-screen .start-btn,
+        #battle-result-screen .start-btn,
+        #game-over-screen .start-btn {
+            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
+            text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
+        }
+
+        #game-over-screen .start-btn {
+            width: min(760px, calc(100% - 120px));
+            min-height: 118px;
+            padding: 22px 44px;
+            font-size: 52px;
+            border-radius: 34px;
+            margin-top: 0;
+            line-height: 1.15;
+            box-shadow: 0 12px 0 var(--palette-pink), 0 12px 0 6px #000000;
+        }
+
+        #intro-screen #start-btn-id:active,
+        #intro-screen #battle-btn:active {
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 6px #000000;
+        }
+
+        #test-start-row {
+            gap: 22px;
+            margin-top: 39px;
+        }
+
+        #test-num-row {
+            gap: 17px !important;
+        }
+
+        .test-sel-btn {
+            border-width: 6px;
+            border-radius: 28px;
+            font-size: 39px;
+            padding: 19px 50px;
+            box-shadow: 0 8px 0 var(--palette-blue);
+        }
+
+        #intro-ranking-btn {
+            top: 44px;
+            right: -113px;
+            width: 398px;
+        }
+
+        #intro-ranking-modal {
+            padding: 83px 56px;
+        }
+
+        #intro-ranking-modal .modal-inner,
+        #leaderboard-modal {
+            border-width: 8px;
+            border-radius: 55px;
+            padding: 55px;
+            box-shadow: 0 22px 0 var(--palette-pink), 0 22px 0 6px #000000;
+        }
+
+        #intro-ranking-modal .modal-inner h3,
+        #leaderboard-modal h3 {
+            font-size: 58px;
+            margin: 0 0 28px !important;
+        }
+
+        #intro-ranking-close-x {
+            width: 78px;
+            height: 78px;
+            border-width: 6px;
+            font-size: 39px;
+            line-height: 66px;
+            margin-left: 22px;
+        }
+
+        .rank-item {
+            padding: 28px 17px;
+            border-bottom-width: 6px;
+            border-radius: 22px;
+        }
+
+        .rank-item.is-me {
+            border-width: 6px;
+            box-shadow: 0 8px 0 var(--palette-yellow);
+        }
+
+        .rank-num {
+            width: 110px;
+            font-size: 39px;
+        }
+
+        .rank-name {
+            padding-left: 28px;
+            font-size: 39px;
+            max-width: 332px;
+        }
+
+        .rank-score {
+            font-size: 36px;
+        }
+
+        #game-over-screen {
+            overflow-x: hidden;
+            overflow-y: hidden;
+            padding: 100px 56px 70px;
+        }
+
+        .game-over-title {
+            font-size: 140px;
+            max-width: 100%;
+            text-shadow: 8px 8px 0 #ffe85c, 14px 14px 0 #000000;
+        }
+
+        .final-score {
+            font-size: 82px;
+            margin: 36px 0 42px;
+            border-width: 8px;
+            border-radius: 42px;
+            padding: 14px 52px;
+            max-width: calc(100% - 80px);
+            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000;
+        }
+
+        #rank-entry {
+            margin: 0 0 42px;
+        }
+
+        .rank-announce {
+            gap: 11px;
+            font-size: 58px;
+            margin: 0 0 42px;
+            padding-left: 88px;
+        }
+
+        .rank-announce span {
+            font-size: 82px;
+        }
+
+        #my-rank-val {
+            font-size: 112px;
+        }
+
+        #rank-suffix {
+            font-size: 42px;
+        }
+
+        .name-input {
+            border-width: 8px;
+            border-radius: 34px;
+            font-size: 42px;
+            padding: 22px 44px;
+            width: min(720px, calc(100% - 90px));
+            margin-bottom: 28px;
+            box-shadow: 0 9px 0 var(--palette-mint), 0 9px 0 6px #000000;
+        }
+
+        .name-input::placeholder {
+            font-size: 32px;
+        }
+
+        #action-buttons {
+            gap: 24px;
+            width: 100%;
+        }
+
+        #leaderboard-modal {
+            width: min(820px, calc(100% - 120px));
+            max-height: 620px;
+            margin-top: 50px;
+        }
+
+        #rank-list {
+            max-height: 430px;
+        }
+
+        .leaderboard-login-prompt {
+            gap: 22px;
+            padding: 36px 18px;
+            font-size: 34px;
+        }
+
+        .leaderboard-login-help {
+            font-size: 27px;
+        }
+
+        .leaderboard-login-actions {
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .leaderboard-login-btn {
+            border-width: 6px;
+            border-radius: 28px;
+            padding: 18px 32px;
+            box-shadow: 0 8px 0 var(--palette-pink);
+            font-size: 31px;
+        }
+
+        .leaderboard-login-btn.retry {
+            box-shadow: 0 8px 0 var(--palette-blue);
+        }
+
+        #game-over-footer {
+            padding-bottom: 10px;
+        }
+
+        .leaderboard-btn {
+            border-width: 8px;
+            margin-top: 24px;
+            padding: 18px 64px;
+            border-radius: 64px;
+            font-size: 38px;
+            box-shadow: 0 9px 0 var(--palette-blue), 0 9px 0 6px #000000;
+            max-width: calc(100% - 120px);
+        }
+
+        #game-over-screen #register-btn:not(.hidden) + #retry-btn {
+            margin-top: 24px;
+        }
+
+        #battle-screen {
+            gap: 33px;
+            padding: 56px 0;
+        }
+
+        .battle-title {
+            font-size: 72px;
+            margin: 0 0 11px;
+            text-shadow: 8px 8px 0 var(--palette-yellow);
+        }
+
+        .battle-profile-panel,
+        .battle-player-list {
+            width: 775px;
+        }
+
+        .battle-profile-panel {
+            gap: 14px;
+        }
+
+        .battle-small-label {
+            font-size: 36px;
+        }
+
+        .battle-name-input {
+            border-width: 8px;
+            border-radius: 39px;
+            font-size: 50px;
+            width: 609px;
+            padding: 25px 33px;
+            box-shadow: 0 11px 0 var(--palette-mint), 0 11px 0 6px #000000;
+        }
+
+        .battle-name-hint {
+            font-size: 30px;
+        }
+
+        #battle-name-next-btn,
+        #battle-start-btn {
+            width: 609px !important;
+            padding: 28px 50px !important;
+            font-size: 55px !important;
+        }
+
+        #battle-create-section,
+        #battle-join-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px !important;
+        }
+
+        .battle-code-box {
+            font-size: 133px;
+            letter-spacing: 22px;
+            border-width: 8px;
+            border-radius: 44px;
+            padding: 28px 83px;
+            box-shadow: 0 17px 0 var(--palette-yellow), 0 17px 0 6px #000000;
+        }
+
+        .battle-waiting {
+            font-size: 39px;
+        }
+
+        .battle-player-list {
+            gap: 17px;
+            margin: -6px 0 6px;
+        }
+
+        .battle-player-pill {
+            border-width: 6px;
+            border-radius: 33px;
+            font-size: 33px;
+            padding: 17px 22px;
+            box-shadow: 0 6px 0 var(--palette-blue);
+        }
+
+        .battle-divider {
+            font-size: 36px;
+        }
+
+        .battle-input {
+            border-width: 8px;
+            border-radius: 39px;
+            font-size: 78px;
+            letter-spacing: 11px;
+            width: 498px;
+            padding: 22px 44px;
+            box-shadow: 0 11px 0 var(--palette-blue), 0 11px 0 6px #000000;
+        }
+
+        #battle-screen #battle-cancel-btn,
+        #battle-result-screen #battle-exit-btn {
+            box-shadow: 0 11px 0 var(--palette-blue), 0 11px 0 6px #000000;
+        }
+
+        #battle-hud {
+            gap: 11px;
+            padding: 0 17px;
+        }
+
+        .battle-hud-box {
+            font-size: 30px;
+            padding: 11px 22px;
+            border-radius: 0 0 28px 28px;
+            border-width: 6px;
+            border-top: 0;
+            box-shadow: 0 8px 0 var(--palette-pink);
+            min-width: 144px;
+        }
+
+        .battle-hud-box span {
+            font-size: 55px;
+            letter-spacing: 3px;
+        }
+
+        .battle-result-title {
+            font-size: 199px;
+            text-shadow: 11px 11px 0 #ffffff, 19px 19px 0 #000000;
+        }
+
+        .battle-scores {
+            gap: 22px;
+            margin: 39px 0;
+            max-width: 942px;
+        }
+
+        .battle-score-card {
+            border-width: 6px;
+            border-radius: 22px;
+            padding: 28px 33px;
+            min-width: 199px;
+            box-shadow: 0 11px 0 var(--palette-blue);
+        }
+
+        .battle-score-card.me {
+            box-shadow: 0 11px 0 var(--palette-pink), 0 11px 0 6px #000000;
+        }
+
+        .battle-score-card .bsc-name {
+            font-size: 36px;
+        }
+
+        .battle-score-card .bsc-score {
+            font-size: 105px;
+        }
+
+        #battle-rematch-btn {
+            margin-bottom: 22px !important;
+        }
+
+        #rematch-status {
+            font-size: 36px !important;
+            margin: 0 0 22px !important;
+            min-height: 50px !important;
+        }
+
+        /* Countdown Screen */
+        #countdown-screen {
+            background-color: rgba(255, 247, 216, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 15;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        #countdown-text {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 210px;
+            font-weight: 900;
+            -webkit-text-stroke: 2px currentColor;
+            color: var(--palette-blue);
+            text-shadow: 11px 11px 0 #ffffff, 22px 22px 0 #000000;
+            transition: transform 0.1s ease-out;
+            transform: scale(1);
+        }
+
+        #countdown-text.countdown-instruction {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            background: #ffffff;
+            border: 8px solid #000000;
+            border-radius: 50px;
+            color: var(--palette-ink);
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.55;
+            max-width: calc(100% - 130px);
+            padding: 40px 52px;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            -webkit-text-stroke: 0;
+            text-shadow: none;
+            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
+        }
+
+        .countdown-animate {
+            animation: popIn 0.8s ease-out forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.0);
+                opacity: 1;
+            }
+        }
+
+        #canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-wrapper">
+        <div id="ui-layer" class="hidden">
+            <div class="stat-box">
+                <span class="stat-label">SCORE</span>
+                <span id="score" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <div id="splash-screen" class="screen">
+            <img class="splash-title-art" src="./title.png" alt="無限ピッチング">
+            <button class="splash-start-btn" id="splash-start-btn">PRESS START</button>
+        </div>
+
+        <div id="intro-screen" class="screen hidden">
+            <div class="lang-switcher" id="lang-switcher" aria-label="Language">
+                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
+                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+                <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
+            </div>
+            <button id="intro-ranking-btn" onclick="toggleIntroRanking()" aria-label="TOP 100">
+                <img class="intro-ranking-img" src="./top100.png" alt="TOP 100">
+            </button>
+
+            <img class="title-art" src="./title.png" alt="無限ピッチング">
+            <div class="speech-bubble" id="intro-bubble">
+                よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
+            </div>
+            <div class="intro-menu">
+                <div class="intro-main-actions">
+                    <button id="start-btn-id" class="start-btn">スタート</button>
+                    <button id="battle-btn" class="start-btn" onclick="openBattleScreen()">みんなで対戦</button>
+                </div>
+                <div id="test-start-row">
+                    <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
+                    <div id="test-num-row" style="display:none;gap:6px;align-items:center;">
+                        <button class="test-sel-btn active" id="test-num-1"   onclick="setTestStart(1)">1</button>
+                        <button class="test-sel-btn"        id="test-num-30"  onclick="setTestStart(30)">30</button>
+                        <button class="test-sel-btn"        id="test-num-100" onclick="setTestStart(100)">100</button>
+                        <button class="test-sel-btn"        id="test-num-200" onclick="setTestStart(200)">200</button>
+                        <button class="test-sel-btn"        id="test-num-300" onclick="setTestStart(300)">300</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메인화면 랭킹 모달 -->
+        <div id="intro-ranking-modal" class="hidden">
+            <div class="modal-inner">
+                <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
+                <h3 style="margin:0 0 10px;color:#111827;text-align:center;">TOP 100</h3>
+                <div id="intro-rank-list"></div>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="screen hidden">
+            <h2 class="game-over-title">GAME OVER</h2>
+            <div class="final-score">SCORE: <span id="final-score-val">0</span></div>
+
+            <!-- 100위 안에 들었을 때 표시 -->
+            <div id="rank-entry" class="hidden">
+                <p class="rank-announce"><span id="my-rank-val">1</span><span id="rank-suffix">위 달성!</span></p>
+                <input id="player-name-input" class="name-input" type="text" maxlength="12" placeholder="名前を入力してください" />
+            </div>
+
+            <div id="action-buttons">
+                <button id="register-btn" class="start-btn hidden" onclick="registerName()">登録して続ける</button>
+                <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
+            </div>
+
+            <div id="leaderboard-modal">
+                <h3 style="margin-top:0">TOP 100</h3>
+                <div id="my-rank-badge"></div>
+                <div id="rank-list"></div>
+            </div>
+
+            <div id="game-over-footer">
+                <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
+            </div>
+        </div>
+
+        <!-- 대전 매칭 화면 -->
+        <div id="battle-screen" class="screen hidden">
+            <p class="battle-title" id="battle-screen-title">最大8人で対戦</p>
+
+            <div class="battle-profile-panel">
+                <p class="battle-small-label" id="battle-name-label">내 닉네임</p>
+                <input id="battle-name-input" class="battle-name-input" type="text" maxlength="10" placeholder="ニックネーム" oninput="handleBattleNameInput()" onblur="commitBattleNickname()" onkeydown="if(event.key==='Enter') submitBattleNickname()" />
+                <p class="battle-name-hint" id="battle-name-hint">日本語5文字 / 英字10文字まで</p>
+                <button class="start-btn" id="battle-name-next-btn" onclick="submitBattleNickname()" style="width:220px;padding:10px 18px;font-size:20px;">決定</button>
+            </div>
+
+            <!-- 방 만들기 섹션 -->
+            <div id="battle-create-section">
+                <p class="battle-small-label" id="battle-code-label" style="margin:0 0 6px;">내 방 코드</p>
+                <div class="battle-code-box" id="battle-room-code">----</div>
+                <p class="battle-waiting" id="battle-waiting-text">相手を待っています...</p>
+                <div class="battle-player-list" id="battle-player-list"></div>
+                <button class="start-btn" id="battle-start-btn" onclick="startBattleRoom()" disabled>ゲーム開始</button>
+            </div>
+
+            <p class="battle-divider" id="battle-divider">── または ──</p>
+
+            <!-- 코드 입력 섹션 -->
+            <div id="battle-join-section" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <p class="battle-small-label" id="battle-join-label">코드 입력</p>
+                <input id="battle-code-input" class="battle-input" type="text" maxlength="4" placeholder="0000" />
+                <button class="start-btn" id="battle-join-btn" onclick="joinBattleRoom()">참가</button>
+            </div>
+
+            <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;color:#1e293b;border-color:#1e293b;" id="battle-cancel-btn">メインへ</button>
+        </div>
+
+        <!-- 대전 중 상단 HUD -->
+        <div id="battle-hud"></div>
+
+        <!-- 대전 결과 화면 -->
+        <div id="battle-result-screen" class="screen hidden">
+            <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
+            <div class="battle-scores" id="battle-score-list"></div>
+            <button class="start-btn" id="battle-rematch-btn" onclick="requestRematch()" style="margin-bottom:8px;">もう一度 (<span id="rematch-countdown">10</span>)</button>
+            <p id="rematch-status" style="color:#94a3b8;font-size:13px;font-weight:700;margin:0 0 8px;min-height:18px;"></p>
+            <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
+        </div>
+
+        <div id="countdown-screen" class="screen hidden">
+            <div id="countdown-text">3</div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <!-- 미러볼 알림 오버레이 -->
+        <div id="flashball-announce">
+            <img src="./flashball.png" id="flashball-announce-img">
+        </div>
+
+        <div id="stripeball-announce">
+            <img src="./stripeball.png" id="stripeball-announce-img">
+        </div>
+
+        <div id="mirrorball-announce">
+            <img src="./mirrorball.png" id="mirrorball-announce-img">
+        </div>
+
+        <!-- 파이어볼 알림 오버레이 -->
+        <div id="fireball-announce">
+            <img src="./fireball.png" id="fireball-announce-img">
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        /**
+         * IMAGES
+         */
+        const cartImg = new Image();
+        cartImg.src = './cart.png';
+
+        const pitcherImg = new Image();
+        pitcherImg.src = './pitcher.png';
+
+        const pitcherThrowImg = new Image();
+        pitcherThrowImg.src = './pitcher_throw.png';
+
+        let pitcherThrowing = false;
+
+        function setPitcherThrowing(isThrowing) {
+            pitcherThrowing = isThrowing;
+        }
+
+
+        /**
+         * AUDIO SYSTEM
+         */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let gameBgmBuffer = null;
+        let gameBgmSource = null;
+        const GAME_BGM_VOLUME = 0.8;
+
+        // 모든 효과음을 Web Audio API 버퍼로 관리
+        const sfxBuffers = {};
+        const sfxAudioEls = {};
+        const activeSfxSources = new Set();
+        const activeHtmlSfxEls = new Set();
+        let pageAudioMuted = false;
+        const sfxFiles = {
+            click:         './click.mp3',
+            countdown:     './countdown.mp3',
+            start:         './start.mp3',
+            gameover:      './gameover.mp3',
+            win:           './win.mp3',
+            ball_throw:    './throw.mp3',
+            throw_hit:     './throw_hit.mp3',
+            fireball:      './fireball.mp3',
+            throw_fireball:'./throw_fireball.mp3',
+            bgm_title:        './bgm_title.mp3',
+            mirrorball:       './mirrorball.mp3',
+            throw_mirrorball: './throw_mirrorball.mp3',
+            stripeball:       './stripeball.mp3',
+            flashball:        './flashball.mp3',
+        };
+        Object.entries(sfxFiles).forEach(([key, url]) => {
+            const audio = new Audio(url);
+            audio.preload = 'auto';
+            sfxAudioEls[key] = audio;
+            try { audio.load(); } catch(e) {}
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 0) {
+                    audioCtx.decodeAudioData(xhr.response)
+                        .then(buf => { sfxBuffers[key] = buf; })
+                        .catch(e => console.warn('[SFX] Web Audio decode failed, using HTMLAudio fallback:', key, e));
+                } else {
+                    console.warn('[SFX] load failed, using HTMLAudio fallback:', key, xhr.status);
+                }
+            };
+            xhr.onerror = () => console.warn('[SFX] XHR failed, using HTMLAudio fallback:', key);
+            xhr.send();
+        });
+
+        function playHtmlSfx(key, volume, onended) {
+            if (pageAudioMuted || document.visibilityState === 'hidden') return false;
+            const base = sfxAudioEls[key];
+            if (!base) {
+                console.warn('[SFX] missing audio element:', key);
+                if (onended) onended();
+                return false;
+            }
+
+            const el = base.cloneNode(true);
+            el.volume = volume !== undefined ? volume : 1.0;
+            const cleanup = () => activeHtmlSfxEls.delete(el);
+            activeHtmlSfxEls.add(el);
+            el.addEventListener('ended', cleanup, { once: true });
+            if (onended) el.addEventListener('ended', onended, { once: true });
+            el.play().catch(e => {
+                console.warn('[SFX] HTMLAudio play failed:', key, e);
+                cleanup();
+                if (!pageAudioMuted && document.visibilityState !== 'hidden' && onended) onended();
+            });
+            return true;
+        }
+
+        function playSfx(key, volume, onended) {
+            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            const buf = sfxBuffers[key];
+            if (!buf) {
+                playHtmlSfx(key, volume, onended);
+                return;
+            }
+            audioCtx.resume().then(() => {
+                if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                const src = audioCtx.createBufferSource();
+                src.buffer = buf;
+                const gain = audioCtx.createGain();
+                gain.gain.value = volume !== undefined ? volume : 1.0;
+                src.connect(gain);
+                gain.connect(audioCtx.destination);
+                activeSfxSources.add(src);
+                src.onended = () => {
+                    activeSfxSources.delete(src);
+                    if (onended) onended();
+                };
+                src.start(0);
+            }).catch(() => playHtmlSfx(key, volume, onended));
+        }
+
+        function playClickSfx() {
+            playSfx('click', 0.8);
+        }
+
+        document.addEventListener('click', playClickSfx, true);
+
+        // bgm_title: GainNode로 볼륨/페이드 제어
+        let titleBgmSource = null;
+        let titleBgmEl = null;
+        let titleGain = audioCtx.createGain();
+        titleGain.gain.value = 0.6;
+        titleGain.connect(audioCtx.destination);
+
+        // HTMLAudioElement 폴백 (bgm_game.wav Web Audio API 실패 시)
+        const bgmGameEl  = new Audio('./bgm_game.wav');
+        bgmGameEl.loop   = true;
+        bgmGameEl.volume = GAME_BGM_VOLUME;
+        let bgmGameUseEl = false;
+        const gameBgmGain = audioCtx.createGain();
+        gameBgmGain.gain.value = GAME_BGM_VOLUME;
+        gameBgmGain.connect(audioCtx.destination);
+
+        function playThrow() {
+            playSfx('ball_throw', 0.7);
+        }
+
+        // fetch 대신 XHR 사용 — file:// 프로토콜에서도 동작
+        // 버퍼 끝의 무음 구간을 건너뛰기 위한 실제 루프 끝 지점 계산
+        function detectLoopEnd(buffer) {
+            const threshold = 0.001;
+            // 모든 채널 중 가장 늦게 소리가 있는 샘플 위치를 찾음
+            let lastSample = 0;
+            for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+                const data = buffer.getChannelData(ch);
+                for (let i = data.length - 1; i >= 0; i--) {
+                    if (Math.abs(data[i]) > threshold) {
+                        if (i > lastSample) lastSample = i;
+                        break;
+                    }
+                }
+            }
+            // 약간의 여유(0.01초)를 두고 잘라냄
+            return Math.min((lastSample + Math.floor(buffer.sampleRate * 0.01)) / buffer.sampleRate, buffer.duration);
+        }
+
+        let gameBgmLoopEnd = 0;
+
+        (function loadGameBgm() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', './bgm_game.wav', true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 0) {
+                    audioCtx.decodeAudioData(xhr.response)
+                        .then(decoded => {
+                            gameBgmBuffer = decoded;
+                            gameBgmLoopEnd = detectLoopEnd(decoded);
+                            console.log('[BGM] loopEnd:', gameBgmLoopEnd, '/ duration:', decoded.duration);
+                        })
+                        .catch(() => { bgmGameUseEl = true; });
+                } else {
+                    bgmGameUseEl = true;
+                }
+            };
+            xhr.onerror = () => { bgmGameUseEl = true; };
+            xhr.send();
+        })();
+
+        let fadeTimer = null;
+
+        function stopActiveSfx() {
+            activeSfxSources.forEach(src => {
+                try {
+                    src.onended = null;
+                    src.stop();
+                } catch(e) {}
+            });
+            activeSfxSources.clear();
+
+            activeHtmlSfxEls.forEach(el => {
+                try {
+                    el.pause();
+                    el.currentTime = 0;
+                } catch(e) {}
+            });
+            activeHtmlSfxEls.clear();
+        }
+
+        function stopAllBgm(options = {}) {
+            if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+            if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+            if (titleBgmEl) {
+                titleBgmEl.pause();
+                titleBgmEl.currentTime = 0;
+                titleBgmEl = null;
+            }
+            titleGain.gain.value = 0.6;
+            if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
+            bgmGameEl.pause();
+            bgmGameEl.currentTime = 0;
+            if (options.stopSfx) stopActiveSfx();
+        }
+
+        function playTitleBgm() {
+            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            if (!sfxBuffers['bgm_title']) {
+                if (titleBgmEl) {
+                    titleBgmEl.pause();
+                    titleBgmEl.currentTime = 0;
+                }
+                const base = sfxAudioEls['bgm_title'];
+                if (!base) return;
+                titleBgmEl = base.cloneNode(true);
+                titleBgmEl.loop = true;
+                titleBgmEl.volume = 0.6;
+                titleBgmEl.play().catch(e => console.warn('[BGM] title fallback play failed:', e));
+                return;
+            }
+            audioCtx.resume().then(() => {
+                if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
+                if (titleBgmEl) {
+                    titleBgmEl.pause();
+                    titleBgmEl.currentTime = 0;
+                    titleBgmEl = null;
+                }
+                titleGain.gain.value = 0.6;
+                const src = audioCtx.createBufferSource();
+                src.buffer = sfxBuffers['bgm_title'];
+                src.loop = true;
+                src.connect(titleGain);
+                src.start(0);
+                titleBgmSource = src;
+            });
+        }
+
+        function fadeTitleBgm(duration) {
+            if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+            const steps = 30;
+            const interval = duration / steps;
+            const startVolume = titleBgmEl ? titleBgmEl.volume : titleGain.gain.value;
+            const delta = startVolume / steps;
+            fadeTimer = setInterval(() => {
+                if (titleBgmEl) {
+                    titleBgmEl.volume = Math.max(0, titleBgmEl.volume - delta);
+                } else {
+                    titleGain.gain.value = Math.max(0, titleGain.gain.value - delta);
+                }
+                const currentVolume = titleBgmEl ? titleBgmEl.volume : titleGain.gain.value;
+                if (currentVolume <= 0) {
+                    clearInterval(fadeTimer);
+                    fadeTimer = null;
+                    if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+                    if (titleBgmEl) {
+                        titleBgmEl.pause();
+                        titleBgmEl.currentTime = 0;
+                        titleBgmEl = null;
+                    }
+                    titleGain.gain.value = 0.6;
+                }
+            }, interval);
+        }
+
+        // ── 언어 시스템 ──────────────────────────────────────────
+        let currentLang = 'ja';
+
+        const TEXTS = {
+            ja: {
+                introBubble: '<span class="bubble-nowrap">よしっ！世界一のピッチャーになるために、</span><br>今日も特訓だ！',
+                startBtn:    'スタート',
+                battleBtn:   'みんなで対戦',
+                rankSuffix:  '位達成！',
+                nameHolder:  '名前を入力してください',
+                registerBtn: '登録して続ける',
+                retryBtn:    'リトライ',
+                rankingBtn:  'ランキング',
+                closeBtn:    '閉じる',
+                homeBtn:     'メイン画面へ',
+                leaderboardLoginPrompt: 'アカウントでログインしますか？',
+                leaderboardLoginButton: 'ログイン',
+                leaderboardRetryButton: 'もう一度読み込む',
+                leaderboardLoginHelp: 'ログイン後、この画面に戻って再読み込みしてください。',
+                instruction: 'キャラクターを動かして\n数字の順番にボールを当てよう！',
+                battleScreenTitle: '最大8人で対戦',
+                battleWaiting: '相手を待っています...',
+                battleCancel: 'メインへ',
+                battleJoin: '参加',
+                battleExit: '戻る',
+                battleStart: 'ゲーム開始',
+                battleNameLabel: 'ニックネーム',
+                battleNamePlaceholder: 'ニックネーム',
+                battleNameHint: '日本語5文字 / 英字10文字まで',
+                battleNameNext: '決定',
+                battleCodeLabel: '自分のルームコード',
+                battleJoinLabel: 'コード入力',
+                battleDivider: '── または ──',
+                rematchBtn: 'もう一度',
+                selfLabel: '自分',
+                hostLabel: 'ホスト',
+                alertNickname: 'ニックネームを入力してください。',
+                alertRoomFull: '部屋が見つからないか満員です。',
+                alertNeedPlayers: '2人以上で開始できます。',
+                alertTestBattle: 'TESTモードでは対戦できません。',
+                lobbyStartable: count => `参加者 ${count}/${MAX_BATTLE_PLAYERS} - 2人から開始可能`,
+                lobbyWaitingHost: count => `参加者 ${count}/${MAX_BATTLE_PLAYERS} - ホストの開始待ち`,
+                resultWin: 'WIN!',
+                resultDraw: 'DRAW',
+                resultLose: 'LOSE',
+                rankText: rank => `${rank}位`,
+                othersPlaying: '他のプレイヤーがプレイ中...',
+                waitingHost: 'ホストの開始待ち...',
+                rematchJoinStatus: (ready, total) => `リマッチ参加 ${ready}/${total}`,
+                rematchReady: 'リマッチ参加完了',
+            },
+            en: {
+                introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
+                startBtn:    'START',
+                battleBtn:   'BATTLE',
+                rankSuffix:  ' PLACE!',
+                nameHolder:  'Enter your name',
+                registerBtn: 'Save and continue',
+                retryBtn:    'Retry',
+                rankingBtn:  'Ranking',
+                closeBtn:    'Close',
+                homeBtn:     'Main menu',
+                leaderboardLoginPrompt: 'Sign in with your account?',
+                leaderboardLoginButton: 'Sign in',
+                leaderboardRetryButton: 'Try again',
+                leaderboardLoginHelp: 'After signing in, return here and reload the ranking.',
+                instruction: 'Move the character\nand hit balls in number order!',
+                battleScreenTitle: 'Battle with up to 8',
+                battleWaiting: 'Waiting for players...',
+                battleCancel: 'Main menu',
+                battleJoin: 'Join',
+                battleExit: 'Back',
+                battleStart: 'Start game',
+                battleNameLabel: 'Nickname',
+                battleNamePlaceholder: 'Nickname',
+                battleNameHint: 'Up to 10 English letters',
+                battleNameNext: 'OK',
+                battleCodeLabel: 'Your room code',
+                battleJoinLabel: 'Enter code',
+                battleDivider: '── OR ──',
+                rematchBtn: 'Rematch',
+                selfLabel: 'Me',
+                hostLabel: 'Host',
+                alertNickname: 'Please enter a nickname.',
+                alertRoomFull: 'Room not found or already full.',
+                alertNeedPlayers: 'You need at least 2 players to start.',
+                alertTestBattle: 'Battle is unavailable in TEST mode.',
+                lobbyStartable: count => `Players ${count}/${MAX_BATTLE_PLAYERS} - Ready with 2+`,
+                lobbyWaitingHost: count => `Players ${count}/${MAX_BATTLE_PLAYERS} - Waiting for host`,
+                resultWin: 'WIN!',
+                resultDraw: 'DRAW',
+                resultLose: 'LOSE',
+                rankText: rank => `${rank}${getEnglishOrdinalSuffix(rank)}`,
+                othersPlaying: 'Other players are still playing...',
+                waitingHost: 'Waiting for host...',
+                rematchJoinStatus: (ready, total) => `Rematch joined ${ready}/${total}`,
+                rematchReady: 'Rematch joined',
+            },
+            ko: {
+                introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
+                startBtn:    '스타트',
+                battleBtn:   '대전',
+                rankSuffix:  '위 달성!',
+                nameHolder:  '이름을 입력하세요',
+                registerBtn: '등록하고 계속하기',
+                retryBtn:    '다시 하기',
+                rankingBtn:  '랭킹',
+                closeBtn:    '닫기',
+                homeBtn:     '메인화면',
+                leaderboardLoginPrompt: '계정으로 로그인하시겠습니까?',
+                leaderboardLoginButton: '로그인',
+                leaderboardRetryButton: '다시 불러오기',
+                leaderboardLoginHelp: '로그인 후 이 화면으로 돌아와 랭킹을 다시 불러오세요.',
+                instruction: '캐릭터를 이동하여\n숫자 순서대로 공을 맞추세요.',
+                battleScreenTitle: '최대 8인 대전',
+                battleWaiting: '상대방을 기다리는 중...',
+                battleCancel: '메인메뉴',
+                battleJoin: '참가',
+                battleExit: '돌아가기',
+                battleStart: '게임 시작',
+                battleNameLabel: '내 닉네임',
+                battleNamePlaceholder: '닉네임 입력',
+                battleNameHint: '한글 5자 / 영어 10자까지',
+                battleNameNext: '확인',
+                battleCodeLabel: '내 방 코드',
+                battleJoinLabel: '코드 입력',
+                battleDivider: '── 또는 ──',
+                rematchBtn: '다시하기',
+                selfLabel: '나',
+                hostLabel: '방장',
+                alertNickname: '닉네임을 입력해주세요.',
+                alertRoomFull: '방을 찾을 수 없거나 가득 찼습니다.',
+                alertNeedPlayers: '2명 이상 모이면 시작할 수 있습니다.',
+                alertTestBattle: 'TEST 모드에서는 대전을 이용할 수 없습니다.',
+                lobbyStartable: count => `참가자 ${count}/${MAX_BATTLE_PLAYERS}명 - 2명부터 시작 가능`,
+                lobbyWaitingHost: count => `참가자 ${count}/${MAX_BATTLE_PLAYERS}명 - 방장 시작 대기 중`,
+                resultWin: '승리!',
+                resultDraw: '무승부',
+                resultLose: '패배...',
+                rankText: rank => `${rank}위`,
+                othersPlaying: '다른 플레이어 경기 중...',
+                waitingHost: '방장 시작 대기 중...',
+                rematchJoinStatus: (ready, total) => `다시하기 참가 ${ready}/${total}`,
+                rematchReady: '다시하기 참가 완료',
+            }
+        };
+
+        function getEnglishOrdinalSuffix(rank) {
+            const n = Number(rank);
+            const mod100 = n % 100;
+            if (mod100 >= 11 && mod100 <= 13) return 'th';
+            const mod10 = n % 10;
+            if (mod10 === 1) return 'st';
+            if (mod10 === 2) return 'nd';
+            if (mod10 === 3) return 'rd';
+            return 'th';
+        }
+
+        function textFor(key) {
+            return TEXTS[currentLang][key];
+        }
+
+        function setBattleRematchButtonText(seconds = null) {
+            const btn = document.getElementById('battle-rematch-btn');
+            if (!btn) return;
+            const currentSeconds = seconds ?? document.getElementById('rematch-countdown')?.innerText ?? '10';
+            btn.innerHTML = `${textFor('rematchBtn')} (<span id="rematch-countdown">${currentSeconds}</span>)`;
+        }
+
+        function applyLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            const t = TEXTS[lang];
+            document.getElementById('intro-bubble').innerHTML      = t.introBubble;
+            document.getElementById('start-btn-id').innerText      = t.startBtn;
+            document.getElementById('battle-btn').innerText        = t.battleBtn;
+            document.getElementById('rank-suffix').innerText       = t.rankSuffix;
+            document.getElementById('player-name-input').placeholder = t.nameHolder;
+            document.getElementById('register-btn').innerText      = t.registerBtn;
+            document.getElementById('retry-btn').innerText         = t.retryBtn;
+            document.getElementById('home-btn').innerText               = t.homeBtn;
+            setBattleRematchButtonText();
+            document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            applyBattleLang();
+        }
+
+        function setLanguage(lang) {
+            if (!TEXTS[lang]) return;
+            applyLang(lang);
+        }
+
+        function enterIntroFromSplash() {
+            applyLang(currentLang);
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            audioCtx.resume().then(() => {
+                const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+                const silentSrc = audioCtx.createBufferSource();
+                silentSrc.buffer = silentBuf;
+                silentSrc.connect(audioCtx.destination);
+                silentSrc.start(0);
+                playTitleBgm();
+            });
+        }
+
+        document.getElementById('splash-start-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            enterIntroFromSplash();
+        });
+
+        const splashScreen = document.getElementById('splash-screen');
+        splashScreen.addEventListener('click', enterIntroFromSplash);
+
+        function playGameBgm() {
+            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            stopAllBgm();
+            console.log('[BGM] playGameBgm called. buffer:', !!gameBgmBuffer, '/ audioCtx.state:', audioCtx.state);
+            if (gameBgmBuffer) {
+                audioCtx.resume().then(() => {
+                    if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                    console.log('[BGM] AudioContext resumed, starting Web Audio loop');
+                    const src = audioCtx.createBufferSource();
+                    src.buffer    = gameBgmBuffer;
+                    src.loop      = true;
+                    src.loopStart = 0;
+                    src.loopEnd   = gameBgmLoopEnd;
+                    gameBgmGain.gain.value = GAME_BGM_VOLUME;
+                    src.connect(gameBgmGain);
+                    src.start(0);
+                    gameBgmSource = src;
+                });
+            } else {
+                console.log('[BGM] buffer null → fallback HTMLAudioElement');
+                bgmGameUseEl = true;
+                bgmGameEl.currentTime = 0;
+                bgmGameEl.volume = GAME_BGM_VOLUME;
+                bgmGameEl.play().catch(e => console.warn('[BGM] fallback play failed:', e));
+            }
+        }
+
+        function playCountdownSfx() {
+            playSfx('countdown', 1.0);
+        }
+
+        function playStartSfx() {
+            playSfx('start', 1.0);
+        }
+
+        /**
+         * GAME CONFIGURATION & STATE
+         */
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const finalScoreEl = document.getElementById('final-score-val');
+        const startBtn = document.getElementById('start-btn-id');
+
+        // 테스트 모드는 코드만 보관하고 기본적으로 비활성화한다.
+        // 나중에 복구할 때 이 값을 true로 바꾸면 메뉴와 실행 경로가 다시 열린다.
+        const TEST_MODE_ENABLED = false;
+        let testMode = false;
+        let testStartNum = 1;
+
+        function applyTestModeAvailability() {
+            const testRow = document.getElementById('test-start-row');
+            if (!testRow) return;
+            testRow.style.display = TEST_MODE_ENABLED ? 'flex' : 'none';
+            if (!TEST_MODE_ENABLED) {
+                testMode = false;
+                testStartNum = 1;
+            }
+        }
+
+        function selectTestMode() {
+            if (!TEST_MODE_ENABLED) return;
+            testMode = !testMode;
+            document.getElementById('test-btn').classList.toggle('active', testMode);
+            const numRow = document.getElementById('test-num-row');
+            numRow.style.display = testMode ? 'flex' : 'none';
+            if (!testMode) testStartNum = 1;
+            const battleBtn = document.getElementById('battle-btn');
+            battleBtn.disabled = testMode;
+            battleBtn.style.opacity = testMode ? '0.3' : '1';
+            battleBtn.style.pointerEvents = testMode ? 'none' : '';
+        }
+
+        function setTestStart(n) {
+            if (!TEST_MODE_ENABLED) return;
+            testStartNum = n;
+            [1, 30, 100, 200, 300].forEach(v => {
+                document.getElementById('test-num-' + v).classList.toggle('active', v === n);
+            });
+        }
+
+        applyTestModeAvailability();
+
+        startBtn.addEventListener('click', () => {
+            if (gameState === 'INTRO') startGame();
+        });
+
+        let width, height;
+        let gameState = 'INTRO'; // INTRO, PLAYING, GAMEOVER
+        let score = 0;
+        let nextExpectedNumber = 1;
+        let lastPitchTime = 0;
+        function getPitchInterval(n) {
+            if (n < 31)  return 1200;
+            if (n < 131) return 1000;
+            if (n < 231) return 900;
+            if (n < 331) return 800;
+            if (n < 431) return 700;
+            if (n < 531) return 600;
+            return 500;
+        }
+
+        function getTestMoveFactor(n) {
+            if (n < 31)  return 0.15;
+            if (n < 131) return 0.24;
+            if (n < 231) return 0.32;
+            if (n < 331) return 0.40;
+            return 0.50;
+        }
+
+        let player = { x: 0, y: 0, width: 60, height: 80 };
+        let blocks = [];
+        let balls = [];
+        let scrollY = 0;
+        let targetScrollY = 0;
+
+        let destroyedNumbers  = new Set();
+        let fireballCharging  = false;
+        let fireballActive    = false;
+        let fireballColumn    = -1;
+        let mirrorballActive      = false; // 현재 숫자 반전 중 여부
+        let mirrorballCharging    = false; // 미러볼 노티+웨이브 중 (투구 차단)
+        let mirrorballShotPending = false; // 다음 일반 투구를 미러볼로 처리
+        let mirrorballDoneCount   = 0;     // 미러볼 발동 횟수
+        let mirrorWaveStart       = 0;     // 웨이브 시작 타임스탬프 (0=비활성)
+        const MIRRORBALL_TRIGGER_SCORE = 94;
+        const MIRRORBALL_ANNOUNCE_DURATION = 1200;
+        const MIRRORBALL_POST_ANNOUNCE_DELAY = 1000;
+        const MIRROR_WAVE_DURATION = 2000; // 웨이브 총 시간(ms)
+        let stripeballActive      = false; // 10개 줄 단위 교차 표시 여부
+        let stripeballCharging    = false; // 스트라이프볼 노티+웨이브 중 (투구 차단)
+        let stripeballShotPending = false; // 다음 일반 투구를 스트라이프볼로 처리
+        let stripeballTriggered   = false; // 이미 발동했는지
+        let stripeWaveStart       = 0;     // 스트라이프 웨이브 시작 타임스탬프
+        const STRIPEBALL_TRIGGER_NUMBER = 201;
+        const STRIPEBALL_BASE_ROW_INDEX = 20; // 201~210 줄부터 정상/미러 교차
+        const STRIPEBALL_ANNOUNCE_DURATION = 1200;
+        const STRIPEBALL_POST_ANNOUNCE_DELAY = 1000;
+        let flashballActive      = false; // 숫자 깜빡임 중 여부
+        let flashballCharging    = false; // 플래시볼 노티 중 (투구 차단)
+        let flashballShotPending = false; // 다음 일반 투구를 플래시볼로 처리
+        let flashballTriggered   = false; // 이미 발동했는지
+        let flashballVisible     = true;  // 깜빡임 현재 표시 여부
+        let flashballTimer       = null;  // 깜빡임 타이머
+        const FLASHBALL_TRIGGER_NUMBER = 301;
+        const FLASHBALL_SHOT_DELAY = 3200;
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZ8_PYjpQxnKYcQJWx9DUHeHUSQ1cVSsA",
+            authDomain: "infinite-pitcher.firebaseapp.com",
+            projectId: "infinite-pitcher",
+            storageBucket: "infinite-pitcher.firebasestorage.app",
+            messagingSenderId: "134868428008",
+            appId: "1:134868428008:web:ef83005b900899c606d55d",
+            databaseURL: "https://infinite-pitcher-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        /**
+         * INITIALIZATION
+         */
+        const BASE_W = 1080;
+        const BASE_H = 1920;
+        const LEGACY_BASE_W = 390;
+        const FRAME_SCALE = BASE_W / LEGACY_BASE_W;
+
+        function scalePx(value) {
+            return value * FRAME_SCALE;
+        }
+
+        function getBlockSize() {
+            return Math.min(width / 10, height / 10);
+        }
+
+        const BLOCK_Y_RATIO = 0.8;
+
+        function getBlockHeight() {
+            return getBlockSize() * BLOCK_Y_RATIO;
+        }
+
+        let viewportResizeRaf = 0;
+
+        function getViewportRect() {
+            const vv = window.visualViewport;
+            return {
+                width: vv ? vv.width : window.innerWidth,
+                height: vv ? vv.height : window.innerHeight,
+                offsetLeft: vv ? vv.offsetLeft : 0,
+                offsetTop: vv ? vv.offsetTop : 0,
+            };
+        }
+
+        function resize() {
+            if (canvas.width !== BASE_W) canvas.width = BASE_W;
+            if (canvas.height !== BASE_H) canvas.height = BASE_H;
+            width = BASE_W;
+            height = BASE_H;
+
+            if (!Number.isFinite(player.x) || player.x <= 0) {
+                player.x = width / 2;
+            } else {
+                player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), player.x));
+            }
+            player.y = height - scalePx(105);
+
+            const viewport = getViewportRect();
+            const scaleX = viewport.width / BASE_W;
+            const scaleY = viewport.height / BASE_H;
+            const scale = Math.min(scaleX, scaleY);
+            const wrapper = document.getElementById('game-wrapper');
+            wrapper.style.left = `${viewport.offsetLeft + viewport.width / 2}px`;
+            wrapper.style.top = `${viewport.offsetTop + viewport.height / 2}px`;
+            wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            wrapper.style.marginTop = '0';
+        }
+
+        function scheduleResize() {
+            if (viewportResizeRaf) cancelAnimationFrame(viewportResizeRaf);
+            viewportResizeRaf = requestAnimationFrame(() => {
+                viewportResizeRaf = 0;
+                resize();
+            });
+        }
+
+        window.addEventListener('resize', scheduleResize);
+        window.addEventListener('orientationchange', scheduleResize);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', scheduleResize);
+            window.visualViewport.addEventListener('scroll', scheduleResize);
+        }
+        resize();
+
+
+        /**
+         * BLOCK MANAGEMENT
+         */
+        function createRow(startNum) {
+            let row = [];
+            let numbers = [];
+            for (let i = 0; i < 10; i++) numbers.push(startNum + i);
+            // Shuffle inside row
+            numbers.sort(() => Math.random() - 0.5);
+
+            const blockSize = getBlockSize();
+            const blockHeight = getBlockHeight();
+            for (let i = 0; i < 10; i++) {
+                row.push({
+                    x: i * blockSize,
+                    y: 0,
+                    num: numbers[i],
+                    active: true,
+                    size: blockSize,
+                    height: blockHeight
+                });
+            }
+            return row;
+        }
+
+        function initBlocks() {
+            blocks = [];
+            for (let r = 0; r < 10; r++) {
+                let row = createRow(r * 10 + 1);
+                row.forEach(b => b.y = (9 - r) * getBlockHeight()); // 역순 배치
+                blocks.push(...row);
+            }
+        }
+
+        /**
+         * INPUT HANDLING
+         */
+        let isDragging = false;
+
+        function handleStart(clientX) {
+            if (testMode) return;
+            if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
+            isDragging = true;
+            updatePlayerPosition(clientX);
+        }
+
+        function handleMove(clientX) {
+            if (testMode) return;
+            if (!isDragging) return;
+            if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
+            updatePlayerPosition(clientX);
+        }
+
+        function handleEnd() {
+            isDragging = false;
+        }
+
+        function updatePlayerPosition(clientX) {
+            const rect = canvas.getBoundingClientRect();
+            const canvasX = ((clientX - rect.left) / rect.width) * width;
+            player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), canvasX));
+        }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', (e) => {
+            handleStart(e.clientX);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            handleMove(e.clientX);
+        });
+
+        window.addEventListener('mouseup', () => {
+            handleEnd();
+        });
+
+        // Touch Events — 터치 시 AudioContext resume (iOS 요구사항)
+        canvas.addEventListener('touchstart', (e) => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (e.touches.length > 0) {
+                handleStart(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length > 0) {
+                handleMove(e.touches[0].clientX);
+                if (e.cancelable) e.preventDefault();
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            handleEnd();
+        });
+
+        window.addEventListener('touchcancel', () => {
+            handleEnd();
+        });
+
+        /**
+         * GAME LOGIC
+         */
+        function startCountdown(skipToNum) {
+            gameState = 'COUNTDOWN';
+            score = 0;
+            nextExpectedNumber = 1;
+            balls = [];
+            scrollY = 0;
+            targetScrollY = 0;
+            destroyedNumbers = new Set();
+            fireballCharging    = false;
+            fireballActive      = false;
+            fireballColumn      = -1;
+            mirrorballActive    = false;
+            mirrorballCharging  = false;
+            mirrorballShotPending = false;
+            mirrorballDoneCount = 0;
+            mirrorWaveStart     = 0;
+            stripeballActive    = false;
+            stripeballCharging  = false;
+            stripeballShotPending = false;
+            stripeballTriggered = false;
+            stripeWaveStart     = 0;
+            flashballCharging   = false;
+            flashballShotPending = false;
+            flashballTriggered  = false;
+            setPitcherThrowing(false);
+            stopFlashball();
+            initBlocks();
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('ui-layer').classList.remove('hidden');
+            updateUI();
+
+            const countdownScreen = document.getElementById('countdown-screen');
+            const countdownText = document.getElementById('countdown-text');
+            countdownScreen.classList.remove('hidden');
+
+            // 안내 문구 표시 — 클릭/터치하면 카운트다운 시작
+            countdownText.innerText = TEXTS[currentLang].instruction;
+            countdownText.classList.add('countdown-instruction');
+            countdownText.style.color = 'var(--palette-ink)';
+            countdownText.style.textShadow = '';
+            countdownText.style.fontSize = '';
+            countdownText.style.whiteSpace = 'pre';
+
+            let count = 3;
+            fadeTitleBgm(5000);
+
+            const startCountdownTick = () => {
+                countdownText.classList.remove('countdown-instruction');
+                countdownText.style.fontSize = '';
+                countdownText.style.whiteSpace = '';
+                countdownScreen.removeEventListener('click', startCountdownTick);
+                countdownScreen.removeEventListener('touchstart', startCountdownTick);
+                countdownScreen.style.pointerEvents = 'none';
+                countdownScreen.dataset.waiting = 'false';
+
+            const runTick = () => {
+                if (count > 0) {
+                    countdownText.innerText = count;
+                    countdownText.style.color = 'var(--palette-blue)';
+                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(64, 183, 242, 0.75)';
+
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+
+                    playCountdownSfx();
+                    count--;
+                    setTimeout(runTick, 1000);
+                } else if (count === 0) {
+                    countdownText.innerText = 'START!';
+                    countdownText.style.color = 'var(--palette-yellow)';
+                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(255, 232, 92, 0.75)';
+
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+
+                    // start.mp3 재생 → 끝나는 순간 bgm_game 시작
+                    playSfx('start', 1.0, () => { playGameBgm(); });
+
+                    count--;
+                    setTimeout(runTick, 1000);
+                } else {
+                    countdownScreen.classList.add('hidden');
+                    gameState = 'PLAYING';
+                    lastPitchTime = performance.now();
+                    if (TEST_MODE_ENABLED && skipToNum && skipToNum > 1) testSkipTo(skipToNum);
+                }
+            };
+
+            runTick();
+            requestAnimationFrame(gameLoop);
+            };
+
+            // 대전 모드에서는 안내 문구 없이 바로 카운트다운 시작
+            if (battleMode) {
+                startCountdownTick();
+            } else {
+                countdownScreen.dataset.waiting = 'true';
+                countdownScreen.style.pointerEvents = 'auto';
+                countdownScreen.addEventListener('click', startCountdownTick);
+                countdownScreen.addEventListener('touchstart', startCountdownTick, { passive: true });
+            }
+        }
+
+
+
+        function startGame() {
+            startCountdown(TEST_MODE_ENABLED && testMode && testStartNum > 1 ? testStartNum : null);
+        }
+
+        function getTestStartScore(n, targetNumber) {
+            if (n === 100) return 93;
+            if (n === 200) return 174;
+            if (n === 300) return 255;
+            return targetNumber;
+        }
+
+        // 테스트용: 실제로 n번 직전까지 진행한 상태에서 시작
+        function testSkipTo(n) {
+            if (!TEST_MODE_ENABLED) return;
+            if (gameState !== 'PLAYING') return;
+            const targetNumber = n - 1;
+            const testScore = getTestStartScore(n, targetNumber);
+            const blockHeight = getBlockHeight();
+            const rowsCleared = Math.floor(targetNumber / 10);
+            const firstVisibleRowStart = rowsCleared * 10 + 1;
+
+            // 상태 초기화 후 재구성
+            balls = [];
+            destroyedNumbers = new Set();
+            for (let i = 1; i <= targetNumber; i++) destroyedNumbers.add(i);
+
+            nextExpectedNumber = n;
+            score = testScore;
+            fireballCharging    = false;
+            fireballActive      = false;
+            fireballColumn      = -1;
+            const mirrorballResolved = testScore > MIRRORBALL_TRIGGER_SCORE;
+            mirrorballActive    = mirrorballResolved;
+            mirrorballCharging  = false;
+            mirrorballShotPending = false;
+            mirrorballDoneCount = mirrorballResolved ? 1 : 0;
+            mirrorWaveStart     = 0;
+            stripeballActive    = n > STRIPEBALL_TRIGGER_NUMBER;
+            stripeballCharging  = false;
+            stripeballShotPending = false;
+            stripeballTriggered = n > STRIPEBALL_TRIGGER_NUMBER;
+            stripeWaveStart     = 0;
+            flashballCharging   = false;
+            flashballShotPending = false;
+            setPitcherThrowing(false);
+            stopFlashball();
+            if (n > FLASHBALL_TRIGGER_NUMBER) {
+                flashballTriggered = true;
+                startFlashballBlink();
+            } else {
+                flashballTriggered = false;
+            }
+
+            // 실제로 target까지 진행한 것처럼 현재 줄부터 10줄을 배치한다.
+            blocks = [];
+            for (let r = 0; r < 10; r++) {
+                const logicalRow = rowsCleared + r;
+                const row = createRow(firstVisibleRowStart + r * 10);
+                row.forEach(b => {
+                    b.y = (9 - logicalRow) * blockHeight;
+                    b.active = b.num > targetNumber;
+                });
+                blocks.push(...row);
+            }
+
+            targetScrollY = rowsCleared * blockHeight;
+            scrollY = targetScrollY;
+
+            updateUI();
+            scheduleMirrorballIfNeeded();
+            scheduleStripeballIfNeeded();
+            scheduleFlashballIfNeeded();
+        }
+
+        function gameOver() {
+            gameState = 'GAMEOVER';
+            setPitcherThrowing(false);
+            stopAllBgm();
+            finalScoreEl.innerText = score;
+            if (battleMode) {
+                // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
+                battleGameOver();
+            } else {
+                playSfx('gameover', 1.0);
+                document.getElementById('game-over-screen').classList.remove('hidden');
+                evaluateScore(score);
+            }
+        }
+
+        function recoverTestPitch(ballIndex, ball) {
+            if (!testMode) return false;
+
+            if (ball && ball.isFireball) {
+                fireballActive = false;
+                fireballCharging = false;
+            }
+            if (ball && ball.isMirrorBall) {
+                mirrorballCharging = false;
+                mirrorballShotPending = true;
+            }
+            if (ball && ball.isStripeBall) {
+                stripeballCharging = false;
+                stripeballShotPending = true;
+            }
+            if (ball && ball.isFlashBall) {
+                flashballCharging = false;
+                flashballShotPending = true;
+            }
+            if (ballIndex >= 0 && balls[ballIndex] === ball) {
+                balls.splice(ballIndex, 1);
+            }
+            setPitcherThrowing(false);
+            lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            updateUI();
+            return true;
+        }
+
+        function updateUI() {
+            scoreEl.innerText = score;
+            if (battleMode) battleSyncScore();
+        }
+
+        function pitchBall(isFireball) {
+            const isMirrorBall  = !isFireball && mirrorballShotPending;
+            const isStripeBall  = !isFireball && !isMirrorBall && stripeballShotPending;
+            const isFlashBall   = !isFireball && !isMirrorBall && !isStripeBall && flashballShotPending;
+            if (isMirrorBall) {
+                mirrorballShotPending = false;
+                mirrorballCharging = true; // 미러볼이 맞고 웨이브가 끝날 때까지 다음 투구 차단
+            }
+            if (isStripeBall) {
+                stripeballShotPending = false;
+                stripeballCharging = true; // 스트라이프 웨이브가 끝날 때까지 다음 투구 차단
+            }
+            if (isFlashBall) {
+                flashballShotPending = false;
+            }
+            balls.push({
+                x: player.x,
+                y: player.y - scalePx(20),
+                radius: isFireball ? scalePx(14) : scalePx(8),
+                speed: isFireball ? scalePx(12) : scalePx(10),
+                isFireball: !!isFireball,
+                isMirrorBall: isMirrorBall,
+                isStripeBall: isStripeBall,
+                isFlashBall: isFlashBall,
+                activated: false,
+                column: Math.floor(player.x / getBlockSize()),
+                fireballStart: isFireball ? nextExpectedNumber : 0
+            });
+            setPitcherThrowing(true);
+            if (isFireball) {
+                playSfx('throw_fireball', 1.0);
+            } else if (isMirrorBall) {
+                playSfx('throw_mirrorball', 1.0);
+            } else if (isStripeBall) {
+                playSfx('throw_mirrorball', 1.0);
+            } else if (isFlashBall) {
+                playSfx('throw_mirrorball', 1.0);
+            } else {
+                playThrow();
+            }
+        }
+
+        function mirrorDisplay(num) {
+            if (mirrorballActive) {
+                return String(num).split('').reverse().join('');
+            }
+            return String(num);
+        }
+
+        function triggerMirrorball() {
+            mirrorballDoneCount++;
+            playSfx('mirrorball', 1.0);
+            const mbAnnounce = document.getElementById('mirrorball-announce');
+            mbAnnounce.classList.remove('show');
+            void mbAnnounce.offsetWidth;
+            mbAnnounce.classList.add('show');
+        }
+
+        function scheduleMirrorballIfNeeded() {
+            const expectedMirrorCount = score >= MIRRORBALL_TRIGGER_SCORE ? 1 : 0;
+            if (expectedMirrorCount <= mirrorballDoneCount || mirrorballCharging || mirrorballShotPending) return;
+
+            mirrorballCharging = true;
+            triggerMirrorball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                mirrorballShotPending = true;
+                mirrorballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRRORBALL_ANNOUNCE_DURATION + MIRRORBALL_POST_ANNOUNCE_DELAY);
+        }
+
+        // 미러볼 공이 블록에 맞는 순간 호출 — 웨이브 시작
+        function startMirrorWave() {
+            mirrorWaveStart = performance.now();
+            // 웨이브 2초 완료 후 반전 확정
+            setTimeout(() => {
+                mirrorWaveStart  = 0;
+                mirrorballActive = true;
+            }, MIRROR_WAVE_DURATION);
+            // 웨이브 2초 + 대기 2초 후 투구 차단 해제 + 즉시 투구
+            setTimeout(() => {
+                mirrorballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRROR_WAVE_DURATION + 2000);
+        }
+
+        function isStripeNormalRow(num) {
+            const rowIndex = Math.floor((num - 1) / 10);
+            if (rowIndex < STRIPEBALL_BASE_ROW_INDEX) return false;
+            return (rowIndex - STRIPEBALL_BASE_ROW_INDEX) % 2 === 0;
+        }
+
+        function triggerStripeball() {
+            stripeballTriggered = true;
+            playSfx('stripeball', 1.0);
+            const sbAnnounce = document.getElementById('stripeball-announce');
+            sbAnnounce.classList.remove('show');
+            void sbAnnounce.offsetWidth;
+            sbAnnounce.classList.add('show');
+        }
+
+        function scheduleStripeballIfNeeded() {
+            if (nextExpectedNumber < STRIPEBALL_TRIGGER_NUMBER || stripeballTriggered || stripeballCharging || stripeballShotPending) return;
+
+            stripeballCharging = true;
+            triggerStripeball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                stripeballShotPending = true;
+                stripeballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, STRIPEBALL_ANNOUNCE_DURATION + STRIPEBALL_POST_ANNOUNCE_DELAY);
+        }
+
+        function startStripeWave() {
+            stripeWaveStart = performance.now();
+            setTimeout(() => {
+                stripeWaveStart = 0;
+                stripeballActive = true;
+            }, MIRROR_WAVE_DURATION);
+            setTimeout(() => {
+                stripeballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRROR_WAVE_DURATION + 2000);
+        }
+
+        function triggerFlashball() {
+            flashballTriggered = true;
+            playSfx('flashball', 1.0);
+            const fbAnnounce = document.getElementById('flashball-announce');
+            fbAnnounce.classList.remove('show');
+            void fbAnnounce.offsetWidth;
+            fbAnnounce.classList.add('show');
+        }
+
+        function startFlashballBlink() {
+            if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
+            flashballActive  = true;
+            flashballVisible = true;
+            // 0.4초 보임 -> 0.4초 숨김 루프
+            function tick() {
+                if (!flashballActive) return;
+                flashballVisible = true;
+                flashballTimer = setTimeout(() => {
+                    if (!flashballActive) return;
+                    flashballVisible = false;
+                    flashballTimer = setTimeout(tick, 400);
+                }, 400);
+            }
+            tick();
+        }
+
+        function startFlashballRevealDelay() {
+            flashballCharging = true;
+            startFlashballBlink();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                flashballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, MIRROR_WAVE_DURATION + 2000);
+        }
+
+        function scheduleFlashballIfNeeded() {
+            if (nextExpectedNumber < FLASHBALL_TRIGGER_NUMBER || flashballTriggered || flashballCharging || flashballShotPending) return;
+
+            flashballCharging = true;
+            triggerFlashball();
+            setTimeout(() => {
+                if (gameState !== 'PLAYING') return;
+                flashballShotPending = true;
+                flashballCharging = false;
+                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+            }, FLASHBALL_SHOT_DELAY);
+        }
+
+        function stopFlashball() {
+            flashballActive  = false;
+            flashballVisible = true;
+            if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
+        }
+
+        // nextExpectedNumber를 올릴 때 파괴된 번호 건너뜀 + 특수볼 노티 발동
+        function advanceExpected() {
+            nextExpectedNumber++;
+            while (destroyedNumbers.has(nextExpectedNumber)) {
+                nextExpectedNumber++;
+            }
+            scheduleMirrorballIfNeeded();
+            scheduleStripeballIfNeeded();
+            scheduleFlashballIfNeeded();
+        }
+
+        function update(timestamp) {
+            if (gameState !== 'PLAYING') return;
+
+            // 테스트 모드: nextExpectedNumber 블록 위치로 자동 이동
+            if (testMode) {
+                const targetBlk = blocks.find(b => b.active && b.num === nextExpectedNumber);
+                if (targetBlk) {
+                    const targetX = targetBlk.x + targetBlk.size / 2;
+                    const diff = targetX - player.x;
+                    player.x += diff * getTestMoveFactor(nextExpectedNumber); // 투구 속도에 맞춰 자동 이동
+                    player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), player.x));
+                }
+            }
+
+            // Auto Pitching — 차징 중이거나 파이어볼 비행 중이면 투구 차단
+            const currentPitchInterval = getPitchInterval(nextExpectedNumber);
+            if (!fireballCharging && !fireballActive && !mirrorballCharging && !stripeballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
+                lastPitchTime = timestamp;
+
+                // 31, 131, 231... → 파이어볼
+                const isFireballTurn = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+
+                if (isFireballTurn) {
+                    fireballCharging = true;
+                    fireballColumn   = Math.floor(player.x / getBlockSize());
+                    playSfx('fireball', 1.0);
+                    const fbAnnounce = document.getElementById('fireball-announce');
+                    fbAnnounce.classList.remove('show');
+                    void fbAnnounce.offsetWidth;
+                    fbAnnounce.classList.add('show');
+                    setTimeout(() => {
+                        fireballCharging = false;
+                        fireballColumn   = -1;
+                        fireballActive   = true;
+                        pitchBall(true);
+                    }, 2200);
+                } else {
+                    pitchBall(false);
+                }
+            }
+
+            // Update Balls
+            for (let i = balls.length - 1; i >= 0; i--) {
+                let b = balls[i];
+                b.y -= b.speed;
+
+                if (b.isFireball) {
+                    // 파이어볼: 같은 열에서 공이 닿은 블록 처리
+                    // 파괴 범위: 해당 사이클 끝까지 (31번→1~130, 131번→131~230...)
+                    const fbCycleEnd = b.fireballStart + 99; // fireballStart = 파이어볼 발사 시점 nextExpectedNumber
+                    let spliced = false;
+                    for (let j = 0; j < blocks.length; j++) {
+                        let blk = blocks[j];
+                        if (!blk.active) continue;
+                        let blkCol = Math.floor(blk.x / getBlockSize());
+                        if (blkCol !== b.column) continue;
+                        let blkY = blk.y + scrollY;
+                        if (!(b.y < blkY + blk.height && b.y > blkY - b.radius)) continue;
+
+                        if (!b.activated) {
+                            if (blk.num !== nextExpectedNumber) {
+                                if (recoverTestPitch(i, b)) {
+                                    spliced = true;
+                                    break;
+                                }
+                                setPitcherThrowing(false);
+                                gameOver();
+                                spliced = true;
+                                break;
+                            }
+                            b.activated = true;
+                            blk.active = false;
+                            setPitcherThrowing(false);
+                            score++;
+                            playSfx('throw_hit', 1.0);
+                            advanceExpected();
+                            updateUI();
+                            checkRowClear(); // 맞춘 블록(31번)에서만 1번 스크롤 체크
+                        } else {
+                            // 사이클 범위 내 블록만 파괴 — score에 포함 안 함
+                            if (blk.num <= fbCycleEnd) {
+                                blk.active = false;
+                                destroyedNumbers.add(blk.num);
+                                playSfx('throw_hit', 0.5);
+                            }
+                        }
+                    }
+                    // nextExpectedNumber가 파괴된 번호면 건너뜀
+                    while (destroyedNumbers.has(nextExpectedNumber)) {
+                        nextExpectedNumber++;
+                    }
+                    if (!spliced) updateUI();
+                    if (!spliced && b.y < -scalePx(20)) {
+                        balls.splice(i, 1);
+                        fireballActive = false;
+                        setPitcherThrowing(false);
+                        if (!b.activated) {
+                            if (recoverTestPitch(-1, b)) return;
+                            gameOver();
+                            return;
+                        }
+                        lastPitchTime = performance.now();
+                    }
+                } else {
+                    // 일반 공: 겹침 면적이 가장 넓은 블록으로 판정
+                    let bestBlk = null;
+                    let bestArea = 0;
+                    for (let j = 0; j < blocks.length; j++) {
+                        let blk = blocks[j];
+                        if (!blk.active) continue;
+                        let blkY = blk.y + scrollY;
+                        const overlapX = Math.min(b.x + b.radius, blk.x + blk.size) - Math.max(b.x - b.radius, blk.x);
+                        const overlapY = Math.min(b.y + b.radius, blkY + blk.height) - Math.max(b.y - b.radius, blkY);
+                        if (overlapX > 0 && overlapY > 0) {
+                            const area = overlapX * overlapY;
+                            if (area > bestArea) { bestArea = area; bestBlk = blk; }
+                        }
+                    }
+                    if (bestBlk) {
+                        if (bestBlk.num === nextExpectedNumber) {
+                            bestBlk.active = false;
+                            setPitcherThrowing(false);
+                            score++;
+                            const wasMirrorBall = b.isMirrorBall;
+                            const wasStripeBall = b.isStripeBall;
+                            const wasFlashBall = b.isFlashBall;
+                            advanceExpected();
+                            balls.splice(i, 1);
+                            playSfx('throw_hit', 1.0);
+                            updateUI();
+                            checkRowClear();
+                            if (wasMirrorBall) {
+                                mirrorballCharging = true; // 웨이브+대기 동안 다시 차단
+                                startMirrorWave();
+                            } else if (wasStripeBall) {
+                                stripeballCharging = true; // 웨이브+대기 동안 다시 차단
+                                startStripeWave();
+                            } else if (wasFlashBall) {
+                                startFlashballRevealDelay();
+                            }
+                        } else {
+                            if (recoverTestPitch(i, b)) continue;
+                            setPitcherThrowing(false);
+                            gameOver();
+                            return;
+                        }
+                    } else if (b.y < -scalePx(20)) {
+                        if (b.isMirrorBall) {
+                            mirrorballCharging = false;
+                            lastPitchTime = performance.now();
+                        }
+                        if (b.isStripeBall) {
+                            stripeballCharging = false;
+                            lastPitchTime = performance.now();
+                        }
+                        balls.splice(i, 1);
+                        setPitcherThrowing(false);
+                        if (recoverTestPitch(-1, b)) continue;
+                        gameOver();
+                        return;
+                    }
+                }
+            }
+
+            // Smooth Scrolling
+            if (scrollY < targetScrollY) {
+                scrollY = Math.min(scrollY + scalePx(2), targetScrollY);
+            }
+        }
+
+        function checkRowClear() {
+            const targetRowsCleared = Math.floor(score / 10);
+            const blockHeight = getBlockHeight();
+            const currentRowsCleared = Math.round(targetScrollY / blockHeight);
+
+            if (targetRowsCleared > currentRowsCleared) {
+                targetScrollY = targetRowsCleared * blockHeight;
+                const maxNum = Math.max(...blocks.map(b => b.num));
+                let newRow = createRow(maxNum + 1);
+                const topMostY = Math.min(...blocks.map(b => b.y));
+                newRow.forEach(b => b.y = topMostY - blockHeight);
+                blocks.push(...newRow);
+            }
+        }
+
+        const blockTileCache = new Map();
+        function getBlockTileCanvas(blockSize, blockHeight, isGuide) {
+            const key = `${Math.round(blockSize * 10)}:${Math.round(blockHeight * 10)}:${isGuide ? 'guide' : 'normal'}`;
+            if (blockTileCache.has(key)) return blockTileCache.get(key);
+
+            const tileCanvas = document.createElement('canvas');
+            tileCanvas.width = blockSize;
+            tileCanvas.height = blockHeight;
+
+            const tileCtx = tileCanvas.getContext('2d');
+            const tileInset = scalePx(2.5);
+            const tileW = blockSize - tileInset * 2;
+            const tileH = blockHeight - tileInset * 2;
+            tileCtx.fillStyle = isGuide ? varColor('--palette-yellow') : '#fffaf0';
+            tileCtx.strokeStyle = isGuide ? '#ff5a91' : 'rgba(53, 201, 143, 0.95)';
+            tileCtx.lineWidth = isGuide ? scalePx(2.6) : scalePx(2);
+            tileCtx.beginPath();
+            tileCtx.roundRect(tileInset, tileInset, tileW, tileH, scalePx(5));
+            tileCtx.fill();
+            tileCtx.stroke();
+
+            blockTileCache.set(key, tileCanvas);
+            return tileCanvas;
+        }
+
+        /**
+         * RENDERING
+         */
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
+            const stripeW = getBlockSize();
+            const stripeColors = ['#a8de8f', '#82c864'];
+            for (let i = 0; i < 10; i++) {
+                ctx.fillStyle = stripeColors[i % 2];
+                ctx.fillRect(i * stripeW, 0, stripeW, height);
+            }
+
+            // 잔디 질감 — 세로 방향 미세 하이라이트
+            for (let i = 0; i < 10; i++) {
+                const gx = i * stripeW;
+                const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
+                grad.addColorStop(0,   'rgba(255,255,255,0.04)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
+                grad.addColorStop(1,   'rgba(255,255,255,0.04)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(gx, 0, stripeW, height);
+            }
+
+            // 흰색 세로 라인
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = scalePx(1);
+            for (let i = 1; i < 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * stripeW, 0);
+                ctx.lineTo(i * stripeW, height);
+                ctx.stroke();
+            }
+
+            // 파이어볼 차징 중: 해당 열 강조
+            if (fireballCharging && fireballColumn >= 0) {
+                ctx.fillStyle = 'rgba(255, 120, 0, 0.25)';
+                ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
+            }
+
+            // Draw pitch guide line
+            ctx.save();
+            ctx.setLineDash([scalePx(6), scalePx(8)]);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.lineWidth = scalePx(1.5);
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y - scalePx(20));
+            ctx.lineTo(player.x, 0);
+            ctx.stroke();
+            ctx.restore();
+
+            const mirrorGuideActive = mirrorballShotPending || balls.some(b => b.isMirrorBall && !b.activated);
+            const stripeGuideActive = stripeballShotPending || balls.some(b => b.isStripeBall && !b.activated);
+            const flashGuideActive  = flashballShotPending || balls.some(b => b.isFlashBall && !b.activated);
+
+            let waveMinY = 0;
+            let waveRange = 1;
+            let mirrorWaveProgress = 0;
+            let stripeWaveProgress = 0;
+            if (mirrorWaveStart > 0 || stripeWaveStart > 0) {
+                const activeBlocks = blocks.filter(b => b.active);
+                const now = performance.now();
+                if (activeBlocks.length) {
+                    const activeYs = activeBlocks.map(b => b.y + scrollY);
+                    waveMinY = Math.min(...activeYs);
+                    const waveMaxY = Math.max(...activeYs);
+                    waveRange = waveMaxY - waveMinY || 1;
+                }
+                if (mirrorWaveStart > 0) {
+                    mirrorWaveProgress = Math.min((now - mirrorWaveStart) / MIRROR_WAVE_DURATION, 1);
+                }
+                if (stripeWaveStart > 0) {
+                    stripeWaveProgress = Math.min((now - stripeWaveStart) / MIRROR_WAVE_DURATION, 1);
+                }
+            }
+
+            // Draw Blocks
+            blocks.forEach(blk => {
+                if (!blk.active) return;
+                let drawY = blk.y + scrollY;
+                if (drawY > height || drawY < -blk.height) return;
+
+                const isNext = blk.num === nextExpectedNumber;
+                const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
+                ctx.drawImage(getBlockTileCanvas(blk.size, blk.height, isGuide), blk.x, drawY, blk.size, blk.height);
+
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const tx = blk.x + blk.size / 2;
+                const ty = drawY + blk.height / 2;
+
+                // 웨이브 중: 아래 행부터 위로 순차 적용
+                let mirrorWaveFlipped = false;
+                let stripeWaveApplied = false;
+                if (mirrorWaveStart > 0 || stripeWaveStart > 0) {
+                    // 아래 행(drawY 큼)일수록 rowNorm 큰 값 → progress가 작아도 먼저 뒤집힘
+                    const rowNorm = (drawY - waveMinY) / waveRange; // 0(위)~1(아래)
+                    if (mirrorWaveStart > 0) {
+                        mirrorWaveFlipped = (1 - rowNorm) <= mirrorWaveProgress; // 아래부터 뒤집힘
+                    }
+                    if (stripeWaveStart > 0) {
+                        stripeWaveApplied = (1 - rowNorm) <= stripeWaveProgress; // 아래부터 스트라이프 적용
+                    }
+                }
+                let isReversed = mirrorballActive || mirrorWaveFlipped;
+                if ((stripeballActive || stripeWaveApplied) && isStripeNormalRow(blk.num)) {
+                    isReversed = false;
+                }
+                const label = isReversed ? String(blk.num).split('').reverse().join('') : String(blk.num);
+
+                const showLabel = !flashballActive || flashballVisible || isGuide;
+                if (showLabel) {
+                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16));
+                    ctx.font = `900 ${numberFontSize}px "Darumadrop One", "Kosugi Maru", "Noto Sans JP", Arial`;
+                    ctx.fillStyle = isGuide ? '#ff4f8f' : '#000000';
+                    ctx.fillText(label, tx, ty);
+                }
+            });
+
+            // Draw Balls
+            balls.forEach(b => {
+                if (b.isFireball) {
+                    // 불꽃 외곽 글로우
+                    const glowGrad = ctx.createRadialGradient(b.x, b.y, b.radius * 0.5, b.x, b.y, b.radius * 3.5);
+                    glowGrad.addColorStop(0,   'rgba(255, 220, 50, 0.9)');
+                    glowGrad.addColorStop(0.4, 'rgba(255, 100, 0, 0.6)');
+                    glowGrad.addColorStop(1,   'rgba(255, 30, 0, 0)');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius * 3.5, 0, Math.PI * 2);
+                    ctx.fillStyle = glowGrad;
+                    ctx.fill();
+
+                    // 불꽃 튀기 파티클 (고정 시드 패턴)
+                    const spikes = 8;
+                    for (let s = 0; s < spikes; s++) {
+                        const angle  = (s / spikes) * Math.PI * 2 + performance.now() * 0.005;
+                        const len    = b.radius * (2.2 + Math.sin(performance.now() * 0.02 + s) * 0.8);
+                        ctx.beginPath();
+                        ctx.moveTo(b.x, b.y);
+                        ctx.lineTo(b.x + Math.cos(angle) * len, b.y + Math.sin(angle) * len);
+                        ctx.strokeStyle = `rgba(255, ${100 + s * 15}, 0, 0.8)`;
+                        ctx.lineWidth = scalePx(3);
+                        ctx.stroke();
+                    }
+
+                    // 파이어볼 본체
+                    const fbGrad = ctx.createRadialGradient(b.x - b.radius * 0.3, b.y - b.radius * 0.3, scalePx(1), b.x, b.y, b.radius);
+                    fbGrad.addColorStop(0,   '#fff7a0');
+                    fbGrad.addColorStop(0.4, '#ff9900');
+                    fbGrad.addColorStop(1,   '#cc2200');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = fbGrad;
+                    ctx.fill();
+                } else if (b.isStripeBall) {
+                    // 스트라이프볼 — 줄무늬 야구공
+                    const r = b.radius;
+                    ctx.save();
+                    ctx.translate(b.x, b.y);
+                    ctx.rotate(performance.now() * 0.008);
+
+                    const stripeGrad = ctx.createRadialGradient(-r * 0.35, -r * 0.35, scalePx(1), 0, 0, r);
+                    stripeGrad.addColorStop(0, '#ffffff');
+                    stripeGrad.addColorStop(0.55, '#f6f8ff');
+                    stripeGrad.addColorStop(1, '#b8c6d8');
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r, 0, Math.PI * 2);
+                    ctx.fillStyle = stripeGrad;
+                    ctx.fill();
+                    ctx.clip();
+
+                    ctx.lineWidth = r * 0.35;
+                    ctx.strokeStyle = '#111827';
+                    for (let sx = -r * 2; sx <= r * 2; sx += r * 0.75) {
+                        ctx.beginPath();
+                        ctx.moveTo(sx, -r * 1.8);
+                        ctx.lineTo(sx + r * 1.2, r * 1.8);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#ccff00';
+                    ctx.lineWidth = scalePx(1.5);
+                    ctx.stroke();
+                } else if (b.isFlashBall) {
+                    // 301번 공 — 번쩍이는 플래시볼
+                    const r = b.radius;
+                    const t = performance.now() * 0.01;
+                    const spikes = 8;
+                    for (let s = 0; s < spikes; s++) {
+                        const angle = (s / spikes) * Math.PI * 2 + t;
+                        const len   = r * (2.0 + Math.sin(t * 2 + s) * 0.5);
+                        ctx.beginPath();
+                        ctx.moveTo(b.x, b.y);
+                        ctx.lineTo(b.x + Math.cos(angle) * len, b.y + Math.sin(angle) * len);
+                        ctx.strokeStyle = `rgba(255, 255, ${100 + s * 20}, 0.9)`;
+                        ctx.lineWidth = scalePx(2.5);
+                        ctx.stroke();
+                    }
+                    const flGrad = ctx.createRadialGradient(b.x - r * 0.3, b.y - r * 0.3, scalePx(1), b.x, b.y, r);
+                    flGrad.addColorStop(0,   '#ffffff');
+                    flGrad.addColorStop(0.4, '#ffffaa');
+                    flGrad.addColorStop(1,   '#ffcc00');
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = flGrad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffee00';
+                    ctx.lineWidth = scalePx(1.5);
+                    ctx.stroke();
+                } else if (b.isMirrorBall) {
+                    // 101번 공 — 손거울 모양
+                    const r = b.radius;
+                    ctx.save();
+                    ctx.translate(b.x, b.y);
+                    // 거울 원형 부분
+                    const mirGrad = ctx.createRadialGradient(-r*0.3, -r*0.3, scalePx(1), 0, 0, r);
+                    mirGrad.addColorStop(0, '#ffffff');
+                    mirGrad.addColorStop(0.4, '#c8e8ff');
+                    mirGrad.addColorStop(1, '#7ab8d8');
+                    ctx.beginPath();
+                    ctx.arc(0, -r * 0.3, r, 0, Math.PI * 2);
+                    ctx.fillStyle = mirGrad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#888888';
+                    ctx.lineWidth = scalePx(1.5);
+                    ctx.stroke();
+                    // 반짝임
+                    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                    ctx.beginPath();
+                    ctx.arc(-r * 0.35, -r * 0.6, r * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // 손잡이
+                    ctx.beginPath();
+                    ctx.roundRect(-r * 0.25, r * 0.6, r * 0.5, r * 0.9, r * 0.15);
+                    ctx.fillStyle = '#a0785a';
+                    ctx.fill();
+                    ctx.strokeStyle = '#7a5a3a';
+                    ctx.lineWidth = scalePx(1.2);
+                    ctx.stroke();
+                    ctx.restore();
+                } else {
+                    // 일반 야구공
+                    const r = b.radius;
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = scalePx(1.8);
+                    ctx.stroke();
+
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r * 0.92, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.strokeStyle = '#ff3b30';
+                    ctx.lineWidth = scalePx(1.2);
+                    ctx.lineCap = 'round';
+                    const seamEdgeX = r * 0.54;
+                    const seamInnerX = r * 0.18;
+                    const seamTopY = r * 0.74;
+                    ctx.beginPath();
+                    ctx.moveTo(b.x - seamEdgeX, b.y - seamTopY);
+                    ctx.quadraticCurveTo(b.x - seamInnerX, b.y, b.x - seamEdgeX, b.y + seamTopY);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(b.x + seamEdgeX, b.y - seamTopY);
+                    ctx.quadraticCurveTo(b.x + seamInnerX, b.y, b.x + seamEdgeX, b.y + seamTopY);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = scalePx(1.8);
+                    ctx.stroke();
+                }
+            });
+
+            // Draw Player & Cart
+            drawPlayer();
+        }
+
+        function drawPlayer() {
+            const px = player.x;
+            const py = player.y;
+
+            // cart.png — 아래쪽 (크기 축소)
+            const cartW = Math.min(width * 0.13, scalePx(65));
+            const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : scalePx(40);
+            ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(40), cartW, cartH);
+
+            // pitcher.png / pitcher_throw.png — 투구 상태에 따라 교체
+            const activePitcherImg = pitcherThrowing && pitcherThrowImg.naturalWidth ? pitcherThrowImg : pitcherImg;
+            const pitcherW = Math.min(width * 0.16, scalePx(80));
+            const pitcherH = activePitcherImg.naturalHeight ? (pitcherW * activePitcherImg.naturalHeight / activePitcherImg.naturalWidth) : scalePx(100);
+            ctx.drawImage(activePitcherImg, px - pitcherW / 2, py - pitcherH - cartH + scalePx(120), pitcherW, pitcherH);
+        }
+
+        function varColor(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        function gameLoop(timestamp) {
+            update(timestamp);
+            draw();
+            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') requestAnimationFrame(gameLoop);
+        }
+
+        /**
+         * LEADERBOARD — Google Apps Script
+         * InfiniteBatter와 같은 자동 제출/JSONP 조회 방식.
+         * Pitcher 전용 Apps Script URL을 넣으면 Batter 점수와 분리해서 운영할 수 있다.
+         */
+        let pendingScore = null;
+        const LEADERBOARD_WEB_APP_URL = '';
+        const LEADERBOARD_LIMIT = 100;
+        const LEADERBOARD_REFRESH_DELAY_MS = 900;
+        const CACHE_KEY = 'infinitePitcherRanksCacheV2';
+        const LEADERBOARD_LOGIN_STATE_KEY = 'infinitePitcherLeaderboardLoginStateV1';
+        const LEADERBOARD_LOGIN_RETURN_PARAM = 'leaderboardAuthReturn';
+        let leaderboardRequestId = 0;
+        let leaderboardRefreshTimer = null;
+        let leaderboardLoginWindow = null;
+        let leaderboardLoginPollTimer = null;
+        let leaderboardLoginPollDeadline = 0;
+
+        function getCachedRanks() {
+            try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '[]'); } catch(e) { return []; }
+        }
+
+        function setCachedRanks(ranks) {
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify(ranks)); } catch(e) {}
+        }
+
+        function normalizeRankEntry(entry) {
+            const rawName = String(entry?.name || entry?.email || 'unknown');
+            return {
+                name: rawName.replace(/@.*/, ''),
+                score: Number(entry?.score) || 0,
+                date: entry?.date || '',
+            };
+        }
+
+        function clearLeaderboardRefreshTimer() {
+            if (leaderboardRefreshTimer == null) return;
+            window.clearTimeout(leaderboardRefreshTimer);
+            leaderboardRefreshTimer = null;
+        }
+
+        function submitLeaderboardScore(finalScore, emitGameEnd = true) {
+            const normalizedScore = Number(finalScore) || 0;
+            const payload = JSON.stringify({ score: normalizedScore });
+            if (emitGameEnd) {
+                document.dispatchEvent(new CustomEvent('game:end', {
+                    detail: { score: normalizedScore },
+                    bubbles: true,
+                    composed: true,
+                }));
+            }
+
+            if (!LEADERBOARD_WEB_APP_URL) return;
+
+            fetch(LEADERBOARD_WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                credentials: 'include',
+                keepalive: true,
+                headers: {
+                    'Content-Type': 'text/plain;charset=UTF-8',
+                },
+                body: payload,
+            }).catch(() => {
+                if (!navigator.sendBeacon) return;
+                const blob = new Blob([payload], { type: 'text/plain;charset=UTF-8' });
+                navigator.sendBeacon(LEADERBOARD_WEB_APP_URL, blob);
+            });
+        }
+
+        function fetchRanks(callback, timeoutMs = 6000) {
+            const cached = getCachedRanks();
+            if (!LEADERBOARD_WEB_APP_URL) {
+                callback(cached, { ok: false, reason: 'not-configured' });
+                return;
+            }
+
+            const requestId = ++leaderboardRequestId;
+            const callbackName = `__infinitePitcherLeaderboard_${Date.now()}_${requestId}`;
+            const script = document.createElement('script');
+            let timeoutId = null;
+
+            const fallback = (reason) => callback(cached, { ok: false, reason });
+            const cleanup = () => {
+                window[callbackName] = undefined;
+                delete window[callbackName];
+                script.remove();
+                if (timeoutId != null) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+            };
+
+            window[callbackName] = (response) => {
+                if (requestId !== leaderboardRequestId) {
+                    cleanup();
+                    return;
+                }
+                cleanup();
+                const rows = response?.leaderboard || response?.scores || [];
+                const ranks = Array.isArray(rows)
+                    ? rows.map(normalizeRankEntry).filter(r => r.score > 0).slice(0, LEADERBOARD_LIMIT)
+                    : [];
+                setCachedRanks(ranks);
+                callback(ranks, { ok: true });
+            };
+
+            script.onerror = () => {
+                if (requestId !== leaderboardRequestId) {
+                    cleanup();
+                    return;
+                }
+                cleanup();
+                fallback('load-error');
+            };
+
+            timeoutId = window.setTimeout(() => {
+                if (requestId !== leaderboardRequestId) {
+                    cleanup();
+                    return;
+                }
+                cleanup();
+                fallback('timeout');
+            }, timeoutMs);
+
+            const url = new URL(LEADERBOARD_WEB_APP_URL);
+            url.searchParams.set('callback', callbackName);
+            url.searchParams.set('limit', String(LEADERBOARD_LIMIT));
+            url.searchParams.set('t', String(Date.now()));
+            script.src = url.toString();
+            document.body.appendChild(script);
+        }
+
+        function openLeaderboardLogin() {
+            if (!LEADERBOARD_WEB_APP_URL) return;
+            const returnUrl = new URL(window.location.href);
+            returnUrl.searchParams.set(LEADERBOARD_LOGIN_RETURN_PARAM, '1');
+
+            const isResultScreen = isVisibleScreen('game-over-screen');
+            const savedScore = Number(pendingScore ?? finalScoreEl.innerText ?? 0) || 0;
+            try {
+                localStorage.setItem(LEADERBOARD_LOGIN_STATE_KEY, JSON.stringify({
+                    screen: isResultScreen ? 'result' : 'intro',
+                    score: savedScore,
+                    lang: currentLang,
+                    savedAt: Date.now(),
+                }));
+            } catch(e) {}
+
+            const loginUrl = new URL(LEADERBOARD_WEB_APP_URL);
+            loginUrl.searchParams.set('login', '1');
+            loginUrl.searchParams.set('returnUrl', returnUrl.toString());
+            loginUrl.searchParams.set('t', String(Date.now()));
+            leaderboardLoginWindow = window.open(
+                loginUrl.toString(),
+                'InfinitePitcherLeaderboardLogin'
+            );
+            leaderboardLoginPollDeadline = Date.now() + 5 * 60 * 1000;
+            scheduleLeaderboardLoginPoll(1200);
+        }
+
+        function completeLeaderboardLogin() {
+            clearLeaderboardLoginPoll();
+            leaderboardLoginPollDeadline = 0;
+            if (leaderboardLoginWindow && !leaderboardLoginWindow.closed) {
+                leaderboardLoginWindow.close();
+            }
+            leaderboardLoginWindow = null;
+            window.focus();
+
+            if (isVisibleScreen('game-over-screen')) {
+                retryResultLeaderboard(null);
+                return;
+            }
+
+            const introModal = document.getElementById('intro-ranking-modal');
+            if (introModal && !introModal.classList.contains('hidden')) {
+                loadIntroRankList();
+            }
+        }
+
+        function clearLeaderboardLoginPoll() {
+            if (leaderboardLoginPollTimer != null) {
+                window.clearTimeout(leaderboardLoginPollTimer);
+                leaderboardLoginPollTimer = null;
+            }
+        }
+
+        function scheduleLeaderboardLoginPoll(delayMs = 1500) {
+            clearLeaderboardLoginPoll();
+            leaderboardLoginPollTimer = window.setTimeout(checkLeaderboardLogin, delayMs);
+        }
+
+        function checkLeaderboardLogin() {
+            leaderboardLoginPollTimer = null;
+            if (Date.now() >= leaderboardLoginPollDeadline) return;
+
+            fetchRanks((ranks, result) => {
+                if (!result.ok) {
+                    scheduleLeaderboardLoginPoll(1200);
+                    return;
+                }
+
+                setCachedRanks(ranks);
+                completeLeaderboardLogin();
+            }, 2000);
+        }
+
+        window.addEventListener('message', event => {
+            if (event.data?.type !== 'infinite-pitcher-leaderboard-login-complete') return;
+            if (leaderboardLoginPollDeadline <= 0) return;
+            completeLeaderboardLogin();
+        });
+
+        function renderLeaderboardLogin(list, retry, append = false) {
+            if (!append) list.innerHTML = '';
+
+            const prompt = document.createElement('div');
+            prompt.className = 'leaderboard-login-prompt';
+
+            const message = document.createElement('p');
+            message.textContent = textFor('leaderboardLoginPrompt');
+
+            const help = document.createElement('p');
+            help.className = 'leaderboard-login-help';
+            help.textContent = textFor('leaderboardLoginHelp');
+
+            const actions = document.createElement('div');
+            actions.className = 'leaderboard-login-actions';
+
+            const loginButton = document.createElement('button');
+            loginButton.type = 'button';
+            loginButton.className = 'leaderboard-login-btn';
+            loginButton.textContent = textFor('leaderboardLoginButton');
+            loginButton.addEventListener('click', openLeaderboardLogin);
+
+            const retryButton = document.createElement('button');
+            retryButton.type = 'button';
+            retryButton.className = 'leaderboard-login-btn retry';
+            retryButton.textContent = textFor('leaderboardRetryButton');
+            retryButton.addEventListener('click', retry);
+
+            actions.append(loginButton, retryButton);
+            prompt.append(message, help, actions);
+            list.appendChild(prompt);
+        }
+
+        function evaluateScore(newScore) {
+            pendingScore = newScore;
+            document.getElementById('rank-entry').classList.add('hidden');
+            document.getElementById('register-btn').classList.add('hidden');
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+            submitLeaderboardScore(newScore);
+            renderRankList(null);
+            requestLeaderboardRefresh();
+        }
+
+        function registerName() {
+            const score = pendingScore || 0;
+            pendingScore = null;
+            document.getElementById('rank-entry').classList.add('hidden');
+            document.getElementById('register-btn').classList.add('hidden');
+            submitLeaderboardScore(score);
+            toggleLeaderboard(true);
+        }
+
+        function renderRankList(highlightName) {
+            const list = document.getElementById('rank-list');
+            enableResultRankTouchScroll(list);
+            const cached = getCachedRanks();
+            if (cached.length > 0) renderRankRows(list, cached, highlightName, null);
+            else list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
+
+            fetchRanks((ranks, result) => {
+                if (!result.ok) {
+                    if (ranks.length > 0) renderRankRows(list, ranks, highlightName, null);
+                    renderLeaderboardLogin(list, () => retryResultLeaderboard(highlightName), ranks.length > 0);
+                    return;
+                }
+                if (ranks.length === 0) {
+                    list.innerHTML = `<div style="color:#aaa;padding:20px;">${LEADERBOARD_WEB_APP_URL ? '아직 기록이 없습니다' : '랭킹 URL을 설정해주세요'}</div>`;
+                    return;
+                }
+                renderRankRows(list, ranks, highlightName, null);
+            });
+        }
+
+        function enableResultRankTouchScroll(list) {
+            if (list._touchBound) return;
+            list._touchBound = true;
+            let startY = 0;
+            let startScroll = 0;
+
+            list.addEventListener('touchstart', event => {
+                if (event.touches.length === 0) return;
+                startY = event.touches[0].clientY;
+                startScroll = list.scrollTop;
+            }, { passive: true });
+
+            list.addEventListener('touchmove', event => {
+                if (event.touches.length === 0) return;
+                list.scrollTop = startScroll + startY - event.touches[0].clientY;
+                event.stopPropagation();
+            }, { passive: true });
+        }
+
+        function retryResultLeaderboard(highlightName) {
+            const list = document.getElementById('rank-list');
+            list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
+            if (pendingScore != null) submitLeaderboardScore(pendingScore, false);
+            window.setTimeout(() => renderRankList(highlightName), LEADERBOARD_REFRESH_DELAY_MS);
+        }
+
+        function renderRankRows(list, ranks, highlightName, highlightScore) {
+            const badge = document.getElementById('my-rank-badge');
+            const rows = Array.isArray(ranks) ? ranks.slice(0, LEADERBOARD_LIMIT) : [];
+
+            // 공동순위 계산: 앞 항목과 점수 같으면 같은 순위
+            const displayRanks = [];
+            let currentRank = 1;
+            rows.forEach((r, i) => {
+                if (i > 0 && r.score === rows[i - 1].score) {
+                    displayRanks.push(displayRanks[i - 1]);
+                } else {
+                    currentRank = i + 1;
+                    displayRanks.push(currentRank);
+                }
+            });
+
+            let myRankIdx = -1;
+            if (highlightName) {
+                myRankIdx = rows.findIndex(r =>
+                    r.name === highlightName && (highlightScore === null || r.score === highlightScore)
+                );
+            }
+
+            if (myRankIdx >= 0 && badge) {
+                badge.style.display = 'block';
+                badge.innerHTML = `🏆 <span class="rank-badge-number">${displayRanks[myRankIdx]}</span>${textFor('rankSuffix')}`;
+            } else if (badge) {
+                badge.style.display = 'none';
+            }
+
+            list.innerHTML = rows.map((r, i) => {
+                const isMe = i === myRankIdx;
+                return `<div class="rank-item${isMe ? ' is-me' : ''}">
+                    <span class="rank-num">#${displayRanks[i]}</span>
+                    <span class="rank-name">${r.name || 'NO NAME'}</span>
+                    <span class="rank-score">${r.score} PTS</span>
+                </div>`;
+            }).join('');
+
+            // 내 순위로 자동 스크롤
+            if (myRankIdx >= 0) {
+                setTimeout(() => {
+                    const items = list.querySelectorAll('.rank-item');
+                    if (items[myRankIdx]) items[myRankIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }, 100);
+            }
+        }
+
+        function requestLeaderboardRefresh() {
+            clearLeaderboardRefreshTimer();
+            const requestId = ++leaderboardRequestId;
+            leaderboardRefreshTimer = window.setTimeout(() => {
+                leaderboardRefreshTimer = null;
+                if (requestId !== leaderboardRequestId) return;
+                if (isVisibleScreen('game-over-screen')) renderRankList(null);
+            }, LEADERBOARD_REFRESH_DELAY_MS);
+        }
+
+        function toggleLeaderboard(forceOpen = false) {
+            const modal = document.getElementById('leaderboard-modal');
+            if (forceOpen) modal.classList.remove('hidden');
+            else modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderRankList(null);
+            }
+        }
+
+        function isVisibleScreen(id) {
+            const el = document.getElementById(id);
+            return !!el && !el.classList.contains('hidden');
+        }
+
+        function pauseAudioForPageInactive() {
+            if (pageAudioMuted) return;
+            pageAudioMuted = true;
+            stopAllBgm({ stopSfx: true });
+        }
+
+        function resumeAudioForPageActive() {
+            if (document.visibilityState === 'hidden') return;
+            pageAudioMuted = false;
+
+            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
+                playGameBgm();
+                return;
+            }
+
+            if (isVisibleScreen('intro-screen') || isVisibleScreen('battle-screen')) {
+                playTitleBgm();
+            }
+        }
+
+        // 탭 숨김 / 앱 백그라운드 / 창 포커스 이탈 시 오디오 정지 및 복귀
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                pauseAudioForPageInactive();
+            } else {
+                resumeAudioForPageActive();
+            }
+        });
+        window.addEventListener('pagehide', pauseAudioForPageInactive);
+        window.addEventListener('pageshow', resumeAudioForPageActive);
+        window.addEventListener('blur', pauseAudioForPageInactive);
+        window.addEventListener('focus', resumeAudioForPageActive);
+
+        draw();
+
+        /**
+         * BATTLE
+         */
+        const battleRef = db.ref('battles');
+        const MAX_BATTLE_PLAYERS = 8;
+        let battleRoomId = null;
+        let battleRole = null; // 'host' | 'guest'
+        let battlePlayerId = null;
+        let battlePlayers = {};
+        let battleListener = null;
+        let battleMode = false;
+        let battleStarted = false;
+        let battleResultShown = false;
+        let battleResultListener = null;
+        let battleRematchStarted = false;
+        let battleProfileReady = false;
+        let rematchTimer = null;
+        let rematchSeconds = 10;
+        let rematchListener = null;
+        const BATTLE_NAME_STORAGE_KEY = 'infinitePitcherBattleName';
+        const BATTLE_NAME_MAX_WEIGHT = 10;
+
+        function genCode() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        function genBattlePlayerId() {
+            return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+        }
+
+        function escapeBattleText(value) {
+            return String(value).replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[ch]));
+        }
+
+        function getBattleNameWeight(char) {
+            return /^[\x20-\x7E]$/.test(char) ? 1 : 2;
+        }
+
+        function clampBattleName(value) {
+            const cleaned = String(value || '').replace(/[\r\n\t]/g, ' ').replace(/\s{2,}/g, ' ');
+            let next = '';
+            let weight = 0;
+            for (const char of cleaned) {
+                const charWeight = getBattleNameWeight(char);
+                if (weight + charWeight > BATTLE_NAME_MAX_WEIGHT) break;
+                next += char;
+                weight += charWeight;
+            }
+            return next;
+        }
+
+        function getBattleNickname() {
+            const input = document.getElementById('battle-name-input');
+            return clampBattleName(input ? input.value : '').trim();
+        }
+
+        function getSavedBattleNickname() {
+            try {
+                return clampBattleName(localStorage.getItem(BATTLE_NAME_STORAGE_KEY) || '').trim();
+            } catch(e) {
+                return '';
+            }
+        }
+
+        function saveBattleNickname(name) {
+            try { localStorage.setItem(BATTLE_NAME_STORAGE_KEY, name); } catch(e) {}
+        }
+
+        function hydrateBattleNameInput() {
+            const input = document.getElementById('battle-name-input');
+            if (!input) return;
+            input.value = getSavedBattleNickname();
+        }
+
+        function showBattleProfileStep() {
+            battleProfileReady = false;
+            document.querySelector('.battle-profile-panel').style.display = 'flex';
+            document.getElementById('battle-create-section').style.display = 'none';
+            document.getElementById('battle-divider').style.display = 'none';
+            document.getElementById('battle-join-section').style.display = 'none';
+        }
+
+        function showBattleRoomStep() {
+            battleProfileReady = true;
+            document.querySelector('.battle-profile-panel').style.display = 'none';
+            document.getElementById('battle-create-section').style.display = 'block';
+            document.getElementById('battle-divider').style.display = 'block';
+            document.getElementById('battle-join-section').style.display = 'flex';
+        }
+
+        function handleBattleNameInput() {
+            const input = document.getElementById('battle-name-input');
+            if (!input) return;
+
+            const clamped = clampBattleName(input.value);
+            if (input.value !== clamped) input.value = clamped;
+            commitBattleNickname();
+        }
+
+        function commitBattleNickname() {
+            const name = getBattleNickname();
+            const input = document.getElementById('battle-name-input');
+            if (input && input.value !== name) input.value = name;
+
+            saveBattleNickname(name);
+
+            if (!battleRoomId || !battlePlayerId || !battlePlayers[battlePlayerId]) return;
+            battlePlayers[battlePlayerId].name = name;
+            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/name').set(name);
+        }
+
+        function submitBattleNickname() {
+            const name = getBattleNickname();
+            const input = document.getElementById('battle-name-input');
+            if (!name) {
+                alert(textFor('alertNickname'));
+                if (input) input.focus();
+                return;
+            }
+
+            if (input) input.value = name;
+            saveBattleNickname(name);
+            showBattleRoomStep();
+            if (!battleRoomId) createBattleRoom(name);
+            else commitBattleNickname();
+        }
+
+        function getBattlePlayerList(room = null) {
+            const players = room && room.players ? room.players : battlePlayers;
+            return Object.keys(players || {}).map(id => ({
+                id,
+                score: 0,
+                done: false,
+                rank: null,
+                finishOrder: null,
+                finishedAt: null,
+                name: '',
+                isHost: false,
+                joinedAt: 0,
+                ...players[id]
+            })).sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+        }
+
+        function getBattlePlayerLabel(player, index) {
+            const name = String(player.name || '').trim();
+            if (name) return name;
+            if (player.id === battlePlayerId) return textFor('selfLabel');
+            if (player.isHost) return textFor('hostLabel');
+            return player.name || `P${index + 1}`;
+        }
+
+        function clearBattleRoomListener(roomId = battleRoomId) {
+            if (!battleListener || !roomId) return;
+            battleRef.child(roomId).off('value', battleListener);
+            battleListener = null;
+        }
+
+        function clearBattleResultListener(roomId = battleRoomId) {
+            if (!battleResultListener || !roomId) return;
+            battleRef.child(roomId).off('value', battleResultListener);
+            battleResultListener = null;
+        }
+
+        function clearRematchListener(roomId = battleRoomId) {
+            if (!rematchListener || !roomId) return;
+            battleRef.child(roomId + '/rematch').off('value', rematchListener);
+            rematchListener = null;
+        }
+
+        function leaveBattleRoom(removeHostRoom) {
+            const roomId = battleRoomId;
+            const playerId = battlePlayerId;
+            const role = battleRole;
+
+            clearBattleRoomListener(roomId);
+            clearBattleResultListener(roomId);
+            clearRematchListener(roomId);
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+
+            if (roomId) {
+                if (role === 'host' && removeHostRoom) {
+                    battleRef.child(roomId).remove();
+                } else if (playerId) {
+                    battleRef.child(roomId + '/players/' + playerId).remove();
+                }
+            }
+
+            battleRoomId = null;
+            battleRole = null;
+            battlePlayerId = null;
+            battlePlayers = {};
+            battleMode = false;
+            battleStarted = false;
+            battleResultShown = false;
+            battleRematchStarted = false;
+            battleProfileReady = false;
+        }
+
+        function returnToIntroAfterBattle(removeHostRoom = false) {
+            leaveBattleRoom(removeHostRoom);
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
+        }
+
+        function openBattleScreen() {
+            if (testMode) {
+                alert(textFor('alertTestBattle'));
+                return;
+            }
+
+            leaveBattleRoom(true);
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-screen').classList.remove('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-code-input').value = '';
+            document.getElementById('battle-room-code').innerText = '----';
+            document.getElementById('battle-player-list').innerHTML = '';
+            hydrateBattleNameInput();
+            applyBattleLang();
+            showBattleProfileStep();
+
+            const nameInput = document.getElementById('battle-name-input');
+            setTimeout(() => nameInput && nameInput.focus(), 50);
+        }
+
+        function createBattleRoom(hostName) {
+            const code = genCode();
+            const playerId = genBattlePlayerId();
+            const hostPlayer = {
+                score: 0,
+                done: false,
+                rank: null,
+                finishOrder: null,
+                finishedAt: null,
+                name: hostName,
+                isHost: true,
+                joinedAt: Date.now()
+            };
+
+            battleRoomId = code;
+            battleRole = 'host';
+            battlePlayerId = playerId;
+            battlePlayers = { [playerId]: hostPlayer };
+
+            battleRef.child(code).set({
+                code,
+                hostId: playerId,
+                maxPlayers: MAX_BATTLE_PLAYERS,
+                players: battlePlayers,
+                status: 'waiting',
+                joinLocked: false,
+                createdAt: Date.now()
+            }).then(() => listenBattleRoom(code));
+
+            document.getElementById('battle-room-code').innerText = code;
+            renderBattleLobby({ players: battlePlayers, status: 'waiting' });
+        }
+
+        function joinBattleRoom() {
+            const code = document.getElementById('battle-code-input').value.trim();
+            if (code.length !== 4) return;
+            if (battleRoomId === code) return;
+
+            const playerId = genBattlePlayerId();
+            const joinedAt = Date.now();
+            const nickname = getBattleNickname();
+            if (!nickname) {
+                alert(textFor('alertNickname'));
+                showBattleProfileStep();
+                const input = document.getElementById('battle-name-input');
+                if (input) input.focus();
+                return;
+            }
+
+            battleRef.child(code).once('value').then(snap => {
+                const room = snap.val();
+                if (!room || room.status !== 'waiting' || room.joinLocked) {
+                    alert(textFor('alertRoomFull'));
+                    return;
+                }
+
+                battleRef.child(code + '/players').transaction(players => {
+                    players = players || {};
+                    const playerCount = Object.keys(players).length;
+                    if (playerCount >= MAX_BATTLE_PLAYERS) return;
+
+                    players[playerId] = {
+                        score: 0,
+                        done: false,
+                        rank: null,
+                        finishOrder: null,
+                        finishedAt: null,
+                        name: nickname || `P${playerCount + 1}`,
+                        isHost: false,
+                        joinedAt
+                    };
+                    return players;
+                }, (error, committed) => {
+                    if (error || !committed) {
+                        alert(textFor('alertRoomFull'));
+                        return;
+                    }
+
+                    leaveBattleRoom(true);
+                    battleRoomId = code;
+                    battleRole = 'guest';
+                    battlePlayerId = playerId;
+                    battleStarted = false;
+                    battleResultShown = false;
+                    battleRematchStarted = false;
+                    battleProfileReady = true;
+                    document.getElementById('battle-room-code').innerText = code;
+                    showBattleRoomStep();
+                    listenBattleRoom(code);
+                });
+            }).catch(() => {
+                alert(textFor('alertRoomFull'));
+            });
+        }
+
+        function startBattleRoom() {
+            if (!battleRoomId || battleRole !== 'host') return;
+            battleRef.child(battleRoomId).once('value').then(snap => {
+                const room = snap.val();
+                const players = getBattlePlayerList(room);
+                if (!room || room.status !== 'waiting' || players.length < 2) {
+                    alert(textFor('alertNeedPlayers'));
+                    return;
+                }
+
+                const updates = {
+                    status: 'playing',
+                    startedAt: Date.now(),
+                    endedAt: null,
+                    finishCounter: 0,
+                    rematch: null
+                };
+                players.forEach(player => {
+                    updates['players/' + player.id + '/score'] = 0;
+                    updates['players/' + player.id + '/done'] = false;
+                    updates['players/' + player.id + '/rank'] = null;
+                    updates['players/' + player.id + '/finishOrder'] = null;
+                    updates['players/' + player.id + '/finishedAt'] = null;
+                });
+                battleRef.child(battleRoomId).update(updates);
+            });
+        }
+
+        function listenBattleRoom(roomId) {
+            clearBattleRoomListener(roomId);
+            battleListener = snap => {
+                const room = snap.val();
+                if (!room) {
+                    if (battleRoomId === roomId) {
+                        returnToIntroAfterBattle();
+                    }
+                    return;
+                }
+
+                battlePlayers = room.players || {};
+                if (!battlePlayers[battlePlayerId]) {
+                    if (room.status === 'waiting' || room.status === 'playing' || room.status === 'closed') {
+                        returnToIntroAfterBattle();
+                    }
+                    return;
+                }
+
+                if (room.status === 'closed') {
+                    returnToIntroAfterBattle(battleRole === 'host');
+                    return;
+                }
+
+                if (room.status === 'waiting') {
+                    clearBattleResultListener();
+                    clearRematchListener();
+                    if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+                    battleStarted = false;
+                    battleMode = false;
+                    battleResultShown = false;
+                    battleRematchStarted = false;
+                    document.getElementById('battle-result-screen').classList.add('hidden');
+                    document.getElementById('battle-hud').style.display = 'none';
+                    document.getElementById('battle-screen').classList.remove('hidden');
+                    document.getElementById('intro-screen').classList.add('hidden');
+                    showBattleRoomStep();
+                    renderBattleLobby(room);
+                    return;
+                }
+
+                if (room.status === 'playing') {
+                    renderBattleHud(room);
+                    if (battlePlayers[battlePlayerId].done) {
+                        if (battleMode) {
+                            battleMode = false;
+                            gameState = 'GAMEOVER';
+                            stopAllBgm();
+                        }
+                        showBattleResult(room);
+                    } else {
+                        startBattle();
+                    }
+                    return;
+                }
+
+                if (room.status === 'ended') {
+                    renderBattleHud(room);
+                    if (battleMode) {
+                        battleMode = false;
+                        gameState = 'GAMEOVER';
+                        stopAllBgm();
+                    }
+                    showBattleResult(room);
+                }
+            };
+            battleRef.child(roomId).on('value', battleListener);
+        }
+
+        function renderBattleLobby(room) {
+            const players = getBattlePlayerList(room);
+            const isHost = battleRole === 'host';
+            const waitingEl = document.getElementById('battle-waiting-text');
+            const startBtn = document.getElementById('battle-start-btn');
+            const listEl = document.getElementById('battle-player-list');
+
+            waitingEl.innerText = isHost
+                ? textFor('lobbyStartable')(players.length)
+                : textFor('lobbyWaitingHost')(players.length);
+
+            startBtn.style.display = isHost ? 'block' : 'none';
+            startBtn.disabled = !isHost || players.length < 2;
+            startBtn.innerText = textFor('battleStart');
+
+            listEl.innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-player-pill${meClass}">${label}</div>`;
+            }).join('');
+        }
+
+        function renderBattleHud(room) {
+            const hud = document.getElementById('battle-hud');
+            const players = getBattlePlayerList(room);
+            hud.innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const scoreText = Number(player.score || 0);
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-hud-box${meClass}">${label}<span>${scoreText}</span></div>`;
+            }).join('');
+        }
+
+        function applyBattleLang() {
+            document.getElementById('battle-btn').innerText            = TEXTS[currentLang].battleBtn;
+            document.getElementById('battle-screen-title').innerText   = textFor('battleScreenTitle');
+            document.getElementById('battle-waiting-text').innerText   = textFor('battleWaiting');
+            document.getElementById('battle-cancel-btn').innerText     = textFor('battleCancel');
+            document.getElementById('battle-join-btn').innerText       = textFor('battleJoin');
+            document.getElementById('battle-exit-btn').innerText       = textFor('battleExit');
+            document.getElementById('battle-start-btn').innerText      = textFor('battleStart');
+            document.getElementById('battle-name-label').innerText     = textFor('battleNameLabel');
+            document.getElementById('battle-name-input').placeholder   = textFor('battleNamePlaceholder');
+            document.getElementById('battle-name-hint').innerText      = textFor('battleNameHint');
+            document.getElementById('battle-name-next-btn').innerText  = textFor('battleNameNext');
+            document.getElementById('battle-code-label').innerText     = textFor('battleCodeLabel');
+            document.getElementById('battle-join-label').innerText     = textFor('battleJoinLabel');
+            document.getElementById('battle-divider').innerText        = textFor('battleDivider');
+            setBattleRematchButtonText();
+        }
+
+        function startBattle() {
+            if (battleStarted) return;
+            battleStarted = true;
+            battleResultShown = false;
+            battleRematchStarted = false;
+            clearBattleResultListener();
+            clearRematchListener();
+            battleMode = true;
+
+            document.getElementById('battle-hud').style.display = 'flex';
+            renderBattleHud({ players: battlePlayers });
+
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+
+            startGame();
+        }
+
+        function battleSyncScore() {
+            if (!battleMode || !battleRoomId || !battlePlayerId) return;
+            if (battlePlayers[battlePlayerId]) {
+                battlePlayers[battlePlayerId].score = score;
+                renderBattleHud({ players: battlePlayers });
+            }
+            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/score').set(score);
+        }
+
+        function battleGameOver() {
+            if (!battleMode || !battleRoomId || !battlePlayerId) return;
+            battleMode = false;
+            const savedScore = score;
+            if (battlePlayers[battlePlayerId]) {
+                battlePlayers[battlePlayerId].score = savedScore;
+                battlePlayers[battlePlayerId].done = true;
+                renderBattleHud({ players: battlePlayers });
+            }
+            finishBattlePlayer(savedScore);
+        }
+
+        function finishBattlePlayer(finalScore) {
+            const roomId = battleRoomId;
+            const playerId = battlePlayerId;
+            const finishedAt = Date.now();
+            battleRef.child(roomId).transaction(room => {
+                if (!room || !room.players || !room.players[playerId]) return room;
+                if (room.players[playerId].done) return room;
+
+                const players = room.players;
+                const ids = Object.keys(players);
+                const total = ids.length;
+                const doneCount = ids.filter(id => players[id].done).length;
+                const finishOrder = doneCount + 1;
+
+                players[playerId] = {
+                    ...players[playerId],
+                    score: finalScore,
+                    done: true,
+                    finishOrder,
+                    rank: total - finishOrder + 1,
+                    finishedAt
+                };
+
+                const remainingIds = ids.filter(id => !players[id].done);
+                let finishCounter = finishOrder;
+                if (remainingIds.length === 1) {
+                    const winnerId = remainingIds[0];
+                    players[winnerId] = {
+                        ...players[winnerId],
+                        done: true,
+                        finishOrder: total,
+                        rank: 1,
+                        finishedAt,
+                        score: Number(players[winnerId].score || 0)
+                    };
+                    room.status = 'ended';
+                    room.endedAt = finishedAt;
+                    finishCounter = total;
+                } else if (remainingIds.length === 0) {
+                    room.status = 'ended';
+                    room.endedAt = finishedAt;
+                }
+
+                room.players = players;
+                room.finishCounter = finishCounter;
+                return room;
+            }, (error, committed, snap) => {
+                const room = snap && snap.val();
+                if (!error && committed && room) {
+                    battlePlayers = room.players || {};
+                    showBattleResult(room);
+                }
+            });
+        }
+
+        function showBattleResult(room) {
+            const firstResultRender = !battleResultShown;
+            battlePlayers = room.players || {};
+            const players = getBattlePlayerList(room).sort((a, b) => {
+                const rankA = Number(a.rank || 999);
+                const rankB = Number(b.rank || 999);
+                const rankDiff = rankA - rankB;
+                const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
+                return rankDiff || scoreDiff || ((a.joinedAt || 0) - (b.joinedAt || 0));
+            });
+            const myPlayer = players.find(player => player.id === battlePlayerId) || { score: 0 };
+            const myScore = Number(myPlayer.score || 0);
+            const myRank = Number(myPlayer.rank || 0);
+            const topScore = players.length ? Number(players[0].score || 0) : 0;
+
+            document.getElementById('battle-hud').style.display = 'none';
+            document.getElementById('game-over-screen').classList.add('hidden');
+
+            let resultText, resultClass;
+            if (myRank === 1) {
+                resultText = textFor('resultWin');
+                resultClass = 'win';
+            } else if (myRank > 1) {
+                resultText = textFor('rankText')(myRank);
+                resultClass = 'lose';
+            } else {
+                const topCount = players.filter(player => Number(player.score || 0) === topScore).length;
+                if (myScore === topScore && topCount === 1) {
+                    resultText = textFor('resultWin');
+                    resultClass = 'win';
+                } else if (myScore === topScore) {
+                    resultText = textFor('resultDraw');
+                    resultClass = 'draw';
+                } else {
+                    resultText = textFor('resultLose');
+                    resultClass = 'lose';
+                }
+            }
+
+            if (firstResultRender) {
+                if (resultClass === 'win') playSfx('win', 1.0);
+                else playSfx('gameover', 1.0);
+            }
+
+            const titleEl = document.getElementById('battle-result-title');
+            titleEl.innerText = resultText;
+            titleEl.className = 'battle-result-title ' + resultClass;
+
+            document.getElementById('battle-score-list').innerHTML = players.map((player, index) => {
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const scoreText = Number(player.score || 0);
+                const rankText = player.rank ? player.rank : index + 1;
+                const meClass = player.id === battlePlayerId ? ' me' : '';
+                return `<div class="battle-score-card${meClass}">
+                    <div class="bsc-name">${rankText}. ${label}</div>
+                    <div class="bsc-score">${scoreText}</div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('battle-result-screen').classList.remove('hidden');
+            battleResultShown = true;
+            if (room.status === 'ended') {
+                if (!battleRematchStarted) startRematchCountdown();
+            } else {
+                document.getElementById('battle-rematch-btn').disabled = true;
+                document.getElementById('rematch-countdown').innerText = '-';
+                document.getElementById('rematch-status').innerText = textFor('othersPlaying');
+            }
+        }
+
+        function cancelBattle() {
+            leaveBattleRoom(true);
+            document.getElementById('battle-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        function startRematchCountdown() {
+            clearRematchListener();
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+            battleRematchStarted = true;
+
+            rematchSeconds = 10;
+            setBattleRematchButtonText(rematchSeconds);
+            document.getElementById('rematch-status').innerText = '';
+            document.getElementById('battle-rematch-btn').disabled = false;
+
+            rematchTimer = setInterval(() => {
+                rematchSeconds--;
+                document.getElementById('rematch-countdown').innerText = rematchSeconds;
+                if (rematchSeconds <= 0) {
+                    clearInterval(rematchTimer);
+                    rematchTimer = null;
+                    document.getElementById('battle-rematch-btn').disabled = true;
+                    document.getElementById('rematch-status').innerText = textFor('waitingHost');
+                    if (battleRole === 'host') setTimeout(finalizeRematchLobby, 300);
+                }
+            }, 1000);
+
+            rematchListener = snap => {
+                const val = snap.val() || {};
+                const players = getBattlePlayerList({ players: battlePlayers });
+                const readyCount = players.filter(player => val[player.id] === true).length;
+                const myReady = val[battlePlayerId] === true;
+
+                if (rematchTimer || myReady) {
+                    document.getElementById('rematch-status').innerText = textFor('rematchJoinStatus')(readyCount, players.length);
+                }
+            };
+            battleRef.child(battleRoomId + '/rematch').on('value', rematchListener);
+        }
+
+        function requestRematch() {
+            if (!battleRoomId || !battlePlayerId) return;
+            document.getElementById('battle-rematch-btn').disabled = true;
+            document.getElementById('rematch-status').innerText = textFor('rematchReady');
+            battleRef.child(battleRoomId + '/rematch/' + battlePlayerId).set(true);
+        }
+
+        function finalizeRematchLobby() {
+            if (!battleRoomId || battleRole !== 'host') return;
+            battleRef.child(battleRoomId).once('value').then(snap => {
+                const room = snap.val();
+                if (!room || room.status !== 'ended' || !room.players) return;
+
+                const rematch = room.rematch || {};
+                const readyIds = Object.keys(rematch).filter(id => rematch[id] === true && room.players[id]);
+                const hostId = room.hostId;
+                if (!readyIds.includes(hostId) || readyIds.length < 2) {
+                    battleRef.child(battleRoomId).update({
+                        status: 'closed',
+                        rematch: null
+                    });
+                    return;
+                }
+
+                const nextPlayers = {};
+                readyIds
+                    .sort((a, b) => (room.players[a].joinedAt || 0) - (room.players[b].joinedAt || 0))
+                    .forEach(id => {
+                        nextPlayers[id] = {
+                            ...room.players[id],
+                            score: 0,
+                            done: false,
+                            rank: null,
+                            finishOrder: null,
+                            finishedAt: null,
+                            isHost: id === hostId
+                        };
+                    });
+
+                battleRef.child(battleRoomId).update({
+                    players: nextPlayers,
+                    status: 'waiting',
+                    joinLocked: true,
+                    finishCounter: 0,
+                    rematch: null,
+                    startedAt: null
+                });
+            });
+        }
+
+        function loadIntroRankList() {
+            const list = document.getElementById('intro-rank-list');
+            list.innerHTML = '<div style="color:#aaa;padding:20px;text-align:center;">불러오는 중...</div>';
+            fetchRanks((ranks, result) => {
+                if (!result.ok) {
+                    if (ranks.length > 0) renderRankRows(list, ranks, null, null);
+                    renderLeaderboardLogin(list, loadIntroRankList, ranks.length > 0);
+                    return;
+                }
+                if (ranks.length === 0) {
+                    list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${LEADERBOARD_WEB_APP_URL ? '아직 기록이 없습니다' : '랭킹 URL을 설정해주세요'}</div>`;
+                    return;
+                }
+                renderRankRows(list, ranks, null, null);
+            });
+        }
+
+        function toggleIntroRanking() {
+            const modal = document.getElementById('intro-ranking-modal');
+            const isHidden = modal.classList.contains('hidden');
+            if (isHidden) {
+                modal.classList.remove('hidden');
+                const inner = modal.querySelector('.modal-inner');
+                inner.scrollTop = 0;
+                // 터치 드래그 스크롤 직접 구현
+                if (!inner._touchBound) {
+                    inner._touchBound = true;
+                    let startY = 0, startScroll = 0;
+                    inner.addEventListener('touchstart', e => {
+                        startY = e.touches[0].clientY;
+                        startScroll = inner.scrollTop;
+                    }, { passive: true });
+                    inner.addEventListener('touchmove', e => {
+                        const dy = startY - e.touches[0].clientY;
+                        inner.scrollTop = startScroll + dy;
+                        e.stopPropagation();
+                    }, { passive: true });
+                }
+                loadIntroRankList();
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function restoreLeaderboardLoginReturn() {
+            const currentUrl = new URL(window.location.href);
+            if (currentUrl.searchParams.get(LEADERBOARD_LOGIN_RETURN_PARAM) !== '1') return;
+
+            currentUrl.searchParams.delete(LEADERBOARD_LOGIN_RETURN_PARAM);
+            try {
+                window.history.replaceState({}, '', currentUrl.toString());
+            } catch(e) {}
+
+            let savedState = null;
+            try {
+                savedState = JSON.parse(localStorage.getItem(LEADERBOARD_LOGIN_STATE_KEY) || 'null');
+                localStorage.removeItem(LEADERBOARD_LOGIN_STATE_KEY);
+            } catch(e) {}
+
+            if (!savedState || Date.now() - Number(savedState.savedAt || 0) > 10 * 60 * 1000) return;
+            if (TEXTS[savedState.lang]) applyLang(savedState.lang);
+
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.add('hidden'));
+            document.getElementById('ui-layer').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            stopAllBgm({ stopSfx: true });
+
+            if (savedState.screen === 'result') {
+                const restoredScore = Number(savedState.score) || 0;
+                gameState = 'GAMEOVER';
+                battleMode = false;
+                score = restoredScore;
+                pendingScore = restoredScore;
+                finalScoreEl.innerText = restoredScore;
+                document.getElementById('game-over-screen').classList.remove('hidden');
+                document.getElementById('leaderboard-modal').classList.remove('hidden');
+                evaluateScore(restoredScore);
+                return;
+            }
+
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            const introModal = document.getElementById('intro-ranking-modal');
+            introModal.classList.remove('hidden');
+            loadIntroRankList();
+        }
+
+        function goToMain() {
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+            document.getElementById('ui-layer').classList.add('hidden');
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
+        }
+
+        function exitBattle() {
+            leaveBattleRoom(false);
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
+            stopAllBgm();
+            gameState = 'INTRO';
+            document.getElementById('intro-screen').classList.remove('hidden');
+            playTitleBgm();
+        }
+
+        restoreLeaderboardLoginReturn();
+
+    </script>
+
+</body>
+
+</html>
