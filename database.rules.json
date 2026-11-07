@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "ranks": {
+      ".read": true,
+      ".indexOn": ["score"],
+      "$entryId": {
+        ".write": "!data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['name', 'score', 'country', 'playTimeMs', 'nextExpected', 'sig', 'date', 'createdAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('score').isNumber() && newData.child('score').val() >= 1 && newData.child('score').val() <= 3000 && newData.child('score').val() % 1 === 0 && newData.child('playTimeMs').isNumber() && newData.child('playTimeMs').val() >= newData.child('score').val() * 450 && newData.child('nextExpected').isNumber() && newData.child('nextExpected').val() >= newData.child('score').val() + 1 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('sig').isString() && newData.child('sig').val().length >= 4 && newData.child('createdAt').isNumber()"
+      }
+    },
+    "ranks_country": {
+      "$countryCode": {
+        ".read": true,
+        ".indexOn": ["score"],
+        "$entryId": {
+          ".write": "!data.exists() && newData.exists() && $countryCode.length === 2",
+          ".validate": "newData.hasChildren(['name', 'score', 'country', 'playTimeMs', 'nextExpected', 'sig', 'date', 'createdAt']) && newData.child('country').val() === $countryCode && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('score').isNumber() && newData.child('score').val() >= 1 && newData.child('score').val() <= 3000 && newData.child('score').val() % 1 === 0 && newData.child('playTimeMs').isNumber() && newData.child('playTimeMs').val() >= newData.child('score').val() * 450 && newData.child('nextExpected').isNumber() && newData.child('nextExpected').val() >= newData.child('score').val() + 1 && newData.child('sig').isString() && newData.child('sig').val().length >= 4 && newData.child('createdAt').isNumber()"
+        }
+      }
+    },
+    "battles": {
+      "$roomId": {
+        ".read": true,
+        ".write": "$roomId.length === 4"
+      }
+    }
+  }
+}

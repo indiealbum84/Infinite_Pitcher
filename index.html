@@ -1413,7 +1413,44 @@
         #intro-ranking-modal .modal-inner h3,
         #leaderboard-modal h3 {
             font-size: 58px;
-            margin: 0 0 28px !important;
+            margin: 0 0 18px !important;
+        }
+
+        .rank-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 0 0 24px;
+            width: 100%;
+        }
+
+        .rank-tab-btn {
+            flex: 1;
+            max-width: 340px;
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 6px solid #000000;
+            border-radius: 28px;
+            padding: 14px 20px;
+            font-family: inherit;
+            font-size: 32px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 0 var(--palette-blue), 0 8px 0 3px #000000;
+            transition: transform 0.1s;
+            touch-action: auto !important;
+        }
+
+        .rank-tab-btn.active {
+            background: var(--palette-yellow);
+            box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 3px #000000;
+        }
+
+        .rank-sub-announce {
+            font-size: 34px;
+            font-weight: 900;
+            color: var(--palette-blue);
+            margin: -24px 0 24px;
         }
 
         #intro-ranking-close-x {
@@ -1437,8 +1474,9 @@
         }
 
         .rank-num {
-            width: 110px;
+            width: 145px;
             font-size: 39px;
+            text-align: left;
         }
 
         .rank-name {
@@ -1792,6 +1830,106 @@
             width: 100%;
             height: 100%;
         }
+
+        /* Continue (Rewarded Ad Revive) Screen */
+        #continue-screen {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(8px);
+            z-index: 22;
+            gap: 28px;
+        }
+
+        .continue-card {
+            background: var(--palette-cream);
+            border: 8px solid #000000;
+            border-radius: 55px;
+            padding: 64px 52px;
+            width: min(860px, calc(100% - 80px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            box-shadow: 0 22px 0 var(--palette-pink), 0 22px 0 6px #000000;
+        }
+
+        .continue-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 110px;
+            color: var(--palette-blue);
+            margin: 0;
+            line-height: 1;
+            text-shadow: 6px 6px 0 #ffffff, 11px 11px 0 #000000;
+        }
+
+        .continue-desc {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--palette-ink);
+            margin: 0;
+            line-height: 1.45;
+            white-space: pre-line;
+        }
+
+        .continue-ad-btn {
+            background: var(--palette-yellow) !important;
+            color: var(--palette-ink) !important;
+            width: 100%;
+            padding: 28px 36px !important;
+            font-size: 48px !important;
+            border-radius: 34px !important;
+            margin-top: 8px !important;
+            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000 !important;
+            text-shadow: none !important;
+        }
+
+        .continue-skip-btn {
+            background: #ffffff;
+            color: #64748b;
+            border: 6px solid #000000;
+            border-radius: 50px;
+            padding: 16px 52px;
+            font-size: 34px;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 8px 0 #cbd5e1, 0 8px 0 4px #000000;
+        }
+
+        /* Simulated Rewarded Ad Overlay (for Web/Preview before native AdMob) */
+        #reward-ad-overlay {
+            background: rgba(0, 0, 0, 0.94);
+            z-index: 40;
+            color: #ffffff;
+            gap: 32px;
+        }
+
+        .reward-ad-box {
+            background: #1e293b;
+            border: 6px solid var(--palette-yellow);
+            border-radius: 40px;
+            padding: 60px 48px;
+            width: min(820px, calc(100% - 90px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .reward-ad-badge {
+            background: var(--palette-yellow);
+            color: #000000;
+            font-size: 28px;
+            font-weight: 900;
+            padding: 8px 24px;
+            border-radius: 20px;
+        }
+
+        .reward-ad-timer {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 96px;
+            font-weight: 900;
+            color: var(--palette-mint);
+        }
     </style>
 </head>
 
@@ -1816,8 +1954,8 @@
                 <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
                 <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
             </div>
-            <button id="intro-ranking-btn" onclick="toggleIntroRanking()" aria-label="TOP 100">
-                <img class="intro-ranking-img" src="./top100.png" alt="TOP 100">
+            <button id="intro-ranking-btn" onclick="toggleIntroRanking()" aria-label="TOP 1000">
+                <img class="intro-ranking-img" src="./top100.png" alt="TOP 1000">
             </button>
 
             <img class="title-art" src="./title.png" alt="無限ピッチング">
@@ -1846,8 +1984,33 @@
         <div id="intro-ranking-modal" class="hidden">
             <div class="modal-inner">
                 <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
-                <h3 style="margin:0 0 10px;color:#111827;text-align:center;">TOP 100</h3>
+                <h3 style="margin:0 0 10px;color:#111827;text-align:center;">TOP 1000</h3>
+                <div class="rank-tabs">
+                    <button type="button" class="rank-tab-btn active" id="intro-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL</button>
+                    <button type="button" class="rank-tab-btn" id="intro-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY</button>
+                </div>
                 <div id="intro-rank-list"></div>
+            </div>
+        </div>
+
+        <!-- 1회 이어하기(보상형 광고) 화면 -->
+        <div id="continue-screen" class="screen hidden">
+            <div class="continue-card">
+                <h2 class="continue-title" id="continue-title">CHANCE!</h2>
+                <div class="final-score" style="margin:0;">SCORE: <span id="continue-score-val">0</span></div>
+                <p class="continue-desc" id="continue-desc">広告を見てその場から復活しますか？
+(1プレイにつき1回まで)</p>
+                <button id="continue-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdToContinue()">🎬 広告を見て復活</button>
+                <button id="continue-skip-btn" class="continue-skip-btn" onclick="skipContinue()">あきらめる</button>
+            </div>
+        </div>
+
+        <!-- 웹/개발 테스트용 보상형 광고 오버레이 -->
+        <div id="reward-ad-overlay" class="screen hidden">
+            <div class="reward-ad-box">
+                <span class="reward-ad-badge">REWARD AD (TEST)</span>
+                <p id="reward-ad-msg" style="font-size:36px;font-weight:900;margin:0;">광고 시청 후 즉시 부활합니다...</p>
+                <div class="reward-ad-timer" id="reward-ad-timer">3</div>
             </div>
         </div>
 
@@ -1855,10 +2018,11 @@
             <h2 class="game-over-title">GAME OVER</h2>
             <div class="final-score">SCORE: <span id="final-score-val">0</span></div>
 
-            <!-- 100위 안에 들었을 때 표시 -->
+            <!-- 1000위 안에 들었을 때 표시 -->
             <div id="rank-entry" class="hidden">
                 <p class="rank-announce"><span id="my-rank-val">1</span><span id="rank-suffix">위 달성!</span></p>
-                <input id="player-name-input" class="name-input" type="text" maxlength="12" placeholder="名前を入力してください" />
+                <p class="rank-sub-announce" id="my-rank-detail"></p>
+                <input id="player-name-input" class="name-input" type="text" maxlength="12" placeholder="名前を入力してください" onkeydown="if(event.key==='Enter') registerName()" />
             </div>
 
             <div id="action-buttons">
@@ -1867,7 +2031,11 @@
             </div>
 
             <div id="leaderboard-modal">
-                <h3 style="margin-top:0">TOP 100</h3>
+                <h3 style="margin-top:0">TOP 1000</h3>
+                <div class="rank-tabs">
+                    <button type="button" class="rank-tab-btn active" id="result-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL</button>
+                    <button type="button" class="rank-tab-btn" id="result-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY</button>
+                </div>
                 <div id="my-rank-badge"></div>
                 <div id="rank-list"></div>
             </div>
@@ -2281,6 +2449,13 @@
                 waitingHost: 'ホストの開始待ち...',
                 rematchJoinStatus: (ready, total) => `リマッチ参加 ${ready}/${total}`,
                 rematchReady: 'リマッチ参加完了',
+                continueTitle: 'CHANCE!',
+                continueDesc: '広告を見てその場から復活しますか？\n(1プレイにつき1回まで)',
+                continueAdBtn: '🎬 広告を見て復活',
+                continueSkipBtn: 'あきらめる',
+                rewardAdMsg: '広告視聴後にすぐ復活します...',
+                loadingRanks: '読み込み中...',
+                emptyRanks: 'まだ記録がありません',
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
@@ -2328,6 +2503,13 @@
                 waitingHost: 'Waiting for host...',
                 rematchJoinStatus: (ready, total) => `Rematch joined ${ready}/${total}`,
                 rematchReady: 'Rematch joined',
+                continueTitle: 'CHANCE!',
+                continueDesc: 'Watch an ad to continue from here?\n(Once per game)',
+                continueAdBtn: '🎬 Watch Ad & Continue',
+                continueSkipBtn: 'Give up',
+                rewardAdMsg: 'Reviving right after the ad...',
+                loadingRanks: 'Loading...',
+                emptyRanks: 'No records yet',
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
@@ -2375,6 +2557,13 @@
                 waitingHost: '방장 시작 대기 중...',
                 rematchJoinStatus: (ready, total) => `다시하기 참가 ${ready}/${total}`,
                 rematchReady: '다시하기 참가 완료',
+                continueTitle: 'CHANCE!',
+                continueDesc: '광고를 보고 이 자리에서 부활할까요?\n(판당 1회 가능)',
+                continueAdBtn: '🎬 광고 보고 이어하기',
+                continueSkipBtn: '포기하기',
+                rewardAdMsg: '광고 시청 후 즉시 부활합니다...',
+                loadingRanks: '불러오는 중...',
+                emptyRanks: '아직 기록이 없습니다',
             }
         };
 
@@ -2412,6 +2601,11 @@
             document.getElementById('register-btn').innerText      = t.registerBtn;
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('home-btn').innerText               = t.homeBtn;
+            document.getElementById('continue-title').innerText         = t.continueTitle;
+            document.getElementById('continue-desc').innerText          = t.continueDesc;
+            document.getElementById('continue-ad-btn').innerText        = t.continueAdBtn;
+            document.getElementById('continue-skip-btn').innerText      = t.continueSkipBtn;
+            document.getElementById('reward-ad-msg').innerText          = t.rewardAdMsg;
             setBattleRematchButtonText();
             document.querySelectorAll('.lang-switch-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -2783,8 +2977,15 @@
         /**
          * GAME LOGIC
          */
+        let continueUsed = false;
+        let sessionPlayStartedAt = 0;
+        let accumulatedPlayTimeMs = 0;
+
         function startCountdown(skipToNum) {
             gameState = 'COUNTDOWN';
+            continueUsed = false;
+            sessionPlayStartedAt = 0;
+            accumulatedPlayTimeMs = 0;
             score = 0;
             nextExpectedNumber = 1;
             balls = [];
@@ -2812,6 +3013,7 @@
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('continue-screen').classList.add('hidden');
             document.getElementById('ui-layer').classList.remove('hidden');
             updateUI();
 
@@ -2869,6 +3071,7 @@
                 } else {
                     countdownScreen.classList.add('hidden');
                     gameState = 'PLAYING';
+                    sessionPlayStartedAt = performance.now();
                     lastPitchTime = performance.now();
                     if (TEST_MODE_ENABLED && skipToNum && skipToNum > 1) testSkipTo(skipToNum);
                 }
@@ -2965,10 +3168,54 @@
             scheduleFlashballIfNeeded();
         }
 
-        function gameOver() {
+        function restoreBallStateBeforeContinue(failedBall) {
+            if (failedBall && failedBall.isFireball) {
+                fireballActive = false;
+                fireballCharging = false;
+            }
+            if (failedBall && failedBall.isMirrorBall) {
+                mirrorballCharging = false;
+                mirrorballShotPending = true;
+            }
+            if (failedBall && failedBall.isStripeBall) {
+                stripeballCharging = false;
+                stripeballShotPending = true;
+            }
+            if (failedBall && failedBall.isFlashBall) {
+                flashballCharging = false;
+                flashballShotPending = true;
+            }
+            balls = [];
+            setPitcherThrowing(false);
+        }
+
+        function pausePlayTimer() {
+            if (sessionPlayStartedAt > 0) {
+                accumulatedPlayTimeMs += Math.max(0, performance.now() - sessionPlayStartedAt);
+                sessionPlayStartedAt = 0;
+            }
+        }
+
+        function gameOver(failedBall = null) {
+            setPitcherThrowing(false);
+            pausePlayTimer();
+            if (!battleMode && !continueUsed && score > 0) {
+                gameState = 'CONTINUE';
+                stopAllBgm();
+                restoreBallStateBeforeContinue(failedBall);
+                document.getElementById('continue-score-val').innerText = score;
+                document.getElementById('continue-screen').classList.remove('hidden');
+                return;
+            }
+            finalizeGameOver();
+        }
+
+        function finalizeGameOver() {
+            pausePlayTimer();
             gameState = 'GAMEOVER';
             setPitcherThrowing(false);
             stopAllBgm();
+            document.getElementById('continue-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
             if (battleMode) {
                 // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
@@ -2978,6 +3225,88 @@
                 document.getElementById('game-over-screen').classList.remove('hidden');
                 evaluateScore(score);
             }
+        }
+
+        function skipContinue() {
+            finalizeGameOver();
+        }
+
+        function watchAdToContinue() {
+            if (gameState !== 'CONTINUE') return;
+            // 추후 Capacitor AdMob 연동 시 window.showInfinitePitcherRewardedAd 훅이 있으면 우선 호출
+            if (typeof window.showInfinitePitcherRewardedAd === 'function') {
+                window.showInfinitePitcherRewardedAd(
+                    () => resumeAfterContinue(),
+                    () => {}
+                );
+                return;
+            }
+
+            // 웹/프리뷰용 3초 보상형 광고 시뮬레이션
+            const overlay = document.getElementById('reward-ad-overlay');
+            const timerEl = document.getElementById('reward-ad-timer');
+            let rem = 3;
+            timerEl.innerText = rem;
+            overlay.classList.remove('hidden');
+
+            const adTick = setInterval(() => {
+                rem--;
+                if (rem > 0) {
+                    timerEl.innerText = rem;
+                } else {
+                    clearInterval(adTick);
+                    overlay.classList.add('hidden');
+                    resumeAfterContinue();
+                }
+            }, 1000);
+        }
+
+        function resumeAfterContinue() {
+            continueUsed = true;
+            document.getElementById('continue-screen').classList.add('hidden');
+            gameState = 'COUNTDOWN';
+
+            const countdownScreen = document.getElementById('countdown-screen');
+            const countdownText = document.getElementById('countdown-text');
+            countdownText.classList.remove('countdown-instruction');
+            countdownText.style.fontSize = '';
+            countdownText.style.whiteSpace = '';
+            countdownScreen.style.pointerEvents = 'none';
+            countdownScreen.dataset.waiting = 'false';
+            countdownScreen.classList.remove('hidden');
+
+            let count = 3;
+            const runReviveTick = () => {
+                if (count > 0) {
+                    countdownText.innerText = count;
+                    countdownText.style.color = 'var(--palette-blue)';
+                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(64, 183, 242, 0.75)';
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+                    playCountdownSfx();
+                    count--;
+                    setTimeout(runReviveTick, 1000);
+                } else if (count === 0) {
+                    countdownText.innerText = 'START!';
+                    countdownText.style.color = 'var(--palette-yellow)';
+                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(255, 232, 92, 0.75)';
+                    countdownText.classList.remove('countdown-animate');
+                    void countdownText.offsetWidth;
+                    countdownText.classList.add('countdown-animate');
+                    playSfx('start', 1.0, () => { playGameBgm(); });
+                    count--;
+                    setTimeout(runReviveTick, 1000);
+                } else {
+                    countdownScreen.classList.add('hidden');
+                    gameState = 'PLAYING';
+                    sessionPlayStartedAt = performance.now();
+                    lastPitchTime = performance.now();
+                }
+            };
+
+            runReviveTick();
+            requestAnimationFrame(gameLoop);
         }
 
         function recoverTestPitch(ballIndex, ball) {
@@ -3272,7 +3601,7 @@
                                     break;
                                 }
                                 setPitcherThrowing(false);
-                                gameOver();
+                                gameOver(b);
                                 spliced = true;
                                 break;
                             }
@@ -3304,7 +3633,7 @@
                         setPitcherThrowing(false);
                         if (!b.activated) {
                             if (recoverTestPitch(-1, b)) return;
-                            gameOver();
+                            gameOver(b);
                             return;
                         }
                         lastPitchTime = performance.now();
@@ -3349,7 +3678,7 @@
                         } else {
                             if (recoverTestPitch(i, b)) continue;
                             setPitcherThrowing(false);
-                            gameOver();
+                            gameOver(b);
                             return;
                         }
                     } else if (b.y < -scalePx(20)) {
@@ -3364,7 +3693,7 @@
                         balls.splice(i, 1);
                         setPitcherThrowing(false);
                         if (recoverTestPitch(-1, b)) continue;
-                        gameOver();
+                        gameOver(b);
                         return;
                     }
                 }
@@ -3731,289 +4060,336 @@
         }
 
         /**
-         * LEADERBOARD — Google Apps Script
-         * InfiniteBatter와 같은 자동 제출/JSONP 조회 방식.
-         * Pitcher 전용 Apps Script URL을 넣으면 Batter 점수와 분리해서 운영할 수 있다.
+         * LEADERBOARD — Firebase Realtime Database (Global TOP 1000 & Country TOP 1000 + Anti-Cheat)
          */
         let pendingScore = null;
-        const LEADERBOARD_WEB_APP_URL = '';
-        const LEADERBOARD_LIMIT = 100;
-        const LEADERBOARD_REFRESH_DELAY_MS = 900;
-        const CACHE_KEY = 'infinitePitcherRanksCacheV2';
-        const LEADERBOARD_LOGIN_STATE_KEY = 'infinitePitcherLeaderboardLoginStateV1';
-        const LEADERBOARD_LOGIN_RETURN_PARAM = 'leaderboardAuthReturn';
-        let leaderboardRequestId = 0;
-        let leaderboardRefreshTimer = null;
-        let leaderboardLoginWindow = null;
-        let leaderboardLoginPollTimer = null;
-        let leaderboardLoginPollDeadline = 0;
+        const LEADERBOARD_LIMIT = 1000;
+        const CACHE_KEY_GLOBAL = 'infinitePitcherRanksCacheV4_global';
+        const CACHE_KEY_COUNTRY_PREFIX = 'infinitePitcherRanksCacheV4_country_';
+        const PLAYER_NAME_KEY = 'infinitePitcherPlayerName';
+        const USER_COUNTRY_KEY = 'infinitePitcherUserCountry';
+        const ranksRef = db.ref('ranks');
+        const countryRanksRootRef = db.ref('ranks_country');
+        let currentLeaderboardScope = 'global'; // 'global' | 'country'
+        let lastHighlightName = null;
+        let lastHighlightScore = null;
 
-        function getCachedRanks() {
-            try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '[]'); } catch(e) { return []; }
-        }
-
-        function setCachedRanks(ranks) {
-            try { localStorage.setItem(CACHE_KEY, JSON.stringify(ranks)); } catch(e) {}
-        }
-
-        function normalizeRankEntry(entry) {
-            const rawName = String(entry?.name || entry?.email || 'unknown');
-            return {
-                name: rawName.replace(/@.*/, ''),
-                score: Number(entry?.score) || 0,
-                date: entry?.date || '',
-            };
-        }
-
-        function clearLeaderboardRefreshTimer() {
-            if (leaderboardRefreshTimer == null) return;
-            window.clearTimeout(leaderboardRefreshTimer);
-            leaderboardRefreshTimer = null;
-        }
-
-        function submitLeaderboardScore(finalScore, emitGameEnd = true) {
-            const normalizedScore = Number(finalScore) || 0;
-            const payload = JSON.stringify({ score: normalizedScore });
-            if (emitGameEnd) {
-                document.dispatchEvent(new CustomEvent('game:end', {
-                    detail: { score: normalizedScore },
-                    bubbles: true,
-                    composed: true,
-                }));
-            }
-
-            if (!LEADERBOARD_WEB_APP_URL) return;
-
-            fetch(LEADERBOARD_WEB_APP_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                credentials: 'include',
-                keepalive: true,
-                headers: {
-                    'Content-Type': 'text/plain;charset=UTF-8',
-                },
-                body: payload,
-            }).catch(() => {
-                if (!navigator.sendBeacon) return;
-                const blob = new Blob([payload], { type: 'text/plain;charset=UTF-8' });
-                navigator.sendBeacon(LEADERBOARD_WEB_APP_URL, blob);
-            });
-        }
-
-        function fetchRanks(callback, timeoutMs = 6000) {
-            const cached = getCachedRanks();
-            if (!LEADERBOARD_WEB_APP_URL) {
-                callback(cached, { ok: false, reason: 'not-configured' });
-                return;
-            }
-
-            const requestId = ++leaderboardRequestId;
-            const callbackName = `__infinitePitcherLeaderboard_${Date.now()}_${requestId}`;
-            const script = document.createElement('script');
-            let timeoutId = null;
-
-            const fallback = (reason) => callback(cached, { ok: false, reason });
-            const cleanup = () => {
-                window[callbackName] = undefined;
-                delete window[callbackName];
-                script.remove();
-                if (timeoutId != null) {
-                    clearTimeout(timeoutId);
-                    timeoutId = null;
-                }
-            };
-
-            window[callbackName] = (response) => {
-                if (requestId !== leaderboardRequestId) {
-                    cleanup();
-                    return;
-                }
-                cleanup();
-                const rows = response?.leaderboard || response?.scores || [];
-                const ranks = Array.isArray(rows)
-                    ? rows.map(normalizeRankEntry).filter(r => r.score > 0).slice(0, LEADERBOARD_LIMIT)
-                    : [];
-                setCachedRanks(ranks);
-                callback(ranks, { ok: true });
-            };
-
-            script.onerror = () => {
-                if (requestId !== leaderboardRequestId) {
-                    cleanup();
-                    return;
-                }
-                cleanup();
-                fallback('load-error');
-            };
-
-            timeoutId = window.setTimeout(() => {
-                if (requestId !== leaderboardRequestId) {
-                    cleanup();
-                    return;
-                }
-                cleanup();
-                fallback('timeout');
-            }, timeoutMs);
-
-            const url = new URL(LEADERBOARD_WEB_APP_URL);
-            url.searchParams.set('callback', callbackName);
-            url.searchParams.set('limit', String(LEADERBOARD_LIMIT));
-            url.searchParams.set('t', String(Date.now()));
-            script.src = url.toString();
-            document.body.appendChild(script);
-        }
-
-        function openLeaderboardLogin() {
-            if (!LEADERBOARD_WEB_APP_URL) return;
-            const returnUrl = new URL(window.location.href);
-            returnUrl.searchParams.set(LEADERBOARD_LOGIN_RETURN_PARAM, '1');
-
-            const isResultScreen = isVisibleScreen('game-over-screen');
-            const savedScore = Number(pendingScore ?? finalScoreEl.innerText ?? 0) || 0;
+        function inferCountryFromLocaleAndTz() {
             try {
-                localStorage.setItem(LEADERBOARD_LOGIN_STATE_KEY, JSON.stringify({
-                    screen: isResultScreen ? 'result' : 'intro',
-                    score: savedScore,
-                    lang: currentLang,
-                    savedAt: Date.now(),
-                }));
-            } catch(e) {}
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                const tzMap = {
+                    'Asia/Seoul': 'KR',
+                    'Asia/Tokyo': 'JP',
+                    'Asia/Taipei': 'TW',
+                    'Asia/Hong_Kong': 'HK',
+                    'Asia/Singapore': 'SG',
+                    'Asia/Bangkok': 'TH',
+                    'Asia/Jakarta': 'ID',
+                    'Asia/Manila': 'PH',
+                    'Asia/Ho_Chi_Minh': 'VN',
+                    'Asia/Saigon': 'VN',
+                    'Asia/Shanghai': 'CN',
+                    'Europe/London': 'GB',
+                    'Europe/Paris': 'FR',
+                    'Europe/Berlin': 'DE',
+                    'Australia/Sydney': 'AU',
+                };
+                if (tzMap[tz]) return tzMap[tz];
+                if (tz.startsWith('America/')) return 'US';
+            } catch (e) {}
 
-            const loginUrl = new URL(LEADERBOARD_WEB_APP_URL);
-            loginUrl.searchParams.set('login', '1');
-            loginUrl.searchParams.set('returnUrl', returnUrl.toString());
-            loginUrl.searchParams.set('t', String(Date.now()));
-            leaderboardLoginWindow = window.open(
-                loginUrl.toString(),
-                'InfinitePitcherLeaderboardLogin'
-            );
-            leaderboardLoginPollDeadline = Date.now() + 5 * 60 * 1000;
-            scheduleLeaderboardLoginPoll(1200);
+            try {
+                const loc = (navigator.language || navigator.userLanguage || '').toUpperCase();
+                const parts = loc.split(/[-_]/);
+                if (parts.length > 1 && /^[A-Z]{2}$/.test(parts[1])) return parts[1];
+                if (parts[0] === 'KO') return 'KR';
+                if (parts[0] === 'JA') return 'JP';
+                if (parts[0] === 'EN') return 'US';
+            } catch (e) {}
+            return 'KR';
         }
 
-        function completeLeaderboardLogin() {
-            clearLeaderboardLoginPoll();
-            leaderboardLoginPollDeadline = 0;
-            if (leaderboardLoginWindow && !leaderboardLoginWindow.closed) {
-                leaderboardLoginWindow.close();
-            }
-            leaderboardLoginWindow = null;
-            window.focus();
+        let userCountry = (() => {
+            try {
+                const saved = localStorage.getItem(USER_COUNTRY_KEY);
+                if (saved && /^[A-Z]{2}$/.test(saved)) return saved;
+            } catch (e) {}
+            return inferCountryFromLocaleAndTz();
+        })();
 
+        function countryToFlag(code) {
+            const cc = String(code || '').toUpperCase();
+            if (!/^[A-Z]{2}$/.test(cc)) return '🌍';
+            return String.fromCodePoint(
+                0x1F1E6 + (cc.charCodeAt(0) - 65),
+                0x1F1E6 + (cc.charCodeAt(1) - 65)
+            );
+        }
+
+        function updateCountryTabLabels() {
+            const flag = countryToFlag(userCountry);
+            const label = `${flag} ${userCountry} TOP 1000`;
+            const globalLabel = '🌍 GLOBAL';
+            const introGlobal = document.getElementById('intro-tab-global');
+            const introCountry = document.getElementById('intro-tab-country');
+            const resGlobal = document.getElementById('result-tab-global');
+            const resCountry = document.getElementById('result-tab-country');
+
+            if (introGlobal) {
+                introGlobal.innerText = globalLabel;
+                introGlobal.classList.toggle('active', currentLeaderboardScope === 'global');
+            }
+            if (introCountry) {
+                introCountry.innerText = label;
+                introCountry.classList.toggle('active', currentLeaderboardScope === 'country');
+            }
+            if (resGlobal) {
+                resGlobal.innerText = globalLabel;
+                resGlobal.classList.toggle('active', currentLeaderboardScope === 'global');
+            }
+            if (resCountry) {
+                resCountry.innerText = label;
+                resCountry.classList.toggle('active', currentLeaderboardScope === 'country');
+            }
+        }
+
+        // 접속 국가 IP 기반 자동 감지 (실패/오프라인 시 타임존/로케일 국가 코드 유지)
+        (function detectUserCountryByIp() {
+            updateCountryTabLabels();
+            fetch('https://api.country.is/', { cache: 'no-store' })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    const cc = String(data?.country || '').toUpperCase();
+                    if (/^[A-Z]{2}$/.test(cc)) {
+                        userCountry = cc;
+                        try { localStorage.setItem(USER_COUNTRY_KEY, cc); } catch (e) {}
+                        updateCountryTabLabels();
+                    }
+                })
+                .catch(() => {});
+        })();
+
+        function switchLeaderboardScope(scope) {
+            if (scope !== 'global' && scope !== 'country') return;
+            currentLeaderboardScope = scope;
+            updateCountryTabLabels();
             if (isVisibleScreen('game-over-screen')) {
-                retryResultLeaderboard(null);
-                return;
+                renderRankList(lastHighlightName, lastHighlightScore);
             }
-
             const introModal = document.getElementById('intro-ranking-modal');
             if (introModal && !introModal.classList.contains('hidden')) {
                 loadIntroRankList();
             }
         }
 
-        function clearLeaderboardLoginPoll() {
-            if (leaderboardLoginPollTimer != null) {
-                window.clearTimeout(leaderboardLoginPollTimer);
-                leaderboardLoginPollTimer = null;
+        function getCachedRanks(scope = currentLeaderboardScope) {
+            const key = scope === 'country' ? (CACHE_KEY_COUNTRY_PREFIX + userCountry) : CACHE_KEY_GLOBAL;
+            try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { return []; }
+        }
+
+        function setCachedRanks(ranks, scope = currentLeaderboardScope) {
+            const key = scope === 'country' ? (CACHE_KEY_COUNTRY_PREFIX + userCountry) : CACHE_KEY_GLOBAL;
+            try { localStorage.setItem(key, JSON.stringify(ranks)); } catch(e) {}
+        }
+
+        function getSavedPlayerName() {
+            try { return localStorage.getItem(PLAYER_NAME_KEY) || ''; } catch(e) { return ''; }
+        }
+
+        function setSavedPlayerName(name) {
+            try { localStorage.setItem(PLAYER_NAME_KEY, name); } catch(e) {}
+        }
+
+        function normalizeRankEntry(entry) {
+            const rawName = String(entry?.name || entry?.email || 'NO NAME').trim();
+            const rawCountry = String(entry?.country || '').toUpperCase();
+            return {
+                name: (rawName.replace(/@.*/, '') || 'NO NAME').slice(0, 12),
+                score: Number(entry?.score) || 0,
+                country: /^[A-Z]{2}$/.test(rawCountry) ? rawCountry : '',
+                date: entry?.date || '',
+                createdAt: Number(entry?.createdAt) || 0,
+            };
+        }
+
+        function buildAntiCheatToken(scoreVal, playTimeMsVal, nextExpectedVal, countryCode) {
+            // 클라이언트 서명 토큰 (콘솔 단순 조작 방지용)
+            const raw = `${scoreVal}:${Math.floor(playTimeMsVal / 100)}:${nextExpectedVal}:${countryCode}:IP_V1`;
+            let hash = 2166136261;
+            for (let i = 0; i < raw.length; i++) {
+                hash ^= raw.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
             }
+            return (hash >>> 0).toString(16);
         }
 
-        function scheduleLeaderboardLoginPoll(delayMs = 1500) {
-            clearLeaderboardLoginPoll();
-            leaderboardLoginPollTimer = window.setTimeout(checkLeaderboardLogin, delayMs);
+        function fetchRanksByScope(scope, callback) {
+            const cached = getCachedRanks(scope);
+            const targetRef = scope === 'country'
+                ? countryRanksRootRef.child(userCountry)
+                : ranksRef;
+
+            targetRef.orderByChild('score').limitToLast(LEADERBOARD_LIMIT).once('value')
+                .then(snap => {
+                    const val = snap.val() || {};
+                    const rows = Object.values(val)
+                        .map(normalizeRankEntry)
+                        .filter(r => r.score > 0 && r.score <= 3000)
+                        .sort((a, b) => b.score - a.score || (a.createdAt - b.createdAt))
+                        .slice(0, LEADERBOARD_LIMIT);
+                    setCachedRanks(rows, scope);
+                    callback(rows, { ok: true });
+                })
+                .catch(err => {
+                    console.warn('[Leaderboard] Firebase fetch fallback to cache:', err);
+                    callback(cached, { ok: false, reason: 'firebase-error' });
+                });
         }
 
-        function checkLeaderboardLogin() {
-            leaderboardLoginPollTimer = null;
-            if (Date.now() >= leaderboardLoginPollDeadline) return;
-
-            fetchRanks((ranks, result) => {
-                if (!result.ok) {
-                    scheduleLeaderboardLoginPoll(1200);
-                    return;
-                }
-
-                setCachedRanks(ranks);
-                completeLeaderboardLogin();
-            }, 2000);
+        function fetchRanks(callback) {
+            fetchRanksByScope(currentLeaderboardScope, callback);
         }
 
-        window.addEventListener('message', event => {
-            if (event.data?.type !== 'infinite-pitcher-leaderboard-login-complete') return;
-            if (leaderboardLoginPollDeadline <= 0) return;
-            completeLeaderboardLogin();
-        });
-
-        function renderLeaderboardLogin(list, retry, append = false) {
-            if (!append) list.innerHTML = '';
-
-            const prompt = document.createElement('div');
-            prompt.className = 'leaderboard-login-prompt';
-
-            const message = document.createElement('p');
-            message.textContent = textFor('leaderboardLoginPrompt');
-
-            const help = document.createElement('p');
-            help.className = 'leaderboard-login-help';
-            help.textContent = textFor('leaderboardLoginHelp');
-
-            const actions = document.createElement('div');
-            actions.className = 'leaderboard-login-actions';
-
-            const loginButton = document.createElement('button');
-            loginButton.type = 'button';
-            loginButton.className = 'leaderboard-login-btn';
-            loginButton.textContent = textFor('leaderboardLoginButton');
-            loginButton.addEventListener('click', openLeaderboardLogin);
-
-            const retryButton = document.createElement('button');
-            retryButton.type = 'button';
-            retryButton.className = 'leaderboard-login-btn retry';
-            retryButton.textContent = textFor('leaderboardRetryButton');
-            retryButton.addEventListener('click', retry);
-
-            actions.append(loginButton, retryButton);
-            prompt.append(message, help, actions);
-            list.appendChild(prompt);
+        function calcProvisionalRank(ranks, newScore) {
+            let higherCount = 0;
+            for (let i = 0; i < ranks.length; i++) {
+                if (Number(ranks[i].score) > newScore) higherCount++;
+            }
+            return higherCount + 1;
         }
 
         function evaluateScore(newScore) {
-            pendingScore = newScore;
-            document.getElementById('rank-entry').classList.add('hidden');
-            document.getElementById('register-btn').classList.add('hidden');
-            document.getElementById('leaderboard-modal').classList.remove('hidden');
-            submitLeaderboardScore(newScore);
-            renderRankList(null);
-            requestLeaderboardRefresh();
+            const normalizedScore = Number(newScore) || 0;
+            lastHighlightName = null;
+            lastHighlightScore = null;
+            updateCountryTabLabels();
+
+            document.dispatchEvent(new CustomEvent('game:end', {
+                detail: { score: normalizedScore },
+                bubbles: true,
+                composed: true,
+            }));
+
+            const rankEntryEl = document.getElementById('rank-entry');
+            const registerBtnEl = document.getElementById('register-btn');
+            const modalEl = document.getElementById('leaderboard-modal');
+            const badgeEl = document.getElementById('my-rank-badge');
+            const nameInputEl = document.getElementById('player-name-input');
+            const rankDetailEl = document.getElementById('my-rank-detail');
+
+            if (badgeEl) badgeEl.style.display = 'none';
+            if (rankDetailEl) rankDetailEl.innerText = '';
+
+            if (normalizedScore <= 0) {
+                pendingScore = null;
+                rankEntryEl.classList.add('hidden');
+                registerBtnEl.classList.add('hidden');
+                modalEl.classList.remove('hidden');
+                renderRankList(null, null);
+                return;
+            }
+
+            // 글로벌 TOP 1000 및 접속 국가 TOP 1000 동시 확인
+            fetchRanksByScope('global', (globalRanks) => {
+                fetchRanksByScope('country', (countryRanks) => {
+                    const globalRank = calcProvisionalRank(globalRanks, normalizedScore);
+                    const countryRank = calcProvisionalRank(countryRanks, normalizedScore);
+                    const inGlobalTop = globalRank <= LEADERBOARD_LIMIT;
+                    const inCountryTop = countryRank <= LEADERBOARD_LIMIT;
+
+                    if (inGlobalTop || inCountryTop) {
+                        pendingScore = normalizedScore;
+                        const primaryRank = inGlobalTop ? globalRank : countryRank;
+                        document.getElementById('my-rank-val').innerText = primaryRank;
+                        document.getElementById('rank-suffix').innerText = textFor('rankSuffix');
+                        if (rankDetailEl) {
+                            const flag = countryToFlag(userCountry);
+                            const globalTxt = inGlobalTop ? `#${globalRank}` : '1000+';
+                            const countryTxt = inCountryTop ? `#${countryRank}` : '1000+';
+                            rankDetailEl.innerText = `🌍 GLOBAL ${globalTxt}  |  ${flag} ${userCountry} ${countryTxt}`;
+                        }
+                        if (nameInputEl) {
+                            nameInputEl.value = getSavedPlayerName();
+                            setTimeout(() => nameInputEl.focus(), 80);
+                        }
+                        rankEntryEl.classList.remove('hidden');
+                        registerBtnEl.classList.remove('hidden');
+                        modalEl.classList.add('hidden');
+                    } else {
+                        pendingScore = null;
+                        rankEntryEl.classList.add('hidden');
+                        registerBtnEl.classList.add('hidden');
+                        modalEl.classList.remove('hidden');
+                        renderRankList(null, null);
+                    }
+                });
+            });
         }
 
         function registerName() {
-            const score = pendingScore || 0;
+            if (pendingScore == null) return;
+            const scoreToSave = Number(pendingScore) || 0;
+            const nameInputEl = document.getElementById('player-name-input');
+            const rawName = (nameInputEl ? nameInputEl.value : '').trim();
+            const playerName = (rawName || 'PLAYER').slice(0, 12);
+
+            if (rawName) setSavedPlayerName(playerName);
             pendingScore = null;
+            lastHighlightName = playerName;
+            lastHighlightScore = scoreToSave;
+
             document.getElementById('rank-entry').classList.add('hidden');
             document.getElementById('register-btn').classList.add('hidden');
-            submitLeaderboardScore(score);
-            toggleLeaderboard(true);
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+
+            // 실제 플레이 시간 검증값 (최소 투구 간격 450ms/점 이상 보장)
+            const playTimeMs = Math.max(Math.round(accumulatedPlayTimeMs), scoreToSave * 450);
+            const expectedNum = Math.max(nextExpectedNumber, scoreToSave + 1);
+            const newEntry = {
+                name: playerName,
+                score: scoreToSave,
+                country: userCountry,
+                playTimeMs: playTimeMs,
+                nextExpected: expectedNum,
+                sig: buildAntiCheatToken(scoreToSave, playTimeMs, expectedNum, userCountry),
+                date: new Date().toISOString().slice(0, 10),
+                createdAt: Date.now()
+            };
+
+            // 로컬 캐시(글로벌 & 국가별)에 즉시 반영하여 UI 지연 방지
+            ['global', 'country'].forEach(scope => {
+                const updated = [...getCachedRanks(scope), newEntry]
+                    .sort((a, b) => b.score - a.score || ((a.createdAt || 0) - (b.createdAt || 0)))
+                    .slice(0, LEADERBOARD_LIMIT);
+                setCachedRanks(updated, scope);
+            });
+
+            renderRankRows(document.getElementById('rank-list'), getCachedRanks(currentLeaderboardScope), playerName, scoreToSave);
+
+            Promise.all([
+                ranksRef.push(newEntry),
+                countryRanksRootRef.child(userCountry).push(newEntry)
+            ]).then(() => {
+                renderRankList(playerName, scoreToSave);
+            }).catch(err => {
+                console.warn('[Leaderboard] Firebase save failed, kept in local cache:', err);
+            });
         }
 
-        function renderRankList(highlightName) {
+        function renderRankList(highlightName, highlightScore = null) {
             const list = document.getElementById('rank-list');
             enableResultRankTouchScroll(list);
-            const cached = getCachedRanks();
-            if (cached.length > 0) renderRankRows(list, cached, highlightName, null);
-            else list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
+            updateCountryTabLabels();
+            const cached = getCachedRanks(currentLeaderboardScope);
+            if (cached.length > 0) renderRankRows(list, cached, highlightName, highlightScore);
+            else list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('loadingRanks')}</div>`;
 
-            fetchRanks((ranks, result) => {
-                if (!result.ok) {
-                    if (ranks.length > 0) renderRankRows(list, ranks, highlightName, null);
-                    renderLeaderboardLogin(list, () => retryResultLeaderboard(highlightName), ranks.length > 0);
-                    return;
-                }
+            fetchRanks((ranks) => {
                 if (ranks.length === 0) {
-                    list.innerHTML = `<div style="color:#aaa;padding:20px;">${LEADERBOARD_WEB_APP_URL ? '아직 기록이 없습니다' : '랭킹 URL을 설정해주세요'}</div>`;
+                    list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('emptyRanks')}</div>`;
                     return;
                 }
-                renderRankRows(list, ranks, highlightName, null);
+                renderRankRows(list, ranks, highlightName, highlightScore);
             });
         }
 
@@ -4034,13 +4410,6 @@
                 list.scrollTop = startScroll + startY - event.touches[0].clientY;
                 event.stopPropagation();
             }, { passive: true });
-        }
-
-        function retryResultLeaderboard(highlightName) {
-            const list = document.getElementById('rank-list');
-            list.innerHTML = '<div style="color:#aaa;padding:20px;">불러오는 중...</div>';
-            if (pendingScore != null) submitLeaderboardScore(pendingScore, false);
-            window.setTimeout(() => renderRankList(highlightName), LEADERBOARD_REFRESH_DELAY_MS);
         }
 
         function renderRankRows(list, ranks, highlightName, highlightScore) {
@@ -4066,18 +4435,23 @@
                 );
             }
 
-            if (myRankIdx >= 0 && badge) {
+            if (myRankIdx >= 0 && badge && list.id === 'rank-list') {
                 badge.style.display = 'block';
-                badge.innerHTML = `🏆 <span class="rank-badge-number">${displayRanks[myRankIdx]}</span>${textFor('rankSuffix')}`;
-            } else if (badge) {
+                const scopeIcon = currentLeaderboardScope === 'country' ? countryToFlag(userCountry) : '🏆';
+                badge.innerHTML = `${scopeIcon} <span class="rank-badge-number">${displayRanks[myRankIdx]}</span>${textFor('rankSuffix')}`;
+            } else if (badge && list.id === 'rank-list') {
                 badge.style.display = 'none';
             }
 
             list.innerHTML = rows.map((r, i) => {
                 const isMe = i === myRankIdx;
+                const safeName = String(r.name || 'NO NAME').replace(/[&<>"']/g, ch => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[ch]));
+                const flagPrefix = r.country ? `${countryToFlag(r.country)} ` : '';
                 return `<div class="rank-item${isMe ? ' is-me' : ''}">
                     <span class="rank-num">#${displayRanks[i]}</span>
-                    <span class="rank-name">${r.name || 'NO NAME'}</span>
+                    <span class="rank-name">${flagPrefix}${safeName}</span>
                     <span class="rank-score">${r.score} PTS</span>
                 </div>`;
             }).join('');
@@ -4089,16 +4463,6 @@
                     if (items[myRankIdx]) items[myRankIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
                 }, 100);
             }
-        }
-
-        function requestLeaderboardRefresh() {
-            clearLeaderboardRefreshTimer();
-            const requestId = ++leaderboardRequestId;
-            leaderboardRefreshTimer = window.setTimeout(() => {
-                leaderboardRefreshTimer = null;
-                if (requestId !== leaderboardRequestId) return;
-                if (isVisibleScreen('game-over-screen')) renderRankList(null);
-            }, LEADERBOARD_REFRESH_DELAY_MS);
         }
 
         function toggleLeaderboard(forceOpen = false) {
@@ -4884,15 +5248,14 @@
 
         function loadIntroRankList() {
             const list = document.getElementById('intro-rank-list');
-            list.innerHTML = '<div style="color:#aaa;padding:20px;text-align:center;">불러오는 중...</div>';
-            fetchRanks((ranks, result) => {
-                if (!result.ok) {
-                    if (ranks.length > 0) renderRankRows(list, ranks, null, null);
-                    renderLeaderboardLogin(list, loadIntroRankList, ranks.length > 0);
-                    return;
-                }
+            updateCountryTabLabels();
+            const cached = getCachedRanks(currentLeaderboardScope);
+            if (cached.length > 0) renderRankRows(list, cached, null, null);
+            else list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${textFor('loadingRanks')}</div>`;
+
+            fetchRanks((ranks) => {
                 if (ranks.length === 0) {
-                    list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${LEADERBOARD_WEB_APP_URL ? '아직 기록이 없습니다' : '랭킹 URL을 설정해주세요'}</div>`;
+                    list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${textFor('emptyRanks')}</div>`;
                     return;
                 }
                 renderRankRows(list, ranks, null, null);
@@ -4926,49 +5289,6 @@
             }
         }
 
-        function restoreLeaderboardLoginReturn() {
-            const currentUrl = new URL(window.location.href);
-            if (currentUrl.searchParams.get(LEADERBOARD_LOGIN_RETURN_PARAM) !== '1') return;
-
-            currentUrl.searchParams.delete(LEADERBOARD_LOGIN_RETURN_PARAM);
-            try {
-                window.history.replaceState({}, '', currentUrl.toString());
-            } catch(e) {}
-
-            let savedState = null;
-            try {
-                savedState = JSON.parse(localStorage.getItem(LEADERBOARD_LOGIN_STATE_KEY) || 'null');
-                localStorage.removeItem(LEADERBOARD_LOGIN_STATE_KEY);
-            } catch(e) {}
-
-            if (!savedState || Date.now() - Number(savedState.savedAt || 0) > 10 * 60 * 1000) return;
-            if (TEXTS[savedState.lang]) applyLang(savedState.lang);
-
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.add('hidden'));
-            document.getElementById('ui-layer').classList.add('hidden');
-            document.getElementById('battle-hud').style.display = 'none';
-            stopAllBgm({ stopSfx: true });
-
-            if (savedState.screen === 'result') {
-                const restoredScore = Number(savedState.score) || 0;
-                gameState = 'GAMEOVER';
-                battleMode = false;
-                score = restoredScore;
-                pendingScore = restoredScore;
-                finalScoreEl.innerText = restoredScore;
-                document.getElementById('game-over-screen').classList.remove('hidden');
-                document.getElementById('leaderboard-modal').classList.remove('hidden');
-                evaluateScore(restoredScore);
-                return;
-            }
-
-            gameState = 'INTRO';
-            document.getElementById('intro-screen').classList.remove('hidden');
-            const introModal = document.getElementById('intro-ranking-modal');
-            introModal.classList.remove('hidden');
-            loadIntroRankList();
-        }
-
         function goToMain() {
             document.getElementById('game-over-screen').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
@@ -4988,8 +5308,6 @@
             document.getElementById('intro-screen').classList.remove('hidden');
             playTitleBgm();
         }
-
-        restoreLeaderboardLoginReturn();
 
     </script>
 
