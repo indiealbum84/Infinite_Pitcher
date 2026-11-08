@@ -2015,6 +2015,17 @@
             text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25) !important;
         }
 
+        .noads-inline-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #e11d48;
+            font-weight: 900;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+            cursor: pointer;
+            touch-action: auto !important;
+        }
+
         .play-gate-sub-actions {
             display: flex;
             align-items: center;
@@ -2309,6 +2320,29 @@
 
         const pitcherThrowImg = new Image();
         pitcherThrowImg.src = './pitcher_throw.png';
+
+        function loadOptionalSprite(src, onLoadCallback) {
+            const img = new Image();
+            if (onLoadCallback) img.onload = onLoadCallback;
+            img.src = src;
+            return img;
+        }
+        function isSpriteReady(img) {
+            return Boolean(img && img.complete && img.naturalWidth > 0);
+        }
+
+        const ingameFieldBgImg = loadOptionalSprite('./ingame_field_bg.png');
+        const blockNormalImg = loadOptionalSprite('./block_normal.png', () => {
+            if (typeof blockTileCache !== 'undefined') blockTileCache.clear();
+        });
+        const blockHighlightImg = loadOptionalSprite('./block_highlight.png', () => {
+            if (typeof blockTileCache !== 'undefined') blockTileCache.clear();
+        });
+        const ballNormalImg = loadOptionalSprite('./ball_normal.png');
+        const ballFireImg = loadOptionalSprite('./ball_fire.png');
+        const ballMirrorImg = loadOptionalSprite('./ball_mirror.png');
+        const ballStripeImg = loadOptionalSprite('./ball_stripe.png');
+        const ballFlashImg = loadOptionalSprite('./ball_flash.png');
 
         let pitcherThrowing = false;
 
@@ -2676,18 +2710,21 @@
                 rematchJoinStatus: (ready, total) => `リマッチ参加 ${ready}/${total}`,
                 rematchReady: 'リマッチ参加完了',
                 playGateTitle: 'NEXT PLAY',
-                playGateDescNeedAd: '本日の無料プレイ(2回)をすべて使用しました。\n広告を1回見るか、広告削除パスを購入すると\nすぐに次のゲームをプレイできます！',
+                fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
+                fireballUnlockHtml: '🎉 おめでとうございます！<br>ご用意した<b>31番ファイアボールコンテンツ</b>をアンロックしました！<br><br>これより個人モードは<b>1日3回まで無料</b>でプレイでき、その後は<b>広告を1回</b>見ることでプレイできます。<br><br>広告を見たくない場合は<b>$4.99 広告削除パス</b>をご購入ください！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを今すぐ購入する</a>',
+                playGateDescNeedAdSolo: '本日の個人モード無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$4.99 広告削除パスを購入するとすぐに次のゲームをプレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを購入して無制限プレイ</a>',
+                playGateDescNeedAdBattle: '本日のオンライン対戦無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$4.99 広告削除パスを購入するとすぐに対戦へ参加できます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを購入して無制限プレイ</a>',
                 playGateResetLine: (h, m) => `⏰ 次の無料リセット(UTC 00:00)まで あと${h}時間${m}分`,
-                playGateDescShop: (rem, max) => `本日の残り無料プレイ: ${rem}/${max}回\n\n広告削除パス($4.99)を購入すると\n広告なしで永久に無制限プレイできます！`,
+                playGateDescShop: (soloText, battleRem, max) => `本日の残り無料プレイ<br>・個人モード: <b>${soloText}</b><br>・オンライン対戦: <b>${battleRem}/${max}回</b><br><br>広告削除パス($4.99)を購入すると、個人・対戦ともに広告なしで永久に無制限プレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを今すぐ購入</a>`,
+                soloUnlimitedLabel: '無制限無料 (31番突破前)',
                 playGateAdBtn: '🎬 広告を1回見てプレイ',
                 playGateNoAdsBtn: '👑 広告削除・無制限プレイ ($4.99)',
                 playGateRestoreBtn: '購入を復元',
                 playGateCloseBtn: '閉じる',
                 rewardAdMsg: '広告視聴後に次のゲームが始まります...',
-                ticketPillFree: (rem, max) => `⚾ 本日の残り無料プレイ: ${rem}/${max}回  |  🚫 広告削除 $4.99`,
-                ticketPillNeedAd: (max) => `⚾ 本日の残り無料: 0/${max}回 (次回: 広告1回)  |  🚫 広告削除 $4.99`,
-                ticketPillCredit: (max) => `🎟️ プレイチケット1回保有 (無料 0/${max}回)  |  🚫 広告削除 $4.99`,
-                ticketPillVip: '👑 広告削除パス適用中 (無制限プレイ)',
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 個人:無制限(31番前) · 対戦:${battleRem}/${max}回  |  🚫 広告削除 $4.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 無料 個人:${soloRem}/${max} · 対戦:${battleRem}/${max}  |  🚫 広告削除 $4.99`,
+                ticketPillVip: '👑 広告削除パス適用中 (個人・対戦 無制限プレイ)',
                 confirmBuyNoAds: '広告削除・無制限プレイパス ($4.99) を購入しますか？\n(テスト環境では即時適用されます)',
                 alertNoAdsActivated: '👑 広告削除パス($4.99)が適用されました！無制限にプレイできます。',
                 alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
@@ -2749,18 +2786,21 @@
                 rematchJoinStatus: (ready, total) => `Rematch joined ${ready}/${total}`,
                 rematchReady: 'Rematch joined',
                 playGateTitle: 'NEXT PLAY',
-                playGateDescNeedAd: 'You used all 2 free games for today.\nWatch 1 ad or buy the Remove Ads Pass\nto play the next game right away!',
+                fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
+                fireballUnlockHtml: '🎉 Congratulations!<br>You unlocked our <b>#31 Fireball Content</b>!<br><br>From now on, you get <b>3 free Solo games</b> per day, and after that you can watch <b>1 ad</b> to play.<br><br>Don\'t want ads? Get the <b>$4.99 Remove Ads Pass</b>!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $4.99 Remove Ads Now</a>',
+                playGateDescNeedAdSolo: 'You used all 3 free Solo games for today.<br>Watch 1 ad or buy the $4.99 Remove Ads Pass to play the next game right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $4.99 Remove Ads for Unlimited Play</a>',
+                playGateDescNeedAdBattle: 'You used all 3 free Online Battle games for today.<br>Watch 1 ad or buy the $4.99 Remove Ads Pass to enter Battle right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $4.99 Remove Ads for Unlimited Play</a>',
                 playGateResetLine: (h, m) => `⏰ Next free reset (UTC 00:00) in ${h}h ${m}m`,
-                playGateDescShop: (rem, max) => `Free plays left today: ${rem}/${max}\n\nBuy the Remove Ads Pass ($4.99)\nfor unlimited ad-free play forever!`,
+                playGateDescShop: (soloText, battleRem, max) => `Free plays left today<br>• Solo Mode: <b>${soloText}</b><br>• Online Battle: <b>${battleRem}/${max}</b><br><br>Buy the Remove Ads Pass ($4.99) for unlimited ad-free Solo & Battle play forever!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $4.99 Remove Ads Now</a>`,
+                soloUnlimitedLabel: 'Unlimited Free (Before #31)',
                 playGateAdBtn: '🎬 Watch 1 Ad to Play',
                 playGateNoAdsBtn: '👑 Remove Ads + Unlimited Play ($4.99)',
                 playGateRestoreBtn: 'Restore Purchases',
                 playGateCloseBtn: 'Close',
                 rewardAdMsg: 'Next game starts right after the ad...',
-                ticketPillFree: (rem, max) => `⚾ Free Plays Today: ${rem}/${max}  |  🚫 Remove Ads $4.99`,
-                ticketPillNeedAd: (max) => `⚾ Free Plays Today: 0/${max} (Watch 1 Ad)  |  🚫 Remove Ads $4.99`,
-                ticketPillCredit: (max) => `🎟️ 1 Play Ticket Ready (Free 0/${max})  |  🚫 Remove Ads $4.99`,
-                ticketPillVip: '👑 Ad-Free Pass Active (Unlimited Play)',
+                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Unlimited(<#31) · Battle:${battleRem}/${max}  |  🚫 Remove Ads $4.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Free Solo:${soloRem}/${max} · Battle:${battleRem}/${max}  |  🚫 Remove Ads $4.99`,
+                ticketPillVip: '👑 Ad-Free Pass Active (Unlimited Solo & Battle)',
                 confirmBuyNoAds: 'Purchase Remove Ads + Unlimited Play Pass ($4.99)?\n(Activated immediately in test/preview mode)',
                 alertNoAdsActivated: '👑 Remove Ads Pass ($4.99) activated! Enjoy unlimited play.',
                 alertRestoreNone: 'No previous purchase found to restore.',
@@ -2822,18 +2862,21 @@
                 rematchJoinStatus: (ready, total) => `다시하기 참가 ${ready}/${total}`,
                 rematchReady: '다시하기 참가 완료',
                 playGateTitle: 'NEXT PLAY',
-                playGateDescNeedAd: '오늘의 무료 게임(2판)을 모두 사용했습니다.\n광고를 1회 시청하거나 광고 제거 패스를 구매하면\n바로 다음 게임을 플레이할 수 있습니다!',
+                fireballUnlockTitle: '🔥 파이어볼 컨텐츠 언락!',
+                fireballUnlockHtml: '🎉 축하합니다! 우리가 준비한 <b>31번 파이어볼 컨텐츠</b>를 언락하셨습니다!<br><br>이제부터 개인모드는 하루에 <b>무료 3번</b>의 게임을 할 수 있고, 그 이후에는 <b>광고를 1번</b> 봐야 게임을 할 수 있습니다.<br><br>그게 싫으면 <b>$4.99 광고 없애기</b>를 구매해 무제한으로 플레이하세요!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 바로 구매하기</a>',
+                playGateDescNeedAdSolo: '오늘의 개인모드 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $4.99 광고 없애기를 구매하면 바로 다음 게임을 할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 구매 (무제한 플레이)</a>',
+                playGateDescNeedAdBattle: '오늘의 온라인 대전 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $4.99 광고 없애기를 구매하면 바로 대전에 진입할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 구매 (무제한 플레이)</a>',
                 playGateResetLine: (h, m) => `⏰ 다음 무료 리셋(UTC 00:00)까지 ${h}시간 ${m}분 남음`,
-                playGateDescShop: (rem, max) => `오늘 남은 무료 게임: ${rem}/${max}판\n\n광고 제거 패스($4.99)를 구매하면\n광고 없이 평생 무제한으로 플레이할 수 있습니다!`,
+                playGateDescShop: (soloText, battleRem, max) => `오늘 남은 무료 게임<br>• 개인모드: <b>${soloText}</b><br>• 온라인 대전: <b>${battleRem}/${max}판</b><br><br>$4.99 광고 없애기를 구매하면 개인·대전 모두 광고 없이 평생 무제한 플레이할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 바로 구매하기</a>`,
+                soloUnlimitedLabel: '무제한 무료 (31번 파이어볼 돌파 전)',
                 playGateAdBtn: '🎬 광고 1회 보고 다음 판 하기',
                 playGateNoAdsBtn: '👑 광고 제거 + 무제한 플레이 ($4.99)',
                 playGateRestoreBtn: '구매 복원',
                 playGateCloseBtn: '닫기',
                 rewardAdMsg: '광고 시청 후 다음 게임이 시작됩니다...',
-                ticketPillFree: (rem, max) => `⚾ 오늘 남은 무료 게임: ${rem}/${max}판  |  🚫 광고 제거 $4.99`,
-                ticketPillNeedAd: (max) => `⚾ 오늘 남은 무료: 0/${max}판 (광고 1회 시청)  |  🚫 광고 제거 $4.99`,
-                ticketPillCredit: (max) => `🎟️ 광고 티켓 1판 보유 중 (무료 0/${max}판)  |  🚫 광고 제거 $4.99`,
-                ticketPillVip: '👑 광고 제거 패스 적용 중 (무제한 플레이)',
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 개인:무제한(31번 전) · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $4.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 무료 개인:${soloRem}/${max}판 · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $4.99`,
+                ticketPillVip: '👑 광고 제거 패스 적용 중 (개인·대전 무제한)',
                 confirmBuyNoAds: '광고 제거 + 무제한 플레이 패스($4.99)를 구매하시겠습니까?\n(현재 테스트 모드에서는 즉시 적용됩니다)',
                 alertNoAdsActivated: '👑 광고 제거 패스($4.99)가 적용되었습니다! 무제한으로 플레이하세요.',
                 alertRestoreNone: '복원할 구매 내역이 없습니다.',
@@ -3275,17 +3318,23 @@
         let sessionPlayStartedAt = 0;
         let accumulatedPlayTimeMs = 0;
 
-        const NO_ADS_STORAGE_KEY        = 'infinitePitcherNoAdsPurchased';
-        const DAILY_FREE_DATE_KEY       = 'infinitePitcherFreePlayUtcDate';
-        const DAILY_FREE_USED_COUNT_KEY = 'infinitePitcherFreePlayUsedCount';
-        const DAILY_FREE_MAX_DAY_KEY    = 'infinitePitcherFreePlayMaxUtcDay';
-        const LAST_SERVER_UTC_DAY_KEY   = 'infinitePitcherLastServerUtcDay';
-        const AD_PLAY_CREDIT_KEY        = 'infinitePitcherAdPlayCredit';
-        const DAILY_FREE_PLAY_LIMIT     = 2; // 하루 무료 플레이 2판
-        const DAY_MS                    = 86400000;
-        let firebaseServerTimeOffsetMs  = 0;
-        let serverTimeSynced            = false;
-        let pendingPlayGateCallback     = null;
+        const NO_ADS_STORAGE_KEY            = 'infinitePitcherNoAdsPurchased';
+        const SOLO_FIREBALL_UNLOCKED_KEY    = 'infinitePitcherSoloFireballUnlocked_v1';
+        const DAILY_SOLO_DATE_KEY           = 'infinitePitcherSoloFreeUtcDate_v2';
+        const DAILY_SOLO_USED_COUNT_KEY     = 'infinitePitcherSoloFreeUsedCount_v2';
+        const DAILY_BATTLE_DATE_KEY         = 'infinitePitcherBattleFreeUtcDate_v2';
+        const DAILY_BATTLE_USED_COUNT_KEY   = 'infinitePitcherBattleFreeUsedCount_v2';
+        const DAILY_FREE_MAX_DAY_KEY        = 'infinitePitcherFreePlayMaxUtcDay';
+        const LAST_SERVER_UTC_DAY_KEY       = 'infinitePitcherLastServerUtcDay';
+        const AD_PLAY_CREDIT_SOLO_KEY       = 'infinitePitcherAdPlayCreditSolo_v2';
+        const AD_PLAY_CREDIT_BATTLE_KEY     = 'infinitePitcherAdPlayCreditBattle_v2';
+        const DAILY_FREE_PLAY_LIMIT         = 3; // 모드별(개인 3회 / 온라인 대전 3회) 하루 무료 플레이 한도
+        const DAY_MS                        = 86400000;
+        let firebaseServerTimeOffsetMs      = 0;
+        let serverTimeSynced                = false;
+        let pendingPlayGateCallback         = null;
+        let pendingPlayGateMode             = 'solo'; // 'solo' | 'battle' | 'unlock'
+        let justUnlockedFireballThisRun     = false;
 
         // Firebase 서버 표준시 오프셋 실시간 동기화 (기기 시계/타임존 조작 어뷰징 원천 차단)
         try {
@@ -3342,19 +3391,36 @@
             updatePlayTicketStatusUI();
         }
 
-        function getRemainingDailyFreePlays() {
-            if (isNoAdsPurchased()) return DAILY_FREE_PLAY_LIMIT;
-            try {
-                const savedDate = localStorage.getItem(DAILY_FREE_DATE_KEY) || '';
-                const savedMaxDay = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
-                const savedUsedCount = Math.max(0, Number(localStorage.getItem(DAILY_FREE_USED_COUNT_KEY) || 0));
+        function isSoloFireballUnlocked() {
+            try { return localStorage.getItem(SOLO_FIREBALL_UNLOCKED_KEY) === 'true'; } catch (e) { return false; }
+        }
 
-                // 최초 실행(아직 무료 판을 한 번도 쓴 적 없음)이면 2판 모두 부여
+        function unlockSoloFireball() {
+            try {
+                localStorage.setItem(SOLO_FIREBALL_UNLOCKED_KEY, 'true');
+                // 31번 파이어볼 언락 시점부터 개인모드 하루 무료 3판이 온전히 시작되도록 초기화
+                localStorage.setItem(DAILY_SOLO_DATE_KEY, getUtcDateKey());
+                localStorage.setItem(DAILY_SOLO_USED_COUNT_KEY, '0');
+            } catch (e) {}
+            updatePlayTicketStatusUI();
+        }
+
+        function getRemainingDailyFreePlays(mode = 'solo') {
+            if (isNoAdsPurchased()) return DAILY_FREE_PLAY_LIMIT;
+            if (mode === 'solo' && !isSoloFireballUnlocked()) return DAILY_FREE_PLAY_LIMIT;
+
+            const dateKeyName = mode === 'battle' ? DAILY_BATTLE_DATE_KEY : DAILY_SOLO_DATE_KEY;
+            const usedKeyName = mode === 'battle' ? DAILY_BATTLE_USED_COUNT_KEY : DAILY_SOLO_USED_COUNT_KEY;
+
+            try {
+                const savedDate = localStorage.getItem(dateKeyName) || '';
+                const savedMaxDay = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
+                const savedUsedCount = Math.max(0, Number(localStorage.getItem(usedKeyName) || 0));
+
                 if (!savedDate && savedMaxDay === 0) return DAILY_FREE_PLAY_LIMIT;
 
                 const currentDayIdx = getUtcDayIndex();
                 const lastServerDay = Number(localStorage.getItem(LAST_SERVER_UTC_DAY_KEY) || 0);
-                // 오프라인 상태에서 기기 날짜를 미래로 돌리는 어뷰징 차단
                 const effectiveDayIdx = (!serverTimeSynced && lastServerDay > 0)
                     ? Math.min(currentDayIdx, lastServerDay)
                     : currentDayIdx;
@@ -3363,79 +3429,90 @@
                 if (effectiveDayIdx < savedMaxDay) return 0;
 
                 // 오늘(동일 UTC 날짜) 이미 플레이한 기록이 있는 경우 남은 횟수 반환
-                if (effectiveDayIdx === savedMaxDay || savedDate === getUtcDateKey()) {
+                if (savedDate === getUtcDateKey()) {
                     return Math.max(0, DAILY_FREE_PLAY_LIMIT - savedUsedCount);
                 }
 
-                // 새로운 UTC 날짜로 넘어간 경우 2판 리셋
+                // 새로운 UTC 날짜로 넘어간 경우 3판 리셋
                 return DAILY_FREE_PLAY_LIMIT;
             } catch (e) {
                 return DAILY_FREE_PLAY_LIMIT;
             }
         }
 
-        function hasDailyFreePlay() {
+        function hasDailyFreePlay(mode = 'solo') {
             if (isNoAdsPurchased()) return true;
-            return getRemainingDailyFreePlays() > 0;
+            if (mode === 'solo' && !isSoloFireballUnlocked()) return true;
+            return getRemainingDailyFreePlays(mode) > 0;
         }
 
-        function hasAdPlayCredit() {
-            try { return localStorage.getItem(AD_PLAY_CREDIT_KEY) === 'true'; } catch (e) { return false; }
+        function hasAdPlayCredit(mode = 'solo') {
+            const key = mode === 'battle' ? AD_PLAY_CREDIT_BATTLE_KEY : AD_PLAY_CREDIT_SOLO_KEY;
+            try { return localStorage.getItem(key) === 'true'; } catch (e) { return false; }
         }
 
-        function setAdPlayCredit(hasCredit) {
+        function setAdPlayCredit(hasCredit, mode = 'solo') {
+            const key = mode === 'battle' ? AD_PLAY_CREDIT_BATTLE_KEY : AD_PLAY_CREDIT_SOLO_KEY;
             try {
-                if (hasCredit) localStorage.setItem(AD_PLAY_CREDIT_KEY, 'true');
-                else localStorage.removeItem(AD_PLAY_CREDIT_KEY);
+                if (hasCredit) localStorage.setItem(key, 'true');
+                else localStorage.removeItem(key);
             } catch (e) {}
             updatePlayTicketStatusUI();
         }
 
-        function canPlayWithoutAd() {
-            return isNoAdsPurchased() || hasDailyFreePlay() || hasAdPlayCredit();
+        function canPlayWithoutAd(mode = 'solo') {
+            if (isNoAdsPurchased()) return true;
+            if (mode === 'solo' && !isSoloFireballUnlocked()) return true;
+            return hasDailyFreePlay(mode) || hasAdPlayCredit(mode);
         }
 
-        function consumePlayTicket() {
+        function consumePlayTicket(mode = 'solo') {
             if (isNoAdsPurchased()) {
                 updatePlayTicketStatusUI();
                 return;
             }
-            const remaining = getRemainingDailyFreePlays();
+            if (mode === 'solo' && !isSoloFireballUnlocked()) {
+                // 31번 파이어볼을 넘어서기 전에는 개인모드 무제한 무료
+                updatePlayTicketStatusUI();
+                return;
+            }
+
+            const dateKeyName = mode === 'battle' ? DAILY_BATTLE_DATE_KEY : DAILY_SOLO_DATE_KEY;
+            const usedKeyName = mode === 'battle' ? DAILY_BATTLE_USED_COUNT_KEY : DAILY_SOLO_USED_COUNT_KEY;
+            const remaining = getRemainingDailyFreePlays(mode);
             if (remaining > 0) {
                 try {
                     const todayKey = getUtcDateKey();
                     const todayIdx = getUtcDayIndex();
-                    const savedDate = localStorage.getItem(DAILY_FREE_DATE_KEY) || '';
+                    const savedDate = localStorage.getItem(dateKeyName) || '';
                     const prevUsed = savedDate === todayKey
-                        ? Math.max(0, Number(localStorage.getItem(DAILY_FREE_USED_COUNT_KEY) || 0))
+                        ? Math.max(0, Number(localStorage.getItem(usedKeyName) || 0))
                         : 0;
                     const prevMax = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
-                    localStorage.setItem(DAILY_FREE_DATE_KEY, todayKey);
-                    localStorage.setItem(DAILY_FREE_USED_COUNT_KEY, String(Math.min(DAILY_FREE_PLAY_LIMIT, prevUsed + 1)));
+                    localStorage.setItem(dateKeyName, todayKey);
+                    localStorage.setItem(usedKeyName, String(Math.min(DAILY_FREE_PLAY_LIMIT, prevUsed + 1)));
                     localStorage.setItem(DAILY_FREE_MAX_DAY_KEY, String(Math.max(prevMax, todayIdx)));
                 } catch (e) {}
-            } else if (hasAdPlayCredit()) {
-                setAdPlayCredit(false);
+            } else if (hasAdPlayCredit(mode)) {
+                setAdPlayCredit(false, mode);
             }
             updatePlayTicketStatusUI();
         }
 
         function updatePlayTicketStatusUI() {
             const vip = isNoAdsPurchased();
-            const rem = getRemainingDailyFreePlays();
-            const credit = hasAdPlayCredit();
+            const soloUnlocked = isSoloFireballUnlocked();
+            const soloRem = getRemainingDailyFreePlays('solo');
+            const battleRem = getRemainingDailyFreePlays('battle');
             let pillText = '';
             if (vip) {
                 pillText = textFor('ticketPillVip');
-            } else if (rem > 0) {
-                const fn = textFor('ticketPillFree');
-                pillText = typeof fn === 'function' ? fn(rem, DAILY_FREE_PLAY_LIMIT) : String(fn);
-            } else if (credit) {
-                const fn = textFor('ticketPillCredit');
-                pillText = typeof fn === 'function' ? fn(DAILY_FREE_PLAY_LIMIT) : String(fn);
+            } else if (!soloUnlocked) {
+                const fn = textFor('ticketPillPreUnlock');
+                pillText = typeof fn === 'function' ? fn(battleRem, DAILY_FREE_PLAY_LIMIT) : String(fn);
             } else {
-                const fn = textFor('ticketPillNeedAd');
-                pillText = typeof fn === 'function' ? fn(DAILY_FREE_PLAY_LIMIT) : String(fn);
+                const fn = textFor('ticketPillPostUnlock');
+                pillText = typeof fn === 'function' ? fn(soloRem, battleRem, DAILY_FREE_PLAY_LIMIT) : String(fn);
             }
 
             ['intro-ticket-pill', 'gameover-ticket-pill'].forEach(id => {
@@ -3447,7 +3524,8 @@
         }
 
         function startCountdown(skipToNum) {
-            consumePlayTicket();
+            consumePlayTicket(battleMode ? 'battle' : 'solo');
+            justUnlockedFireballThisRun = false;
             gameState = 'COUNTDOWN';
             sessionPlayStartedAt = 0;
             accumulatedPlayTimeMs = 0;
@@ -3558,8 +3636,8 @@
         }
 
         function startGame() {
-            if (!battleMode && !canPlayWithoutAd()) {
-                openPlayGateModal(() => startGame());
+            if (!battleMode && !canPlayWithoutAd('solo')) {
+                openPlayGateModal(() => startGame(), 'solo');
                 return;
             }
             startCountdown(TEST_MODE_ENABLED && testMode && testStartNum > 1 ? testStartNum : null);
@@ -3664,29 +3742,56 @@
                 playSfx('gameover', 1.0);
                 document.getElementById('game-over-screen').classList.remove('hidden');
                 evaluateScore(score);
+                if (justUnlockedFireballThisRun && !isNoAdsPurchased()) {
+                    justUnlockedFireballThisRun = false;
+                    setTimeout(() => openFireballUnlockModal(), 280);
+                }
             }
         }
 
-        function openPlayGateModal(onTicketGranted = null) {
+        function openFireballUnlockModal() {
+            if (isNoAdsPurchased()) return;
+            pendingPlayGateCallback = null;
+            pendingPlayGateMode = 'unlock';
+            const titleEl = document.getElementById('play-gate-title');
+            const descEl = document.getElementById('play-gate-desc');
+            const adBtnEl = document.getElementById('play-gate-ad-btn');
+            if (titleEl) titleEl.innerText = textFor('fireballUnlockTitle');
+            if (descEl) descEl.innerHTML = textFor('fireballUnlockHtml');
+            if (adBtnEl) adBtnEl.style.display = 'none';
+            document.getElementById('play-gate-screen').classList.remove('hidden');
+        }
+
+        function openPlayGateModal(onTicketGranted = null, mode = 'solo') {
             if (isNoAdsPurchased()) {
                 if (typeof onTicketGranted === 'function') onTicketGranted();
                 return;
             }
+            const targetMode = mode === 'battle' ? 'battle' : 'solo';
+            pendingPlayGateMode = targetMode;
             pendingPlayGateCallback = typeof onTicketGranted === 'function' ? onTicketGranted : null;
-            const needAdNow = !canPlayWithoutAd();
+            const needAdNow = typeof onTicketGranted === 'function' && !canPlayWithoutAd(targetMode);
+            const titleEl = document.getElementById('play-gate-title');
             const descEl = document.getElementById('play-gate-desc');
             const adBtnEl = document.getElementById('play-gate-ad-btn');
+            if (titleEl) titleEl.innerText = textFor('playGateTitle');
             if (descEl) {
                 if (needAdNow) {
                     const rem = getRemainingTimeToUtcReset();
                     const resetFn = textFor('playGateResetLine');
-                    const resetLine = typeof resetFn === 'function' ? `\n\n${resetFn(rem.hours, rem.minutes)}` : '';
-                    descEl.innerText = `${textFor('playGateDescNeedAd')}${resetLine}`;
+                    const resetLine = typeof resetFn === 'function' ? `<br><br>${resetFn(rem.hours, rem.minutes)}` : '';
+                    const msgKey = targetMode === 'battle' ? 'playGateDescNeedAdBattle' : 'playGateDescNeedAdSolo';
+                    descEl.innerHTML = `${textFor(msgKey)}${resetLine}`;
                 } else {
                     const shopFn = textFor('playGateDescShop');
-                    const remPlays = getRemainingDailyFreePlays();
-                    descEl.innerText = typeof shopFn === 'function'
-                        ? shopFn(remPlays, DAILY_FREE_PLAY_LIMIT)
+                    const soloUnlocked = isSoloFireballUnlocked();
+                    const soloRem = getRemainingDailyFreePlays('solo');
+                    const battleRem = getRemainingDailyFreePlays('battle');
+                    const soloText = soloUnlocked
+                        ? `${soloRem}/${DAILY_FREE_PLAY_LIMIT}`
+                        : textFor('soloUnlimitedLabel');
+                    descEl.innerHTML = typeof shopFn === 'function'
+                        ? shopFn(soloText, battleRem, DAILY_FREE_PLAY_LIMIT)
                         : String(shopFn);
                 }
             }
@@ -3702,8 +3807,9 @@
         }
 
         function watchAdForNextGame() {
+            const targetMode = pendingPlayGateMode === 'battle' ? 'battle' : 'solo';
             const grantAndProceed = () => {
-                setAdPlayCredit(true);
+                setAdPlayCredit(true, targetMode);
                 const cb = pendingPlayGateCallback;
                 closePlayGateModal();
                 if (typeof cb === 'function') cb();
@@ -4094,6 +4200,10 @@
                             blk.active = false;
                             setPitcherThrowing(false);
                             score++;
+                            if (!battleMode && !testMode && b.fireballStart === 31 && !isSoloFireballUnlocked()) {
+                                justUnlockedFireballThisRun = true;
+                                unlockSoloFireball();
+                            }
                             playSfx('throw_hit', 1.0);
                             triggerHaptic('heavy');
                             advanceExpected();
@@ -4210,7 +4320,9 @@
 
         const blockTileCache = new Map();
         function getBlockTileCanvas(blockSize, blockHeight, isGuide) {
-            const key = `${Math.round(blockSize * 10)}:${Math.round(blockHeight * 10)}:${isGuide ? 'guide' : 'normal'}`;
+            const customImg = isGuide ? blockHighlightImg : blockNormalImg;
+            const hasCustom = isSpriteReady(customImg);
+            const key = `${Math.round(blockSize * 10)}:${Math.round(blockHeight * 10)}:${isGuide ? 'guide' : 'normal'}:${hasCustom ? 'img' : 'canvas'}`;
             if (blockTileCache.has(key)) return blockTileCache.get(key);
 
             const tileCanvas = document.createElement('canvas');
@@ -4218,16 +4330,20 @@
             tileCanvas.height = blockHeight;
 
             const tileCtx = tileCanvas.getContext('2d');
-            const tileInset = scalePx(2.5);
-            const tileW = blockSize - tileInset * 2;
-            const tileH = blockHeight - tileInset * 2;
-            tileCtx.fillStyle = isGuide ? varColor('--palette-yellow') : '#fffaf0';
-            tileCtx.strokeStyle = isGuide ? '#ff5a91' : 'rgba(53, 201, 143, 0.95)';
-            tileCtx.lineWidth = isGuide ? scalePx(2.6) : scalePx(2);
-            tileCtx.beginPath();
-            tileCtx.roundRect(tileInset, tileInset, tileW, tileH, scalePx(5));
-            tileCtx.fill();
-            tileCtx.stroke();
+            if (hasCustom) {
+                tileCtx.drawImage(customImg, 0, 0, blockSize, blockHeight);
+            } else {
+                const tileInset = scalePx(2.5);
+                const tileW = blockSize - tileInset * 2;
+                const tileH = blockHeight - tileInset * 2;
+                tileCtx.fillStyle = isGuide ? varColor('--palette-yellow') : '#fffaf0';
+                tileCtx.strokeStyle = isGuide ? '#ff5a91' : 'rgba(53, 201, 143, 0.95)';
+                tileCtx.lineWidth = isGuide ? scalePx(2.6) : scalePx(2);
+                tileCtx.beginPath();
+                tileCtx.roundRect(tileInset, tileInset, tileW, tileH, scalePx(5));
+                tileCtx.fill();
+                tileCtx.stroke();
+            }
 
             blockTileCache.set(key, tileCanvas);
             return tileCanvas;
@@ -4239,33 +4355,37 @@
         function draw() {
             ctx.clearRect(0, 0, width, height);
 
-            // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
             const stripeW = getBlockSize();
-            const stripeColors = ['#a8de8f', '#82c864'];
-            for (let i = 0; i < 10; i++) {
-                ctx.fillStyle = stripeColors[i % 2];
-                ctx.fillRect(i * stripeW, 0, stripeW, height);
-            }
+            if (isSpriteReady(ingameFieldBgImg)) {
+                ctx.drawImage(ingameFieldBgImg, 0, 0, width, height);
+            } else {
+                // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
+                const stripeColors = ['#a8de8f', '#82c864'];
+                for (let i = 0; i < 10; i++) {
+                    ctx.fillStyle = stripeColors[i % 2];
+                    ctx.fillRect(i * stripeW, 0, stripeW, height);
+                }
 
-            // 잔디 질감 — 세로 방향 미세 하이라이트
-            for (let i = 0; i < 10; i++) {
-                const gx = i * stripeW;
-                const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
-                grad.addColorStop(0,   'rgba(255,255,255,0.04)');
-                grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
-                grad.addColorStop(1,   'rgba(255,255,255,0.04)');
-                ctx.fillStyle = grad;
-                ctx.fillRect(gx, 0, stripeW, height);
-            }
+                // 잔디 질감 — 세로 방향 미세 하이라이트
+                for (let i = 0; i < 10; i++) {
+                    const gx = i * stripeW;
+                    const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
+                    grad.addColorStop(0,   'rgba(255,255,255,0.04)');
+                    grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
+                    grad.addColorStop(1,   'rgba(255,255,255,0.04)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(gx, 0, stripeW, height);
+                }
 
-            // 흰색 세로 라인
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-            ctx.lineWidth = scalePx(1);
-            for (let i = 1; i < 10; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * stripeW, 0);
-                ctx.lineTo(i * stripeW, height);
-                ctx.stroke();
+                // 흰색 세로 라인
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+                ctx.lineWidth = scalePx(1);
+                for (let i = 1; i < 10; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * stripeW, 0);
+                    ctx.lineTo(i * stripeW, height);
+                    ctx.stroke();
+                }
             }
 
             // 파이어볼 차징 중: 해당 열 강조
@@ -4356,7 +4476,10 @@
 
             // Draw Balls
             balls.forEach(b => {
-                if (b.isFireball) {
+                if (b.isFireball && isSpriteReady(ballFireImg)) {
+                    const size = b.radius * 3.8;
+                    ctx.drawImage(ballFireImg, b.x - size / 2, b.y - size / 2, size, size);
+                } else if (b.isFireball) {
                     // 불꽃 외곽 글로우
                     const glowGrad = ctx.createRadialGradient(b.x, b.y, b.radius * 0.5, b.x, b.y, b.radius * 3.5);
                     glowGrad.addColorStop(0,   'rgba(255, 220, 50, 0.9)');
@@ -4389,6 +4512,13 @@
                     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     ctx.fillStyle = fbGrad;
                     ctx.fill();
+                } else if (b.isStripeBall && isSpriteReady(ballStripeImg)) {
+                    const size = b.radius * 2.5;
+                    ctx.save();
+                    ctx.translate(b.x, b.y);
+                    ctx.rotate(performance.now() * 0.008);
+                    ctx.drawImage(ballStripeImg, -size / 2, -size / 2, size, size);
+                    ctx.restore();
                 } else if (b.isStripeBall) {
                     // 스트라이프볼 — 줄무늬 야구공
                     const r = b.radius;
@@ -4421,6 +4551,9 @@
                     ctx.strokeStyle = '#ccff00';
                     ctx.lineWidth = scalePx(1.5);
                     ctx.stroke();
+                } else if (b.isFlashBall && isSpriteReady(ballFlashImg)) {
+                    const size = b.radius * 3.4;
+                    ctx.drawImage(ballFlashImg, b.x - size / 2, b.y - size / 2, size, size);
                 } else if (b.isFlashBall) {
                     // 301번 공 — 번쩍이는 플래시볼
                     const r = b.radius;
@@ -4447,6 +4580,9 @@
                     ctx.strokeStyle = '#ffee00';
                     ctx.lineWidth = scalePx(1.5);
                     ctx.stroke();
+                } else if (b.isMirrorBall && isSpriteReady(ballMirrorImg)) {
+                    const size = b.radius * 3.0;
+                    ctx.drawImage(ballMirrorImg, b.x - size / 2, b.y - size / 2, size, size);
                 } else if (b.isMirrorBall) {
                     // 101번 공 — 손거울 모양
                     const r = b.radius;
@@ -4478,6 +4614,9 @@
                     ctx.lineWidth = scalePx(1.2);
                     ctx.stroke();
                     ctx.restore();
+                } else if (isSpriteReady(ballNormalImg)) {
+                    const size = b.radius * 2.5;
+                    ctx.drawImage(ballNormalImg, b.x - size / 2, b.y - size / 2, size, size);
                 } else {
                     // 일반 야구공
                     const r = b.radius;
@@ -5327,8 +5466,8 @@
         }
 
         function startQuickMatch() {
-            if (!canPlayWithoutAd()) {
-                openPlayGateModal(() => startQuickMatch());
+            if (!canPlayWithoutAd('battle')) {
+                openPlayGateModal(() => startQuickMatch(), 'battle');
                 return;
             }
             const nickname = getBattleNickname() || getSavedBattleNickname();
@@ -5676,8 +5815,8 @@
                 alert(textFor('alertTestBattle'));
                 return;
             }
-            if (!canPlayWithoutAd()) {
-                openPlayGateModal(() => openBattleScreen());
+            if (!canPlayWithoutAd('battle')) {
+                openPlayGateModal(() => openBattleScreen(), 'battle');
                 return;
             }
 
@@ -5742,6 +5881,10 @@
             const code = document.getElementById('battle-code-input').value.trim();
             if (code.length !== 4) return;
             if (battleRoomId === code) return;
+            if (!canPlayWithoutAd('battle')) {
+                openPlayGateModal(() => joinBattleRoom(), 'battle');
+                return;
+            }
 
             const playerId = genBattlePlayerId();
             const joinedAt = getEstimatedServerTimeMs();
@@ -5807,6 +5950,10 @@
 
         function startBattleRoom() {
             if (!battleRoomId || battleRole !== 'host') return;
+            if (!canPlayWithoutAd('battle')) {
+                openPlayGateModal(() => startBattleRoom(), 'battle');
+                return;
+            }
             stopQuickMatchTimer();
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Pitcher (무한 피칭) — 디자이너 외주 발주서</title>
+    <style>
+        :root {
+            --ink: #0f172a;
+            --muted: #475569;
+            --line: #cbd5e1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --badge-req: #dc2626;
+            --badge-opt: #0284c7;
+            --badge-store: #7c3aed;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            padding: 36px 24px 80px;
+            line-height: 1.55;
+        }
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+            padding: 40px;
+        }
+        h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+            font-weight: 900;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+        .notice-box {
+            background: #eff6ff;
+            border-left: 5px solid var(--accent);
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-bottom: 32px;
+            font-size: 14.5px;
+        }
+        .notice-box ul {
+            margin: 8px 0 0;
+            padding-left: 20px;
+        }
+        h2 {
+            font-size: 21px;
+            margin: 36px 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--ink);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 28px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid var(--line);
+            padding: 12px 14px;
+            vertical-align: middle;
+            text-align: left;
+        }
+        th {
+            background: #f1f5f9;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 800;
+            color: #1d4ed8;
+            background: #eff6ff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .preview-cell {
+            width: 150px;
+            text-align: center;
+            background: repeating-conic-gradient(#e2e8f0 0% 25%, #ffffff 0% 50%) 50% / 16px 16px;
+        }
+        .preview-cell img {
+            max-width: 130px;
+            max-height: 150px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+        }
+        .badge.req { background: var(--badge-req); }
+        .badge.opt { background: var(--badge-opt); }
+        .badge.store { background: var(--badge-store); }
+        .alpha-yes { color: #059669; font-weight: 800; }
+        .alpha-no { color: #64748b; font-weight: 700; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .container { box-shadow: none; border: 0; padding: 12px; }
+            tr { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚾ Infinite Pitcher (무한 피칭) — 전체 디자인 에셋 발주서</h1>
+        <p class="subtitle">iOS / Android 모바일 출시용 리뉴얼 그래픽 에셋 리스트 (파일명 · 권장 규격 · 현재 디자인 프리뷰 · 상세 가이드)</p>
+
+        <div class="notice-box">
+            <strong>📌 디자이너 작업 필수 공통 가이드</strong>
+            <ul>
+                <li><strong>게임 기준 화면 비율</strong>: <code>1080 × 1920 px</code> (9:16 세로형 모바일 풀스크린)</li>
+                <li><strong>납품 포맷</strong>: 모든 파일은 <strong>PNG</strong>로 납품해 주세요. 배경 일러스트를 제외한 모든 캐릭터/로고/아이콘/마구 컷인은 <strong>반드시 배경 투명(Alpha Channel)</strong> 처리가 필요합니다.</li>
+                <li><strong>캐릭터 프레임 정렬 주의</strong>: <code>pitcher.png</code>(대기 자세)와 <code>pitcher_throw.png</code>(투구 자세)는 공을 던질 때 0.12초 간격으로 번갈아 교체됩니다. 두 이미지의 <strong>캔버스 해상도(800×960 px)와 캐릭터 발끝 기준점(중심축)</strong>을 반드시 동일하게 맞춰주셔야 투구 시 캐릭터가 흔들리지 않습니다.</li>
+            </ul>
+        </div>
+
+        <h2>1. [Part A] 현재 게임 내 이미지 파일 1:1 교체 대상 (필수 12종)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>현재 디자인 (체크무늬=투명영역)</th>
+                    <th>납품 파일명</th>
+                    <th>구분</th>
+                    <th>현재 해상도</th>
+                    <th>권장 제작 해상도</th>
+                    <th>투명 배경</th>
+                    <th>상세 설명 및 작업 지침</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>A-01</strong></td>
+                    <td class="preview-cell"><img src="./splash.png" alt="splash.png" /></td>
+                    <td><span class="code">splash.png</span></td>
+                    <td><span class="badge req">필수</span> 스플래시</td>
+                    <td>581 × 1262</td>
+                    <td><strong>1080 × 1920 px</strong></td>
+                    <td class="alpha-no">불투명 (배경)</td>
+                    <td>앱 최초 실행 시 터치 전 노출되는 표지 화면입니다. 하단 중앙(Y: 1450~1700px)에 START 버튼이 코드로 배치되므로 하단 중앙은 복잡한 요소를 피해 구성해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-02</strong></td>
+                    <td class="preview-cell"><img src="./main_background.png" alt="main_background.png" /></td>
+                    <td><span class="code">main_background.png</span></td>
+                    <td><span class="badge req">필수</span> 메인 배경</td>
+                    <td>578 × 1259</td>
+                    <td><strong>1080 × 1920 px</strong></td>
+                    <td class="alpha-no">불투명 (배경)</td>
+                    <td>메인 화면 및 대전 대기실 배경 일러스트입니다. 상단에는 타이틀 로고(<code>title.png</code>)와 대사 말풍선, 중앙에는 주인공 캐릭터, 하단에는 스타트/대전 버튼이 올라갑니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-03</strong></td>
+                    <td class="preview-cell"><img src="./title.png" alt="title.png" /></td>
+                    <td><span class="code">title.png</span></td>
+                    <td><span class="badge req">필수</span> 타이틀 로고</td>
+                    <td>2400 × 959</td>
+                    <td><strong>1600 × 640 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>메인 화면 상단에 들어가는 게임 메인 타이틀 로고입니다. 배경 위에서도 선명하게 눈에 띄도록 외곽선 및 입체감이 살아있는 아케이드 스포츠 로고로 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-04</strong></td>
+                    <td class="preview-cell"><img src="./top100.png" alt="top100.png" /></td>
+                    <td><span class="code">top100.png</span></td>
+                    <td><span class="badge req">필수</span> 랭킹 버튼</td>
+                    <td>1024 × 272</td>
+                    <td><strong>1024 × 272 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>메인 화면 우측 상단 랭킹 모달 오픈 버튼입니다. 랭킹이 1000위까지 확장되었으므로 그래픽 문구는 <strong>RANKING</strong> 또는 <strong>TOP 1000</strong>(트로피+배지 형태)으로 디자인하고 파일명은 <code>top100.png</code>로 유지해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-05</strong></td>
+                    <td class="preview-cell"><img src="./pitcher.png" alt="pitcher.png" /></td>
+                    <td><span class="code">pitcher.png</span></td>
+                    <td><span class="badge req">필수</span> 캐릭터(준비)</td>
+                    <td>1888 × 2254</td>
+                    <td><strong>800 × 960 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임 하단에서 좌우로 이동하며 위쪽 숫자 블록을 향해 공을 던지는 투수 캐릭터의 <strong>기본 준비 자세(후면/반측면 뒷모습)</strong>입니다. 불필요한 상하좌우 빈 여백을 최소화해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-06</strong></td>
+                    <td class="preview-cell"><img src="./pitcher_throw.png" alt="pitcher_throw.png" /></td>
+                    <td><span class="code">pitcher_throw.png</span></td>
+                    <td><span class="badge req">필수</span> 캐릭터(투구)</td>
+                    <td>1888 × 2256</td>
+                    <td><strong>800 × 960 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>공을 앞으로 던지는 순간의 <strong>투구 역동 자세(후면/반측면 뒷모습)</strong>입니다. <code>pitcher.png</code>와 캔버스 크기(800×960) 및 발끝 위치가 100% 동일해야 자연스럽게 연결됩니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-07</strong></td>
+                    <td class="preview-cell"><img src="./cart.png" alt="cart.png" /></td>
+                    <td><span class="code">cart.png</span></td>
+                    <td><span class="badge req">필수</span> 야구공 카트</td>
+                    <td>721 × 970</td>
+                    <td><strong>600 × 800 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임에서 투수 캐릭터 바로 아래에 따라다니는 훈련용 야구공 카트(바구니)입니다. 야구공이 가득 담겨 있는 귀여운 캐주얼 아케이드 톤으로 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-08</strong></td>
+                    <td class="preview-cell"><img src="./fireball.png" alt="fireball.png" /></td>
+                    <td><span class="code">fireball.png</span></td>
+                    <td><span class="badge req">필수</span> 마구 컷인 1</td>
+                    <td>896 × 1200</td>
+                    <td><strong>900 × 1200 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td><strong>파이어볼(화염구)</strong> 발동 시(31, 131, 231번...) 화면 중앙에 팝업되는 예고 연출 그래픽입니다. 세로 한 줄을 통째로 불태우는 강력한 불꽃 야구공 컨셉입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-09</strong></td>
+                    <td class="preview-cell"><img src="./mirrorball.png" alt="mirrorball.png" /></td>
+                    <td><span class="code">mirrorball.png</span></td>
+                    <td><span class="badge req">필수</span> 마구 컷인 2</td>
+                    <td>896 × 1200</td>
+                    <td><strong>900 × 1200 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td><strong>미러볼(거울 마구)</strong> 발동 시(101번~) 화면 중앙에 팝업되는 예고 연출 그래픽입니다. 모든 블록 숫자를 좌우 반전시키는 신비로운 거울/프리즘 컨셉입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-10</strong></td>
+                    <td class="preview-cell"><img src="./stripeball.png" alt="stripeball.png" /></td>
+                    <td><span class="code">stripeball.png</span></td>
+                    <td><span class="badge req">필수</span> 마구 컷인 3</td>
+                    <td>896 × 1200</td>
+                    <td><strong>900 × 1200 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td><strong>스트라이프볼(줄무늬 마구)</strong> 발동 시(201번~) 화면 중앙에 팝업되는 예고 연출 그래픽입니다. 줄마다 정상/거울 숫자를 교차시키는 강렬한 스트라이프 패턴 공 컨셉입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-11</strong></td>
+                    <td class="preview-cell"><img src="./flashball.png" alt="flashball.png" /></td>
+                    <td><span class="code">flashball.png</span></td>
+                    <td><span class="badge req">필수</span> 마구 컷인 4</td>
+                    <td>896 × 1200</td>
+                    <td><strong>900 × 1200 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td><strong>플래시볼(섬광 마구)</strong> 발동 시(301번~) 화면 중앙에 팝업되는 예고 연출 그래픽입니다. 숫자가 깜빡이며 사라졌다 나타나는 번개/스파크 섬광 컨셉입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>A-12</strong></td>
+                    <td class="preview-cell"><img src="./thumbnail.png" alt="thumbnail.png" /></td>
+                    <td><span class="code">thumbnail.png</span></td>
+                    <td><span class="badge req">필수</span> 대표 썸네일</td>
+                    <td>572 × 1328</td>
+                    <td><strong>1080 × 1920 px</strong></td>
+                    <td class="alpha-no">불투명 (배경)</td>
+                    <td>링크 공유(OG 이미지) 및 홍보용 세로형 대표 썸네일 이미지입니다. 리뉴얼된 메인 배경 + 캐릭터 + 타이틀 로고가 한눈에 들어오도록 구성해 주세요.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. [Part B] 인게임 코드 도형 → 그래픽 교체 대상 (필수 9종 — 현재 코드로 그려진 도형 프리뷰 포함)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>현재 디자인 (코드 도형)</th>
+                    <th>납품 파일명</th>
+                    <th>구분</th>
+                    <th>권장 제작 해상도</th>
+                    <th>투명 배경</th>
+                    <th>상세 설명 및 작업 지침</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>B-01</strong></td>
+                    <td class="preview-cell">
+                        <svg width="84" height="140" viewBox="0 0 100 160" style="margin:0 auto;display:block;border-radius:6px;border:1px solid #cbd5e1;">
+                            <rect x="0" y="0" width="10" height="160" fill="#a8de8f"/><rect x="10" y="0" width="10" height="160" fill="#82c864"/>
+                            <rect x="20" y="0" width="10" height="160" fill="#a8de8f"/><rect x="30" y="0" width="10" height="160" fill="#82c864"/>
+                            <rect x="40" y="0" width="10" height="160" fill="#a8de8f"/><rect x="50" y="0" width="10" height="160" fill="#82c864"/>
+                            <rect x="60" y="0" width="10" height="160" fill="#a8de8f"/><rect x="70" y="0" width="10" height="160" fill="#82c864"/>
+                            <rect x="80" y="0" width="10" height="160" fill="#a8de8f"/><rect x="90" y="0" width="10" height="160" fill="#82c864"/>
+                            <line x1="50" y1="0" x2="50" y2="160" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 4"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ingame_field_bg.png</span></td>
+                    <td><span class="badge req">필수</span> 인게임 경기장 배경</td>
+                    <td><strong>1080 × 1920 px</strong></td>
+                    <td class="alpha-no">불투명 (배경)</td>
+                    <td>현재 단순 연두색 세로 10열 줄무늬로 칠해지는 인게임 야구장 배경입니다. 상단 블록 10열 라인이 은은하게 구분되는 잔디 질감과 하단 투수 마운드(흙바닥) 디테일이 살도록 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-02</strong></td>
+                    <td class="preview-cell">
+                        <svg width="110" height="88" viewBox="0 0 110 88" style="margin:0 auto;display:block;">
+                            <rect x="6" y="6" width="98" height="76" rx="12" fill="#fffaf0" stroke="#35c98f" stroke-width="5"/>
+                            <text x="55" y="54" text-anchor="middle" font-size="30" font-weight="900" fill="#000">12</text>
+                        </svg>
+                    </td>
+                    <td><span class="code">block_normal.png</span></td>
+                    <td><span class="badge req">필수</span> 숫자 과녁 블록(일반)</td>
+                    <td><strong>216 × 172 px</strong> (10:8 비율)</td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>화면 가로에 10개씩 배치되는 기본 숫자 블록 타일 배경입니다. 숫자 텍스트는 코드에서 정중앙에 자동 출력되므로 <strong>숫자 없이 빈 타일 배경</strong>만 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-03</strong></td>
+                    <td class="preview-cell">
+                        <svg width="110" height="88" viewBox="0 0 110 88" style="margin:0 auto;display:block;">
+                            <rect x="6" y="6" width="98" height="76" rx="12" fill="#ffe45e" stroke="#ff5a91" stroke-width="6"/>
+                            <text x="55" y="54" text-anchor="middle" font-size="30" font-weight="900" fill="#ff4f8f">31</text>
+                        </svg>
+                    </td>
+                    <td><span class="code">block_highlight.png</span></td>
+                    <td><span class="badge req">필수</span> 숫자 과녁 블록(강조)</td>
+                    <td><strong>216 × 172 px</strong> (10:8 비율)</td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>현재 맞춰야 할 번호이거나 마구 타겟 번호일 때 눈에 확 띄게 표시되는 강조 블록 타일 배경입니다 (숫자 제외 빈 타일).</td>
+                </tr>
+                <tr>
+                    <td><strong>B-04</strong></td>
+                    <td class="preview-cell">
+                        <svg width="90" height="90" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+                            <circle cx="50" cy="50" r="36" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+                            <path d="M30 24 Q42 50 30 76" fill="none" stroke="#ff3b30" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M70 24 Q58 50 70 76" fill="none" stroke="#ff3b30" stroke-width="3.5" stroke-linecap="round"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ball_normal.png</span></td>
+                    <td><span class="badge req">필수</span> 날아가는 일반 야구공</td>
+                    <td><strong>256 × 256 px</strong> (1:1 정원)</td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>투수가 던져 위로 날아가는 기본 야구공 스프라이트입니다. 선명한 외곽선과 빨간 실밥이 들어간 아케이드 스타일 야구공으로 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-05</strong></td>
+                    <td class="preview-cell">
+                        <svg width="90" height="90" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+                            <circle cx="50" cy="50" r="42" fill="rgba(255,110,0,0.35)"/>
+                            <circle cx="50" cy="50" r="28" fill="#ff8800" stroke="#cc2200" stroke-width="3"/>
+                            <circle cx="42" cy="42" r="12" fill="#fff7a0"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ball_fire.png</span></td>
+                    <td><span class="badge req">필수</span> 날아가는 파이어볼 공</td>
+                    <td><strong>256 × 256 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임에서 위로 날아가는 <strong>파이어볼(화염구)</strong> 투사체 스프라이트입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-06</strong></td>
+                    <td class="preview-cell">
+                        <svg width="90" height="90" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+                            <rect x="44" y="62" width="12" height="26" rx="4" fill="#a0785a" stroke="#7a5a3a" stroke-width="2"/>
+                            <circle cx="50" cy="42" r="26" fill="#bde0fe" stroke="#64748b" stroke-width="3"/>
+                            <circle cx="40" cy="32" r="6" fill="#ffffff"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ball_mirror.png</span></td>
+                    <td><span class="badge req">필수</span> 날아가는 미러볼 공</td>
+                    <td><strong>256 × 256 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임에서 위로 날아가는 <strong>미러볼(거울 마구)</strong> 투사체 스프라이트입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-07</strong></td>
+                    <td class="preview-cell">
+                        <svg width="90" height="90" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+                            <circle cx="50" cy="50" r="34" fill="#f8fafc" stroke="#ccff00" stroke-width="4"/>
+                            <line x1="26" y1="30" x2="70" y2="74" stroke="#111827" stroke-width="8"/>
+                            <line x1="40" y1="20" x2="80" y2="60" stroke="#111827" stroke-width="8"/>
+                            <line x1="20" y1="46" x2="54" y2="80" stroke="#111827" stroke-width="8"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ball_stripe.png</span></td>
+                    <td><span class="badge req">필수</span> 날아가는 스트라이프볼 공</td>
+                    <td><strong>256 × 256 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임에서 회전하며 위로 날아가는 <strong>스트라이프볼(줄무늬 마구)</strong> 투사체 스프라이트입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-08</strong></td>
+                    <td class="preview-cell">
+                        <svg width="90" height="90" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+                            <line x1="50" y1="6" x2="50" y2="94" stroke="#ffee00" stroke-width="4"/>
+                            <line x1="6" y1="50" x2="94" y2="50" stroke="#ffee00" stroke-width="4"/>
+                            <line x1="18" y1="18" x2="82" y2="82" stroke="#ffee00" stroke-width="4"/>
+                            <line x1="82" y1="18" x2="18" y2="82" stroke="#ffee00" stroke-width="4"/>
+                            <circle cx="50" cy="50" r="26" fill="#ffffaa" stroke="#ffcc00" stroke-width="3"/>
+                        </svg>
+                    </td>
+                    <td><span class="code">ball_flash.png</span></td>
+                    <td><span class="badge req">필수</span> 날아가는 플래시볼 공</td>
+                    <td><strong>256 × 256 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>인게임에서 번쩍이며 위로 날아가는 <strong>플래시볼(섬광 마구)</strong> 투사체 스프라이트입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>B-09</strong></td>
+                    <td class="preview-cell">
+                        <svg width="130" height="50" viewBox="0 0 160 60" style="margin:0 auto;display:block;">
+                            <rect x="6" y="12" width="148" height="42" rx="21" fill="#ff5a91" stroke="#000" stroke-width="4"/>
+                            <rect x="6" y="4" width="148" height="42" rx="21" fill="#2aa8ff" stroke="#000" stroke-width="4"/>
+                            <text x="80" y="31" text-anchor="middle" font-size="18" font-weight="900" fill="#fff">START</text>
+                        </svg>
+                    </td>
+                    <td><span class="code">btn_main_frame.png</span></td>
+                    <td><span class="badge req">필수</span> 메인 UI 버튼 프레임</td>
+                    <td><strong>660 × 140 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>메인 화면의 스타트 / 대전 / 빠른 매칭 버튼 등에 사용할 아케이드풍 입체 버튼 베이스 프레임입니다 (텍스트 제외 빈 버튼 프레임, 블루/핑크/민트 3색 바리에이션 권장).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. [Part C] App Store & Google Play 스토어 출시 필수 에셋 (필수 4종)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>권장 파일명</th>
+                    <th>구분</th>
+                    <th>필수 규격</th>
+                    <th>투명 배경</th>
+                    <th>상세 설명 및 스토어 심사 규격 안내</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>C-01</strong></td>
+                    <td><span class="code">app_icon_1024.png</span></td>
+                    <td><span class="badge store">스토어 필수</span> 앱 아이콘</td>
+                    <td><strong>1024 × 1024 px</strong></td>
+                    <td class="alpha-no">❌ 불투명 필수</td>
+                    <td>iOS App Store 및 Google Play 등록용 마스터 아이콘입니다. Apple 심사 규정상 알파(투명) 채널이 있으면 업로드가 거절되므로 모서리를 둥글게 깎지 말고 정사각형 전체를 꽉 채워 제작해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>C-02</strong></td>
+                    <td><span class="code">adaptive_icon_fg.png</span></td>
+                    <td><span class="badge store">스토어 필수</span> 안드로이드 전경 아이콘</td>
+                    <td><strong>432 × 432 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>안드로이드 적응형 아이콘(Adaptive Icon)의 캐릭터/로고 전경 레이어입니다. 가장자리가 기기별로 원형/스쿼클로 잘리므로 중앙 <code>288 × 288 px</code> 안전 영역 안에 핵심 그래픽을 배치해 주세요.</td>
+                </tr>
+                <tr>
+                    <td><strong>C-03</strong></td>
+                    <td><span class="code">feature_graphic.png</span></td>
+                    <td><span class="badge store">스토어 필수</span> 구글 플레이 상단 배너</td>
+                    <td><strong>1024 × 500 px</strong></td>
+                    <td class="alpha-no">❌ 불투명 필수</td>
+                    <td>Google Play 스토어 등록 시 필수로 제출해야 하는 가로형 대표 그래픽 이미지(Feature Graphic)입니다.</td>
+                </tr>
+                <tr>
+                    <td><strong>C-04</strong></td>
+                    <td><span class="code">title_ko.png</span> / <span class="code">title_en.png</span></td>
+                    <td><span class="badge store">글로벌 권장</span> 다국어 타이틀 로고</td>
+                    <td><strong>1600 × 640 px</strong></td>
+                    <td class="alpha-yes">✅ 투명 필수</td>
+                    <td>언어 설정(한국어/영어/일본어)에 따라 타이틀 로고도 바뀔 수 있도록 한국어(<code>특훈! 무한 피칭</code>)와 영어(<code>Infinite Pitcher</code>) 버전 로고도 함께 제작을 권장합니다.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
