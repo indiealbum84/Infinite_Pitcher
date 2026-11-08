@@ -5268,11 +5268,11 @@
             updateIntroProfilePillUI();
         }
 
-        // ── 욕설·비속어·혐오표현·성적표현·운영자 사칭 금칙어 자동 차단 필터 (한/영/일 + 초성 + 특수문자 우회 차단) ──
+        // ── 글로벌 다국어 금칙어 자동 차단 필터 (한/영/일/스페인/프랑스/독일/포르투갈/러시아/중국/이탈리아/베트남/동남아/아랍/인도 등) ──
         const FORBIDDEN_SUBSTRINGS = [
-            // 한국어 욕설 / 비속어 / 패드립 / 성적 비하 / 혐오 / 정치·극단 / 운영자 사칭
+            // 한국어 (Korean 욕설 / 비속어 / 패드립 / 성적 비하 / 혐오 / 정치·극단 / 운영자 사칭 / 초성)
             '시발', '씨발', '쉬발', '슈발', '시벌', '씨벌', '시바', '씨바', '십새', '씹새', '시팔', '씨팔',
-            '개새', '개세', '개색', '개소리', '개년', '개놈', '개돼지',
+            '개새', '개세', '개색', '개소리', '개년', '개놈', '개돼지', '새끼',
             '병신', '빙신', '븅신', '벼신', '지랄', '염병', '옘병', '미친', '미칯', '꺼져', '닥쳐', '뒤져', '디져',
             '창녀', '창년', '갈보', '걸레', '화냥', '보지', '자지', '잠지', '부랄', '불알',
             '애미', '애비', '에미', '에비', '느금', '니기미', '니미', '느개비',
@@ -5281,16 +5281,62 @@
             '일베', '메갈', '워마드', '한남', '한녀', '틀딱', '급식충', '맘충', '운지',
             '노무현', '김대중', '문재인', '윤석열', '이재명', '박근혜', '전두환', '히틀러', '나치',
             '운영자', '관리자', '어드민', '시스템', '개발자', '공지사항', '마스터',
-            // 한국어 초성 욕설
             'ㅅㅂ', 'ㅆㅂ', 'ㅂㅅ', 'ㅈㄹ', 'ㄱㅅㄲ', 'ㅅㄲ', 'ㅈ같', 'ㅈ까', 'ㅆㄹㄱ', 'ㅁㅊ', 'ㄴㄱㅁ', 'ㅇㅁ',
-            // 영어 욕설 / 인종·성소수자 혐오 / 성적 / 운영자 사칭
-            'fuck', 'fuk', 'fck', 'fuxk', 'fuq', 'fvvck', 'phuck',
-            'shit', 'sh1t', 'bitch', 'b1tch', 'biatch', 'asshole', 'azzhole', 'bastard',
-            'cunt', 'dick', 'd1ck', 'cock', 'c0ck', 'pussy', 'penis', 'vagina', 'boob', 'tits',
-            'whore', 'slut', 'skank', 'nigger', 'nigga', 'n1gger', 'n1gga', 'faggot', 'fag', 'retard',
+
+            // 영어 (English 욕설 / 슬랭 / 성적 / 혐오 / 운영자 사칭)
+            'fuck', 'fuk', 'fck', 'fuxk', 'fuq', 'fvvck', 'phuck', 'mothafuck', 'motherfuck',
+            'shit', 'bitch', 'biatch', 'asshole', 'azzhole', 'bastard', 'dickhead', 'douche',
+            'cunt', 'dick', 'cock', 'pussy', 'penis', 'vagina', 'boob', 'tits', 'dildo', 'clit',
+            'whore', 'slut', 'skank', 'thot', 'nigger', 'nigga', 'faggot', 'fag', 'retard',
             'rape', 'rapist', 'pedo', 'pedophile', 'incest', 'porn', 'hentai', 'sex', 'nazi', 'hitler', 'kkk',
             'admin', 'administrator', 'system', 'operator', 'moderator', 'official', 'developer', 'noname',
-            // 일본어 욕설 / 비속어 / 성적 / 차별어 / 운영자 사칭
+
+            // 스페인어 / 라틴아메리카 (Spanish 욕설 / 비속어)
+            'puta', 'puto', 'putita', 'puton', 'mierda', 'pendejo', 'pendeja', 'cabron', 'cabrona', 'joder', 'cono',
+            'verga', 'vergon', 'chingada', 'chingon', 'chingar', 'chinga', 'culero', 'culera', 'culo',
+            'maricon', 'marica', 'perra', 'zorra', 'malparido', 'hdp', 'hijueputa', 'gonorrea', 'gilipollas', 'capullo', 'polla', 'chucha', 'pinche', 'mamon',
+
+            // 프랑스어 (French 욕설 / 비속어)
+            'merde', 'putain', 'pute', 'salope', 'salop', 'connard', 'connasse', 'encule', 'batard',
+            'foutre', 'foutu', 'bite', 'chienne', 'nique', 'niquer', 'ntm', 'baise', 'fdp', 'bordel', 'trouduc', 'enfoire',
+
+            // 독일어 (German 욕설 / 비속어)
+            'scheisse', 'scheise', 'arschloch', 'hurensohn', 'fotze', 'schlampe', 'wixxer', 'wichser', 'fick', 'ficken',
+            'schwuchtel', 'spasst', 'spast', 'missgeburt', 'miststuck', 'sauhund', 'verpiss',
+
+            // 포르투갈어 / 브라질 (Portuguese 욕설 / 비속어)
+            'porra', 'caralho', 'foda', 'foder', 'fodeu', 'fudido', 'viado', 'arrombado', 'arrombada',
+            'merda', 'cuzao', 'bosta', 'buceta', 'boceta', 'pica', 'cacete', 'vagabundo',
+
+            // 러시아어 (Russian 키릴 및 라틴 음차)
+            'сука', 'блядь', 'блять', 'хуй', 'хуя', 'хуе', 'пизда', 'пиздец', 'ебать', 'ебал', 'ебаный', 'говно', 'мудак', 'пидор', 'урод', 'ч모', 'нахуй', 'похуй',
+            'suka', 'blyat', 'blyad', 'huy', 'pizda', 'pizdetz', 'ebat', 'mudak', 'pidor', 'nahui', 'nahuy',
+
+            // 중국어 (Chinese 간체 / 번체 욕설 / 비속어)
+            '操你', '肏', '傻逼', '煞笔', '沙比', '操你妈', '草泥马', '肏你妈', '妈的', '他妈的', '屌', '鸡巴', '贱人', '狗逼', '混蛋', '王八蛋', '靠北', '干你娘', '幹你娘', '破麻', '臭逼', '支那', '骚逼', '死全家', '脑残', '智障',
+
+            // 이탈리아어 (Italian 욕설 / 비속어)
+            'cazzo', 'stronzo', 'stronza', 'vaffanculo', 'troia', 'puttana', 'coglione', 'cogliona', 'chiavica', 'minchia',
+
+            // 베트남어 (Vietnamese 욕설 / 비속어)
+            'dcm', 'dmm', 'duma', 'dume', 'dit me', 'du ma', 'du me', 'cac', 'con cac', 'cho de', 'buoi', 'vcl',
+
+            // 인도네시아/말레이어 (Indonesian / Malay 욕설 / 비속어)
+            'anjing', 'bangsat', 'kontol', 'memek', 'jembut', 'babi', 'bodoh', 'puki', 'pukimak', 'sialan', 'bajingan', 'asu', 'kampret', 'pantek', 'goblok', 'tolol',
+
+            // 튀르키예어 (Turkish 욕설 / 비속어)
+            'siktir', 'sikik', 'amk', 'orospu', 'pic', 'got', 'yarrak', 'amina', 'yavsak',
+
+            // 힌디어 (Hindi 욕설 / 비속어)
+            'chutiya', 'bhenchod', 'madarchod', 'gandu', 'lund', 'gaand', 'bosadike', 'randi', 'harami', 'kutta',
+
+            // 아랍어 (Arabic 욕설 및 라틴 음차)
+            'sharmuta', 'charmuta', 'kos omak', 'koss omek', 'ayir', 'zeb', 'kess', 'khara', 'كس', 'شرموطة', 'كسمك', 'منيوك', 'طيز',
+
+            // 태국어 (Thai 욕설 및 라틴 음차)
+            'เหี้ย', 'ควย', 'เย็ด', 'สัส', 'ดอกทอง', 'kway', 'hia', 'yed', 'sus',
+
+            // 일본어 (Japanese 욕설 / 비속어 / 성적 / 차별어 / 운영자 사칭)
             '死ね', 'しね', 'シネ', '殺す', 'ころす', 'コロス',
             'バカ', 'ばか', '馬鹿', 'アホ', 'あほ', '阿呆', 'クソ', 'くそ', '糞',
             'ファック', 'ふぁっく', 'ビッチ', 'びっち',
@@ -5301,12 +5347,12 @@
             '運営', '管理者', '公式'
         ];
 
-        const FORBIDDEN_EXACT_WORDS = new Set(['gm', 'dev', 'null', 'undefined', 'bot', 'host']);
+        const FORBIDDEN_EXACT_WORDS = new Set(['gm', 'dev', 'null', 'undefined', 'bot', 'host', 'root', 'staff']);
 
         function sanitizeAllowedNameChars(raw) {
-            // 한글(완성형/자모), 영문, 숫자, 일본어(히라가나/가타카나/한자), 일반 공백/언더바만 허용 (특수기호·제어문자 입력 즉시 제거)
+            // 글로벌 지원: 한글, 영문, 숫자, 라틴 확장(악센트 문자), 일본어, CJK 한자, 키릴 문자(러시아 등), 베트남어 성조, 태국어, 아랍어, 힌디어 및 기본 구분자(_, -)
             return String(raw || '')
-                .replace(/[^\uAC00-\uD7A3\u3131-\u318E\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAFa-zA-Z0-9 _\-]/g, '');
+                .replace(/[^\uAC00-\uD7A3\u3131-\u318E\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFFa-zA-Z0-9\u00C0-\u024F\u0400-\u04FF\u0E00-\u0E7F\u0600-\u06FF\u0900-\u097F _\-]/g, '');
         }
 
         function isForbiddenPlayerName(rawName) {
@@ -5315,24 +5361,37 @@
             const lower = trimmed.toLowerCase();
             if (FORBIDDEN_EXACT_WORDS.has(lower)) return true;
 
-            // 공백·특수문자·숫자 끼워넣기(예: 시1발, f_u_c_k) 제거 정규화본
-            const compactAll = lower.replace(/[\s_\-0-9]/g, '');
-            const compactKeepDigits = lower.replace(/[\s_\-]/g, '');
-            // 영문 리트스피크(0->o, 1->i, 3->e, 4->a, 5->s) 변환본
-            const leetNormalized = compactKeepDigits
+            // 1. 유니코드 NFD 악센트 분리 제거 (fúck -> fuck, pútá -> puta, José -> Jose, scheiße -> scheisse)
+            const deaccent = lower
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/ß/g, 'ss')
+                .replace(/ø/g, 'o');
+
+            // 2. 리트스피크(Leet Speak) 숫자/기호 치환 변환
+            const leet = deaccent
                 .replace(/0/g, 'o')
-                .replace(/1/g, 'i')
+                .replace(/1|!|\|/g, 'i')
                 .replace(/3/g, 'e')
-                .replace(/4/g, 'a')
-                .replace(/5/g, 's');
+                .replace(/4|@/g, 'a')
+                .replace(/5|\$/g, 's')
+                .replace(/7/g, 't')
+                .replace(/8/g, 'b');
+
+            // 3. 특수문자, 공백, 언더바, 하이픈 제거 압축본 (f_u_c_k -> fuck, s-h-i-t -> shit)
+            const compact = leet.replace(/[\s_\.\-\*\+\#\~\^\/\\\(\)\[\]\{\}]/g, '');
+
+            // 4. 연속 중복 문자 1개로 압축 (fuuuuck -> fuck, shiiit -> shit, puuuta -> puta)
+            const dedup = compact.replace(/(.)\1+/g, '$1');
 
             for (const bad of FORBIDDEN_SUBSTRINGS) {
                 const b = bad.toLowerCase();
                 if (
                     lower.includes(b) ||
-                    compactAll.includes(b) ||
-                    compactKeepDigits.includes(b) ||
-                    leetNormalized.includes(b)
+                    deaccent.includes(b) ||
+                    leet.includes(b) ||
+                    compact.includes(b) ||
+                    dedup.includes(b)
                 ) {
                     return true;
                 }
