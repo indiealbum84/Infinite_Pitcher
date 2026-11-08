@@ -3,7 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./pitcher.png">
     <title>無限投手: 世界一への道</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
@@ -24,6 +30,10 @@
             --palette-soft-mint: #d8f8df;
             --palette-soft-blue: #d7f3ff;
             --palette-soft-pink: #ffd8ef;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: env(safe-area-inset-left, 0px);
         }
 
         * {
@@ -32,6 +42,7 @@
             -webkit-user-select: none;
             user-select: none;
             touch-action: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html {
@@ -41,6 +52,7 @@
             padding: 0;
             background-color: #000000;
             overflow: hidden;
+            overscroll-behavior: none;
         }
 
         body {
@@ -49,6 +61,7 @@
             background-color: #000000;
             font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
             overflow: hidden;
+            overscroll-behavior: none;
             color: #0f172a;
             height: 100%;
             min-height: 100dvh;
@@ -56,6 +69,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        #safe-area-probe {
+            position: fixed;
+            top: env(safe-area-inset-top, 0px);
+            right: env(safe-area-inset-right, 0px);
+            bottom: env(safe-area-inset-bottom, 0px);
+            left: env(safe-area-inset-left, 0px);
+            pointer-events: none;
+            visibility: hidden;
+            z-index: -1;
         }
 
         #game-wrapper {
@@ -1934,6 +1958,7 @@
 </head>
 
 <body>
+    <div id="safe-area-probe" aria-hidden="true"></div>
 
     <div id="game-wrapper">
         <div id="ui-layer" class="hidden">
@@ -2236,8 +2261,46 @@
             }).catch(() => playHtmlSfx(key, volume, onended));
         }
 
-        function playClickSfx() {
+        let lastHapticAt = 0;
+
+        function triggerHaptic(type = 'light') {
+            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            const now = performance.now();
+            if (type === 'light' && now - lastHapticAt < 35) return;
+            lastHapticAt = now;
+
+            try {
+                const capHaptics = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics;
+                if (capHaptics) {
+                    if (type === 'error' && typeof capHaptics.notification === 'function') {
+                        capHaptics.notification({ type: 'ERROR' }).catch(() => {});
+                        return;
+                    }
+                    if (type === 'selection' && typeof capHaptics.selectionChanged === 'function') {
+                        capHaptics.selectionChanged().catch(() => {});
+                        return;
+                    }
+                    if (typeof capHaptics.impact === 'function') {
+                        const styleMap = { selection: 'LIGHT', light: 'LIGHT', medium: 'MEDIUM', heavy: 'HEAVY', error: 'HEAVY' };
+                        capHaptics.impact({ style: styleMap[type] || 'LIGHT' }).catch(() => {});
+                        return;
+                    }
+                }
+                if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+                    if (type === 'selection') navigator.vibrate(6);
+                    else if (type === 'light') navigator.vibrate(12);
+                    else if (type === 'medium') navigator.vibrate(25);
+                    else if (type === 'heavy') navigator.vibrate([30, 25, 45]);
+                    else if (type === 'error') navigator.vibrate([55, 35, 75]);
+                }
+            } catch (e) {}
+        }
+
+        function playClickSfx(e) {
             playSfx('click', 0.8);
+            if (e && e.target && typeof e.target.closest === 'function' && e.target.closest('button')) {
+                triggerHaptic('selection');
+            }
         }
 
         document.addEventListener('click', playClickSfx, true);
@@ -2834,6 +2897,20 @@
             };
         }
 
+        function getSafeAreaInsets() {
+            const probe = document.getElementById('safe-area-probe');
+            if (!probe || typeof window.getComputedStyle !== 'function') {
+                return { top: 0, right: 0, bottom: 0, left: 0 };
+            }
+            const cs = window.getComputedStyle(probe);
+            return {
+                top: Math.max(0, parseFloat(cs.top) || 0),
+                right: Math.max(0, parseFloat(cs.right) || 0),
+                bottom: Math.max(0, parseFloat(cs.bottom) || 0),
+                left: Math.max(0, parseFloat(cs.left) || 0),
+            };
+        }
+
         function resize() {
             if (canvas.width !== BASE_W) canvas.width = BASE_W;
             if (canvas.height !== BASE_H) canvas.height = BASE_H;
@@ -2848,12 +2925,15 @@
             player.y = height - scalePx(105);
 
             const viewport = getViewportRect();
-            const scaleX = viewport.width / BASE_W;
-            const scaleY = viewport.height / BASE_H;
+            const safe = getSafeAreaInsets();
+            const availW = Math.max(1, viewport.width - safe.left - safe.right);
+            const availH = Math.max(1, viewport.height - safe.top - safe.bottom);
+            const scaleX = availW / BASE_W;
+            const scaleY = availH / BASE_H;
             const scale = Math.min(scaleX, scaleY);
             const wrapper = document.getElementById('game-wrapper');
-            wrapper.style.left = `${viewport.offsetLeft + viewport.width / 2}px`;
-            wrapper.style.top = `${viewport.offsetTop + viewport.height / 2}px`;
+            wrapper.style.left = `${viewport.offsetLeft + safe.left + availW / 2}px`;
+            wrapper.style.top = `${viewport.offsetTop + safe.top + availH / 2}px`;
             wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
             wrapper.style.marginTop = '0';
         }
@@ -3199,6 +3279,7 @@
         function gameOver(failedBall = null) {
             setPitcherThrowing(false);
             pausePlayTimer();
+            triggerHaptic('error');
             if (!battleMode && !continueUsed && score > 0) {
                 gameState = 'CONTINUE';
                 stopAllBgm();
@@ -3394,6 +3475,7 @@
         function triggerMirrorball() {
             mirrorballDoneCount++;
             playSfx('mirrorball', 1.0);
+            triggerHaptic('medium');
             const mbAnnounce = document.getElementById('mirrorball-announce');
             mbAnnounce.classList.remove('show');
             void mbAnnounce.offsetWidth;
@@ -3438,6 +3520,7 @@
         function triggerStripeball() {
             stripeballTriggered = true;
             playSfx('stripeball', 1.0);
+            triggerHaptic('medium');
             const sbAnnounce = document.getElementById('stripeball-announce');
             sbAnnounce.classList.remove('show');
             void sbAnnounce.offsetWidth;
@@ -3472,6 +3555,7 @@
         function triggerFlashball() {
             flashballTriggered = true;
             playSfx('flashball', 1.0);
+            triggerHaptic('medium');
             const fbAnnounce = document.getElementById('flashball-announce');
             fbAnnounce.classList.remove('show');
             void fbAnnounce.offsetWidth;
@@ -3535,8 +3619,10 @@
             scheduleFlashballIfNeeded();
         }
 
+        let isPageInactive = false;
+
         function update(timestamp) {
-            if (gameState !== 'PLAYING') return;
+            if (gameState !== 'PLAYING' || isPageInactive || document.visibilityState === 'hidden') return;
 
             // 테스트 모드: nextExpectedNumber 블록 위치로 자동 이동
             if (testMode) {
@@ -3561,11 +3647,13 @@
                     fireballCharging = true;
                     fireballColumn   = Math.floor(player.x / getBlockSize());
                     playSfx('fireball', 1.0);
+                    triggerHaptic('medium');
                     const fbAnnounce = document.getElementById('fireball-announce');
                     fbAnnounce.classList.remove('show');
                     void fbAnnounce.offsetWidth;
                     fbAnnounce.classList.add('show');
                     setTimeout(() => {
+                        if (gameState !== 'PLAYING') return;
                         fireballCharging = false;
                         fireballColumn   = -1;
                         fireballActive   = true;
@@ -3610,6 +3698,7 @@
                             setPitcherThrowing(false);
                             score++;
                             playSfx('throw_hit', 1.0);
+                            triggerHaptic('heavy');
                             advanceExpected();
                             updateUI();
                             checkRowClear(); // 맞춘 블록(31번)에서만 1번 스크롤 체크
@@ -3619,6 +3708,7 @@
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
                                 playSfx('throw_hit', 0.5);
+                                triggerHaptic('light');
                             }
                         }
                     }
@@ -3664,6 +3754,7 @@
                             advanceExpected();
                             balls.splice(i, 1);
                             playSfx('throw_hit', 1.0);
+                            triggerHaptic(wasMirrorBall || wasStripeBall || wasFlashBall ? 'heavy' : 'light');
                             updateUI();
                             checkRowClear();
                             if (wasMirrorBall) {
@@ -4480,16 +4571,30 @@
         }
 
         function pauseAudioForPageInactive() {
+            isPageInactive = true;
+            pausePlayTimer();
             if (pageAudioMuted) return;
             pageAudioMuted = true;
             stopAllBgm({ stopSfx: true });
+            if (audioCtx && audioCtx.state === 'running') {
+                audioCtx.suspend().catch(() => {});
+            }
         }
 
         function resumeAudioForPageActive() {
             if (document.visibilityState === 'hidden') return;
+            isPageInactive = false;
             pageAudioMuted = false;
 
-            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+
+            if (gameState === 'PLAYING') {
+                if (sessionPlayStartedAt === 0) {
+                    sessionPlayStartedAt = performance.now();
+                }
+                lastPitchTime = performance.now();
                 playGameBgm();
                 return;
             }
@@ -4499,7 +4604,7 @@
             }
         }
 
-        // 탭 숨김 / 앱 백그라운드 / 창 포커스 이탈 시 오디오 정지 및 복귀
+        // 탭 숨김 / 앱 백그라운드 / 창 포커스 이탈 시 오디오 및 타이머 정지·복귀
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
                 pauseAudioForPageInactive();
@@ -4511,6 +4616,12 @@
         window.addEventListener('pageshow', resumeAudioForPageActive);
         window.addEventListener('blur', pauseAudioForPageInactive);
         window.addEventListener('focus', resumeAudioForPageActive);
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App && typeof window.Capacitor.Plugins.App.addListener === 'function') {
+            window.Capacitor.Plugins.App.addListener('appStateChange', ({ isActive }) => {
+                if (isActive) resumeAudioForPageActive();
+                else pauseAudioForPageInactive();
+            });
+        }
 
         draw();
 

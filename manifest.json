@@ -1,0 +1,18 @@
+{
+  "name": "超特訓！無限ピッチング (Infinite Pitcher)",
+  "short_name": "Infinite Pitcher",
+  "description": "숫자 순서대로 공을 맞춰 세계 최고의 투수가 되자! 글로벌 & 국가별 TOP 1000 랭킹 도전!",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./pitcher.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
