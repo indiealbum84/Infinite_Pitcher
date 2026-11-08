@@ -2108,6 +2108,137 @@
             font-weight: 900;
             color: var(--palette-mint);
         }
+
+        /* 최초 1회 영구 게임 이름 등록 & Google/Apple 계정 복원 화면 */
+        #initial-profile-screen {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(10px);
+            z-index: 45;
+            padding: 32px;
+        }
+
+        .profile-setup-card {
+            background: var(--palette-cream);
+            border: 8px solid #000000;
+            border-radius: 55px;
+            padding: 52px 46px;
+            width: min(880px, calc(100% - 64px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px;
+            box-shadow: 0 22px 0 var(--palette-blue), 0 22px 0 6px #000000;
+            text-align: center;
+        }
+
+        .profile-setup-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            font-size: 76px;
+            color: var(--palette-blue);
+            margin: 0;
+            line-height: 1.08;
+            text-shadow: 5px 5px 0 #ffffff, 9px 9px 0 #000000;
+        }
+
+        .profile-permanent-warning {
+            background: #fff1f2;
+            border: 5px solid #e11d48;
+            border-radius: 30px;
+            padding: 22px 28px;
+            color: #9f1239;
+            font-size: 30px;
+            font-weight: 900;
+            line-height: 1.48;
+            white-space: pre-line;
+            width: 100%;
+            box-shadow: 0 8px 0 rgba(225, 29, 72, 0.2);
+        }
+
+        .initial-name-input {
+            background: #ffffff;
+            border: 7px solid #000000;
+            border-radius: 32px;
+            color: #0f172a;
+            font-size: 48px;
+            font-weight: 900;
+            width: 100%;
+            max-width: 660px;
+            padding: 22px 28px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 10px 0 var(--palette-mint), 0 10px 0 5px #000000;
+            -webkit-user-select: text !important;
+            user-select: text !important;
+            touch-action: auto !important;
+            pointer-events: auto !important;
+        }
+
+        .initial-name-hint {
+            font-size: 27px;
+            font-weight: 900;
+            color: #475569;
+            margin: -6px 0 0;
+        }
+
+        .account-sync-box {
+            width: 100%;
+            border-top: 4px dashed #cbd5e1;
+            padding-top: 20px;
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .account-sync-label {
+            font-size: 26px;
+            font-weight: 900;
+            color: #334155;
+            margin: 0;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .account-sync-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .account-sync-btn {
+            background: #ffffff;
+            color: #0f172a;
+            border: 5px solid #000000;
+            border-radius: 30px;
+            padding: 16px 28px;
+            font-size: 28px;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 8px 0 var(--palette-yellow), 0 8px 0 4px #000000;
+            touch-action: auto !important;
+        }
+
+        .intro-profile-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.88);
+            color: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 36px;
+            padding: 10px 26px;
+            font-size: 26px;
+            font-weight: 900;
+            box-shadow: 0 6px 0 var(--palette-blue), 0 6px 0 3px #000000;
+            cursor: pointer;
+            touch-action: auto !important;
+            font-family: inherit;
+        }
     </style>
 </head>
 
@@ -2127,6 +2258,31 @@
             <button class="splash-start-btn" id="splash-start-btn">PRESS START</button>
         </div>
 
+        <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
+        <div id="initial-profile-screen" class="screen hidden">
+            <div class="lang-switcher" aria-label="Language">
+                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
+                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+                <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
+            </div>
+            <div class="profile-setup-card">
+                <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
+                <div class="profile-permanent-warning" id="initial-profile-warning">⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!
+• 입력한 이름으로 서버에 등록되며 나의 최고 점수 1개만 올라갑니다.</div>
+                <input id="initial-name-input" class="initial-name-input" type="text" maxlength="10" placeholder="게임 이름 입력" oninput="handleInitialNameInput()" onkeydown="if(event.key==='Enter') submitInitialPermanentName()" />
+                <p class="initial-name-hint" id="initial-name-hint">한글/일본어 5자 · 영문 10자까지 (변경 불가)</p>
+                <button id="initial-name-submit-btn" class="start-btn" style="width:100%;max-width:660px;" onclick="submitInitialPermanentName()">이 이름으로 게임 시작</button>
+                <div class="account-sync-box">
+                    <p class="account-sync-label" id="initial-account-sync-label">📱 앱을 지웠다 다시 깔았거나 기존 계정이 있다면?
+같은 Google / Apple ID로 연동하면 기존 이름·기록·구매 내역이 그대로 복원됩니다.</p>
+                    <div class="account-sync-row">
+                        <button type="button" class="account-sync-btn" id="initial-google-btn" onclick="signInAndSyncAccount('google')">🌐 Google ID 연동/복원</button>
+                        <button type="button" class="account-sync-btn" id="initial-apple-btn" onclick="signInAndSyncAccount('apple')">🍎 Apple ID 연동/복원</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="intro-screen" class="screen hidden">
             <div class="lang-switcher" id="lang-switcher" aria-label="Language">
                 <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
@@ -2142,6 +2298,7 @@
                 よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
             </div>
             <div class="intro-menu">
+                <button type="button" id="intro-profile-pill" class="intro-profile-pill" onclick="promptAccountSyncFromIntro()">👤 -  |  🏆 BEST: 0</button>
                 <div class="intro-main-actions">
                     <button id="start-btn-id" class="start-btn">スタート</button>
                     <button id="battle-btn" class="start-btn" onclick="openBattleScreen()">みんなで対戦</button>
@@ -2201,15 +2358,13 @@
             <h2 class="game-over-title">GAME OVER</h2>
             <div class="final-score">SCORE: <span id="final-score-val">0</span></div>
 
-            <!-- 1000위 안에 들었을 때 표시 -->
+            <!-- 내 최고 기록 & 순위 자동 등록 안내 (이름 재입력 없음) -->
             <div id="rank-entry" class="hidden">
                 <p class="rank-announce"><span id="my-rank-val">1</span><span id="rank-suffix">위 달성!</span></p>
                 <p class="rank-sub-announce" id="my-rank-detail"></p>
-                <input id="player-name-input" class="name-input" type="text" maxlength="12" placeholder="名前を入力してください" onkeydown="if(event.key==='Enter') registerName()" />
             </div>
 
             <div id="action-buttons">
-                <button id="register-btn" class="start-btn hidden" onclick="registerName()">登録して続ける</button>
                 <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
                 <button type="button" id="gameover-ticket-pill" class="ticket-status-pill" style="margin-top:14px;" onclick="openPlayGateModal(null)">🎬 次回: 広告1回視聴  |  🚫 広告削除 $4.99</button>
             </div>
@@ -2306,6 +2461,7 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
@@ -2730,6 +2886,22 @@
                 alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
                 loadingRanks: '読み込み中...',
                 emptyRanks: 'まだ記録がありません',
+                initialProfileTitle: '⚾ 選手名の登録',
+                initialProfileWarning: '⚠️ 一度登録した名前は絶対に変更できませんので、慎重に選んでください！\n・登録した名前でサーバーに保存され、自己ベスト1つのみがランキングに登録されます（複数登録不可）。',
+                initialNamePlaceholder: 'ゲーム名を入力',
+                initialNameHint: '日本語5文字 / 英字10文字まで (変更不可)',
+                initialNameSubmitBtn: 'この名前でゲーム開始',
+                initialAccountSyncLabel: '📱 アプリを再インストールした方や既存アカウントをお持ちの方：\n同じGoogle ID / Apple IDで連携すると、以前の名前・記録・購入履歴がそのまま復元されます。',
+                initialGoogleBtn: '🌐 Google ID 連携 / 復元',
+                initialAppleBtn: '🍎 Apple ID 連携 / 復元',
+                confirmPermanentName: name => `本当に「${name}」で登録しますか？\n⚠️ 一度登録すると二度と名前を変更できません！`,
+                alertNameTaken: 'すでに他のプレイヤーが使用している名前です。別の名前を入力してください。',
+                introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 自己ベスト: ${best}点 ${synced ? '☁️' : '(🔗アカウント連携)'}`,
+                newRecordAutoSaved: '🎉 自己ベスト更新！サーバーに自動登録されました',
+                bestRecordKept: best => `🏆 自己ベスト記録: ${best}点 (最高記録のみ維持)`,
+                alertAccountRestored: name => `✅ アカウント復元完了！「${name}」選手の記録と購入履歴を復元しました。`,
+                alertAccountLinked: name => `☁️ アカウント連携完了！「${name}」選手の記録がGoogle/Apple IDに安全に保存されました。`,
+                promptLinkAccount: 'Google ID または Apple ID と連携しますか？\n連携するとアプリを削除して再インストールしても、同じ名前・記録・購入履歴で再開できます。\n\n[OK] = Google ID 連携 / [キャンセル] = Apple ID 連携',
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
@@ -2806,6 +2978,22 @@
                 alertRestoreNone: 'No previous purchase found to restore.',
                 loadingRanks: 'Loading...',
                 emptyRanks: 'No records yet',
+                initialProfileTitle: '⚾ REGISTER PLAYER NAME',
+                initialProfileWarning: '⚠️ Your name CANNOT be changed once registered. Please choose carefully!\n• Your single highest score is registered on the server under this name (no duplicate entries).',
+                initialNamePlaceholder: 'Enter game name',
+                initialNameHint: 'Up to 10 English letters (Permanent)',
+                initialNameSubmitBtn: 'Start with This Name',
+                initialAccountSyncLabel: '📱 Reinstalled the app or have an existing account?\nSign in with the same Google ID or Apple ID to restore your name, records, and purchases.',
+                initialGoogleBtn: '🌐 Google ID Link / Restore',
+                initialAppleBtn: '🍎 Apple ID Link / Restore',
+                confirmPermanentName: name => `Register "${name}" as your permanent name?\n⚠️ You CANNOT change your name after this!`,
+                alertNameTaken: 'This name is already registered by another player. Please choose a different name.',
+                introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 BEST: ${best} ${synced ? '☁️' : '(🔗 Link ID)'}`,
+                newRecordAutoSaved: '🎉 NEW PERSONAL BEST! Automatically saved to server',
+                bestRecordKept: best => `🏆 Personal Best: ${best} PTS (Only highest score is kept)`,
+                alertAccountRestored: name => `✅ Account Restored! Welcome back, "${name}"! Your records and purchases are restored.`,
+                alertAccountLinked: name => `☁️ Account Linked! "${name}" and all records/purchases are now backed up to your Google/Apple ID.`,
+                promptLinkAccount: 'Link your Google ID or Apple ID?\nLinking ensures your name, records, and purchases are restored if you reinstall the app.\n\n[OK] = Google ID / [Cancel] = Apple ID',
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
@@ -2882,6 +3070,22 @@
                 alertRestoreNone: '복원할 구매 내역이 없습니다.',
                 loadingRanks: '불러오는 중...',
                 emptyRanks: '아직 기록이 없습니다',
+                initialProfileTitle: '⚾ 나의 게임 이름 등록',
+                initialProfileWarning: '⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!\n• 입력한 이름으로 서버에 등록되며, 나의 최고 점수 1개만 올라갑니다 (중복 등록 불가).',
+                initialNamePlaceholder: '게임 이름 입력',
+                initialNameHint: '한글 5자 / 영문 10자까지 (등록 후 변경 불가)',
+                initialNameSubmitBtn: '이 이름으로 시작하기',
+                initialAccountSyncLabel: '📱 앱을 지웠다 다시 깔았거나 기존 계정이 있다면?\n같은 Google ID / Apple ID로 연동하면 기존 이름·기록·구매 내역이 그대로 복원됩니다.',
+                initialGoogleBtn: '🌐 Google ID 연동/복원',
+                initialAppleBtn: '🍎 Apple ID 연동/복원',
+                confirmPermanentName: name => `정말 "${name}"(으)로 이름을 등록하시겠습니까?\n⚠️ 한 번 등록한 이름은 절대 변경할 수 없습니다!`,
+                alertNameTaken: '이미 다른 플레이어가 등록한 이름입니다. 다른 이름을 선택해주세요.',
+                introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 최고 기록: ${best}점 ${synced ? '☁️' : '(🔗 계정 연동)'}`,
+                newRecordAutoSaved: '🎉 최고 기록 경신! 서버 랭킹에 자동 등록되었습니다',
+                bestRecordKept: best => `🏆 나의 최고 기록: ${best}점 (최고 점수 1개만 유지)`,
+                alertAccountRestored: name => `✅ 계정 복원 완료! "${name}"님의 이름과 기록·구매 내역을 그대로 불러왔습니다.`,
+                alertAccountLinked: name => `☁️ 계정 연동 완료! "${name}"님의 이름과 기록·구매 내역이 Google/Apple ID에 안전하게 보관됩니다.`,
+                promptLinkAccount: 'Google ID 또는 Apple ID를 연동하시겠습니까?\n연동해 두면 앱을 지웠다 다시 깔아도 같은 이름과 기록·구매 내역으로 그대로 시작할 수 있습니다.\n\n[확인] = Google ID 연동 / [취소] = Apple ID 연동',
             }
         };
 
@@ -2915,8 +3119,6 @@
             document.getElementById('start-btn-id').innerText      = t.startBtn;
             document.getElementById('battle-btn').innerText        = t.battleBtn;
             document.getElementById('rank-suffix').innerText       = t.rankSuffix;
-            document.getElementById('player-name-input').placeholder = t.nameHolder;
-            document.getElementById('register-btn').innerText      = t.registerBtn;
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('home-btn').innerText               = t.homeBtn;
             document.getElementById('play-gate-title').innerText        = t.playGateTitle;
@@ -2925,7 +3127,24 @@
             document.getElementById('play-gate-restore-btn').innerText  = t.playGateRestoreBtn;
             document.getElementById('play-gate-close-btn').innerText    = t.playGateCloseBtn;
             document.getElementById('reward-ad-msg').innerText          = t.rewardAdMsg;
+            const initTitleEl = document.getElementById('initial-profile-title');
+            if (initTitleEl) initTitleEl.innerText = t.initialProfileTitle;
+            const initWarnEl = document.getElementById('initial-profile-warning');
+            if (initWarnEl) initWarnEl.innerText = t.initialProfileWarning;
+            const initInputEl = document.getElementById('initial-name-input');
+            if (initInputEl) initInputEl.placeholder = t.initialNamePlaceholder;
+            const initHintEl = document.getElementById('initial-name-hint');
+            if (initHintEl) initHintEl.innerText = t.initialNameHint;
+            const initSubmitEl = document.getElementById('initial-name-submit-btn');
+            if (initSubmitEl) initSubmitEl.innerText = t.initialNameSubmitBtn;
+            const initSyncLabelEl = document.getElementById('initial-account-sync-label');
+            if (initSyncLabelEl) initSyncLabelEl.innerText = t.initialAccountSyncLabel;
+            const initGoogleBtnEl = document.getElementById('initial-google-btn');
+            if (initGoogleBtnEl) initGoogleBtnEl.innerText = t.initialGoogleBtn;
+            const initAppleBtnEl = document.getElementById('initial-apple-btn');
+            if (initAppleBtnEl) initAppleBtnEl.innerText = t.initialAppleBtn;
             if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             setBattleRematchButtonText();
             document.querySelectorAll('.lang-switch-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -2941,7 +3160,6 @@
         function enterIntroFromSplash() {
             applyLang(currentLang);
             document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('intro-screen').classList.remove('hidden');
             audioCtx.resume().then(() => {
                 const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
                 const silentSrc = audioCtx.createBufferSource();
@@ -2950,6 +3168,11 @@
                 silentSrc.start(0);
                 playTitleBgm();
             });
+            if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
+                ensurePermanentPlayerProfileOnStart();
+            } else {
+                document.getElementById('intro-screen').classList.remove('hidden');
+            }
         }
 
         document.getElementById('splash-start-btn').addEventListener('click', (e) => {
@@ -3389,6 +3612,7 @@
                 else localStorage.removeItem(NO_ADS_STORAGE_KEY);
             } catch (e) {}
             updatePlayTicketStatusUI();
+            if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
         }
 
         function isSoloFireballUnlocked() {
@@ -3403,6 +3627,7 @@
                 localStorage.setItem(DAILY_SOLO_USED_COUNT_KEY, '0');
             } catch (e) {}
             updatePlayTicketStatusUI();
+            if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
         }
 
         function getRemainingDailyFreePlays(mode = 'solo') {
@@ -3870,19 +4095,34 @@
         function restoreRemoveAdsPurchase() {
             if (typeof window.restoreInfinitePitcherPurchases === 'function') {
                 window.restoreInfinitePitcherPurchases(
-                    (restored) => {
+                    (restored, storeAccountId) => {
+                        if (storeAccountId && typeof restoreCloudProfileByRawId === 'function') {
+                            restoreCloudProfileByRawId('store', storeAccountId, true);
+                        }
                         if (restored) {
                             setNoAdsPurchased(true);
                             alert(textFor('alertNoAdsActivated'));
                             const cb = pendingPlayGateCallback;
                             closePlayGateModal();
                             if (typeof cb === 'function') cb();
+                        } else if (typeof restoreFromCurrentCloudAccount === 'function') {
+                            restoreFromCurrentCloudAccount();
                         } else {
                             alert(textFor('alertRestoreNone'));
                         }
                     },
-                    () => alert(textFor('alertRestoreNone'))
+                    () => {
+                        if (typeof restoreFromCurrentCloudAccount === 'function') {
+                            restoreFromCurrentCloudAccount();
+                        } else {
+                            alert(textFor('alertRestoreNone'));
+                        }
+                    }
                 );
+                return;
+            }
+            if (typeof restoreFromCurrentCloudAccount === 'function') {
+                restoreFromCurrentCloudAccount();
                 return;
             }
             if (isNoAdsPurchased()) {
@@ -4687,7 +4927,8 @@
         }
 
         /**
-         * LEADERBOARD — Firebase Realtime Database (Global TOP 1000 & Country TOP 1000 + Anti-Cheat)
+         * LEADERBOARD & PERMANENT ACCOUNT PROFILE — Firebase Realtime Database
+         * (Permanent Name at Start + Single Best Score per Player + Google/Apple Cloud Restore)
          */
         let pendingScore = null;
         const LEADERBOARD_LIMIT = 1000;
@@ -4695,11 +4936,88 @@
         const CACHE_KEY_COUNTRY_PREFIX = 'infinitePitcherRanksCacheV4_country_';
         const PLAYER_NAME_KEY = 'infinitePitcherPlayerName';
         const USER_COUNTRY_KEY = 'infinitePitcherUserCountry';
+        const ACCOUNT_KEY_STORAGE = 'infinitePitcherAccountKey_v1';
+        const ACCOUNT_PROVIDER_STORAGE = 'infinitePitcherAccountProvider_v1';
+        const ACCOUNT_RAW_ID_STORAGE = 'infinitePitcherAccountRawId_v1';
+        const PERSONAL_BEST_SCORE_KEY = 'infinitePitcherBestScore_v1';
         const ranksRef = db.ref('ranks');
         const countryRanksRootRef = db.ref('ranks_country');
+        const usersRef = db.ref('users');
         let currentLeaderboardScope = 'global'; // 'global' | 'country'
         let lastHighlightName = null;
         let lastHighlightScore = null;
+
+        function sanitizeAccountKey(raw) {
+            const cleaned = String(raw || '').trim().replace(/[.#$\[\]\/\s]/g, '_');
+            return cleaned.slice(0, 64) || ('acct_' + Date.now().toString(36));
+        }
+
+        function deriveCloudAccountKey(providerType, rawId) {
+            const normProvider = String(providerType || 'cloud').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const normId = String(rawId || '').trim().toLowerCase();
+            let h1 = 2166136261;
+            let h2 = 16777619;
+            for (let i = 0; i < normId.length; i++) {
+                const c = normId.charCodeAt(i);
+                h1 ^= c;
+                h1 = Math.imul(h1, 16777619);
+                h2 ^= (c + i * 31);
+                h2 = Math.imul(h2, 2166136261);
+            }
+            const safeSuffix = normId.replace(/[^a-z0-9]/g, '').slice(0, 16);
+            return sanitizeAccountKey(`acct_${normProvider}_${safeSuffix}_${(h1 >>> 0).toString(16)}${(h2 >>> 0).toString(16)}`);
+        }
+
+        function getAccountKey() {
+            try {
+                const existing = localStorage.getItem(ACCOUNT_KEY_STORAGE);
+                if (existing) return sanitizeAccountKey(existing);
+                if (firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) {
+                    const authKey = sanitizeAccountKey('acct_auth_' + firebase.auth().currentUser.uid);
+                    localStorage.setItem(ACCOUNT_KEY_STORAGE, authKey);
+                    return authKey;
+                }
+                const generated = sanitizeAccountKey('acct_local_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10));
+                localStorage.setItem(ACCOUNT_KEY_STORAGE, generated);
+                return generated;
+            } catch (e) {
+                return 'acct_fallback_guest';
+            }
+        }
+
+        function setAccountKey(newKey, providerType = '', rawId = '') {
+            try {
+                localStorage.setItem(ACCOUNT_KEY_STORAGE, sanitizeAccountKey(newKey));
+                if (providerType) localStorage.setItem(ACCOUNT_PROVIDER_STORAGE, providerType);
+                if (rawId) localStorage.setItem(ACCOUNT_RAW_ID_STORAGE, rawId);
+            } catch (e) {}
+            updateIntroProfilePillUI();
+        }
+
+        function isCloudAccountLinked() {
+            try {
+                const p = localStorage.getItem(ACCOUNT_PROVIDER_STORAGE) || '';
+                if (p === 'google' || p === 'apple' || p === 'store') return true;
+                if (firebase.auth && firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) return true;
+            } catch (e) {}
+            return false;
+        }
+
+        function getPersonalBestScore() {
+            try {
+                return Math.max(0, parseInt(localStorage.getItem(PERSONAL_BEST_SCORE_KEY), 10) || 0);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function setPersonalBestScore(scoreVal) {
+            const nextBest = Math.max(getPersonalBestScore(), Math.max(0, parseInt(scoreVal, 10) || 0));
+            try {
+                localStorage.setItem(PERSONAL_BEST_SCORE_KEY, String(nextBest));
+            } catch (e) {}
+            return nextBest;
+        }
 
         function inferCountryFromLocaleAndTz() {
             try {
@@ -4820,11 +5138,359 @@
         }
 
         function getSavedPlayerName() {
-            try { return localStorage.getItem(PLAYER_NAME_KEY) || ''; } catch(e) { return ''; }
+            try {
+                const primary = (localStorage.getItem(PLAYER_NAME_KEY) || '').trim();
+                if (primary) return primary;
+                const legacyBattle = (localStorage.getItem('infinitePitcherBattleName') || '').trim();
+                if (legacyBattle) {
+                    localStorage.setItem(PLAYER_NAME_KEY, legacyBattle);
+                    return legacyBattle;
+                }
+                return '';
+            } catch(e) {
+                return '';
+            }
         }
 
         function setSavedPlayerName(name) {
-            try { localStorage.setItem(PLAYER_NAME_KEY, name); } catch(e) {}
+            const cleaned = clampBattleName(String(name || '')).trim().slice(0, 12);
+            if (!cleaned) return;
+            try {
+                localStorage.setItem(PLAYER_NAME_KEY, cleaned);
+                localStorage.setItem('infinitePitcherBattleName', cleaned);
+            } catch(e) {}
+            updateIntroProfilePillUI();
+        }
+
+        function updateIntroProfilePillUI() {
+            const pill = document.getElementById('intro-profile-pill');
+            if (!pill) return;
+            const savedName = getSavedPlayerName();
+            if (!savedName) {
+                pill.style.display = 'none';
+                return;
+            }
+            pill.style.display = 'inline-block';
+            const fn = textFor('introProfilePillText');
+            const synced = isCloudAccountLinked();
+            pill.innerText = typeof fn === 'function' ? fn(savedName, synced) : `👤 ${savedName}`;
+            pill.classList.toggle('is-synced', synced);
+        }
+
+        function syncProfileToCloud() {
+            const savedName = getSavedPlayerName();
+            if (!savedName) return Promise.resolve(false);
+            const accountKey = getAccountKey();
+            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const bestScore = getPersonalBestScore();
+            const payload = {
+                name: savedName,
+                bestScore: bestScore,
+                noAds: isNoAdsPurchased(),
+                fireballUnlocked: isSoloFireballUnlocked(),
+                battleStats: {
+                    matches: Math.max(0, Number(stats.matches) || 0),
+                    wins: Math.max(0, Number(stats.wins) || 0)
+                },
+                country: userCountry,
+                updatedAt: Date.now()
+            };
+            return usersRef.child(accountKey).transaction(current => {
+                if (!current) return payload;
+                return {
+                    ...current,
+                    // 서버에 한 번 등록된 이름은 절대 변경 불가
+                    name: current.name || payload.name,
+                    bestScore: Math.max(Number(current.bestScore) || 0, payload.bestScore),
+                    noAds: Boolean(current.noAds || payload.noAds),
+                    fireballUnlocked: Boolean(current.fireballUnlocked || payload.fireballUnlocked),
+                    battleStats: {
+                        matches: Math.max(Number(current.battleStats?.matches) || 0, payload.battleStats.matches),
+                        wins: Math.max(Number(current.battleStats?.wins) || 0, payload.battleStats.wins)
+                    },
+                    country: payload.country || current.country || 'KR',
+                    updatedAt: Date.now()
+                };
+            }).then(result => {
+                const finalData = result && result.snapshot ? result.snapshot.val() : null;
+                if (finalData) {
+                    applyCloudProfileDataToLocal(finalData);
+                }
+                return true;
+            }).catch(err => {
+                console.warn('[CloudProfile] sync warning:', err);
+                return false;
+            });
+        }
+
+        function applyCloudProfileDataToLocal(remoteData) {
+            if (!remoteData || typeof remoteData !== 'object') return;
+            if (remoteData.name) {
+                setSavedPlayerName(remoteData.name);
+            }
+            if (Number(remoteData.bestScore) > 0) {
+                setPersonalBestScore(Number(remoteData.bestScore));
+            }
+            if (remoteData.noAds && !isNoAdsPurchased()) {
+                try { localStorage.setItem(NO_ADS_STORAGE_KEY, 'true'); } catch (e) {}
+            }
+            if (remoteData.fireballUnlocked && !isSoloFireballUnlocked()) {
+                try { localStorage.setItem(SOLO_FIREBALL_UNLOCKED_KEY, 'true'); } catch (e) {}
+            }
+            if (remoteData.battleStats && typeof getBattleStats === 'function' && typeof saveBattleStats === 'function') {
+                const localStats = getBattleStats();
+                const mergedMatches = Math.max(localStats.matches, Number(remoteData.battleStats.matches) || 0);
+                const mergedWins = Math.max(localStats.wins, Number(remoteData.battleStats.wins) || 0);
+                if (mergedMatches !== localStats.matches || mergedWins !== localStats.wins) {
+                    try {
+                        localStorage.setItem('infinitePitcherBattleStats_v1', JSON.stringify({
+                            matches: mergedMatches,
+                            wins: mergedWins
+                        }));
+                    } catch (e) {}
+                    if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
+                }
+            }
+            updatePlayTicketStatusUI();
+            updateIntroProfilePillUI();
+        }
+
+        function handleInitialNameInput() {
+            const input = document.getElementById('initial-name-input');
+            if (!input) return;
+            const clamped = clampBattleName(input.value);
+            if (input.value !== clamped) input.value = clamped;
+        }
+
+        function submitInitialPermanentName() {
+            const input = document.getElementById('initial-name-input');
+            const rawVal = input ? input.value : '';
+            const candidateName = clampBattleName(rawVal).trim();
+            if (!candidateName) {
+                alert(textFor('alertNickname'));
+                if (input) input.focus();
+                return;
+            }
+
+            const confirmFn = textFor('confirmPermanentName');
+            const confirmMsg = typeof confirmFn === 'function' ? confirmFn(candidateName) : candidateName;
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            const accountKey = getAccountKey();
+            // 서버에서 다른 유저가 이미 동일한 이름을 쓰고 있는지 확인
+            ranksRef.orderByChild('name').equalTo(candidateName).limitToFirst(5).once('value')
+                .then(snap => {
+                    const existingMap = snap.val() || {};
+                    const takenByOther = Object.keys(existingMap).some(key => key !== accountKey);
+                    if (takenByOther) {
+                        const takenFn = textFor('alertNameAlreadyTaken');
+                        alert(typeof takenFn === 'function' ? takenFn(candidateName) : 'Name already taken');
+                        if (input) input.focus();
+                        return;
+                    }
+                    finalizePermanentNameRegistration(candidateName);
+                })
+                .catch(() => {
+                    finalizePermanentNameRegistration(candidateName);
+                });
+        }
+
+        function finalizePermanentNameRegistration(permanentName) {
+            setSavedPlayerName(permanentName);
+            syncProfileToCloud();
+            document.getElementById('initial-profile-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            updateIntroProfilePillUI();
+            updatePlayTicketStatusUI();
+        }
+
+        function ensurePermanentPlayerProfileOnStart() {
+            const existingName = getSavedPlayerName();
+            if (existingName) {
+                setSavedPlayerName(existingName);
+                document.getElementById('initial-profile-screen').classList.add('hidden');
+                document.getElementById('intro-screen').classList.remove('hidden');
+                updateIntroProfilePillUI();
+                syncProfileToCloud();
+                return;
+            }
+
+            // 네이티브 스토어 계정 ID 또는 Firebase Auth 세션이 있으면 자동 복원 시도
+            const currentKey = getAccountKey();
+            usersRef.child(currentKey).once('value')
+                .then(snap => {
+                    const remoteProfile = snap.val();
+                    if (remoteProfile && remoteProfile.name) {
+                        applyCloudProfileDataToLocal(remoteProfile);
+                        document.getElementById('initial-profile-screen').classList.add('hidden');
+                        document.getElementById('intro-screen').classList.remove('hidden');
+                        return;
+                    }
+                    openInitialProfileScreen();
+                })
+                .catch(() => {
+                    openInitialProfileScreen();
+                });
+        }
+
+        function openInitialProfileScreen() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            const screen = document.getElementById('initial-profile-screen');
+            if (screen) screen.classList.remove('hidden');
+            const input = document.getElementById('initial-name-input');
+            if (input) {
+                input.value = '';
+                setTimeout(() => input.focus(), 80);
+            }
+        }
+
+        function restoreCloudProfileByRawId(providerType, rawAccountId, silentIfNone = false) {
+            const trimmedId = String(rawAccountId || '').trim();
+            if (!trimmedId) return Promise.resolve(false);
+            const cloudKey = deriveCloudAccountKey(providerType, trimmedId);
+
+            return usersRef.child(cloudKey).once('value').then(snap => {
+                const remoteProfile = snap.val();
+                if (remoteProfile && remoteProfile.name) {
+                    // 서버에 기존 계정 프로필이 존재함 -> 이름, 최고기록, $4.99 광고제거, 파이어볼 언락, 대전 전적 모두 복원!
+                    setAccountKey(cloudKey, providerType, trimmedId);
+                    applyCloudProfileDataToLocal(remoteProfile);
+                    const restoredBest = Math.max(getPersonalBestScore(), Number(remoteProfile.bestScore) || 0);
+                    if (restoredBest > 0) {
+                        saveBestScoreToServer(remoteProfile.name, restoredBest, true);
+                    }
+                    document.getElementById('initial-profile-screen').classList.add('hidden');
+                    if (gameState === 'INTRO') {
+                        document.getElementById('intro-screen').classList.remove('hidden');
+                    }
+                    const alertFn = textFor('accountRestoredAlert');
+                    if (typeof alertFn === 'function') {
+                        alert(alertFn(remoteProfile.name, restoredBest));
+                    }
+                    return true;
+                } else {
+                    // 서버에 아직 기록이 없는 계정:
+                    // 이미 로컬에서 이름을 만든 상태라면 이 Google/Apple 계정 키로 즉시 연동 및 백업
+                    const localName = getSavedPlayerName();
+                    if (localName) {
+                        setAccountKey(cloudKey, providerType, trimmedId);
+                        syncProfileToCloud().then(() => {
+                            if (getPersonalBestScore() > 0) {
+                                saveBestScoreToServer(localName, getPersonalBestScore(), true);
+                            }
+                        });
+                        const linkedFn = textFor('accountLinkedNewAlert');
+                        if (typeof linkedFn === 'function') {
+                            alert(linkedFn(localName));
+                        }
+                        return true;
+                    } else {
+                        // 아직 이름도 만들기 전이면 이 계정 키를 먼저 세팅하고 이름 생성 유도
+                        setAccountKey(cloudKey, providerType, trimmedId);
+                        if (!silentIfNone) {
+                            alert(textFor('accountRestoreNotFoundAlert'));
+                        }
+                        return false;
+                    }
+                }
+            }).catch(err => {
+                console.warn('[CloudProfile] restore error:', err);
+                if (!silentIfNone) alert(textFor('accountRestoreNotFoundAlert'));
+                return false;
+            });
+        }
+
+        function signInAndSyncAccount(providerType = 'google') {
+            const normProvider = providerType === 'apple' ? 'apple' : 'google';
+
+            // 1. 네이티브 앱 브릿지(Capacitor Google Play / Apple Sign-In) 훅이 제공되는 경우 우선 호출
+            if (typeof window.signInInfinitePitcherAccount === 'function') {
+                window.signInInfinitePitcherAccount(
+                    normProvider,
+                    (accountIdOrEmail) => {
+                        if (accountIdOrEmail) {
+                            restoreCloudProfileByRawId(normProvider, accountIdOrEmail, false);
+                        }
+                    },
+                    () => {}
+                );
+                return;
+            }
+
+            // 2. Firebase Auth OAuth 팝업 시도 (설정된 도메인인 경우 동작, 미설정/웹뷰 차단 시 즉시 ID 입력 폴백)
+            if (firebase.auth && window.location.protocol.startsWith('http')) {
+                try {
+                    const provider = normProvider === 'apple'
+                        ? new firebase.auth.OAuthProvider('apple.com')
+                        : new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider)
+                        .then(result => {
+                            const user = result && result.user;
+                            const rawId = (user && (user.email || user.uid)) || '';
+                            if (rawId) {
+                                restoreCloudProfileByRawId(normProvider, rawId, false);
+                            }
+                        })
+                        .catch(() => {
+                            promptAccountIdFallback(normProvider);
+                        });
+                    return;
+                } catch (e) {
+                    promptAccountIdFallback(normProvider);
+                    return;
+                }
+            }
+
+            // 3. 웹뷰 / 프리뷰 환경용 Google ID / Apple ID 직접 연동·복원 프롬프트
+            promptAccountIdFallback(normProvider);
+        }
+
+        function promptAccountIdFallback(providerType) {
+            const promptFn = textFor('promptAccountEmailForSync');
+            const label = providerType === 'apple' ? 'Apple ID' : 'Google ID';
+            let savedRaw = '';
+            try { savedRaw = localStorage.getItem(ACCOUNT_RAW_ID_STORAGE) || ''; } catch (e) {}
+            const entered = prompt(typeof promptFn === 'function' ? promptFn(label) : label, savedRaw);
+            if (!entered || !entered.trim()) return;
+            restoreCloudProfileByRawId(providerType, entered.trim(), false);
+        }
+
+        function promptAccountSyncFromIntro() {
+            const savedName = getSavedPlayerName();
+            const best = getPersonalBestScore();
+            const synced = isCloudAccountLinked();
+            const isIOS = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent || '');
+            const defaultProvider = isIOS ? 'apple' : 'google';
+            if (synced) {
+                syncProfileToCloud();
+                const linkedFn = textFor('accountLinkedNewAlert');
+                if (typeof linkedFn === 'function') alert(linkedFn(savedName));
+                return;
+            }
+            signInAndSyncAccount(defaultProvider);
+        }
+
+        function restoreFromCurrentCloudAccount() {
+            if (isCloudAccountLinked()) {
+                const accountKey = getAccountKey();
+                usersRef.child(accountKey).once('value').then(snap => {
+                    const remoteProfile = snap.val();
+                    if (remoteProfile) {
+                        applyCloudProfileDataToLocal(remoteProfile);
+                        if (remoteProfile.noAds || isNoAdsPurchased()) {
+                            alert(textFor('alertNoAdsActivated'));
+                            closePlayGateModal();
+                            return;
+                        }
+                    }
+                    alert(textFor('alertRestoreNone'));
+                }).catch(() => alert(textFor('alertRestoreNone')));
+                return;
+            }
+            const isIOS = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent || '');
+            signInAndSyncAccount(isIOS ? 'apple' : 'google');
         }
 
         function normalizeRankEntry(entry) {
@@ -4839,6 +5505,21 @@
             };
         }
 
+        function deduplicateRanksByPlayerName(rows) {
+            const bestByName = new Map();
+            for (const row of rows) {
+                const key = String(row.name || '').trim().toUpperCase();
+                if (!key) continue;
+                const existing = bestByName.get(key);
+                if (!existing || row.score > existing.score || (row.score === existing.score && (row.createdAt || 0) < (existing.createdAt || 0))) {
+                    bestByName.set(key, row);
+                }
+            }
+            return Array.from(bestByName.values())
+                .sort((a, b) => b.score - a.score || ((a.createdAt || 0) - (b.createdAt || 0)))
+                .slice(0, LEADERBOARD_LIMIT);
+        }
+
         function buildAntiCheatToken(scoreVal, playTimeMsVal, nextExpectedVal, countryCode) {
             // 클라이언트 서명 토큰 (콘솔 단순 조작 방지용)
             const raw = `${scoreVal}:${Math.floor(playTimeMsVal / 100)}:${nextExpectedVal}:${countryCode}:IP_V1`;
@@ -4851,7 +5532,7 @@
         }
 
         function fetchRanksByScope(scope, callback) {
-            const cached = getCachedRanks(scope);
+            const cached = deduplicateRanksByPlayerName(getCachedRanks(scope));
             const targetRef = scope === 'country'
                 ? countryRanksRootRef.child(userCountry)
                 : ranksRef;
@@ -4859,11 +5540,11 @@
             targetRef.orderByChild('score').limitToLast(LEADERBOARD_LIMIT).once('value')
                 .then(snap => {
                     const val = snap.val() || {};
-                    const rows = Object.values(val)
+                    const rawRows = Object.values(val)
                         .map(normalizeRankEntry)
-                        .filter(r => r.score > 0 && r.score <= 3000)
-                        .sort((a, b) => b.score - a.score || (a.createdAt - b.createdAt))
-                        .slice(0, LEADERBOARD_LIMIT);
+                        .filter(r => r.score > 0 && r.score <= 3000);
+                    // 이름당 최고 점수 1개만 유지 (중복 이름 절대 불가)
+                    const rows = deduplicateRanksByPlayerName(rawRows);
                     setCachedRanks(rows, scope);
                     callback(rows, { ok: true });
                 })
@@ -4877,129 +5558,153 @@
             fetchRanksByScope(currentLeaderboardScope, callback);
         }
 
-        function calcProvisionalRank(ranks, newScore) {
+        function calcProvisionalRank(ranks, newScore, playerName = '') {
+            const normPlayer = String(playerName || '').trim().toUpperCase();
             let higherCount = 0;
             for (let i = 0; i < ranks.length; i++) {
+                const rName = String(ranks[i].name || '').trim().toUpperCase();
+                if (normPlayer && rName === normPlayer) continue;
                 if (Number(ranks[i].score) > newScore) higherCount++;
             }
             return higherCount + 1;
         }
 
+        function saveBestScoreToServer(playerName, scoreToSave, isSilentRestore = false) {
+            const cleanName = clampBattleName(playerName || getSavedPlayerName() || 'PLAYER').trim() || 'PLAYER';
+            const cleanScore = Math.max(0, Math.min(3000, Math.round(Number(scoreToSave) || 0)));
+            if (cleanScore <= 0) return Promise.resolve(false);
+
+            const accountKey = getAccountKey();
+            const playTimeMs = Math.max(Math.round(accumulatedPlayTimeMs || 0), cleanScore * 350);
+            const expectedNum = Math.max(nextExpectedNumber || (cleanScore + 1), cleanScore + 1);
+            const newEntry = {
+                name: cleanName,
+                score: cleanScore,
+                country: userCountry,
+                playTimeMs: playTimeMs,
+                nextExpected: expectedNum,
+                sig: buildAntiCheatToken(cleanScore, playTimeMs, expectedNum, userCountry),
+                date: new Date().toISOString().slice(0, 10),
+                createdAt: Date.now()
+            };
+
+            // 로컬 캐시에서도 해당 이름의 최고 기록만 1개 유지
+            ['global', 'country'].forEach(scope => {
+                const merged = deduplicateRanksByPlayerName([...getCachedRanks(scope), newEntry]);
+                setCachedRanks(merged, scope);
+            });
+
+            // 서버의 ranks/{accountKey} 및 ranks_country/{country}/{accountKey}에
+            // 기존 점수보다 높을 때만 덮어쓰기 (유저당 단 1개의 최고 점수만 존재)
+            const updateIfHigher = (ref) => ref.once('value').then(snap => {
+                const existing = snap.val();
+                if (!existing || Number(existing.score || 0) < cleanScore) {
+                    return ref.set({
+                        ...newEntry,
+                        name: (existing && existing.name) ? existing.name : cleanName
+                    });
+                }
+                return null;
+            });
+
+            return Promise.all([
+                updateIfHigher(ranksRef.child(accountKey)),
+                updateIfHigher(countryRanksRootRef.child(userCountry).child(accountKey)),
+                syncProfileToCloud()
+            ]).then(() => {
+                if (!isSilentRestore && isVisibleScreen('game-over-screen')) {
+                    renderRankList(cleanName, cleanScore);
+                }
+                return true;
+            }).catch(err => {
+                console.warn('[Leaderboard] Firebase best score save warning:', err);
+                return false;
+            });
+        }
+
         function evaluateScore(newScore) {
             const normalizedScore = Number(newScore) || 0;
-            lastHighlightName = null;
-            lastHighlightScore = null;
+            const playerName = getSavedPlayerName() || 'PLAYER';
+            const prevBest = getPersonalBestScore();
+            const isNewPersonalBest = normalizedScore > prevBest;
+            const effectiveBestScore = Math.max(prevBest, normalizedScore);
+
+            if (isNewPersonalBest && normalizedScore > 0) {
+                setPersonalBestScore(normalizedScore);
+            }
+
+            lastHighlightName = playerName;
+            lastHighlightScore = effectiveBestScore > 0 ? effectiveBestScore : null;
             updateCountryTabLabels();
 
             document.dispatchEvent(new CustomEvent('game:end', {
-                detail: { score: normalizedScore },
+                detail: { score: normalizedScore, bestScore: effectiveBestScore },
                 bubbles: true,
                 composed: true,
             }));
 
             const rankEntryEl = document.getElementById('rank-entry');
-            const registerBtnEl = document.getElementById('register-btn');
             const modalEl = document.getElementById('leaderboard-modal');
             const badgeEl = document.getElementById('my-rank-badge');
-            const nameInputEl = document.getElementById('player-name-input');
             const rankDetailEl = document.getElementById('my-rank-detail');
+            const rankStatusEl = document.getElementById('my-best-record-status');
 
             if (badgeEl) badgeEl.style.display = 'none';
             if (rankDetailEl) rankDetailEl.innerText = '';
+            if (rankStatusEl) rankStatusEl.innerText = '';
 
-            if (normalizedScore <= 0) {
+            // 항상 리더보드 모달을 바로 표시 (이름 입력창 없음)
+            if (modalEl) modalEl.classList.remove('hidden');
+
+            if (normalizedScore <= 0 && effectiveBestScore <= 0) {
                 pendingScore = null;
-                rankEntryEl.classList.add('hidden');
-                registerBtnEl.classList.add('hidden');
-                modalEl.classList.remove('hidden');
+                if (rankEntryEl) rankEntryEl.classList.add('hidden');
                 renderRankList(null, null);
                 return;
             }
 
-            // 글로벌 TOP 1000 및 접속 국가 TOP 1000 동시 확인
+            // 최고 기록 경신 시 서버에 자동 등록 (이름당 최고 점수 1개만 유지)
+            if (isNewPersonalBest && normalizedScore > 0) {
+                saveBestScoreToServer(playerName, normalizedScore, false);
+            }
+
+            // 글로벌 TOP 1000 및 접속 국가 TOP 1000 동시 확인 (내 최고 점수 기준)
             fetchRanksByScope('global', (globalRanks) => {
                 fetchRanksByScope('country', (countryRanks) => {
-                    const globalRank = calcProvisionalRank(globalRanks, normalizedScore);
-                    const countryRank = calcProvisionalRank(countryRanks, normalizedScore);
+                    const globalRank = calcProvisionalRank(globalRanks, effectiveBestScore, playerName);
+                    const countryRank = calcProvisionalRank(countryRanks, effectiveBestScore, playerName);
                     const inGlobalTop = globalRank <= LEADERBOARD_LIMIT;
                     const inCountryTop = countryRank <= LEADERBOARD_LIMIT;
 
-                    if (inGlobalTop || inCountryTop) {
-                        pendingScore = normalizedScore;
+                    if (effectiveBestScore > 0 && (inGlobalTop || inCountryTop)) {
                         const primaryRank = inGlobalTop ? globalRank : countryRank;
-                        document.getElementById('my-rank-val').innerText = primaryRank;
-                        document.getElementById('rank-suffix').innerText = textFor('rankSuffix');
+                        const rankValEl = document.getElementById('my-rank-val');
+                        const rankSuffixEl = document.getElementById('rank-suffix');
+                        if (rankValEl) rankValEl.innerText = primaryRank;
+                        if (rankSuffixEl) rankSuffixEl.innerText = textFor('rankSuffix');
                         if (rankDetailEl) {
                             const flag = countryToFlag(userCountry);
                             const globalTxt = inGlobalTop ? `#${globalRank}` : '1000+';
                             const countryTxt = inCountryTop ? `#${countryRank}` : '1000+';
-                            rankDetailEl.innerText = `🌍 GLOBAL ${globalTxt}  |  ${flag} ${userCountry} ${countryTxt}`;
+                            rankDetailEl.innerText = `👤 ${playerName}  |  🌍 GLOBAL ${globalTxt}  |  ${flag} ${userCountry} ${countryTxt}`;
                         }
-                        if (nameInputEl) {
-                            nameInputEl.value = getSavedPlayerName();
-                            setTimeout(() => nameInputEl.focus(), 80);
+                        if (rankStatusEl) {
+                            if (isNewPersonalBest) {
+                                const fn = textFor('rankStatusNewBest');
+                                rankStatusEl.innerText = typeof fn === 'function' ? fn(playerName, normalizedScore) : '';
+                                rankStatusEl.style.color = '#7dffb3';
+                            } else {
+                                const fn = textFor('rankStatusKeptBest');
+                                rankStatusEl.innerText = typeof fn === 'function' ? fn(effectiveBestScore) : '';
+                                rankStatusEl.style.color = '#ffe85c';
+                            }
                         }
-                        rankEntryEl.classList.remove('hidden');
-                        registerBtnEl.classList.remove('hidden');
-                        modalEl.classList.add('hidden');
-                    } else {
-                        pendingScore = null;
+                        if (rankEntryEl) rankEntryEl.classList.remove('hidden');
+                    } else if (rankEntryEl) {
                         rankEntryEl.classList.add('hidden');
-                        registerBtnEl.classList.add('hidden');
-                        modalEl.classList.remove('hidden');
-                        renderRankList(null, null);
                     }
+                    renderRankList(playerName, null);
                 });
-            });
-        }
-
-        function registerName() {
-            if (pendingScore == null) return;
-            const scoreToSave = Number(pendingScore) || 0;
-            const nameInputEl = document.getElementById('player-name-input');
-            const rawName = (nameInputEl ? nameInputEl.value : '').trim();
-            const playerName = (rawName || 'PLAYER').slice(0, 12);
-
-            if (rawName) setSavedPlayerName(playerName);
-            pendingScore = null;
-            lastHighlightName = playerName;
-            lastHighlightScore = scoreToSave;
-
-            document.getElementById('rank-entry').classList.add('hidden');
-            document.getElementById('register-btn').classList.add('hidden');
-            document.getElementById('leaderboard-modal').classList.remove('hidden');
-
-            // 실제 플레이 시간 검증값 (최소 투구 간격 350ms/점 이상 보장)
-            const playTimeMs = Math.max(Math.round(accumulatedPlayTimeMs), scoreToSave * 350);
-            const expectedNum = Math.max(nextExpectedNumber, scoreToSave + 1);
-            const newEntry = {
-                name: playerName,
-                score: scoreToSave,
-                country: userCountry,
-                playTimeMs: playTimeMs,
-                nextExpected: expectedNum,
-                sig: buildAntiCheatToken(scoreToSave, playTimeMs, expectedNum, userCountry),
-                date: new Date().toISOString().slice(0, 10),
-                createdAt: Date.now()
-            };
-
-            // 로컬 캐시(글로벌 & 국가별)에 즉시 반영하여 UI 지연 방지
-            ['global', 'country'].forEach(scope => {
-                const updated = [...getCachedRanks(scope), newEntry]
-                    .sort((a, b) => b.score - a.score || ((a.createdAt || 0) - (b.createdAt || 0)))
-                    .slice(0, LEADERBOARD_LIMIT);
-                setCachedRanks(updated, scope);
-            });
-
-            renderRankRows(document.getElementById('rank-list'), getCachedRanks(currentLeaderboardScope), playerName, scoreToSave);
-
-            Promise.all([
-                ranksRef.push(newEntry),
-                countryRanksRootRef.child(userCountry).push(newEntry)
-            ]).then(() => {
-                renderRankList(playerName, scoreToSave);
-            }).catch(err => {
-                console.warn('[Leaderboard] Firebase save failed, kept in local cache:', err);
             });
         }
 
@@ -5216,6 +5921,7 @@
                 }));
             } catch (e) {}
             updateBattleStatsUI();
+            if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
         }
 
         function recordBattleMatchPlayed() {
@@ -5470,7 +6176,7 @@
                 openPlayGateModal(() => startQuickMatch(), 'battle');
                 return;
             }
-            const nickname = getBattleNickname() || getSavedBattleNickname();
+            const nickname = getSavedPlayerName() || getBattleNickname() || getSavedBattleNickname();
             if (!nickname) {
                 alert(textFor('alertNickname'));
                 showBattleProfileStep();
@@ -5820,7 +6526,14 @@
                 return;
             }
 
+            const permanentName = getSavedPlayerName() || getSavedBattleNickname();
+            if (!permanentName) {
+                ensurePermanentPlayerProfileOnStart();
+                return;
+            }
+
             leaveBattleRoom(true);
+            saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
@@ -5829,10 +6542,8 @@
             document.getElementById('battle-player-list').innerHTML = '';
             hydrateBattleNameInput();
             applyBattleLang();
-            showBattleProfileStep();
-
-            const nameInput = document.getElementById('battle-name-input');
-            setTimeout(() => nameInput && nameInput.focus(), 50);
+            showBattleRoomStep();
+            createBattleRoom(permanentName);
         }
 
         function createBattleRoom(hostName) {
@@ -5888,7 +6599,7 @@
 
             const playerId = genBattlePlayerId();
             const joinedAt = getEstimatedServerTimeMs();
-            const nickname = getBattleNickname();
+            const nickname = getSavedPlayerName() || getBattleNickname() || getSavedBattleNickname();
             if (!nickname) {
                 alert(textFor('alertNickname'));
                 showBattleProfileStep();

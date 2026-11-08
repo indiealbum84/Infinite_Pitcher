@@ -2,20 +2,26 @@
   "rules": {
     "ranks": {
       ".read": true,
-      ".indexOn": ["score"],
+      ".indexOn": ["score", "name"],
       "$entryId": {
-        ".write": "!data.exists() && newData.exists()",
+        ".write": "(!data.exists() && newData.exists()) || (data.exists() && newData.exists() && newData.child('score').val() > data.child('score').val() && newData.child('name').val() === data.child('name').val())",
         ".validate": "newData.hasChildren(['name', 'score', 'country', 'playTimeMs', 'nextExpected', 'sig', 'date', 'createdAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('score').isNumber() && newData.child('score').val() >= 1 && newData.child('score').val() <= 3000 && newData.child('score').val() % 1 === 0 && newData.child('playTimeMs').isNumber() && newData.child('playTimeMs').val() >= newData.child('score').val() * 350 && newData.child('nextExpected').isNumber() && newData.child('nextExpected').val() >= newData.child('score').val() + 1 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('sig').isString() && newData.child('sig').val().length >= 4 && newData.child('createdAt').isNumber()"
       }
     },
     "ranks_country": {
       "$countryCode": {
         ".read": true,
-        ".indexOn": ["score"],
+        ".indexOn": ["score", "name"],
         "$entryId": {
-          ".write": "!data.exists() && newData.exists() && $countryCode.length === 2",
+          ".write": "((!data.exists() && newData.exists()) || (data.exists() && newData.exists() && newData.child('score').val() > data.child('score').val() && newData.child('name').val() === data.child('name').val())) && $countryCode.length === 2",
           ".validate": "newData.hasChildren(['name', 'score', 'country', 'playTimeMs', 'nextExpected', 'sig', 'date', 'createdAt']) && newData.child('country').val() === $countryCode && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('score').isNumber() && newData.child('score').val() >= 1 && newData.child('score').val() <= 3000 && newData.child('score').val() % 1 === 0 && newData.child('playTimeMs').isNumber() && newData.child('playTimeMs').val() >= newData.child('score').val() * 350 && newData.child('nextExpected').isNumber() && newData.child('nextExpected').val() >= newData.child('score').val() + 1 && newData.child('sig').isString() && newData.child('sig').val().length >= 4 && newData.child('createdAt').isNumber()"
         }
+      }
+    },
+    "users": {
+      "$accountKey": {
+        ".read": true,
+        ".write": "newData.exists() && (!data.child('name').exists() || newData.child('name').val() === data.child('name').val())"
       }
     },
     "battles": {
