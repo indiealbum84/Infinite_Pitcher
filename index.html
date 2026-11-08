@@ -1633,14 +1633,77 @@
         }
 
         #battle-screen {
-            gap: 33px;
-            padding: 56px 0;
+            gap: 16px;
+            padding: 28px 0;
         }
 
         .battle-title {
-            font-size: 72px;
-            margin: 0 0 11px;
+            font-size: 64px;
+            margin: 0;
             text-shadow: 8px 8px 0 var(--palette-yellow);
+        }
+
+        .battle-stats-pill {
+            background: rgba(15, 23, 42, 0.88);
+            color: #ffffff;
+            border: 5px solid #000000;
+            border-radius: 999px;
+            padding: 12px 32px;
+            font-size: 29px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
+            text-align: center;
+        }
+
+        .battle-result-status {
+            color: #0f172a;
+            background: rgba(255, 255, 255, 0.88);
+            border: 5px solid #000000;
+            border-radius: 999px;
+            padding: 14px 34px;
+            font-size: 32px;
+            font-weight: 900;
+            margin: 0 0 18px;
+            box-shadow: 0 7px 0 var(--palette-mint), 0 7px 0 4px #000000;
+            text-align: center;
+        }
+
+        #battle-quick-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 775px;
+            background: rgba(255, 255, 255, 0.82);
+            border: 6px solid #000000;
+            border-radius: 36px;
+            padding: 20px 28px;
+            box-shadow: 0 10px 0 var(--palette-pink), 0 10px 0 5px #000000;
+            box-sizing: border-box;
+        }
+
+        #battle-quick-btn {
+            width: 660px !important;
+            padding: 22px 36px !important;
+            font-size: 46px !important;
+            background: linear-gradient(180deg, #ff6b9d 0%, #ff3d77 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 0 #b81d4e, 0 10px 0 5px #000000 !important;
+        }
+
+        #battle-quick-btn.matching {
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
+            box-shadow: 0 10px 0 #92400e, 0 10px 0 5px #000000 !important;
+        }
+
+        .battle-quick-status {
+            font-size: 30px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 0;
+            min-height: 38px;
+            text-align: center;
         }
 
         .battle-profile-panel,
@@ -1653,7 +1716,7 @@
         }
 
         .battle-small-label {
-            font-size: 36px;
+            font-size: 32px;
         }
 
         .battle-name-input {
@@ -1672,8 +1735,8 @@
         #battle-name-next-btn,
         #battle-start-btn {
             width: 609px !important;
-            padding: 28px 50px !important;
-            font-size: 55px !important;
+            padding: 22px 44px !important;
+            font-size: 48px !important;
         }
 
         #battle-create-section,
@@ -1681,47 +1744,82 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 22px !important;
+            gap: 14px !important;
         }
 
         .battle-code-box {
-            font-size: 133px;
-            letter-spacing: 22px;
+            font-size: 108px;
+            letter-spacing: 20px;
             border-width: 8px;
-            border-radius: 44px;
-            padding: 28px 83px;
-            box-shadow: 0 17px 0 var(--palette-yellow), 0 17px 0 6px #000000;
+            border-radius: 38px;
+            padding: 18px 68px;
+            box-shadow: 0 14px 0 var(--palette-yellow), 0 14px 0 6px #000000;
         }
 
         .battle-waiting {
-            font-size: 39px;
+            font-size: 34px;
+            margin: 0;
         }
 
         .battle-player-list {
-            gap: 17px;
-            margin: -6px 0 6px;
+            gap: 14px;
+            margin: -4px 0 4px;
         }
 
         .battle-player-pill {
             border-width: 6px;
-            border-radius: 33px;
-            font-size: 33px;
-            padding: 17px 22px;
+            border-radius: 30px;
+            font-size: 30px;
+            padding: 12px 18px;
             box-shadow: 0 6px 0 var(--palette-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            line-height: 1.15;
+        }
+
+        .battle-player-pill .bpp-name {
+            font-size: 30px;
+            font-weight: 900;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .battle-player-pill .bpp-record {
+            font-size: 22px;
+            font-weight: 800;
+            color: #334155;
+            background: rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 2px 12px;
+        }
+
+        .battle-score-card .bsc-record {
+            font-size: 25px;
+            font-weight: 800;
+            color: #1e293b;
+            background: rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 4px 14px;
+            margin-top: 6px;
         }
 
         .battle-divider {
-            font-size: 36px;
+            font-size: 30px;
         }
 
         .battle-input {
             border-width: 8px;
-            border-radius: 39px;
-            font-size: 78px;
+            border-radius: 34px;
+            font-size: 64px;
             letter-spacing: 11px;
-            width: 498px;
-            padding: 22px 44px;
-            box-shadow: 0 11px 0 var(--palette-blue), 0 11px 0 6px #000000;
+            width: 440px;
+            padding: 16px 36px;
+            box-shadow: 0 10px 0 var(--palette-blue), 0 10px 0 6px #000000;
         }
 
         #battle-screen #battle-cancel-btn,
@@ -1855,11 +1953,11 @@
             height: 100%;
         }
 
-        /* Continue (Rewarded Ad Revive) Screen */
-        #continue-screen {
-            background: rgba(15, 23, 42, 0.82);
+        /* Play Gate & Remove Ads ($4.99) Modal */
+        #play-gate-screen {
+            background: rgba(15, 23, 42, 0.84);
             backdrop-filter: blur(8px);
-            z-index: 22;
+            z-index: 35;
             gap: 28px;
         }
 
@@ -1867,30 +1965,30 @@
             background: var(--palette-cream);
             border: 8px solid #000000;
             border-radius: 55px;
-            padding: 64px 52px;
-            width: min(860px, calc(100% - 80px));
+            padding: 58px 48px;
+            width: min(880px, calc(100% - 72px));
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 28px;
+            gap: 24px;
             box-shadow: 0 22px 0 var(--palette-pink), 0 22px 0 6px #000000;
         }
 
         .continue-title {
             font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
-            font-size: 110px;
+            font-size: 92px;
             color: var(--palette-blue);
             margin: 0;
-            line-height: 1;
+            line-height: 1.05;
             text-shadow: 6px 6px 0 #ffffff, 11px 11px 0 #000000;
         }
 
         .continue-desc {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 900;
             color: var(--palette-ink);
             margin: 0;
-            line-height: 1.45;
+            line-height: 1.48;
             white-space: pre-line;
         }
 
@@ -1898,25 +1996,70 @@
             background: var(--palette-yellow) !important;
             color: var(--palette-ink) !important;
             width: 100%;
-            padding: 28px 36px !important;
-            font-size: 48px !important;
+            padding: 26px 32px !important;
+            font-size: 44px !important;
             border-radius: 34px !important;
-            margin-top: 8px !important;
+            margin-top: 4px !important;
             box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000 !important;
             text-shadow: none !important;
         }
 
+        .noads-buy-btn {
+            background: var(--palette-mint) !important;
+            color: #ffffff !important;
+            width: 100%;
+            padding: 26px 32px !important;
+            font-size: 42px !important;
+            border-radius: 34px !important;
+            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 6px #000000 !important;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .play-gate-sub-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
         .continue-skip-btn {
             background: #ffffff;
-            color: #64748b;
+            color: #475569;
             border: 6px solid #000000;
             border-radius: 50px;
-            padding: 16px 52px;
-            font-size: 34px;
+            padding: 14px 42px;
+            font-size: 32px;
             font-weight: 900;
             cursor: pointer;
             font-family: inherit;
             box-shadow: 0 8px 0 #cbd5e1, 0 8px 0 4px #000000;
+            touch-action: auto !important;
+        }
+
+        .ticket-status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--palette-ink);
+            border: 5px solid #000000;
+            border-radius: 40px;
+            padding: 12px 30px;
+            font-size: 28px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 0 var(--palette-yellow), 0 8px 0 4px #000000;
+            touch-action: auto !important;
+            font-family: inherit;
+        }
+
+        .ticket-status-pill.is-vip {
+            background: var(--palette-yellow);
+            box-shadow: 0 8px 0 var(--palette-mint), 0 8px 0 4px #000000;
+            cursor: default;
         }
 
         /* Simulated Rewarded Ad Overlay (for Web/Preview before native AdMob) */
@@ -1992,6 +2135,7 @@
                     <button id="start-btn-id" class="start-btn">スタート</button>
                     <button id="battle-btn" class="start-btn" onclick="openBattleScreen()">みんなで対戦</button>
                 </div>
+                <button type="button" id="intro-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">🎁 本日1回無料  |  🚫 広告削除 $4.99</button>
                 <div id="test-start-row">
                     <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
                     <div id="test-num-row" style="display:none;gap:6px;align-items:center;">
@@ -2018,15 +2162,18 @@
             </div>
         </div>
 
-        <!-- 1회 이어하기(보상형 광고) 화면 -->
-        <div id="continue-screen" class="screen hidden">
+        <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($4.99) 모달 -->
+        <div id="play-gate-screen" class="screen hidden">
             <div class="continue-card">
-                <h2 class="continue-title" id="continue-title">CHANCE!</h2>
-                <div class="final-score" style="margin:0;">SCORE: <span id="continue-score-val">0</span></div>
-                <p class="continue-desc" id="continue-desc">広告を見てその場から復活しますか？
-(1プレイにつき1回まで)</p>
-                <button id="continue-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdToContinue()">🎬 広告を見て復活</button>
-                <button id="continue-skip-btn" class="continue-skip-btn" onclick="skipContinue()">あきらめる</button>
+                <h2 class="continue-title" id="play-gate-title">NEXT PLAY</h2>
+                <p class="continue-desc" id="play-gate-desc">本日の無料プレイ(1回)を使用しました。
+次のゲームをプレイするには広告を1回視聴してください！</p>
+                <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 広告を1回見てプレイ</button>
+                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 広告削除・無制限プレイ ($4.99)</button>
+                <div class="play-gate-sub-actions">
+                    <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">購入を復元</button>
+                    <button id="play-gate-close-btn" class="continue-skip-btn" onclick="closePlayGateModal()">閉じる</button>
+                </div>
             </div>
         </div>
 
@@ -2034,7 +2181,7 @@
         <div id="reward-ad-overlay" class="screen hidden">
             <div class="reward-ad-box">
                 <span class="reward-ad-badge">REWARD AD (TEST)</span>
-                <p id="reward-ad-msg" style="font-size:36px;font-weight:900;margin:0;">광고 시청 후 즉시 부활합니다...</p>
+                <p id="reward-ad-msg" style="font-size:36px;font-weight:900;margin:0;">광고 시청 후 다음 게임이 시작됩니다...</p>
                 <div class="reward-ad-timer" id="reward-ad-timer">3</div>
             </div>
         </div>
@@ -2053,6 +2200,7 @@
             <div id="action-buttons">
                 <button id="register-btn" class="start-btn hidden" onclick="registerName()">登録して続ける</button>
                 <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
+                <button type="button" id="gameover-ticket-pill" class="ticket-status-pill" style="margin-top:14px;" onclick="openPlayGateModal(null)">🎬 次回: 広告1回視聴  |  🚫 広告削除 $4.99</button>
             </div>
 
             <div id="leaderboard-modal">
@@ -2073,6 +2221,7 @@
         <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
             <p class="battle-title" id="battle-screen-title">最大8人で対戦</p>
+            <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
 
             <div class="battle-profile-panel">
                 <p class="battle-small-label" id="battle-name-label">내 닉네임</p>
@@ -2081,9 +2230,15 @@
                 <button class="start-btn" id="battle-name-next-btn" onclick="submitBattleNickname()" style="width:220px;padding:10px 18px;font-size:20px;">決定</button>
             </div>
 
+            <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
+            <div id="battle-quick-section">
+                <button class="start-btn" id="battle-quick-btn" onclick="toggleQuickMatch()">⚡ 빠른 매칭 (랜덤 대전)</button>
+                <p class="battle-quick-status" id="battle-quick-status">전 세계 플레이어와 즉시 매칭합니다</p>
+            </div>
+
             <!-- 방 만들기 섹션 -->
             <div id="battle-create-section">
-                <p class="battle-small-label" id="battle-code-label" style="margin:0 0 6px;">내 방 코드</p>
+                <p class="battle-small-label" id="battle-code-label" style="margin:0 0 4px;">내 방 코드 (친구 초대)</p>
                 <div class="battle-code-box" id="battle-room-code">----</div>
                 <p class="battle-waiting" id="battle-waiting-text">相手を待っています...</p>
                 <div class="battle-player-list" id="battle-player-list"></div>
@@ -2108,9 +2263,9 @@
         <!-- 대전 결과 화면 -->
         <div id="battle-result-screen" class="screen hidden">
             <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
+            <div class="battle-stats-pill" id="battle-result-stats-pill" style="margin-top:10px;">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
             <div class="battle-scores" id="battle-score-list"></div>
-            <button class="start-btn" id="battle-rematch-btn" onclick="requestRematch()" style="margin-bottom:8px;">もう一度 (<span id="rematch-countdown">10</span>)</button>
-            <p id="rematch-status" style="color:#94a3b8;font-size:13px;font-weight:700;margin:0 0 8px;min-height:18px;"></p>
+            <p id="rematch-status" class="battle-result-status"></p>
             <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
         </div>
 
@@ -2492,9 +2647,14 @@
                 battleNamePlaceholder: 'ニックネーム',
                 battleNameHint: '日本語5文字 / 英字10文字まで',
                 battleNameNext: '決定',
-                battleCodeLabel: '自分のルームコード',
-                battleJoinLabel: 'コード入力',
+                battleCodeLabel: '自分のルームコード (友達招待)',
+                battleJoinLabel: '友達のコード入力',
                 battleDivider: '── または ──',
+                battleQuickBtn: '⚡ クイックマッチ (ランダム対戦)',
+                battleQuickCancelBtn: '⏹ マッチング中止',
+                battleQuickIdle: '世界中のプレイヤーと即時マッチングします',
+                battleQuickSearching: sec => `🔍 対戦相手を探しています... (${sec}秒)`,
+                battleQuickMatched: '✅ マッチング完了！まもなく開始します！',
                 rematchBtn: 'もう一度',
                 selfLabel: '自分',
                 hostLabel: 'ホスト',
@@ -2508,15 +2668,29 @@
                 resultDraw: 'DRAW',
                 resultLose: 'LOSE',
                 rankText: rank => `${rank}位`,
-                othersPlaying: '他のプレイヤーがプレイ中...',
+                othersPlaying: '👀 他のプレイヤーがプレイ中... (いつでも退出可能)',
+                roomClosingIn: sec => `⏳ ${sec}秒後にルームが自動終了します...`,
+                battleStatsText: (matches, wins) => `🏆 自分の対戦記録: ${matches}戦  |  🥇 1位: ${wins}回`,
+                playerRecordBadge: (matches, wins) => `${matches}戦 · 🥇1位 ${wins}回`,
                 waitingHost: 'ホストの開始待ち...',
                 rematchJoinStatus: (ready, total) => `リマッチ参加 ${ready}/${total}`,
                 rematchReady: 'リマッチ参加完了',
-                continueTitle: 'CHANCE!',
-                continueDesc: '広告を見てその場から復活しますか？\n(1プレイにつき1回まで)',
-                continueAdBtn: '🎬 広告を見て復活',
-                continueSkipBtn: 'あきらめる',
-                rewardAdMsg: '広告視聴後にすぐ復活します...',
+                playGateTitle: 'NEXT PLAY',
+                playGateDescNeedAd: '本日の無料プレイ(2回)をすべて使用しました。\n広告を1回見るか、広告削除パスを購入すると\nすぐに次のゲームをプレイできます！',
+                playGateResetLine: (h, m) => `⏰ 次の無料リセット(UTC 00:00)まで あと${h}時間${m}分`,
+                playGateDescShop: (rem, max) => `本日の残り無料プレイ: ${rem}/${max}回\n\n広告削除パス($4.99)を購入すると\n広告なしで永久に無制限プレイできます！`,
+                playGateAdBtn: '🎬 広告を1回見てプレイ',
+                playGateNoAdsBtn: '👑 広告削除・無制限プレイ ($4.99)',
+                playGateRestoreBtn: '購入を復元',
+                playGateCloseBtn: '閉じる',
+                rewardAdMsg: '広告視聴後に次のゲームが始まります...',
+                ticketPillFree: (rem, max) => `⚾ 本日の残り無料プレイ: ${rem}/${max}回  |  🚫 広告削除 $4.99`,
+                ticketPillNeedAd: (max) => `⚾ 本日の残り無料: 0/${max}回 (次回: 広告1回)  |  🚫 広告削除 $4.99`,
+                ticketPillCredit: (max) => `🎟️ プレイチケット1回保有 (無料 0/${max}回)  |  🚫 広告削除 $4.99`,
+                ticketPillVip: '👑 広告削除パス適用中 (無制限プレイ)',
+                confirmBuyNoAds: '広告削除・無制限プレイパス ($4.99) を購入しますか？\n(テスト環境では即時適用されます)',
+                alertNoAdsActivated: '👑 広告削除パス($4.99)が適用されました！無制限にプレイできます。',
+                alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
                 loadingRanks: '読み込み中...',
                 emptyRanks: 'まだ記録がありません',
             },
@@ -2546,9 +2720,14 @@
                 battleNamePlaceholder: 'Nickname',
                 battleNameHint: 'Up to 10 English letters',
                 battleNameNext: 'OK',
-                battleCodeLabel: 'Your room code',
-                battleJoinLabel: 'Enter code',
+                battleCodeLabel: 'Your room code (Invite friends)',
+                battleJoinLabel: 'Enter friend code',
                 battleDivider: '── OR ──',
+                battleQuickBtn: '⚡ Quick Match (Random)',
+                battleQuickCancelBtn: '⏹ Cancel Matchmaking',
+                battleQuickIdle: 'Instant match with players worldwide',
+                battleQuickSearching: sec => `🔍 Searching for opponents... (${sec}s)`,
+                battleQuickMatched: '✅ Match found! Starting game...',
                 rematchBtn: 'Rematch',
                 selfLabel: 'Me',
                 hostLabel: 'Host',
@@ -2562,15 +2741,29 @@
                 resultDraw: 'DRAW',
                 resultLose: 'LOSE',
                 rankText: rank => `${rank}${getEnglishOrdinalSuffix(rank)}`,
-                othersPlaying: 'Other players are still playing...',
+                othersPlaying: '👀 Others still playing... (Watch live or leave anytime)',
+                roomClosingIn: sec => `⏳ Room closing automatically in ${sec}s...`,
+                battleStatsText: (matches, wins) => `🏆 My Battle Record: ${matches} Played  |  🥇 1st Place: ${wins}`,
+                playerRecordBadge: (matches, wins) => `${matches}G · 🥇1st ${wins}W`,
                 waitingHost: 'Waiting for host...',
                 rematchJoinStatus: (ready, total) => `Rematch joined ${ready}/${total}`,
                 rematchReady: 'Rematch joined',
-                continueTitle: 'CHANCE!',
-                continueDesc: 'Watch an ad to continue from here?\n(Once per game)',
-                continueAdBtn: '🎬 Watch Ad & Continue',
-                continueSkipBtn: 'Give up',
-                rewardAdMsg: 'Reviving right after the ad...',
+                playGateTitle: 'NEXT PLAY',
+                playGateDescNeedAd: 'You used all 2 free games for today.\nWatch 1 ad or buy the Remove Ads Pass\nto play the next game right away!',
+                playGateResetLine: (h, m) => `⏰ Next free reset (UTC 00:00) in ${h}h ${m}m`,
+                playGateDescShop: (rem, max) => `Free plays left today: ${rem}/${max}\n\nBuy the Remove Ads Pass ($4.99)\nfor unlimited ad-free play forever!`,
+                playGateAdBtn: '🎬 Watch 1 Ad to Play',
+                playGateNoAdsBtn: '👑 Remove Ads + Unlimited Play ($4.99)',
+                playGateRestoreBtn: 'Restore Purchases',
+                playGateCloseBtn: 'Close',
+                rewardAdMsg: 'Next game starts right after the ad...',
+                ticketPillFree: (rem, max) => `⚾ Free Plays Today: ${rem}/${max}  |  🚫 Remove Ads $4.99`,
+                ticketPillNeedAd: (max) => `⚾ Free Plays Today: 0/${max} (Watch 1 Ad)  |  🚫 Remove Ads $4.99`,
+                ticketPillCredit: (max) => `🎟️ 1 Play Ticket Ready (Free 0/${max})  |  🚫 Remove Ads $4.99`,
+                ticketPillVip: '👑 Ad-Free Pass Active (Unlimited Play)',
+                confirmBuyNoAds: 'Purchase Remove Ads + Unlimited Play Pass ($4.99)?\n(Activated immediately in test/preview mode)',
+                alertNoAdsActivated: '👑 Remove Ads Pass ($4.99) activated! Enjoy unlimited play.',
+                alertRestoreNone: 'No previous purchase found to restore.',
                 loadingRanks: 'Loading...',
                 emptyRanks: 'No records yet',
             },
@@ -2600,9 +2793,14 @@
                 battleNamePlaceholder: '닉네임 입력',
                 battleNameHint: '한글 5자 / 영어 10자까지',
                 battleNameNext: '확인',
-                battleCodeLabel: '내 방 코드',
-                battleJoinLabel: '코드 입력',
+                battleCodeLabel: '내 방 코드 (친구 초대)',
+                battleJoinLabel: '친구 코드 입력',
                 battleDivider: '── 또는 ──',
+                battleQuickBtn: '⚡ 빠른 매칭 (랜덤 대전)',
+                battleQuickCancelBtn: '⏹ 매칭 취소',
+                battleQuickIdle: '전 세계 플레이어와 즉시 매칭합니다',
+                battleQuickSearching: sec => `🔍 온라인 상대 찾는 중... (${sec}초)`,
+                battleQuickMatched: '✅ 매칭 완료! 잠시 후 시작합니다!',
                 rematchBtn: '다시하기',
                 selfLabel: '나',
                 hostLabel: '방장',
@@ -2616,15 +2814,29 @@
                 resultDraw: '무승부',
                 resultLose: '패배...',
                 rankText: rank => `${rank}위`,
-                othersPlaying: '다른 플레이어 경기 중...',
+                othersPlaying: '👀 다른 플레이어 경기 중... (바로 나가거나 끝까지 관전 가능)',
+                roomClosingIn: sec => `⏳ ${sec}초 후 방이 자동으로 종료됩니다...`,
+                battleStatsText: (matches, wins) => `🏆 나의 대전 기록: ${matches}판  |  🥇 1위: ${wins}회`,
+                playerRecordBadge: (matches, wins) => `${matches}판 · 🥇1위 ${wins}회`,
                 waitingHost: '방장 시작 대기 중...',
                 rematchJoinStatus: (ready, total) => `다시하기 참가 ${ready}/${total}`,
                 rematchReady: '다시하기 참가 완료',
-                continueTitle: 'CHANCE!',
-                continueDesc: '광고를 보고 이 자리에서 부활할까요?\n(판당 1회 가능)',
-                continueAdBtn: '🎬 광고 보고 이어하기',
-                continueSkipBtn: '포기하기',
-                rewardAdMsg: '광고 시청 후 즉시 부활합니다...',
+                playGateTitle: 'NEXT PLAY',
+                playGateDescNeedAd: '오늘의 무료 게임(2판)을 모두 사용했습니다.\n광고를 1회 시청하거나 광고 제거 패스를 구매하면\n바로 다음 게임을 플레이할 수 있습니다!',
+                playGateResetLine: (h, m) => `⏰ 다음 무료 리셋(UTC 00:00)까지 ${h}시간 ${m}분 남음`,
+                playGateDescShop: (rem, max) => `오늘 남은 무료 게임: ${rem}/${max}판\n\n광고 제거 패스($4.99)를 구매하면\n광고 없이 평생 무제한으로 플레이할 수 있습니다!`,
+                playGateAdBtn: '🎬 광고 1회 보고 다음 판 하기',
+                playGateNoAdsBtn: '👑 광고 제거 + 무제한 플레이 ($4.99)',
+                playGateRestoreBtn: '구매 복원',
+                playGateCloseBtn: '닫기',
+                rewardAdMsg: '광고 시청 후 다음 게임이 시작됩니다...',
+                ticketPillFree: (rem, max) => `⚾ 오늘 남은 무료 게임: ${rem}/${max}판  |  🚫 광고 제거 $4.99`,
+                ticketPillNeedAd: (max) => `⚾ 오늘 남은 무료: 0/${max}판 (광고 1회 시청)  |  🚫 광고 제거 $4.99`,
+                ticketPillCredit: (max) => `🎟️ 광고 티켓 1판 보유 중 (무료 0/${max}판)  |  🚫 광고 제거 $4.99`,
+                ticketPillVip: '👑 광고 제거 패스 적용 중 (무제한 플레이)',
+                confirmBuyNoAds: '광고 제거 + 무제한 플레이 패스($4.99)를 구매하시겠습니까?\n(현재 테스트 모드에서는 즉시 적용됩니다)',
+                alertNoAdsActivated: '👑 광고 제거 패스($4.99)가 적용되었습니다! 무제한으로 플레이하세요.',
+                alertRestoreNone: '복원할 구매 내역이 없습니다.',
                 loadingRanks: '불러오는 중...',
                 emptyRanks: '아직 기록이 없습니다',
             }
@@ -2664,11 +2876,13 @@
             document.getElementById('register-btn').innerText      = t.registerBtn;
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('home-btn').innerText               = t.homeBtn;
-            document.getElementById('continue-title').innerText         = t.continueTitle;
-            document.getElementById('continue-desc').innerText          = t.continueDesc;
-            document.getElementById('continue-ad-btn').innerText        = t.continueAdBtn;
-            document.getElementById('continue-skip-btn').innerText      = t.continueSkipBtn;
+            document.getElementById('play-gate-title').innerText        = t.playGateTitle;
+            document.getElementById('play-gate-ad-btn').innerText       = t.playGateAdBtn;
+            document.getElementById('play-gate-noads-btn').innerText    = t.playGateNoAdsBtn;
+            document.getElementById('play-gate-restore-btn').innerText  = t.playGateRestoreBtn;
+            document.getElementById('play-gate-close-btn').innerText    = t.playGateCloseBtn;
             document.getElementById('reward-ad-msg').innerText          = t.rewardAdMsg;
+            if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             setBattleRematchButtonText();
             document.querySelectorAll('.lang-switch-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -2796,21 +3010,22 @@
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
         function getPitchInterval(n) {
-            if (n < 31)  return 1200;
-            if (n < 131) return 1000;
-            if (n < 231) return 900;
-            if (n < 331) return 800;
-            if (n < 431) return 700;
-            if (n < 531) return 600;
-            return 500;
+            if (n < 31)  return 1000;
+            if (n < 131) return 900;
+            if (n < 231) return 800;
+            if (n < 331) return 700;
+            if (n < 431) return 600;
+            if (n < 531) return 500;
+            return 400;
         }
 
         function getTestMoveFactor(n) {
-            if (n < 31)  return 0.15;
-            if (n < 131) return 0.24;
-            if (n < 231) return 0.32;
-            if (n < 331) return 0.40;
-            return 0.50;
+            if (n < 31)  return 0.18;
+            if (n < 131) return 0.26;
+            if (n < 231) return 0.34;
+            if (n < 331) return 0.42;
+            if (n < 431) return 0.50;
+            return 0.58;
         }
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
@@ -3055,15 +3270,185 @@
         });
 
         /**
-         * GAME LOGIC
+         * GAME LOGIC & PLAY TICKET / REMOVE ADS ($4.99) BM
          */
-        let continueUsed = false;
         let sessionPlayStartedAt = 0;
         let accumulatedPlayTimeMs = 0;
 
+        const NO_ADS_STORAGE_KEY        = 'infinitePitcherNoAdsPurchased';
+        const DAILY_FREE_DATE_KEY       = 'infinitePitcherFreePlayUtcDate';
+        const DAILY_FREE_USED_COUNT_KEY = 'infinitePitcherFreePlayUsedCount';
+        const DAILY_FREE_MAX_DAY_KEY    = 'infinitePitcherFreePlayMaxUtcDay';
+        const LAST_SERVER_UTC_DAY_KEY   = 'infinitePitcherLastServerUtcDay';
+        const AD_PLAY_CREDIT_KEY        = 'infinitePitcherAdPlayCredit';
+        const DAILY_FREE_PLAY_LIMIT     = 2; // 하루 무료 플레이 2판
+        const DAY_MS                    = 86400000;
+        let firebaseServerTimeOffsetMs  = 0;
+        let serverTimeSynced            = false;
+        let pendingPlayGateCallback     = null;
+
+        // Firebase 서버 표준시 오프셋 실시간 동기화 (기기 시계/타임존 조작 어뷰징 원천 차단)
+        try {
+            db.ref('.info/serverTimeOffset').on('value', snap => {
+                const offset = Number(snap.val());
+                if (Number.isFinite(offset)) {
+                    firebaseServerTimeOffsetMs = offset;
+                    serverTimeSynced = true;
+                    const serverDayIdx = Math.floor((Date.now() + firebaseServerTimeOffsetMs) / DAY_MS);
+                    try {
+                        localStorage.setItem(LAST_SERVER_UTC_DAY_KEY, String(serverDayIdx));
+                        const savedMaxDay = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
+                        if (savedMaxDay > serverDayIdx) {
+                            localStorage.setItem(DAILY_FREE_MAX_DAY_KEY, String(serverDayIdx));
+                        }
+                    } catch (e) {}
+                    updatePlayTicketStatusUI();
+                }
+            });
+        } catch (e) {}
+
+        function getServerNowMs() {
+            return Date.now() + firebaseServerTimeOffsetMs;
+        }
+
+        function getUtcDateKey() {
+            // 전 세계 동일하게 UTC 00:00 (한국/일본 오전 09:00) 기준 리셋
+            return new Date(getServerNowMs()).toISOString().slice(0, 10);
+        }
+
+        function getUtcDayIndex() {
+            return Math.floor(getServerNowMs() / DAY_MS);
+        }
+
+        function getRemainingTimeToUtcReset() {
+            const nowMs = getServerNowMs();
+            const nextUtcMidnightMs = (Math.floor(nowMs / DAY_MS) + 1) * DAY_MS;
+            const diffMs = Math.max(0, nextUtcMidnightMs - nowMs);
+            const totalMinutes = Math.max(1, Math.ceil(diffMs / 60000));
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return { hours, minutes };
+        }
+
+        function isNoAdsPurchased() {
+            try { return localStorage.getItem(NO_ADS_STORAGE_KEY) === 'true'; } catch (e) { return false; }
+        }
+
+        function setNoAdsPurchased(purchased) {
+            try {
+                if (purchased) localStorage.setItem(NO_ADS_STORAGE_KEY, 'true');
+                else localStorage.removeItem(NO_ADS_STORAGE_KEY);
+            } catch (e) {}
+            updatePlayTicketStatusUI();
+        }
+
+        function getRemainingDailyFreePlays() {
+            if (isNoAdsPurchased()) return DAILY_FREE_PLAY_LIMIT;
+            try {
+                const savedDate = localStorage.getItem(DAILY_FREE_DATE_KEY) || '';
+                const savedMaxDay = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
+                const savedUsedCount = Math.max(0, Number(localStorage.getItem(DAILY_FREE_USED_COUNT_KEY) || 0));
+
+                // 최초 실행(아직 무료 판을 한 번도 쓴 적 없음)이면 2판 모두 부여
+                if (!savedDate && savedMaxDay === 0) return DAILY_FREE_PLAY_LIMIT;
+
+                const currentDayIdx = getUtcDayIndex();
+                const lastServerDay = Number(localStorage.getItem(LAST_SERVER_UTC_DAY_KEY) || 0);
+                // 오프라인 상태에서 기기 날짜를 미래로 돌리는 어뷰징 차단
+                const effectiveDayIdx = (!serverTimeSynced && lastServerDay > 0)
+                    ? Math.min(currentDayIdx, lastServerDay)
+                    : currentDayIdx;
+
+                // 기기 날짜를 과거로 되돌린 경우 차단
+                if (effectiveDayIdx < savedMaxDay) return 0;
+
+                // 오늘(동일 UTC 날짜) 이미 플레이한 기록이 있는 경우 남은 횟수 반환
+                if (effectiveDayIdx === savedMaxDay || savedDate === getUtcDateKey()) {
+                    return Math.max(0, DAILY_FREE_PLAY_LIMIT - savedUsedCount);
+                }
+
+                // 새로운 UTC 날짜로 넘어간 경우 2판 리셋
+                return DAILY_FREE_PLAY_LIMIT;
+            } catch (e) {
+                return DAILY_FREE_PLAY_LIMIT;
+            }
+        }
+
+        function hasDailyFreePlay() {
+            if (isNoAdsPurchased()) return true;
+            return getRemainingDailyFreePlays() > 0;
+        }
+
+        function hasAdPlayCredit() {
+            try { return localStorage.getItem(AD_PLAY_CREDIT_KEY) === 'true'; } catch (e) { return false; }
+        }
+
+        function setAdPlayCredit(hasCredit) {
+            try {
+                if (hasCredit) localStorage.setItem(AD_PLAY_CREDIT_KEY, 'true');
+                else localStorage.removeItem(AD_PLAY_CREDIT_KEY);
+            } catch (e) {}
+            updatePlayTicketStatusUI();
+        }
+
+        function canPlayWithoutAd() {
+            return isNoAdsPurchased() || hasDailyFreePlay() || hasAdPlayCredit();
+        }
+
+        function consumePlayTicket() {
+            if (isNoAdsPurchased()) {
+                updatePlayTicketStatusUI();
+                return;
+            }
+            const remaining = getRemainingDailyFreePlays();
+            if (remaining > 0) {
+                try {
+                    const todayKey = getUtcDateKey();
+                    const todayIdx = getUtcDayIndex();
+                    const savedDate = localStorage.getItem(DAILY_FREE_DATE_KEY) || '';
+                    const prevUsed = savedDate === todayKey
+                        ? Math.max(0, Number(localStorage.getItem(DAILY_FREE_USED_COUNT_KEY) || 0))
+                        : 0;
+                    const prevMax = Number(localStorage.getItem(DAILY_FREE_MAX_DAY_KEY) || 0);
+                    localStorage.setItem(DAILY_FREE_DATE_KEY, todayKey);
+                    localStorage.setItem(DAILY_FREE_USED_COUNT_KEY, String(Math.min(DAILY_FREE_PLAY_LIMIT, prevUsed + 1)));
+                    localStorage.setItem(DAILY_FREE_MAX_DAY_KEY, String(Math.max(prevMax, todayIdx)));
+                } catch (e) {}
+            } else if (hasAdPlayCredit()) {
+                setAdPlayCredit(false);
+            }
+            updatePlayTicketStatusUI();
+        }
+
+        function updatePlayTicketStatusUI() {
+            const vip = isNoAdsPurchased();
+            const rem = getRemainingDailyFreePlays();
+            const credit = hasAdPlayCredit();
+            let pillText = '';
+            if (vip) {
+                pillText = textFor('ticketPillVip');
+            } else if (rem > 0) {
+                const fn = textFor('ticketPillFree');
+                pillText = typeof fn === 'function' ? fn(rem, DAILY_FREE_PLAY_LIMIT) : String(fn);
+            } else if (credit) {
+                const fn = textFor('ticketPillCredit');
+                pillText = typeof fn === 'function' ? fn(DAILY_FREE_PLAY_LIMIT) : String(fn);
+            } else {
+                const fn = textFor('ticketPillNeedAd');
+                pillText = typeof fn === 'function' ? fn(DAILY_FREE_PLAY_LIMIT) : String(fn);
+            }
+
+            ['intro-ticket-pill', 'gameover-ticket-pill'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.innerText = pillText;
+                el.classList.toggle('is-vip', vip);
+            });
+        }
+
         function startCountdown(skipToNum) {
+            consumePlayTicket();
             gameState = 'COUNTDOWN';
-            continueUsed = false;
             sessionPlayStartedAt = 0;
             accumulatedPlayTimeMs = 0;
             score = 0;
@@ -3093,7 +3478,7 @@
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
-            document.getElementById('continue-screen').classList.add('hidden');
+            document.getElementById('play-gate-screen').classList.add('hidden');
             document.getElementById('ui-layer').classList.remove('hidden');
             updateUI();
 
@@ -3172,9 +3557,11 @@
             }
         }
 
-
-
         function startGame() {
+            if (!battleMode && !canPlayWithoutAd()) {
+                openPlayGateModal(() => startGame());
+                return;
+            }
             startCountdown(TEST_MODE_ENABLED && testMode && testStartNum > 1 ? testStartNum : null);
         }
 
@@ -3248,27 +3635,6 @@
             scheduleFlashballIfNeeded();
         }
 
-        function restoreBallStateBeforeContinue(failedBall) {
-            if (failedBall && failedBall.isFireball) {
-                fireballActive = false;
-                fireballCharging = false;
-            }
-            if (failedBall && failedBall.isMirrorBall) {
-                mirrorballCharging = false;
-                mirrorballShotPending = true;
-            }
-            if (failedBall && failedBall.isStripeBall) {
-                stripeballCharging = false;
-                stripeballShotPending = true;
-            }
-            if (failedBall && failedBall.isFlashBall) {
-                flashballCharging = false;
-                flashballShotPending = true;
-            }
-            balls = [];
-            setPitcherThrowing(false);
-        }
-
         function pausePlayTimer() {
             if (sessionPlayStartedAt > 0) {
                 accumulatedPlayTimeMs += Math.max(0, performance.now() - sessionPlayStartedAt);
@@ -3276,18 +3642,10 @@
             }
         }
 
-        function gameOver(failedBall = null) {
+        function gameOver() {
             setPitcherThrowing(false);
             pausePlayTimer();
             triggerHaptic('error');
-            if (!battleMode && !continueUsed && score > 0) {
-                gameState = 'CONTINUE';
-                stopAllBgm();
-                restoreBallStateBeforeContinue(failedBall);
-                document.getElementById('continue-score-val').innerText = score;
-                document.getElementById('continue-screen').classList.remove('hidden');
-                return;
-            }
             finalizeGameOver();
         }
 
@@ -3296,8 +3654,9 @@
             gameState = 'GAMEOVER';
             setPitcherThrowing(false);
             stopAllBgm();
-            document.getElementById('continue-screen').classList.add('hidden');
+            document.getElementById('play-gate-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
+            updatePlayTicketStatusUI();
             if (battleMode) {
                 // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
                 battleGameOver();
@@ -3308,16 +3667,52 @@
             }
         }
 
-        function skipContinue() {
-            finalizeGameOver();
+        function openPlayGateModal(onTicketGranted = null) {
+            if (isNoAdsPurchased()) {
+                if (typeof onTicketGranted === 'function') onTicketGranted();
+                return;
+            }
+            pendingPlayGateCallback = typeof onTicketGranted === 'function' ? onTicketGranted : null;
+            const needAdNow = !canPlayWithoutAd();
+            const descEl = document.getElementById('play-gate-desc');
+            const adBtnEl = document.getElementById('play-gate-ad-btn');
+            if (descEl) {
+                if (needAdNow) {
+                    const rem = getRemainingTimeToUtcReset();
+                    const resetFn = textFor('playGateResetLine');
+                    const resetLine = typeof resetFn === 'function' ? `\n\n${resetFn(rem.hours, rem.minutes)}` : '';
+                    descEl.innerText = `${textFor('playGateDescNeedAd')}${resetLine}`;
+                } else {
+                    const shopFn = textFor('playGateDescShop');
+                    const remPlays = getRemainingDailyFreePlays();
+                    descEl.innerText = typeof shopFn === 'function'
+                        ? shopFn(remPlays, DAILY_FREE_PLAY_LIMIT)
+                        : String(shopFn);
+                }
+            }
+            if (adBtnEl) {
+                adBtnEl.style.display = needAdNow ? 'block' : 'none';
+            }
+            document.getElementById('play-gate-screen').classList.remove('hidden');
         }
 
-        function watchAdToContinue() {
-            if (gameState !== 'CONTINUE') return;
-            // 추후 Capacitor AdMob 연동 시 window.showInfinitePitcherRewardedAd 훅이 있으면 우선 호출
+        function closePlayGateModal() {
+            pendingPlayGateCallback = null;
+            document.getElementById('play-gate-screen').classList.add('hidden');
+        }
+
+        function watchAdForNextGame() {
+            const grantAndProceed = () => {
+                setAdPlayCredit(true);
+                const cb = pendingPlayGateCallback;
+                closePlayGateModal();
+                if (typeof cb === 'function') cb();
+            };
+
+            // Capacitor AdMob 연동 시 window.showInfinitePitcherRewardedAd 훅 호출
             if (typeof window.showInfinitePitcherRewardedAd === 'function') {
                 window.showInfinitePitcherRewardedAd(
-                    () => resumeAfterContinue(),
+                    () => grantAndProceed(),
                     () => {}
                 );
                 return;
@@ -3337,57 +3732,59 @@
                 } else {
                     clearInterval(adTick);
                     overlay.classList.add('hidden');
-                    resumeAfterContinue();
+                    grantAndProceed();
                 }
             }, 1000);
         }
 
-        function resumeAfterContinue() {
-            continueUsed = true;
-            document.getElementById('continue-screen').classList.add('hidden');
-            gameState = 'COUNTDOWN';
-
-            const countdownScreen = document.getElementById('countdown-screen');
-            const countdownText = document.getElementById('countdown-text');
-            countdownText.classList.remove('countdown-instruction');
-            countdownText.style.fontSize = '';
-            countdownText.style.whiteSpace = '';
-            countdownScreen.style.pointerEvents = 'none';
-            countdownScreen.dataset.waiting = 'false';
-            countdownScreen.classList.remove('hidden');
-
-            let count = 3;
-            const runReviveTick = () => {
-                if (count > 0) {
-                    countdownText.innerText = count;
-                    countdownText.style.color = 'var(--palette-blue)';
-                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(64, 183, 242, 0.75)';
-                    countdownText.classList.remove('countdown-animate');
-                    void countdownText.offsetWidth;
-                    countdownText.classList.add('countdown-animate');
-                    playCountdownSfx();
-                    count--;
-                    setTimeout(runReviveTick, 1000);
-                } else if (count === 0) {
-                    countdownText.innerText = 'START!';
-                    countdownText.style.color = 'var(--palette-yellow)';
-                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(255, 232, 92, 0.75)';
-                    countdownText.classList.remove('countdown-animate');
-                    void countdownText.offsetWidth;
-                    countdownText.classList.add('countdown-animate');
-                    playSfx('start', 1.0, () => { playGameBgm(); });
-                    count--;
-                    setTimeout(runReviveTick, 1000);
-                } else {
-                    countdownScreen.classList.add('hidden');
-                    gameState = 'PLAYING';
-                    sessionPlayStartedAt = performance.now();
-                    lastPitchTime = performance.now();
-                }
+        function purchaseRemoveAds() {
+            const activateAndProceed = () => {
+                setNoAdsPurchased(true);
+                alert(textFor('alertNoAdsActivated'));
+                const cb = pendingPlayGateCallback;
+                closePlayGateModal();
+                if (typeof cb === 'function') cb();
             };
 
-            runReviveTick();
-            requestAnimationFrame(gameLoop);
+            // Capacitor 인앱결제(IAP) 연동 시 window.purchaseInfinitePitcherRemoveAds 훅 호출
+            if (typeof window.purchaseInfinitePitcherRemoveAds === 'function') {
+                window.purchaseInfinitePitcherRemoveAds(
+                    () => activateAndProceed(),
+                    () => {}
+                );
+                return;
+            }
+
+            // 웹/프리뷰 테스트용 확인창
+            if (confirm(textFor('confirmBuyNoAds'))) {
+                activateAndProceed();
+            }
+        }
+
+        function restoreRemoveAdsPurchase() {
+            if (typeof window.restoreInfinitePitcherPurchases === 'function') {
+                window.restoreInfinitePitcherPurchases(
+                    (restored) => {
+                        if (restored) {
+                            setNoAdsPurchased(true);
+                            alert(textFor('alertNoAdsActivated'));
+                            const cb = pendingPlayGateCallback;
+                            closePlayGateModal();
+                            if (typeof cb === 'function') cb();
+                        } else {
+                            alert(textFor('alertRestoreNone'));
+                        }
+                    },
+                    () => alert(textFor('alertRestoreNone'))
+                );
+                return;
+            }
+            if (isNoAdsPurchased()) {
+                alert(textFor('alertNoAdsActivated'));
+                closePlayGateModal();
+            } else {
+                alert(textFor('alertRestoreNone'));
+            }
         }
 
         function recoverTestPitch(ballIndex, ball) {
@@ -4433,8 +4830,8 @@
             document.getElementById('register-btn').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.remove('hidden');
 
-            // 실제 플레이 시간 검증값 (최소 투구 간격 450ms/점 이상 보장)
-            const playTimeMs = Math.max(Math.round(accumulatedPlayTimeMs), scoreToSave * 450);
+            // 실제 플레이 시간 검증값 (최소 투구 간격 350ms/점 이상 보장)
+            const playTimeMs = Math.max(Math.round(accumulatedPlayTimeMs), scoreToSave * 350);
             const expectedNum = Math.max(nextExpectedNumber, scoreToSave + 1);
             const newEntry = {
                 name: playerName,
@@ -4626,10 +5023,12 @@
         draw();
 
         /**
-         * BATTLE
+         * BATTLE (온라인 빠른 매칭 + AI 챌린저 폴백 + 친구 방 코드 대전 + 5초 자동 방 종료 + 내 대전 기록)
          */
         const battleRef = db.ref('battles');
         const MAX_BATTLE_PLAYERS = 8;
+        const QUICK_MATCH_WAIT_SECONDS = 7;
+        const ROOM_AUTO_CLOSE_SECONDS = 5;
         let battleRoomId = null;
         let battleRole = null; // 'host' | 'guest'
         let battlePlayerId = null;
@@ -4641,11 +5040,84 @@
         let battleResultListener = null;
         let battleRematchStarted = false;
         let battleProfileReady = false;
+        let battleMatchCounted = false;
+        let battleWinCounted = false;
         let rematchTimer = null;
-        let rematchSeconds = 10;
+        let rematchSeconds = ROOM_AUTO_CLOSE_SECONDS;
         let rematchListener = null;
+        let quickMatchActive = false;
+        let quickMatchTimer = null;
+        let quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
+        let botSimTimers = {};
+        let battleDisconnectRef = null;
+        let battleHostDisconnectRef = null;
         const BATTLE_NAME_STORAGE_KEY = 'infinitePitcherBattleName';
+        const BATTLE_STATS_STORAGE_KEY = 'infinitePitcherBattleStats_v1';
         const BATTLE_NAME_MAX_WEIGHT = 10;
+
+        function getBattleStats() {
+            try {
+                const raw = localStorage.getItem(BATTLE_STATS_STORAGE_KEY);
+                if (!raw) return { matches: 0, wins: 0 };
+                const parsed = JSON.parse(raw);
+                return {
+                    matches: Math.max(0, parseInt(parsed.matches, 10) || 0),
+                    wins: Math.max(0, parseInt(parsed.wins, 10) || 0)
+                };
+            } catch (e) {
+                return { matches: 0, wins: 0 };
+            }
+        }
+
+        function saveBattleStats(stats) {
+            try {
+                localStorage.setItem(BATTLE_STATS_STORAGE_KEY, JSON.stringify({
+                    matches: Math.max(0, parseInt(stats.matches, 10) || 0),
+                    wins: Math.max(0, parseInt(stats.wins, 10) || 0)
+                }));
+            } catch (e) {}
+            updateBattleStatsUI();
+        }
+
+        function recordBattleMatchPlayed() {
+            if (battleMatchCounted) return;
+            battleMatchCounted = true;
+            const stats = getBattleStats();
+            stats.matches += 1;
+            saveBattleStats(stats);
+        }
+
+        function recordBattleWin() {
+            if (battleWinCounted) return;
+            battleWinCounted = true;
+            const stats = getBattleStats();
+            stats.wins += 1;
+            if (stats.wins > stats.matches) stats.matches = stats.wins;
+            saveBattleStats(stats);
+        }
+
+        function updateBattleStatsUI() {
+            const stats = getBattleStats();
+            const fn = textFor('battleStatsText');
+            const label = typeof fn === 'function' ? fn(stats.matches, stats.wins) : `🏆 ${stats.matches} / 🥇 ${stats.wins}`;
+            const lobbyPill = document.getElementById('battle-stats-pill');
+            const resultPill = document.getElementById('battle-result-stats-pill');
+            if (lobbyPill) lobbyPill.innerText = label;
+            if (resultPill) resultPill.innerText = label;
+        }
+
+        const BATTLE_BOT_POOL = [
+            { name: '🇯🇵 REN', minTarget: 26, maxTarget: 95 },
+            { name: '🇺🇸 ALEX', minTarget: 20, maxTarget: 82 },
+            { name: '🇰🇷 강속구왕', minTarget: 32, maxTarget: 118 },
+            { name: '🇹🇼 LEO', minTarget: 22, maxTarget: 76 },
+            { name: '🇲🇽 MATEO', minTarget: 18, maxTarget: 64 },
+            { name: '🇬🇧 RYAN', minTarget: 24, maxTarget: 88 },
+            { name: '🇨🇦 NOAH', minTarget: 19, maxTarget: 72 },
+            { name: '🇯🇵 HARU', minTarget: 28, maxTarget: 105 },
+            { name: '🇰🇷 에이스', minTarget: 25, maxTarget: 92 },
+            { name: '🇩🇪 LUKAS', minTarget: 21, maxTarget: 78 }
+        ];
 
         function genCode() {
             return Math.floor(1000 + Math.random() * 9000).toString();
@@ -4704,6 +5176,8 @@
         function showBattleProfileStep() {
             battleProfileReady = false;
             document.querySelector('.battle-profile-panel').style.display = 'flex';
+            const quickSection = document.getElementById('battle-quick-section');
+            if (quickSection) quickSection.style.display = 'none';
             document.getElementById('battle-create-section').style.display = 'none';
             document.getElementById('battle-divider').style.display = 'none';
             document.getElementById('battle-join-section').style.display = 'none';
@@ -4712,9 +5186,12 @@
         function showBattleRoomStep() {
             battleProfileReady = true;
             document.querySelector('.battle-profile-panel').style.display = 'none';
-            document.getElementById('battle-create-section').style.display = 'block';
+            const quickSection = document.getElementById('battle-quick-section');
+            if (quickSection) quickSection.style.display = 'flex';
+            document.getElementById('battle-create-section').style.display = 'flex';
             document.getElementById('battle-divider').style.display = 'block';
             document.getElementById('battle-join-section').style.display = 'flex';
+            updateQuickMatchUI();
         }
 
         function handleBattleNameInput() {
@@ -4765,6 +5242,8 @@
                 finishedAt: null,
                 name: '',
                 isHost: false,
+                isBot: false,
+                disconnected: false,
                 joinedAt: 0,
                 ...players[id]
             })).sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
@@ -4776,6 +5255,346 @@
             if (player.id === battlePlayerId) return textFor('selfLabel');
             if (player.isHost) return textFor('hostLabel');
             return player.name || `P${index + 1}`;
+        }
+
+        function registerBattleDisconnectHandler(roomId, playerId, role) {
+            clearBattleDisconnectHandler();
+            if (!roomId || !playerId) return;
+            try {
+                battleDisconnectRef = battleRef.child(roomId + '/players/' + playerId + '/disconnected');
+                battleDisconnectRef.onDisconnect().set(true);
+                if (role === 'host') {
+                    battleHostDisconnectRef = battleRef.child(roomId + '/hostDisconnected');
+                    battleHostDisconnectRef.onDisconnect().set(true);
+                }
+            } catch (e) {}
+        }
+
+        function clearBattleDisconnectHandler() {
+            if (battleDisconnectRef) {
+                try { battleDisconnectRef.onDisconnect().cancel(); } catch (e) {}
+                battleDisconnectRef = null;
+            }
+            if (battleHostDisconnectRef) {
+                try { battleHostDisconnectRef.onDisconnect().cancel(); } catch (e) {}
+                battleHostDisconnectRef = null;
+            }
+        }
+
+        function stopQuickMatchTimer() {
+            if (quickMatchTimer) {
+                clearInterval(quickMatchTimer);
+                quickMatchTimer = null;
+            }
+            quickMatchActive = false;
+            updateQuickMatchUI();
+        }
+
+        function updateQuickMatchUI(customStatusText = null) {
+            const btn = document.getElementById('battle-quick-btn');
+            const statusEl = document.getElementById('battle-quick-status');
+            if (!btn || !statusEl) return;
+
+            if (quickMatchActive) {
+                btn.classList.add('matching');
+                btn.innerText = textFor('battleQuickCancelBtn');
+                statusEl.innerText = customStatusText || textFor('battleQuickSearching')(quickMatchSecondsLeft);
+            } else {
+                btn.classList.remove('matching');
+                btn.innerText = textFor('battleQuickBtn');
+                statusEl.innerText = customStatusText || textFor('battleQuickIdle');
+            }
+        }
+
+        function toggleQuickMatch() {
+            if (quickMatchActive) {
+                cancelQuickMatch();
+            } else {
+                startQuickMatch();
+            }
+        }
+
+        function cancelQuickMatch() {
+            stopQuickMatchTimer();
+            if (battleRoomId && battleRole === 'host') {
+                battleRef.child(battleRoomId).update({
+                    isPublic: false,
+                    isPublicWaiting: false,
+                    quickMatchDeadline: null
+                });
+            }
+            updateQuickMatchUI();
+        }
+
+        function startQuickMatch() {
+            if (!canPlayWithoutAd()) {
+                openPlayGateModal(() => startQuickMatch());
+                return;
+            }
+            const nickname = getBattleNickname() || getSavedBattleNickname();
+            if (!nickname) {
+                alert(textFor('alertNickname'));
+                showBattleProfileStep();
+                return;
+            }
+
+            stopQuickMatchTimer();
+            quickMatchActive = true;
+            quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
+            updateQuickMatchUI();
+
+            // 1. 먼저 현재 열려 있는 공개 매칭 대기방 검색
+            battleRef.orderByChild('isPublicWaiting').equalTo(true).limitToLast(10).once('value').then(snap => {
+                const rooms = snap.val() || {};
+                const now = getEstimatedServerTimeMs();
+                let targetCode = null;
+
+                Object.keys(rooms).forEach(code => {
+                    if (targetCode) return;
+                    if (code === battleRoomId) return;
+                    const room = rooms[code];
+                    if (!room || room.status !== 'waiting' || room.joinLocked || room.hostDisconnected) return;
+                    const pCount = Object.keys(room.players || {}).length;
+                    if (pCount >= 1 && pCount < MAX_BATTLE_PLAYERS && (now - (room.createdAt || 0) < 45000)) {
+                        targetCode = code;
+                    }
+                });
+
+                if (targetCode) {
+                    joinPublicQuickMatchRoom(targetCode, nickname);
+                } else {
+                    hostPublicQuickMatchRoom(nickname);
+                }
+            }).catch(() => {
+                hostPublicQuickMatchRoom(nickname);
+            });
+        }
+
+        function joinPublicQuickMatchRoom(targetCode, nickname) {
+            const newPlayerId = genBattlePlayerId();
+            const joinedAt = getEstimatedServerTimeMs();
+            const myStats = getBattleStats();
+
+            battleRef.child(targetCode + '/players').transaction(players => {
+                players = players || {};
+                const count = Object.keys(players).length;
+                if (count === 0 || count >= MAX_BATTLE_PLAYERS) return;
+                players[newPlayerId] = {
+                    score: 0,
+                    done: false,
+                    rank: null,
+                    finishOrder: null,
+                    finishedAt: null,
+                    name: nickname,
+                    matches: myStats.matches,
+                    wins: myStats.wins,
+                    isHost: false,
+                    isBot: false,
+                    joinedAt
+                };
+                return players;
+            }, (error, committed) => {
+                if (error || !committed) {
+                    hostPublicQuickMatchRoom(nickname);
+                    return;
+                }
+
+                leaveBattleRoom(true);
+                battleRoomId = targetCode;
+                battleRole = 'guest';
+                battlePlayerId = newPlayerId;
+                battleProfileReady = true;
+                document.getElementById('battle-room-code').innerText = targetCode;
+                registerBattleDisconnectHandler(targetCode, newPlayerId, 'guest');
+                showBattleRoomStep();
+                listenBattleRoom(targetCode);
+
+                quickMatchActive = true;
+                updateQuickMatchUI(textFor('battleQuickMatched'));
+            });
+        }
+
+        function hostPublicQuickMatchRoom(nickname) {
+            if (!battleRoomId || battleRole !== 'host') {
+                createBattleRoom(nickname);
+            }
+            const code = battleRoomId;
+            if (!code) return;
+
+            const deadline = getEstimatedServerTimeMs() + QUICK_MATCH_WAIT_SECONDS * 1000;
+            battleRef.child(code).update({
+                isPublic: true,
+                isPublicWaiting: true,
+                quickMatchDeadline: deadline
+            });
+
+            quickMatchActive = true;
+            quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
+            updateQuickMatchUI();
+
+            quickMatchTimer = setInterval(() => {
+                if (!quickMatchActive || !battleRoomId || battleRole !== 'host') {
+                    stopQuickMatchTimer();
+                    return;
+                }
+                quickMatchSecondsLeft = Math.max(0, quickMatchSecondsLeft - 1);
+                updateQuickMatchUI();
+
+                const currentCount = Object.keys(battlePlayers || {}).length;
+                if (currentCount >= MAX_BATTLE_PLAYERS || quickMatchSecondsLeft <= 0) {
+                    finalizeQuickMatchCountdown();
+                }
+            }, 1000);
+        }
+
+        function pickRandomBattleBots(count, existingNames = []) {
+            const used = new Set(existingNames.map(n => String(n || '').toUpperCase()));
+            const shuffled = [...BATTLE_BOT_POOL].sort(() => Math.random() - 0.5);
+            const picked = [];
+            for (const candidate of shuffled) {
+                if (picked.length >= count) break;
+                if (used.has(candidate.name.toUpperCase())) continue;
+                used.add(candidate.name.toUpperCase());
+                const targetScore = Math.floor(
+                    candidate.minTarget + Math.random() * (candidate.maxTarget - candidate.minTarget + 1)
+                );
+                const botMatches = Math.floor(5 + Math.random() * 34);
+                const botWins = Math.min(botMatches, Math.floor(1 + Math.random() * Math.max(2, Math.round(botMatches * 0.42))));
+                picked.push({
+                    id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + picked.length,
+                    name: candidate.name,
+                    targetScore,
+                    matches: botMatches,
+                    wins: botWins
+                });
+            }
+            return picked;
+        }
+
+        function finalizeQuickMatchCountdown() {
+            const roomId = battleRoomId;
+            if (!roomId || battleRole !== 'host') {
+                stopQuickMatchTimer();
+                return;
+            }
+            if (quickMatchTimer) {
+                clearInterval(quickMatchTimer);
+                quickMatchTimer = null;
+            }
+            quickMatchActive = false;
+            updateQuickMatchUI(textFor('battleQuickMatched'));
+
+            battleRef.child(roomId).once('value').then(snap => {
+                const room = snap.val();
+                if (!room || room.status !== 'waiting') return;
+
+                const players = room.players || {};
+                const existingList = Object.values(players);
+                const updates = {
+                    isPublicWaiting: false,
+                    joinLocked: true
+                };
+
+                // 실제 온라인 유저가 아무도 안 들어왔다면 AI 챌린저 1~3명 자동 합류
+                if (existingList.length < 2) {
+                    const botCount = Math.floor(1 + Math.random() * 3); // 1~3 bots (총 2~4인 매칭)
+                    const existingNames = existingList.map(p => p.name);
+                    const bots = pickRandomBattleBots(botCount, existingNames);
+                    const now = getEstimatedServerTimeMs();
+                    bots.forEach((bot, idx) => {
+                        updates['players/' + bot.id] = {
+                            score: 0,
+                            done: false,
+                            rank: null,
+                            finishOrder: null,
+                            finishedAt: null,
+                            name: bot.name,
+                            matches: bot.matches,
+                            wins: bot.wins,
+                            isHost: false,
+                            isBot: true,
+                            targetScore: bot.targetScore,
+                            joinedAt: now + idx + 1
+                        };
+                    });
+                }
+
+                battleRef.child(roomId).update(updates).then(() => {
+                    setTimeout(() => {
+                        if (battleRoomId === roomId && battleRole === 'host') {
+                            startBattleRoom();
+                        }
+                    }, 650);
+                });
+            });
+        }
+
+        function stopBotSimulation() {
+            Object.keys(botSimTimers).forEach(botId => {
+                clearTimeout(botSimTimers[botId]);
+            });
+            botSimTimers = {};
+        }
+
+        function startBotSimulation(room) {
+            if (battleRole !== 'host' || !battleRoomId || !room || room.status !== 'playing') return;
+            const roomId = battleRoomId;
+            const players = getBattlePlayerList(room);
+            const bots = players.filter(p => p.isBot && !p.done);
+
+            bots.forEach(bot => {
+                if (botSimTimers[bot.id]) return;
+                const targetScore = Number(bot.targetScore || Math.floor(22 + Math.random() * 68));
+
+                const stepBot = () => {
+                    delete botSimTimers[bot.id];
+                    if (!battleRoomId || battleRoomId !== roomId || battleRole !== 'host') return;
+
+                    const latestBot = battlePlayers[bot.id];
+                    if (!latestBot || latestBot.done) return;
+
+                    const currentBotScore = Number(latestBot.score || 0);
+                    const humanPlayers = Object.keys(battlePlayers)
+                        .map(id => battlePlayers[id])
+                        .filter(p => p && !p.isBot);
+                    const allHumansDone = humanPlayers.length > 0 && humanPlayers.every(p => p.done);
+                    const maxHumanScore = humanPlayers.reduce((m, p) => Math.max(m, Number(p.score || 0)), 0);
+
+                    // 모든 실제 플레이어가 게임오버된 경우:
+                    // 남은 봇이 1명뿐이거나 목표 점수에 도달했으면 즉시 종료,
+                    // 2명 이상 남아 관전 중이면 빠른 템포(220ms)로 진행하여 끝까지 관전하거나 바로 나갈 수 있게 함
+                    const remainingPlayers = Object.keys(battlePlayers)
+                        .map(id => battlePlayers[id])
+                        .filter(p => p && !p.done);
+                    if (allHumansDone && (remainingPlayers.length <= 1 || currentBotScore >= targetScore)) {
+                        finishBattlePlayerById(bot.id, currentBotScore);
+                        return;
+                    }
+
+                    if (currentBotScore >= targetScore) {
+                        finishBattlePlayerById(bot.id, currentBotScore);
+                        return;
+                    }
+
+                    const nextScore = currentBotScore + 1;
+                    if (battlePlayers[bot.id]) {
+                        battlePlayers[bot.id].score = nextScore;
+                    }
+                    battleRef.child(roomId + '/players/' + bot.id + '/score').set(nextScore);
+
+                    if (allHumansDone) {
+                        botSimTimers[bot.id] = setTimeout(stepBot, 220);
+                        return;
+                    }
+                    const baseInterval = getPitchInterval(nextScore);
+                    const jitter = 0.96 + Math.random() * 0.24;
+                    botSimTimers[bot.id] = setTimeout(stepBot, Math.round(baseInterval * jitter));
+                };
+
+                // 카운트다운(3초) + 첫 공 도달 시간 후 첫 득점 시작
+                const initialDelay = 3800 + Math.floor(Math.random() * 700);
+                botSimTimers[bot.id] = setTimeout(stepBot, initialDelay);
+            });
         }
 
         function clearBattleRoomListener(roomId = battleRoomId) {
@@ -4801,16 +5620,32 @@
             const playerId = battlePlayerId;
             const role = battleRole;
 
+            stopQuickMatchTimer();
+            stopBotSimulation();
+            clearBattleDisconnectHandler();
             clearBattleRoomListener(roomId);
             clearBattleResultListener(roomId);
             clearRematchListener(roomId);
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
 
             if (roomId) {
-                if (role === 'host' && removeHostRoom) {
+                const otherActiveHumans = Object.keys(battlePlayers || {}).filter(pid => {
+                    if (pid === playerId) return false;
+                    const p = battlePlayers[pid];
+                    return p && !p.isBot && !p.done && !p.disconnected;
+                });
+
+                if (removeHostRoom || otherActiveHumans.length === 0) {
                     battleRef.child(roomId).remove();
                 } else if (playerId) {
-                    battleRef.child(roomId + '/players/' + playerId).remove();
+                    const myP = battlePlayers && battlePlayers[playerId];
+                    if (myP && myP.done) {
+                        battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
+                    } else if (battleMode) {
+                        battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
+                    } else {
+                        battleRef.child(roomId + '/players/' + playerId).remove();
+                    }
                 }
             }
 
@@ -4841,6 +5676,10 @@
                 alert(textFor('alertTestBattle'));
                 return;
             }
+            if (!canPlayWithoutAd()) {
+                openPlayGateModal(() => openBattleScreen());
+                return;
+            }
 
             leaveBattleRoom(true);
             document.getElementById('intro-screen').classList.add('hidden');
@@ -4860,6 +5699,7 @@
         function createBattleRoom(hostName) {
             const code = genCode();
             const playerId = genBattlePlayerId();
+            const myStats = getBattleStats();
             const hostPlayer = {
                 score: 0,
                 done: false,
@@ -4867,8 +5707,11 @@
                 finishOrder: null,
                 finishedAt: null,
                 name: hostName,
+                matches: myStats.matches,
+                wins: myStats.wins,
                 isHost: true,
-                joinedAt: Date.now()
+                isBot: false,
+                joinedAt: getEstimatedServerTimeMs()
             };
 
             battleRoomId = code;
@@ -4882,9 +5725,14 @@
                 maxPlayers: MAX_BATTLE_PLAYERS,
                 players: battlePlayers,
                 status: 'waiting',
+                isPublic: false,
+                isPublicWaiting: false,
                 joinLocked: false,
-                createdAt: Date.now()
-            }).then(() => listenBattleRoom(code));
+                createdAt: getEstimatedServerTimeMs()
+            }).then(() => {
+                registerBattleDisconnectHandler(code, playerId, 'host');
+                listenBattleRoom(code);
+            });
 
             document.getElementById('battle-room-code').innerText = code;
             renderBattleLobby({ players: battlePlayers, status: 'waiting' });
@@ -4896,7 +5744,7 @@
             if (battleRoomId === code) return;
 
             const playerId = genBattlePlayerId();
-            const joinedAt = Date.now();
+            const joinedAt = getEstimatedServerTimeMs();
             const nickname = getBattleNickname();
             if (!nickname) {
                 alert(textFor('alertNickname'));
@@ -4905,6 +5753,7 @@
                 if (input) input.focus();
                 return;
             }
+            const myStats = getBattleStats();
 
             battleRef.child(code).once('value').then(snap => {
                 const room = snap.val();
@@ -4925,7 +5774,10 @@
                         finishOrder: null,
                         finishedAt: null,
                         name: nickname || `P${playerCount + 1}`,
+                        matches: myStats.matches,
+                        wins: myStats.wins,
                         isHost: false,
+                        isBot: false,
                         joinedAt
                     };
                     return players;
@@ -4944,6 +5796,7 @@
                     battleRematchStarted = false;
                     battleProfileReady = true;
                     document.getElementById('battle-room-code').innerText = code;
+                    registerBattleDisconnectHandler(code, playerId, 'guest');
                     showBattleRoomStep();
                     listenBattleRoom(code);
                 });
@@ -4954,6 +5807,7 @@
 
         function startBattleRoom() {
             if (!battleRoomId || battleRole !== 'host') return;
+            stopQuickMatchTimer();
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();
                 const players = getBattlePlayerList(room);
@@ -4964,7 +5818,9 @@
 
                 const updates = {
                     status: 'playing',
-                    startedAt: Date.now(),
+                    isPublicWaiting: false,
+                    joinLocked: true,
+                    startedAt: getEstimatedServerTimeMs(),
                     endedAt: null,
                     finishCounter: 0,
                     rematch: null
@@ -4975,9 +5831,35 @@
                     updates['players/' + player.id + '/rank'] = null;
                     updates['players/' + player.id + '/finishOrder'] = null;
                     updates['players/' + player.id + '/finishedAt'] = null;
+                    updates['players/' + player.id + '/matches'] = Math.max(0, Number(player.matches || 0)) + 1;
                 });
                 battleRef.child(battleRoomId).update(updates);
             });
+        }
+
+        function handleDisconnectedPlayers(roomId, room) {
+            if (!room || !room.players) return;
+            const players = room.players;
+            if (room.status === 'waiting') {
+                if (room.hostDisconnected && battleRole !== 'host') {
+                    battleRef.child(roomId).update({ status: 'closed' });
+                    return;
+                }
+                if (battleRole === 'host') {
+                    Object.keys(players).forEach(pid => {
+                        if (pid !== battlePlayerId && players[pid] && players[pid].disconnected) {
+                            battleRef.child(roomId + '/players/' + pid).remove();
+                        }
+                    });
+                }
+            } else if (room.status === 'playing') {
+                Object.keys(players).forEach(pid => {
+                    const p = players[pid];
+                    if (p && p.disconnected && !p.done) {
+                        finishBattlePlayerById(pid, Number(p.score || 0));
+                    }
+                });
+            }
         }
 
         function listenBattleRoom(roomId) {
@@ -4999,12 +5881,15 @@
                     return;
                 }
 
+                handleDisconnectedPlayers(roomId, room);
+
                 if (room.status === 'closed') {
                     returnToIntroAfterBattle(battleRole === 'host');
                     return;
                 }
 
                 if (room.status === 'waiting') {
+                    stopBotSimulation();
                     clearBattleResultListener();
                     clearRematchListener();
                     if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
@@ -5022,7 +5907,11 @@
                 }
 
                 if (room.status === 'playing') {
+                    stopQuickMatchTimer();
                     renderBattleHud(room);
+                    if (battleRole === 'host') {
+                        startBotSimulation(room);
+                    }
                     if (battlePlayers[battlePlayerId].done) {
                         if (battleMode) {
                             battleMode = false;
@@ -5037,6 +5926,8 @@
                 }
 
                 if (room.status === 'ended') {
+                    stopQuickMatchTimer();
+                    stopBotSimulation();
                     renderBattleHud(room);
                     if (battleMode) {
                         battleMode = false;
@@ -5047,6 +5938,13 @@
                 }
             };
             battleRef.child(roomId).on('value', battleListener);
+        }
+
+        function formatPlayerRecordBadge(player) {
+            const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
+            const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
+            const fn = textFor('playerRecordBadge');
+            return typeof fn === 'function' ? fn(matches, wins) : `${matches}G · 🥇${wins}W`;
         }
 
         function renderBattleLobby(room) {
@@ -5066,8 +5964,12 @@
 
             listEl.innerHTML = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const record = escapeBattleText(formatPlayerRecordBadge(player));
                 const meClass = player.id === battlePlayerId ? ' me' : '';
-                return `<div class="battle-player-pill${meClass}">${label}</div>`;
+                return `<div class="battle-player-pill${meClass}">
+                    <div class="bpp-name">${label}</div>
+                    <div class="bpp-record">${record}</div>
+                </div>`;
             }).join('');
         }
 
@@ -5097,6 +5999,8 @@
             document.getElementById('battle-code-label').innerText     = textFor('battleCodeLabel');
             document.getElementById('battle-join-label').innerText     = textFor('battleJoinLabel');
             document.getElementById('battle-divider').innerText        = textFor('battleDivider');
+            updateQuickMatchUI();
+            updateBattleStatsUI();
             setBattleRematchButtonText();
         }
 
@@ -5105,6 +6009,9 @@
             battleStarted = true;
             battleResultShown = false;
             battleRematchStarted = false;
+            battleMatchCounted = false;
+            battleWinCounted = false;
+            recordBattleMatchPlayed();
             clearBattleResultListener();
             clearRematchListener();
             battleMode = true;
@@ -5141,12 +6048,16 @@
         }
 
         function finishBattlePlayer(finalScore) {
+            finishBattlePlayerById(battlePlayerId, finalScore);
+        }
+
+        function finishBattlePlayerById(targetPlayerId, finalScore) {
             const roomId = battleRoomId;
-            const playerId = battlePlayerId;
-            const finishedAt = Date.now();
+            if (!roomId || !targetPlayerId) return;
+            const finishedAt = getEstimatedServerTimeMs();
             battleRef.child(roomId).transaction(room => {
-                if (!room || !room.players || !room.players[playerId]) return room;
-                if (room.players[playerId].done) return room;
+                if (!room || !room.players || !room.players[targetPlayerId]) return room;
+                if (room.players[targetPlayerId].done) return room;
 
                 const players = room.players;
                 const ids = Object.keys(players);
@@ -5154,8 +6065,8 @@
                 const doneCount = ids.filter(id => players[id].done).length;
                 const finishOrder = doneCount + 1;
 
-                players[playerId] = {
-                    ...players[playerId],
+                players[targetPlayerId] = {
+                    ...players[targetPlayerId],
                     score: finalScore,
                     done: true,
                     finishOrder,
@@ -5172,6 +6083,7 @@
                         done: true,
                         finishOrder: total,
                         rank: 1,
+                        wins: Math.max(0, Number(players[winnerId].wins || 0)) + 1,
                         finishedAt,
                         score: Number(players[winnerId].score || 0)
                     };
@@ -5179,6 +6091,7 @@
                     room.endedAt = finishedAt;
                     finishCounter = total;
                 } else if (remainingIds.length === 0) {
+                    players[targetPlayerId].wins = Math.max(0, Number(players[targetPlayerId].wins || 0)) + 1;
                     room.status = 'ended';
                     room.endedAt = finishedAt;
                 }
@@ -5190,7 +6103,9 @@
                 const room = snap && snap.val();
                 if (!error && committed && room) {
                     battlePlayers = room.players || {};
-                    showBattleResult(room);
+                    if (targetPlayerId === battlePlayerId || (battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done)) {
+                        showBattleResult(room);
+                    }
                 }
             });
         }
@@ -5234,6 +6149,12 @@
                 }
             }
 
+            // 1위 달성 시 나의 대전 전적(1등 횟수) +1 기록
+            if (resultClass === 'win' && (myRank === 1 || room.status === 'ended')) {
+                recordBattleWin();
+            }
+            updateBattleStatsUI();
+
             if (firstResultRender) {
                 if (resultClass === 'win') playSfx('win', 1.0);
                 else playSfx('gameover', 1.0);
@@ -5247,20 +6168,20 @@
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const scoreText = Number(player.score || 0);
                 const rankText = player.rank ? player.rank : index + 1;
+                const record = escapeBattleText(formatPlayerRecordBadge(player));
                 const meClass = player.id === battlePlayerId ? ' me' : '';
                 return `<div class="battle-score-card${meClass}">
                     <div class="bsc-name">${rankText}. ${label}</div>
                     <div class="bsc-score">${scoreText}</div>
+                    <div class="bsc-record">${record}</div>
                 </div>`;
             }).join('');
 
             document.getElementById('battle-result-screen').classList.remove('hidden');
             battleResultShown = true;
             if (room.status === 'ended') {
-                if (!battleRematchStarted) startRematchCountdown();
+                if (!battleRematchStarted) startRoomCloseCountdown();
             } else {
-                document.getElementById('battle-rematch-btn').disabled = true;
-                document.getElementById('rematch-countdown').innerText = '-';
                 document.getElementById('rematch-status').innerText = textFor('othersPlaying');
             }
         }
@@ -5272,89 +6193,34 @@
             document.getElementById('intro-screen').classList.remove('hidden');
         }
 
-        function startRematchCountdown() {
+        function startRoomCloseCountdown() {
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
             battleRematchStarted = true;
 
-            rematchSeconds = 10;
-            setBattleRematchButtonText(rematchSeconds);
-            document.getElementById('rematch-status').innerText = '';
-            document.getElementById('battle-rematch-btn').disabled = false;
+            rematchSeconds = ROOM_AUTO_CLOSE_SECONDS;
+            const statusEl = document.getElementById('rematch-status');
+            const closingTextFn = textFor('roomClosingIn');
+            if (statusEl) {
+                statusEl.innerText = typeof closingTextFn === 'function'
+                    ? closingTextFn(rematchSeconds)
+                    : `${rematchSeconds}s...`;
+            }
 
             rematchTimer = setInterval(() => {
                 rematchSeconds--;
-                document.getElementById('rematch-countdown').innerText = rematchSeconds;
                 if (rematchSeconds <= 0) {
                     clearInterval(rematchTimer);
                     rematchTimer = null;
-                    document.getElementById('battle-rematch-btn').disabled = true;
-                    document.getElementById('rematch-status').innerText = textFor('waitingHost');
-                    if (battleRole === 'host') setTimeout(finalizeRematchLobby, 300);
-                }
-            }, 1000);
-
-            rematchListener = snap => {
-                const val = snap.val() || {};
-                const players = getBattlePlayerList({ players: battlePlayers });
-                const readyCount = players.filter(player => val[player.id] === true).length;
-                const myReady = val[battlePlayerId] === true;
-
-                if (rematchTimer || myReady) {
-                    document.getElementById('rematch-status').innerText = textFor('rematchJoinStatus')(readyCount, players.length);
-                }
-            };
-            battleRef.child(battleRoomId + '/rematch').on('value', rematchListener);
-        }
-
-        function requestRematch() {
-            if (!battleRoomId || !battlePlayerId) return;
-            document.getElementById('battle-rematch-btn').disabled = true;
-            document.getElementById('rematch-status').innerText = textFor('rematchReady');
-            battleRef.child(battleRoomId + '/rematch/' + battlePlayerId).set(true);
-        }
-
-        function finalizeRematchLobby() {
-            if (!battleRoomId || battleRole !== 'host') return;
-            battleRef.child(battleRoomId).once('value').then(snap => {
-                const room = snap.val();
-                if (!room || room.status !== 'ended' || !room.players) return;
-
-                const rematch = room.rematch || {};
-                const readyIds = Object.keys(rematch).filter(id => rematch[id] === true && room.players[id]);
-                const hostId = room.hostId;
-                if (!readyIds.includes(hostId) || readyIds.length < 2) {
-                    battleRef.child(battleRoomId).update({
-                        status: 'closed',
-                        rematch: null
-                    });
+                    exitBattle(true);
                     return;
                 }
-
-                const nextPlayers = {};
-                readyIds
-                    .sort((a, b) => (room.players[a].joinedAt || 0) - (room.players[b].joinedAt || 0))
-                    .forEach(id => {
-                        nextPlayers[id] = {
-                            ...room.players[id],
-                            score: 0,
-                            done: false,
-                            rank: null,
-                            finishOrder: null,
-                            finishedAt: null,
-                            isHost: id === hostId
-                        };
-                    });
-
-                battleRef.child(battleRoomId).update({
-                    players: nextPlayers,
-                    status: 'waiting',
-                    joinLocked: true,
-                    finishCounter: 0,
-                    rematch: null,
-                    startedAt: null
-                });
-            });
+                if (statusEl) {
+                    statusEl.innerText = typeof closingTextFn === 'function'
+                        ? closingTextFn(rematchSeconds)
+                        : `${rematchSeconds}s...`;
+                }
+            }, 1000);
         }
 
         function loadIntroRankList() {
@@ -5410,8 +6276,8 @@
             playTitleBgm();
         }
 
-        function exitBattle() {
-            leaveBattleRoom(false);
+        function exitBattle(forceRemoveRoom = false) {
+            leaveBattleRoom(Boolean(forceRemoveRoom));
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             stopAllBgm();
