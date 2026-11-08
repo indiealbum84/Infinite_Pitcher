@@ -10,6 +10,7 @@
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="./pitcher.png">
+    <link rel="preload" as="image" href="./splash_108project.png">
     <title>無限投手: 世界一への道</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
@@ -118,66 +119,35 @@
             opacity: 0;
         }
 
-        /* Splash Screen */
+        /* Splash Screen (108 Project Company Logo) */
         #splash-screen {
-            background-color: #ffffff;
-            background-image: url('./splash.png');
-            background-size: cover;
-            background-position: center;
+            background-color: #020c1c;
             z-index: 20;
+            padding: 0 !important;
             gap: 0;
             cursor: pointer;
             touch-action: auto !important;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        #splash-screen::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.7);
-            z-index: 0;
-        }
-
-        #splash-screen > * {
-            position: relative;
-            z-index: 1;
-        }
-
-
-        .splash-title-art {
-            width: min(760px, 116%);
-            height: auto;
-            display: block;
-            margin: 0 auto 60px;
-            transform: translateX(-32px);
+        #splash-screen.splash-fade-out {
+            opacity: 0;
             pointer-events: none;
         }
 
-        .splash-touch-hint {
-            font-size: 18px;
-            font-weight: 700;
-            color: #475569;
-            letter-spacing: 0.5px;
-            animation: blink 1.4s ease-in-out infinite;
-        }
-
-        .splash-start-btn {
-            background: transparent;
-            color: var(--palette-ink);
-            border: 0;
-            cursor: pointer;
-            box-shadow: none;
-            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
-            font-size: 32px;
-            letter-spacing: 1px;
-            padding: 0;
-            text-shadow: 2px 2px 0 #ffffff;
-            touch-action: auto !important;
-            transition: transform 0.1s;
-        }
-
-        .splash-start-btn:active {
-            transform: scale(0.96);
+        .company-splash-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         .lang-switcher {
@@ -1279,18 +1249,6 @@
             padding: 56px;
         }
 
-        .splash-title-art {
-            width: min(1250px, 116%);
-            margin-bottom: 266px;
-            transform: translateX(-89px);
-        }
-
-        .splash-start-btn {
-            font-size: 60px;
-            letter-spacing: 3px;
-            text-shadow: 6px 6px 0 #ffffff;
-        }
-
         .lang-switcher {
             top: 44px;
             left: 34px;
@@ -2254,8 +2212,7 @@
         </div>
 
         <div id="splash-screen" class="screen">
-            <img class="splash-title-art" src="./title.png" alt="無限ピッチング">
-            <button class="splash-start-btn" id="splash-start-btn">PRESS START</button>
+            <img class="company-splash-img" src="./splash_108project.png" alt="108 Project" fetchpriority="high">
         </div>
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
@@ -3180,17 +3137,35 @@
             applyLang(lang);
         }
 
+        let splashDismissed = false;
+        let splashAutoTimer = null;
+        const SPLASH_DURATION_MS = 3000;
+
         function enterIntroFromSplash() {
+            if (splashDismissed) return;
+            splashDismissed = true;
+            if (splashAutoTimer) {
+                clearTimeout(splashAutoTimer);
+                splashAutoTimer = null;
+            }
             applyLang(currentLang);
-            document.getElementById('splash-screen').classList.add('hidden');
-            audioCtx.resume().then(() => {
-                const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
-                const silentSrc = audioCtx.createBufferSource();
-                silentSrc.buffer = silentBuf;
-                silentSrc.connect(audioCtx.destination);
-                silentSrc.start(0);
-                playTitleBgm();
-            });
+            const splashEl = document.getElementById('splash-screen');
+            if (splashEl) {
+                splashEl.classList.add('splash-fade-out');
+                setTimeout(() => {
+                    splashEl.classList.add('hidden');
+                }, 400);
+            }
+            if (audioCtx) {
+                audioCtx.resume().then(() => {
+                    const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+                    const silentSrc = audioCtx.createBufferSource();
+                    silentSrc.buffer = silentBuf;
+                    silentSrc.connect(audioCtx.destination);
+                    silentSrc.start(0);
+                    playTitleBgm();
+                }).catch(() => {});
+            }
             if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
                 ensurePermanentPlayerProfileOnStart();
             } else {
@@ -3198,13 +3173,28 @@
             }
         }
 
-        document.getElementById('splash-start-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            enterIntroFromSplash();
-        });
-
         const splashScreen = document.getElementById('splash-screen');
-        splashScreen.addEventListener('click', enterIntroFromSplash);
+        if (splashScreen) {
+            splashScreen.addEventListener('click', enterIntroFromSplash);
+            splashScreen.addEventListener('touchstart', (e) => {
+                enterIntroFromSplash();
+            }, { passive: true });
+        }
+
+        // 스플래시 화면 3초 후 게임 메인화면으로 자동 전환
+        splashAutoTimer = setTimeout(() => {
+            enterIntroFromSplash();
+        }, SPLASH_DURATION_MS);
+
+        // 오디오 자동재생 정책 대비: 3초 자동 전환 후 첫 터치 시 오디오 언락
+        window.addEventListener('pointerdown', function unlockAudioOnFirstTap() {
+            window.removeEventListener('pointerdown', unlockAudioOnFirstTap);
+            if (audioCtx && audioCtx.state !== 'running') {
+                audioCtx.resume().then(() => {
+                    if (gameState === 'INTRO') playTitleBgm();
+                }).catch(() => {});
+            }
+        }, { once: true, passive: true });
 
         function playGameBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden') return;
