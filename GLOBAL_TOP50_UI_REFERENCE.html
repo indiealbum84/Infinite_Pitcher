@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>글로벌 모바일 게임 매출 TOP 50 UI & 배경화면 디자인 레퍼런스 보드</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --pink: #ec4899;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      font-weight: 900;
+    }
+    header p {
+      margin: 0 auto;
+      max-width: 820px;
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+    .summary-container {
+      max-width: 1320px;
+      margin: -22px auto 24px;
+      padding: 0 20px;
+    }
+    .summary-box {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border);
+    }
+    .summary-box h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      color: #1e3a8a;
+    }
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .trend-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--primary);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .trend-card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: #0f172a;
+    }
+    .trend-card p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .filter-bar {
+      max-width: 1320px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filter-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filter-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+    .search-input {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      min-width: 240px;
+    }
+    .games-grid {
+      max-width: 1320px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 22px;
+    }
+    .game-card.top-fit {
+      border: 2px solid #3b82f6;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.09);
+    }
+    @media (max-width: 900px) {
+      .game-card { grid-template-columns: 1fr; }
+    }
+    .game-header {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .rank-badge {
+      background: #0f172a;
+      color: #facc15;
+      font-weight: 900;
+      font-size: 18px;
+      min-width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .app-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: #e2e8f0;
+      object-fit: cover;
+      border: 1px solid #cbd5e1;
+      flex-shrink: 0;
+    }
+    .game-title-wrap h3 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .game-meta {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: #334155;
+    }
+    .pill.fit-3 {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    .pill.fit-2 {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .palette-bar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .swatch {
+      width: 34px;
+      height: 24px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .swatch-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: monospace;
+    }
+    .analysis-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 1100px) {
+      .analysis-list { grid-template-columns: 1fr; }
+    }
+    .analysis-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .analysis-item.apply-highlight {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+    .analysis-item strong {
+      display: block;
+      font-size: 12.5px;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+    .analysis-item p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #1e293b;
+    }
+    .screenshots-strip {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      min-height: 170px;
+      align-items: center;
+    }
+    .screenshots-strip img {
+      height: 190px;
+      width: auto;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
+      object-fit: cover;
+      cursor: zoom-in;
+      transition: transform 0.15s;
+    }
+    .screenshots-strip img:hover {
+      transform: scale(1.03);
+    }
+    .shot-placeholder {
+      font-size: 12.5px;
+      color: #64748b;
+      padding: 18px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      width: 100%;
+      text-align: center;
+    }
+    @media print {
+      .filter-bar { display: none; }
+      .game-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌍 글로벌 모바일 게임 매출 TOP 50 — UI & 배경화면 디자인 레퍼런스</h1>
+    <p>SensorTower / AppMagic 글로벌 양대 마켓(App Store · Google Play) 매출 상위 50개 게임의 배경화면 톤앤매너, 버튼·HUD 구조, 그리고 <strong>「초특훈! 무한 피칭」</strong> 리디자인에 바로 참고할 수 있는 핵심 포인트를 정리한 시각 도감입니다.</p>
+  </header>
+
+  <div class="summary-container">
+    <div class="summary-box">
+      <h2>💡 글로벌 매출 TOP 50 게임의 공통 UI · 배경화면 디자인 공식 4가지 (디자이너 핵심 가이드)</h2>
+      <div class="trend-grid">
+        <div class="trend-card">
+          <h3>1. 배경(Background)과 타겟(Block/Ball)의 명도·채도 분리</h3>
+          <p><strong>Royal Match(#2), Gardenscapes(#14), Block Blast(#41)</strong> 모두 배경은 눈이 편안한 중저채도(잔디 그린 또는 딥 네이비)로 깔고, 유저가 맞춰야 하는 <strong>블록 타일과 공은 고명도 크림/옐로우/화이트 + 선명한 테두리</strong>로 처리해 0.1초 만에 숫자가 읽히도록 설계합니다.</p>
+        </div>
+        <div class="trend-card">
+          <h3>2. 하단 그림자(Bottom Lip)가 살아있는 3D 젤리/베벨 버튼</h3>
+          <p><strong>Royal Match(#2), Monopoly GO(#3), Brawl Stars(#11)</strong> 등 상위권 캐주얼 게임은 밋밋한 플랫 버튼 대신 <strong>상단 하이라이트 광택 + 하단 두꺼운 입체 두께(Shadow Lip)</strong>가 있는 캔디/젤리형 버튼을 사용해 누르고 싶은 타격감을 만듭니다.</p>
+        </div>
+        <div class="trend-card">
+          <h3>3. 세로형 레인(Lane) 구도와 하단 캐릭터 시선 유도</h3>
+          <p><strong>Last War(#5), NIKKE(#32), Clash Royale(#21), Subway Surfers(#40)</strong>처럼 세로형 액션/아케이드 게임은 화면 하단 15~20% 영역에 캐릭터 뒷모습/반측면을 두고, 상단 타겟 영역까지 세로 레인(잔디 줄무늬)으로 시선을 곧게 연결합니다.</p>
+        </div>
+        <div class="trend-card">
+          <h3>4. 특수 기믹(파이어볼·미러볼)은 색깔+실루엣으로 즉시 구분</h3>
+          <p><strong>Candy Crush(#8), Toon Blast(#25), Dokkan Battle(#34)</strong>처럼 날아가는 특수 공(파이어볼·미러볼·스트라이프볼·플래시볼)은 텍스트 설명 없이도 <strong>강렬한 전용 컬러(적홍/시안/블랙스트라이프/골드번개)와 외곽 광채</strong>만으로 즉시 구분되게 디자인합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-btns">
+      <button class="filter-btn active" onclick="filterGames('all', this)">전체 TOP 50 보기</button>
+      <button class="filter-btn" onclick="filterGames('⭐⭐⭐', this)">⭐⭐⭐ 무한피칭 최우선 참고 (17선)</button>
+      <button class="filter-btn" onclick="filterGames('캐주얼', this)">캐주얼·퍼즐·아케이드</button>
+      <button class="filter-btn" onclick="filterGames('스포츠', this)">스포츠·야구</button>
+      <button class="filter-btn" onclick="filterGames('세로형', this)">세로형(Portrait) 게임만</button>
+    </div>
+    <input type="text" class="search-input" id="search-box" placeholder="게임명·키워드 검색 (예: 잔디, 버튼, 파이어볼)" oninput="searchGames(this.value)" />
+  </div>
+
+  <div class="games-grid" id="games-grid"></div>
+
+  <script>
+    const GAMES = [{"rank":1,"title":"Whiteout Survival (화이트아웃 서바이벌)","query":"Whiteout Survival","country":"us","publisher":"Century Games","genre":"전략·서바이벌","fit":"⭐⭐ 부분 참고 (버튼·패스 팝업)","orientation":"세로형 (Portrait)","bgStyle":"차갑고 청량한 설원(블루/화이트) 배경과 따뜻한 모닥불(오렌지/골드) 대비로 시선을 중앙에 집중시킴","uiFeatures":"세로형 한 손 조작 UI, 하단 5탭 큼직한 아이콘 바, 골드/블루 투톤 입체 버튼과 빨간 알림 배지(Red Dot)를 명확히 배치","applyTip":"세로 화면 상단 재화/점수 바와 하단 큼직한 엄지 영역 버튼 배치, $4.99 패스 팝업의 골드 프레임 강조 방식 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":2,"title":"Royal Match (로얄 매치)","query":"Royal Match Dream Games","country":"us","publisher":"Dream Games","genre":"캐주얼·퍼즐","fit":"⭐⭐⭐ 최우선 참고 (세로형 아케이드/퍼즐 표준)","orientation":"세로형 (Portrait)","bgStyle":"고채도 로얄 블루 & 골드 톤의 깔끔한 왕실 배경, 인게임은 어두운 네이비 보드판으로 블록 가독성을 극대화","uiFeatures":"두꺼운 하단 그림자가 들어간 젤리형 3D 입체 버튼(초록/노랑), 둥글고 볼드한 흰색 숫자 폰트 + 진한 외곽선","applyTip":"우리 게임의 블록 타일(B-02/B-03)과 메인 스타트/대전 버튼(B-09) 디자인 시 가장 완벽한 롤모델! 숫자 블록 가독성과 입체 버튼 질감 필수 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":3,"title":"MONOPOLY GO! (모노폴리 고!)","query":"MONOPOLY GO Scopely","country":"us","publisher":"Scopely","genre":"보드·소셜 캐주얼","fit":"⭐⭐⭐ 최우선 참고 (캐주얼 UI/연출)","orientation":"세로형 (Portrait)","bgStyle":"밝고 따뜻한 파스텔 도시 디오라마 배경, 중앙 보드와 하단 주사위 버튼의 공간 분리가 매우 명확함","uiFeatures":"화면 하단 중앙의 거대한 원형/캡슐형 액션 버튼, 상단 목표 게이지 바, 타격감 넘치는 팝업 배너 애니메이션","applyTip":"특수공(파이어볼/미러볼) 등장 배너(A-08~A-11)와 타이틀 로고(A-03)의 경쾌하고 캐주얼한 3D 타이포그래피 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":4,"title":"Honor of Kings (왕자영요 / 아너 오브 킹즈)","query":"Honor of Kings Level Infinite","country":"us","publisher":"Tencent / Level Infinite","genre":"액션·MOBA","fit":"⭐ 참고용 (랭킹·승패 연출)","orientation":"가로형 (Landscape)","bgStyle":"고급스러운 다크 네이비 & 금빛 하이라이트 로비, 인게임은 채도를 살짝 낮춘 그린 필드 배경","uiFeatures":"샤프한 메탈릭 골드 프레임, 승리(WIN)/패배(LOSE) 결과 화면의 강렬한 엠블럼과 전적 배지 디자인","applyTip":"온라인 대전 결과 화면(WIN/LOSE)과 매칭 상대방 전적 배지(판수·1위 횟수)의 메탈릭/골드 포인트 표현 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":5,"title":"Last War: Survival (라스트 워: 서바이벌)","query":"Last War Survival","country":"us","publisher":"FirstFun","genre":"하이브리드 캐주얼·전략","fit":"⭐⭐⭐ 최우선 참고 (세로형 레인 슈팅 구도)","orientation":"세로형 (Portrait)","bgStyle":"위에서 아래로 내려오는 세로형 트랙/도로 배경과 좌우 경계선이 명확한 아케이드 구도, 하단 캐릭터 좌우 이동","uiFeatures":"우리 게임(하단 투수 좌우 이동 + 상단 블록 타격)과 가장 유사한 세로형 시점! 직관적인 숫자 게이트와 큼직한 피드백 이펙트","applyTip":"인게임 배경(B-01)의 원근감 및 좌우 경계선 처리, 하단 캐릭터+카트 이동 영역과 상단 타겟 영역의 시선 유도 방식 직접 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":6,"title":"Roblox (로블록스)","query":"Roblox","country":"us","publisher":"Roblox Corporation","genre":"샌드박스·아케이드","fit":"⭐⭐ 부분 참고 (모던 플랫 UI)","orientation":"가로/세로 겸용","bgStyle":"다크/라이트 모드가 깔끔하게 정돈된 카드 그리드 배경, 인게임은비비드한 원색 블록 월드","uiFeatures":"군더더기 없는 둥근 모서리(Rounded Card) 모달창, 가독성 높은 산세리프 타이포와 명확한 그린 CTA 버튼","applyTip":"방 코드 입력창, 닉네임 설정 모달, TOP 1000 리더보드 리스트의 깔끔한 카드형 UI 정돈 방식 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":7,"title":"PUBG MOBILE (배틀그라운드 모바일)","query":"PUBG MOBILE","country":"us","publisher":"Tencent / Krafton","genre":"액션·슈팅","fit":"⭐ 참고용 (매칭·카운트다운 HUD)","orientation":"가로형 (Landscape)","bgStyle":"사실적인 필드 질감과 반투명 다크 HUD 오버레이로 복잡한 배경 위에서도 텍스트가 잘 보이도록 설계","uiFeatures":"우측 하단 옐로우/오렌지 매칭 시작 버튼, 매칭 탐색 중 타이머 UI, 8인/스쿼드 생존 현황 상단 표시줄","applyTip":"온라인 대전 중 상단 실시간 생존자 점수 HUD와 빠른 매칭 카운트다운 상태 표시줄 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":8,"title":"Candy Crush Saga (캔디크러쉬사가)","query":"Candy Crush Saga","country":"us","publisher":"King","genre":"캐주얼·퍼즐","fit":"⭐⭐⭐ 최우선 참고 (특수 블록·이펙트)","orientation":"세로형 (Portrait)","bgStyle":"파스텔 핑크·스카이 블루의 달콤하고 화사한 배경 위에 반투명 보드 프레임을 얹어 타일을 돋보이게 함","uiFeatures":"광택감(Glossy) 넘치는 타일과 특수 캔디(줄무늬, 컬러밤), 핑크/그린 젤리 버튼과 골드 프레임 팝업","applyTip":"우리 게임의 5종 공(일반/파이어볼/미러볼/스트라이프볼/플래시볼, B-04~B-08)을 한눈에 구분되게 광택·이펙트로 디자인할 때 필독!","artwork":"","screenshots":[],"storeUrl":""},{"rank":9,"title":"Gossip Harbor: Merge & Story (가십 하버)","query":"Gossip Harbor Merge Story","country":"us","publisher":"Microfun","genre":"머지·캐주얼","fit":"⭐⭐⭐ 최우선 참고 (따뜻한 캐주얼 색감)","orientation":"세로형 (Portrait)","bgStyle":"햇살이 비치는 따뜻한 해변 카페/리조트 일러스트 배경과 크림색(Cream) 타일 보드판 조합","uiFeatures":"부드러운 크림색 팝업 카드, 코랄 핑크 & 민트 그린 포인트 버튼, 친근한 반실사/카툰 캐릭터 상반신 배치","applyTip":"현재 우리 게임의 크림/민트/핑크/옐로우 팔레트와 결이 매우 비슷함! 세련된 파스텔 크림톤 모달창과 캐릭터 말풍선 UI 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":10,"title":"Pokémon TCG Pocket (포켓몬 카드 게임 Pocket)","query":"Pokemon TCG Pocket","country":"us","publisher":"The Pokémon Company","genre":"수집형 카드·캐주얼","fit":"⭐⭐⭐ 최우선 참고 (모던 깔끔 UI·배지)","orientation":"세로형 (Portrait)","bgStyle":"화이트 & 라이트 실버의 극도로 깔끔한 뉴모피즘(Neumorphism) 배경으로 메인 오브젝트에 시선 100% 집중","uiFeatures":"은은한 그림자와 그라데이션 테두리를 쓴 고급스러운 화이트 카드 UI, 홀로그램/무지개빛 하이라이트 연출","applyTip":"미러볼(B-06)·플래시볼(B-08)의 영롱한 반사광 연출과 깔끔한 모달창 여백 미학 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":11,"title":"Brawl Stars (브롤스타즈)","query":"Brawl Stars Supercell","country":"us","publisher":"Supercell","genre":"액션·캐주얼 아케이드","fit":"⭐⭐⭐ 최우선 참고 (아케이드 폰트·버튼·타격감)","orientation":"가로형 (아케이드 UI 표준)","bgStyle":"비비드한 블루/퍼플 패턴 배경과 선명한 경기장 잔디/모래 바닥 타일","uiFeatures":"검은색 두꺼운 외곽선(Black Stroke) + 살짝 기울어진(Skewed) 옐로우/블루 버튼, 굵은 화이트+블랙 그림자 타이포그래피","applyTip":"우리 게임 같은 스포츠/아케이드 장르에서 가장 타격감 넘치는 UI 스타일! 타이틀 로고(A-03), 특훈 배너, 버튼 프레임(B-09)에 강력 추천","artwork":"","screenshots":[],"storeUrl":""},{"rank":12,"title":"Coin Master (코인 마스터)","query":"Coin Master Moon Active","country":"us","publisher":"Moon Active","genre":"캐주얼·슬롯 아케이드","fit":"⭐⭐ 부분 참고 (리워드·광고 게이트 팝업)","orientation":"세로형 (Portrait)","bgStyle":"하늘과 구름이 보이는 밝은 배경 위에 중앙 게임 머신 프레임을 꽉 차게 배치","uiFeatures":"크고 직관적인 빨간색/초록색 3D 버튼, 남은 스핀(무료 횟수) 게이지 바, 구매 유도 팝업의 화려한 배지","applyTip":"하루 무료 3판 카운터 알약(Pill) UI와 31번 파이어볼 언락 축하 팝업의 화려한 보상 연출 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":13,"title":"Genshin Impact (원신)","query":"Genshin Impact","country":"us","publisher":"HoYoverse","genre":"서브컬처·오픈월드 RPG","fit":"⭐ 참고용 (아이콘·빛 이펙트)","orientation":"가로형 (Landscape)","bgStyle":"아름다운 하늘과 자연 풍경 일러스트 배경, 반투명 블러(Glassmorphism) 메뉴 오버레이","uiFeatures":"별빛/다이아몬드 모티프의 정교한 금빛 라인 아이콘과 부드러운 페이드인 연출","applyTip":"스플래시 화면(A-01)의 감성적인 조명 연출과 반투명 블러 모달 배경 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":14,"title":"Gardenscapes (가든스케이프)","query":"Gardenscapes Playrix","country":"us","publisher":"Playrix","genre":"캐주얼·퍼즐","fit":"⭐⭐⭐ 최우선 참고 (잔디 배경·타일 조화)","orientation":"세로형","bgStyle":"싱그러운 초록 잔디 정원과 나무/꽃 테두리가 어우러진 따뜻하고 입체적인 배경","uiFeatures":"초록 잔디 위에서도 선명하게 튀는 크림/옐로우 타일 보드와 골드/그린 입체 버튼","applyTip":"우리 게임 인게임 배경도 초록 야구장 잔디(B-01)이므로, 잔디 색감 위에서 블록 타일(B-02/B-03)이 가장 잘 보이는 명도·채도 대비 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":15,"title":"Pokémon GO (포켓몬 고)","query":"Pokemon GO Niantic","country":"us","publisher":"Niantic","genre":"AR·캐주얼 투구 액션","fit":"⭐⭐⭐ 최우선 참고 (세로형 공 던지기 구도)","orientation":"세로형 (Portrait)","bgStyle":"하단 중앙에 공(몬스터볼)이 위치하고 상단/중앙 타겟을 향해 공을 던지는 세로형 원근 필드 구도","uiFeatures":"화면 하단 공 아이콘 및 궤적/타격 서클 이펙트, 민트/블루 그라데이션의 둥근 확인 버튼","applyTip":"하단 투수가 위쪽 숫자 블록으로 공을 던지는 세로 구도와 공 회전/타격 이펙트, 깔끔한 캡슐형 버튼 디자인 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":16,"title":"Township (타운십)","query":"Township Playrix","country":"us","publisher":"Playrix","genre":"캐주얼·타이쿤/퍼즐","fit":"⭐⭐ 부분 참고 (친근한 카툰 UI)","orientation":"가로/세로","bgStyle":"밝고 선명한 그린/스카이 블루 톤의 아기자기한 마을 풍경","uiFeatures":"나무 판자·리본 배너 형태의 타이틀 헤더와 큼직한 3D 카툰 아이콘","applyTip":"TOP 1000 랭킹 버튼(A-04)이나 결과 화면 상단 리본 타이틀 배너 디자인 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":17,"title":"Homescapes (홈스케이프)","query":"Homescapes Playrix","country":"us","publisher":"Playrix","genre":"캐주얼·퍼즐","fit":"⭐⭐ 부분 참고 (특수 아이템 조합 연출)","orientation":"세로형","bgStyle":"포근한 실내 배경과 진한 보드 배경의 대비로 퍼즐 타일 집중도 향상","uiFeatures":"부스터(특수 아이템) 아이콘의 명확한 실루엣과 발동 시 화면 전체를 가로지르는 웨이브 이펙트","applyTip":"미러볼/스트라이프볼 적중 시 화면 전체 블록이 반전되는 웨이브 연출과 특수공 디자인 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":18,"title":"Clash of Clans (클래시 오브 클랜)","query":"Clash of Clans Supercell","country":"us","publisher":"Supercell","genre":"전략·캐주얼","fit":"⭐⭐ 부분 참고 (잔디 격자 타일·트로피 UI)","orientation":"가로형","bgStyle":"2톤 체크/줄무늬 초록 잔디 필드와 밝은 외곽 테두리","uiFeatures":"굵고 입체적인 슈퍼셀 특유의 폰트, 황금 트로피 아이콘과 입체적인 오렌지/그린 베벨 버튼","applyTip":"인게임 잔디 줄무늬(B-01)의 두 가지 초록 톤 배합 비율과 트로피/랭킹 아이콘(A-04) 디테일 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":19,"title":"Honkai: Star Rail (붕괴: 스타레일)","query":"Honkai Star Rail","country":"us","publisher":"HoYoverse","genre":"서브컬처·턴제 RPG","fit":"⭐ 참고용 (타이포·슬래시 배너 연출)","orientation":"가로형","bgStyle":"다크 스페이스 & 골드/시안 네온 포인트의 세련된 SF 배경","uiFeatures":"사선(Diagonal) 컷인 배너 연출과 세련된 비대칭 UI 레이아웃","applyTip":"특수볼 등장 시 화면을 가로지르는 컷인 알림 배너(A-08~A-11)의 속도감 있는 구도 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":20,"title":"Monster Strike (몬스터 스트라이크)","query":"Monster Strike XFLAG","country":"jp","publisher":"MIXI","genre":"캐주얼·슬링샷 아케이드","fit":"⭐⭐⭐ 최우선 참고 (일본 아케이드 감성·배너)","orientation":"세로형 (Portrait)","bgStyle":"세로형 배틀 필드와 일본 아케이드 특유의 열혈·특훈 분위기 이펙트 배경","uiFeatures":"강렬한 붓글씨/팝아트 풍 일본어 타이포그래피, 금색/적색 그라데이션 배너, 멀티플레이 대기실 UI","applyTip":"현재 우리 게임 기본 언어가 일본어(超特訓！無限ピッチング)인 만큼, 일본 유저에게 익숙한 특훈 타이틀 로고(A-03)와 특수공 컷인 배너 감성으로 최적!","artwork":"","screenshots":[],"storeUrl":""},{"rank":21,"title":"Clash Royale (클래시 로얄)","query":"Clash Royale Supercell","country":"us","publisher":"Supercell","genre":"실시간 대전·아케이드 전략","fit":"⭐⭐⭐ 최우선 참고 (세로형 실시간 대전 경기장)","orientation":"세로형 (Portrait)","bgStyle":"위아래 대칭 세로형 아레나 잔디 경기장, 좌우 관중석/경계선과 중앙 레인 구도","uiFeatures":"하단 옐로우 [전투(Battle)] 메인 버튼과 서브 모드 버튼의 명확한 크기 차이, 상단 상대방 정보 바","applyTip":"인게임 경기장 배경(B-01)과 메인 화면의 [개인 스타트] vs [온라인 대전] 투버튼 배치 및 크기 밸런스 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":22,"title":"Travel Town - Merge Adventure (트래블 타운)","query":"Travel Town Merge Adventure","country":"us","publisher":"Magmatic Games","genre":"머지·캐주얼","fit":"⭐⭐⭐ 최우선 참고 (깔끔한 2D 일러스트·타일)","orientation":"세로형 (Portrait)","bgStyle":"청량한 하늘빛 해변 배경과 둥근 베이지색 타일 격자판","uiFeatures":"선명한 외곽선과 파스텔 색감의 2D 아이콘, 군더더기 없는 상단 에너지/점수 캡슐 바","applyTip":"밝고 눈에 피로감이 없는 베이지/크림 톤 블록 타일(B-02)과 상단 SCORE 표시 영역 정돈에 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":23,"title":"Match Factory! (매치 팩토리!)","query":"Match Factory Peak Games","country":"us","publisher":"Peak Games (Zynga)","genre":"3D 캐주얼·아케이드 퍼즐","fit":"⭐⭐⭐ 최우선 참고 (3D 토이 질감 오브젝트)","orientation":"세로형 (Portrait)","bgStyle":"심플한 라이트 블루/민트 바닥 배경으로 알록달록한 3D 오브젝트가 한눈에 튀도록 구성","uiFeatures":"말랑말랑하고 매끈한 3D 장난감(Toy) 렌더링 질감의 오브젝트와 버튼, 직관적인 콤보 타이머","applyTip":"투수 캐릭터(A-05/A-06), 공 카트(A-07), 야구공 5종(B-04~B-08)을 귀여운 3D 토이/클레이 풍 일러스트로 리디자인할 때 최고의 레퍼런스!","artwork":"","screenshots":[],"storeUrl":""},{"rank":24,"title":"Fishdom (피쉬돔)","query":"Fishdom Playrix","country":"us","publisher":"Playrix","genre":"캐주얼·퍼즐","fit":"⭐⭐ 부분 참고 (물방울/유리 광택 UI)","orientation":"가로/세로","bgStyle":"투명하고 청량한 아쿠아 블루 수중 배경과 산호초 일러스트","uiFeatures":"반짝이는 하이라이트가 살아있는 둥근 아이콘과 생동감 있는 캐릭터 표정 애니메이션","applyTip":"미러볼(B-06)의 투명한 유리/거울 광택 표현과 스플래시/메인 배경의 청량한 색감 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":25,"title":"Toon Blast (툰 블라스트)","query":"Toon Blast Peak Games","country":"us","publisher":"Peak Games","genre":"캐주얼·블록 퍼즐","fit":"⭐⭐⭐ 최우선 참고 (정사각형 블록 타일·캐릭터)","orientation":"세로형 (Portrait)","bgStyle":"밝은 카툰 배경 위에 굵은 테두리의 블록 그리드 보드를 중앙 배치","uiFeatures":"모서리가 둥근 직사각형 블록 타일 디자인의 교과서! 미러볼(디스코볼)·로켓·폭탄 등 특수 아이템 시인성이 최고 수준","applyTip":"우리 게임의 숫자 블록 타일(B-02/B-03)과 미러볼(B-06)/파이어볼(B-05) 아이콘을 심플하고 직관적인 카툰 스타일로 그릴 때 1순위 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":26,"title":"eFootball™ (이풋볼)","query":"eFootball KONAMI","country":"us","publisher":"KONAMI","genre":"스포츠·축구","fit":"⭐⭐ 부분 참고 (스포츠 스코어보드·잔디)","orientation":"가로형","bgStyle":"선명한 경기장 잔디 스트라이프 패턴과 스타디움 조명 효과","uiFeatures":"네온 옐로우 & 딥 블루의 스포티한 스코어보드/타이머 UI와 경기 매칭 화면","applyTip":"스포츠 게임 특유의 잔디 줄무늬 질감과 상단 스코어(SCORE) 폰트 연출 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":27,"title":"EA SPORTS FC™ Mobile Soccer (FC 모바일)","query":"EA SPORTS FC Mobile Soccer","country":"us","publisher":"Electronic Arts","genre":"스포츠·축구","fit":"⭐⭐ 부분 참고 (스포츠 중계풍 HUD·카드)","orientation":"가로형","bgStyle":"야간 스타디움 조명과 역동적인 스포츠 중계 그래픽 배경","uiFeatures":"선수/유저 카드 배지(전적·등급 표시), 깔끔한 스포츠 방송 스타일 스코어보드","applyTip":"온라인 8인 대전 대기실 및 결과 화면의 플레이어 전적 카드(판수·1위 횟수) 디자인 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":28,"title":"Puzzle & Dragons (퍼즐앤드래곤)","query":"Puzzle and Dragons GungHo","country":"us","publisher":"GungHo Online","genre":"퍼즐·RPG","fit":"⭐⭐ 부분 참고 (구슬/볼 광택·상단 연출)","orientation":"세로형 (Portrait)","bgStyle":"상단 액션 영역과 하단 구슬(오브) 영역이 나뉜 세로형 레이아웃","uiFeatures":"속성별(불·물·빛·어둠) 구슬의 뚜렷한 컬러와 내부 문양으로 순간적인 시인성 확보","applyTip":"빠르게 날아가는 5종 공(일반/파이어/미러/스트라이프/플래시, B-04~B-08)을 색깔과 내부 심볼만으로 0.1초 만에 구분되게 만드는 노하우 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":29,"title":"Call of Duty®: Mobile (콜 오브 듀티: 모바일)","query":"Call of Duty Mobile Activision","country":"us","publisher":"Activision","genre":"액션·FPS","fit":"⭐ 참고용 (멀티플레이 로비·카운트다운)","orientation":"가로형","bgStyle":"다크 메탈릭 배경과 옐로우 택티컬 하이라이트","uiFeatures":"멀티플레이어 빠른 매칭 버튼, 카운트다운 숫자 임팩트, 승리 결과 엠블럼","applyTip":"대전 매칭 탐색 중 UI와 3·2·1·START 카운트다운 연출의 긴장감 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":30,"title":"Free Fire (프리 파이어)","query":"Free Fire Garena","country":"us","publisher":"Garena","genre":"액션·배틀로얄","fit":"⭐ 참고용 (다인 생존 결과창)","orientation":"가로형","bgStyle":"강렬한 오렌지/옐로우 포인트와 다이나믹한 캐릭터 중심 로비","uiFeatures":"최후의 1인(BOOYAH! / 1위 승리) 달성 시 강렬한 황금빛 승리 타이틀 연출","applyTip":"8인 온라인 대전에서 최후의 1인으로 승리했을 때(WIN!)의 화려한 축하 타이틀 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":31,"title":"Mobile Legends: Bang Bang (모바일 레전드)","query":"Mobile Legends Bang Bang","country":"us","publisher":"Moonton","genre":"액션·MOBA","fit":"⭐ 참고용 (국기 배지·글로벌 랭킹)","orientation":"가로형","bgStyle":"블루/골드 판타지 아레나 로비 배경","uiFeatures":"글로벌 유저 국기(Flag) 아이콘과 닉네임·랭크 배지를 결합한 리더보드 및 매칭 카드","applyTip":"우리 게임의 GLOBAL / 국가별 TOP 1000 랭킹창과 온라인 매칭 국기+닉네임 카드 레이아웃 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":32,"title":"Goddess of Victory: NIKKE (승리의 여신: 니케)","query":"GODDESS OF VICTORY NIKKE","country":"us","publisher":"Level Infinite / Shift Up","genre":"세로형 슈팅·서브컬처","fit":"⭐⭐⭐ 최우선 참고 (세로형 후방 슈팅 구도)","orientation":"세로형 (Portrait)","bgStyle":"화면 하단에 캐릭터 뒷모습/측면이 위치하고 화면 상단 타겟을 향해 사격하는 세로형 구도","uiFeatures":"세련된 화이트/오렌지/다크그레이 모던 UI, 하단 캐릭터 주변 탄창/게이지 HUD, 타격 크리티컬 폰트","applyTip":"하단 투수가 상단 블록을 향해 공을 던지는 세로형 구도에서 투수 캐릭터(A-05/A-06)의 뒷모습/반측면 투구 포즈와 상단 타겟 시야 확보 방식 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":33,"title":"Fate/Grand Order (페이트/그랜드 오더)","query":"Fate Grand Order Aniplex","country":"us","publisher":"Aniplex","genre":"서브컬처·RPG","fit":"⭐ 참고용 (컷인 연출)","orientation":"가로형","bgStyle":"블루/실버 프레임과 화려한 보구(필살기) 전체화면 컷인 배경","uiFeatures":"캐릭터 클로즈업 컷인과 굵은 타이틀 텍스트 조합","applyTip":"파이어볼/미러볼 발동 시 일러스트 배너(A-08~A-11) 컷인 연출 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":34,"title":"Dragon Ball Z Dokkan Battle (드래곤볼 Z 폭렬격전)","query":"Dragon Ball Z Dokkan Battle","country":"us","publisher":"Bandai Namco","genre":"캐주얼·기탄 구슬 액션","fit":"⭐⭐⭐ 최우선 참고 (세로형 구슬·파이어볼 이펙트)","orientation":"세로형 (Portrait)","bgStyle":"세로형 배틀 필드 위에서 빛나는 구슬(기탄)들이 연결되며 날아가는 역동적인 배경","uiFeatures":"불타오르는 기탄(파이어볼)·번개 이펙트(플래시볼)의 강렬한 만화적 외곽선과 집중선 연출","applyTip":"우리 게임의 31번 파이어볼(B-05)과 301번 플래시볼(B-08)의 불꽃/번개 아우라를 박진감 넘치는 만화풍으로 그릴 때 최적!","artwork":"","screenshots":[],"storeUrl":""},{"rank":35,"title":"Merge Mansion (머지 맨션)","query":"Merge Mansion Metacore","country":"us","publisher":"Metacore","genre":"머지·캐주얼","fit":"⭐⭐ 부분 참고 (깔끔한 그리드 보드)","orientation":"세로형 (Portrait)","bgStyle":"차분한 그린 정원 배경과 따뜻한 우드/베이지 톤 체크무늬 그리드 보드판","uiFeatures":"아이템이 칸 안에 딱 맞게 들어가는 정교한 여백과 하이라이트 테두리","applyTip":"10열 숫자 블록 그리드에서 현재 맞춰야 할 다음 번호 하이라이트 타일(B-03)의 테두리 강조 방식 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":36,"title":"Lineage M (리니지M)","query":"Lineage M NCSOFT","country":"kr","publisher":"NCSOFT","genre":"MMORPG","fit":"⭐ 참고용 (랭킹 1~3위 왕관 마크)","orientation":"가로형","bgStyle":"다크 판타지 배경과 골드/브론즈 메탈 프레임","uiFeatures":"랭킹 1위·2위·3위 유저를 돋보이게 하는 화려한 왕관/휘장 배지 디자인","applyTip":"TOP 1000 리더보드 상위 1~3위 및 온라인 대전 1위(🥇) 휘장 아이콘 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":37,"title":"Uma Musume Pretty Derby (우마무스메 프리티 더비)","query":"Umamusume Pretty Derby","country":"us","publisher":"Cygames","genre":"스포츠·육성 시뮬레이션","fit":"⭐⭐⭐ 최우선 참고 (세로형 스포츠 특훈·그린/옐로우 UI)","orientation":"세로형 (Portrait)","bgStyle":"청량한 잔디 트랙과 파란 하늘, 열혈 스포츠 특훈(トレーニング) 컨셉의 밝고 활기찬 배경","uiFeatures":"초록(잔디)·노랑·민트·핑크를 조합한 경쾌한 팝 컬러 버튼, 말풍선 대사창, 무지개빛 게이지 프레임","applyTip":"우리 게임의 컨셉(\"세계 최고의 투수가 되기 위한 특훈!\") 및 컬러 팔레트와 100% 일치하는 최고의 레퍼런스! 메인 배경(A-02)·캐릭터(A-05)·버튼(B-09)에 강력 추천","artwork":"","screenshots":[],"storeUrl":""},{"rank":38,"title":"eBaseball™: MLB PRO SPIRIT / 프로야구 스피리츠 A","query":"MLB PRO SPIRIT KONAMI","country":"us","publisher":"KONAMI","genre":"스포츠·야구","fit":"⭐⭐⭐ 최우선 참고 (야구공·투수·야구장 디테일)","orientation":"가로/세로","bgStyle":"정교한 야구장 내야/외야 잔디 커팅 패턴과 마운드 흙 질감","uiFeatures":"투구 시 구종(직구·변화구) 궤적 및 불꽃 이펙트, 스포티한 스코어보드","applyTip":"야구 소재 디테일(야구공 실밥 B-04, 잔디 커팅 줄무늬 B-01, 투수 투구 폼 A-06) 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":39,"title":"MLB 9 Innings 26 (MLB 9이닝스)","query":"MLB 9 Innings Com2uS","country":"us","publisher":"Com2uS","genre":"스포츠·야구","fit":"⭐⭐ 부분 참고 (세로 모드 야구 구도)","orientation":"가로/세로 겸용","bgStyle":"야구장 스타디움 전경과 전광판 스타일 결과 화면","uiFeatures":"세로 한 손 플레이 지원 시 하단 투구/타격 인터페이스와 전광판 폰트","applyTip":"점수판이나 랭킹 모달에 야구장 전광판 느낌의 포인트를 줄 때 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":40,"title":"Subway Surfers (서브웨이 서퍼)","query":"Subway Surfers SYBO","country":"us","publisher":"SYBO Games","genre":"세로형 아케이드 러너","fit":"⭐⭐⭐ 최우선 참고 (세로형 레인 아케이드·상단 스코어)","orientation":"세로형 (Portrait)","bgStyle":"세로 방향 레인(트랙)이 선명하게 나뉜 배경과 하단 캐릭터 후방 시점","uiFeatures":"우측 상단 굵고 큼직한 실시간 스코어 숫자, 팝아트 풍 컬러풀 버튼과 즉시 재시작(Retry) 흐름","applyTip":"아케이드 하이스코어 게임의 표준! 상단 실시간 점수(SCORE) 가독성과 게임오버 직후 [다시 하기] 버튼 배치 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":41,"title":"Block Blast! (블록 블라스트!)","query":"Block Blast Hungry Studio","country":"us","publisher":"Hungry Studio","genre":"세로형 아케이드 블록 퍼즐","fit":"⭐⭐⭐ 최우선 참고 (심플 블록 타일·콤보 연출)","orientation":"세로형 (Portrait)","bgStyle":"눈이 편안한 딥 블루/네이비 배경 위에 밝고 선명한 정사각형 블록 그리드 배치","uiFeatures":"군더더기 없는 베벨(입체 모서리) 블록 타일, 줄 클리어 시 상쾌한 섬광/파티클 연출과 중앙 왕관 최고점수 표시","applyTip":"10개가 한 줄로 클리어될 때의 상쾌한 시각 피드백과 심플하면서도 고급스러운 블록 타일(B-02/B-03) 디자인에 직접 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":42,"title":"Stumble Guys (스텀블 가이즈)","query":"Stumble Guys Scopely","country":"us","publisher":"Scopely","genre":"멀티플레이 파티 아케이드","fit":"⭐⭐⭐ 최우선 참고 (다인 실시간 대전·캐릭터 비율)","orientation":"가로형 (캐주얼 파티 UI)","bgStyle":"비비드한 옐로우/스카이 블루/핑크의 장난감 경기장 배경","uiFeatures":"2~3등신 SD 캐릭터 디자인, 빠른 매칭 룰렛/카운트다운 화면, 탈락/생존 실시간 현황판","applyTip":"우리 게임의 최대 8인 온라인 대전(빠른 매칭 + 생존 경쟁) 분위기와 귀여운 2~3등신 투수 캐릭터(A-05/A-06) 비율 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":43,"title":"Rise of Kingdoms (라이즈 오브 킹덤즈)","query":"Rise of Kingdoms Lilith","country":"us","publisher":"Lilith Games","genre":"전략","fit":"⭐ 참고용 (글로벌 국기·리더보드)","orientation":"가로형","bgStyle":"풍부한 색감의 카툰 풍 월드맵 배경","uiFeatures":"국가/연맹 엠블럼과 깔끔한 랭킹 테이블 레이아웃","applyTip":"글로벌/국가별 랭킹 탭 전환 UI 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":44,"title":"AFK Journey (AFK: 새로운 여정)","query":"AFK Journey Farlight","country":"us","publisher":"Farlight Games","genre":"세로형 판타지 RPG","fit":"⭐⭐ 부분 참고 (세로형 동화풍 일러스트 배경)","orientation":"세로형 (Portrait)","bgStyle":"수채화/동화책 같은 부드러운 색감의 세로형 풍경 일러스트 배경","uiFeatures":"세로 화면에 최적화된 우아한 하단 메뉴 바와 깔끔한 팝업 카드","applyTip":"스플래시 화면(A-01)이나 메인 배경(A-02)을 따뜻한 감성 일러스트로 제작할 때 색감 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":45,"title":"Zenless Zone Zero (젠레스 존 제로)","query":"Zenless Zone Zero","country":"us","publisher":"HoYoverse","genre":"어반 판타지 액션","fit":"⭐⭐ 부분 참고 (네온 팝아트·타이포 연출)","orientation":"가로형","bgStyle":"블랙 & 형광 옐로우/시안/마젠타의 강렬한 스트리트 팝아트 그래픽","uiFeatures":"굵고 역동적인 코믹스 풍 타이포그래피와 화면 전환 슬래시 연출","applyTip":"101번 미러볼·201번 스트라이프볼·301번 플래시볼 발동 배너(A-09~A-11)에 힙하고 강렬한 팝아트 임팩트를 줄 때 참고!","artwork":"","screenshots":[],"storeUrl":""},{"rank":46,"title":"Wuthering Waves (명조: 워더링 웨이브)","query":"Wuthering Waves Kuro Games","country":"us","publisher":"Kuro Games","genre":"오픈월드 액션 RPG","fit":"⭐ 참고용 (모던 미니멀 HUD)","orientation":"가로형","bgStyle":"채도를 절제한 시네마틱 배경과 깔끔한 화이트 라인 HUD","uiFeatures":"시야를 가리지 않는 슬림한 상단/측면 정보 표시","applyTip":"인게임 플레이 중 시야를 방해하지 않는 깔끔한 상단 HUD 배치 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":47,"title":"Evony: The King's Return (에보니)","query":"Evony The Kings Return","country":"us","publisher":"Top Games","genre":"전략·핀 뽑기 퍼즐","fit":"⭐ 참고용 (직관적 기믹 표현)","orientation":"세로형","bgStyle":"직관적인 세로형 스테이지 구조와 대비가 강한 오브젝트 배치","uiFeatures":"누구나 1초 만에 규칙을 이해할 수 있는 숫자와 화살표 가이드 UI","applyTip":"다음 맞춰야 할 숫자 블록(B-03 하이라이트 타일)이 한눈에 띄도록 강조하는 기법 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":48,"title":"RAID: Shadow Legends (레이드: 그림자의 전설)","query":"RAID Shadow Legends","country":"us","publisher":"Plarium","genre":"수집형 RPG","fit":"⭐ 참고용 (상품 패스 팝업 구성)","orientation":"가로형","bgStyle":"강렬한 라이팅과 대비가 돋보이는 다크 배경","uiFeatures":"유료 패스/패키지 팝업의 혜택 요약 리스트와 구매 버튼 강조 디자인","applyTip":"$4.99 광고 제거 + 무제한 플레이 패스 팝업 카드의 구매 전환율(CTA) 강조 디자인 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":49,"title":"Age of Origins (에이지 오브 오리진)","query":"Age of Origins CamelGames","country":"us","publisher":"CamelGames","genre":"전략·타워 디펜스","fit":"⭐ 참고용 (웨이브 방어 구도)","orientation":"세로/가로","bgStyle":"상단에서 몰려오는 타겟을 하단에서 요격하는 디펜스 구도","uiFeatures":"타격 시 명확한 데미지/점수 팝업과 웨이브 알림 배너","applyTip":"상단 블록이 한 줄씩 내려올 때의 긴장감 있는 시각 연출 참고","artwork":"","screenshots":[],"storeUrl":""},{"rank":50,"title":"8 Ball Pool (8볼 풀)","query":"8 Ball Pool Miniclip","country":"us","publisher":"Miniclip","genre":"스포츠·캐주얼 공 아케이드","fit":"⭐⭐⭐ 최우선 참고 (그린 테이블·공 번호·온라인 매칭)","orientation":"가로형 (공/블록 시인성 표준)","bgStyle":"선명한 그린 펠트(잔디/테이블) 배경 위에서 번호가 적힌 컬러풀한 공들이 완벽한 가독성을 가짐","uiFeatures":"공 내부의 흰색 원 + 검은 숫자 디자인, 줄무늬 공(Stripe Ball) 패턴, 1:1 및 다인 실시간 온라인 매칭 연출","applyTip":"우리 게임의 201번 스트라이프볼(B-07)과 번호가 적힌 타일/공의 그린 배경 위 가독성, 온라인 매칭 프로필 비교 UI에 직접 참고!","artwork":"","screenshots":[],"storeUrl":""}];
+    const PALETTES = {"1":["#dff4ff","#38bdf8","#0f172a","#f97316","#facc15"],"2":["#1e3a8a","#2563eb","#facc15","#22c55e","#ffffff"],"3":["#fef3c7","#ef4444","#3b82f6","#10b981","#f59e0b"],"4":["#0f172a","#1e293b","#eab308","#38bdf8","#ef4444"],"5":["#bae6fd","#3b82f6","#ef4444","#facc15","#22c55e"],"6":["#18181b","#ffffff","#22c55e","#3b82f6","#ef4444"],"7":["#1c1917","#44403c","#f59e0b","#eab308","#ffffff"],"8":["#fce7f3","#ec4899","#38bdf8","#a855f7","#facc15"],"9":["#fffbeb","#fde68a","#fb7185","#34d399","#1e293b"],"10":["#f8fafc","#e2e8f0","#38bdf8","#a855f7","#facc15"],"11":["#1d4ed8","#facc15","#ef4444","#22c55e","#000000"],"12":["#e0f2fe","#f59e0b","#ef4444","#22c55e","#7c3aed"],"13":["#0f172a","#e0f2fe","#fde047","#38bdf8","#ffffff"],"14":["#4ade80","#16a34a","#fef08a","#f97316","#ffffff"],"15":["#dcfce7","#38bdf8","#10b981","#ef4444","#ffffff"],"16":["#86efac","#38bdf8","#f59e0b","#ef4444","#fef3c7"],"17":["#fef3c7","#d97706","#22c55e","#ec4899","#3b82f6"],"18":["#65a30d","#84cc16","#facc15","#f97316","#1c1917"],"19":["#090d16","#1e1b4b","#eab308","#22d3ee","#f8fafc"],"20":["#7f1d1d","#ef4444","#facc15","#f97316","#000000"],"21":["#1d4ed8","#22c55e","#facc15","#ef4444","#ffffff"],"22":["#e0f2fe","#fef3c7","#fb7185","#2dd4bf","#0f172a"],"23":["#dbeafe","#ef4444","#facc15","#22c55e","#3b82f6"],"24":["#0284c7","#38bdf8","#f97316","#facc15","#ffffff"],"25":["#38bdf8","#facc15","#ef4444","#22c55e","#a855f7"],"26":["#0f172a","#16a34a","#bef264","#2563eb","#ffffff"],"27":["#111827","#10b981","#22c55e","#facc15","#ffffff"],"28":["#1e1b4b","#ef4444","#3b82f6","#22c55e","#facc15"],"29":["#09090b","#27272a","#facc15","#f97316","#ffffff"],"30":["#18181b","#f97316","#facc15","#ef4444","#ffffff"],"31":["#1e3a8a","#eab308","#38bdf8","#ef4444","#ffffff"],"32":["#18181b","#f97316","#ffffff","#ef4444","#38bdf8"],"33":["#1e3a8a","#93c5fd","#eab308","#ffffff","#0f172a"],"34":["#7c2d12","#f97316","#facc15","#38bdf8","#000000"],"35":["#dcfce7","#fef3c7","#d97706","#16a34a","#7c2d12"],"36":["#09090b","#78350f","#eab308","#dc2626","#e5e7eb"],"37":["#4ade80","#38bdf8","#facc15","#fb7185","#ffffff"],"38":["#15803d","#86efac","#b45309","#1e3a8a","#ffffff"],"39":["#0f172a","#1d4ed8","#dc2626","#16a34a","#ffffff"],"40":["#38bdf8","#facc15","#ef4444","#22c55e","#1e293b"],"41":["#1e1b4b","#312e81","#facc15","#22c55e","#ef4444"],"42":["#38bdf8","#facc15","#ec4899","#22c55e","#ffffff"],"43":["#14532d","#eab308","#2563eb","#dc2626","#fef3c7"],"44":["#fef3c7","#86efac","#38bdf8","#d97706","#1e293b"],"45":["#09090b","#bef264","#f97316","#06b6d4","#ffffff"],"46":["#0f172a","#334155","#38bdf8","#e2e8f0","#eab308"],"47":["#1e3a8a","#eab308","#dc2626","#22c55e","#ffffff"],"48":["#09090b","#1e293b","#f59e0b","#38bdf8","#dc2626"],"49":["#1c1917","#dc2626","#f97316","#eab308","#22c55e"],"50":["#15803d","#166534","#facc15","#ef4444","#ffffff"]};
+
+    const gridEl = document.getElementById('games-grid');
+
+    function renderCards(list) {
+      gridEl.innerHTML = list.map(g => {
+        const pal = PALETTES[g.rank] || ['#3b82f6', '#10b981', '#f59e0b'];
+        const isTopFit = g.fit.includes('⭐⭐⭐');
+        const fitClass = isTopFit ? 'fit-3' : (g.fit.includes('⭐⭐') ? 'fit-2' : '');
+        const swatchesHtml = pal.map(hex => `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div class="swatch" style="background:${hex}" title="${hex}"></div>
+            <span class="swatch-label">${hex}</span>
+          </div>
+        `).join('');
+
+        return `
+          <div class="game-card ${isTopFit ? 'top-fit' : ''}" id="game-card-${g.rank}" data-rank="${g.rank}">
+            <div>
+              <div class="game-header">
+                <div class="rank-badge">#${g.rank}</div>
+                <img class="app-icon" id="icon-${g.rank}" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%23e2e8f0'/></svg>" alt="${g.title}" />
+                <div class="game-title-wrap">
+                  <h3>${g.title}</h3>
+                  <div class="game-meta">${g.publisher}</div>
+                </div>
+              </div>
+              <div class="badges-row">
+                <span class="pill ${fitClass}">${g.fit}</span>
+                <span class="pill">${g.genre}</span>
+                <span class="pill">${g.orientation}</span>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:#475569;margin-top:8px;">대표 배경/UI 컬러 팔레트:</div>
+              <div class="palette-bar">${swatchesHtml}</div>
+            </div>
+
+            <div>
+              <div class="analysis-list">
+                <div class="analysis-item">
+                  <strong>🖼️ 배경화면(Background) 특징</strong>
+                  <p>${g.bgStyle}</p>
+                </div>
+                <div class="analysis-item">
+                  <strong>🎛️ UI · 버튼 · HUD 구조</strong>
+                  <p>${g.uiFeatures}</p>
+                </div>
+                <div class="analysis-item apply-highlight">
+                  <strong>⚾ 무한피칭 디자인 적용 포인트</strong>
+                  <p>${g.applyTip}</p>
+                </div>
+              </div>
+              <div class="screenshots-strip" id="shots-${g.rank}">
+                <div class="shot-placeholder">공식 스토어 UI · 배경 스크린샷 불러오는 중...</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      list.forEach(g => loadStoreMedia(g));
+    }
+
+    const mediaCache = {};
+    function loadStoreMedia(g) {
+      if (mediaCache[g.rank]) {
+        applyStoreMedia(g.rank, mediaCache[g.rank]);
+        return;
+      }
+      const cbName = 'itunesCb_' + g.rank + '_' + Math.floor(Math.random() * 100000);
+      window[cbName] = function(data) {
+        delete window[cbName];
+        const item = data && data.results && data.results[0];
+        if (item) {
+          const shots = [].concat(item.screenshotUrls || [], item.ipadScreenshotUrls || []).slice(0, 4);
+          mediaCache[g.rank] = {
+            icon: item.artworkUrl512 || item.artworkUrl100 || '',
+            shots: shots,
+            storeUrl: item.trackViewUrl || ''
+          };
+          applyStoreMedia(g.rank, mediaCache[g.rank]);
+        } else {
+          const shotEl = document.getElementById('shots-' + g.rank);
+          if (shotEl) shotEl.innerHTML = '<div class="shot-placeholder">스토어 스크린샷 미리보기 없음</div>';
+        }
+      };
+      const script = document.createElement('script');
+      script.src = 'https://itunes.apple.com/search?term=' + encodeURIComponent(g.query) + '&country=' + (g.country || 'us') + '&entity=software&limit=1&callback=' + cbName;
+      script.onerror = function() {
+        const shotEl = document.getElementById('shots-' + g.rank);
+        if (shotEl) shotEl.innerHTML = '<div class="shot-placeholder">인터넷 연결 시 공식 App Store UI 스크린샷이 자동 표시됩니다.</div>';
+      };
+      document.body.appendChild(script);
+    }
+
+    function applyStoreMedia(rank, media) {
+      const iconEl = document.getElementById('icon-' + rank);
+      if (iconEl && media.icon) iconEl.src = media.icon;
+      const shotEl = document.getElementById('shots-' + rank);
+      if (shotEl) {
+        if (media.shots && media.shots.length > 0) {
+          shotEl.innerHTML = media.shots.map(url => `<a href="${url}" target="_blank" rel="noopener"><img src="${url}" loading="lazy" alt="UI Screenshot" /></a>`).join('');
+        } else {
+          shotEl.innerHTML = '<div class="shot-placeholder">스토어 스크린샷 없음</div>';
+        }
+      }
+    }
+
+    let currentFilter = 'all';
+    function filterGames(keyword, btnEl) {
+      currentFilter = keyword;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      applyFilterAndSearch();
+    }
+
+    function searchGames(query) {
+      applyFilterAndSearch();
+    }
+
+    function applyFilterAndSearch() {
+      const q = (document.getElementById('search-box').value || '').trim().toLowerCase();
+      const filtered = GAMES.filter(g => {
+        const hay = [g.title, g.publisher, g.genre, g.fit, g.orientation, g.bgStyle, g.uiFeatures, g.applyTip].join(' ').toLowerCase();
+        const passFilter = currentFilter === 'all' || hay.includes(currentFilter.toLowerCase());
+        const passSearch = !q || hay.includes(q);
+        return passFilter && passSearch;
+      });
+      renderCards(filtered);
+    }
+
+    renderCards(GAMES);
+  </script>
+</body>
+</html>
