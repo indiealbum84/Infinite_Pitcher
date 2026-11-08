@@ -1670,7 +1670,7 @@
         }
 
         #battle-quick-section {
-            display: none;
+            display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
@@ -2389,13 +2389,6 @@
             <p class="battle-title" id="battle-screen-title">最大8人で対戦</p>
             <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
 
-            <div class="battle-profile-panel">
-                <p class="battle-small-label" id="battle-name-label">내 닉네임</p>
-                <input id="battle-name-input" class="battle-name-input" type="text" maxlength="10" placeholder="ニックネーム" oninput="handleBattleNameInput()" onblur="commitBattleNickname()" onkeydown="if(event.key==='Enter') submitBattleNickname()" />
-                <p class="battle-name-hint" id="battle-name-hint">日本語5文字 / 英字10文字まで</p>
-                <button class="start-btn" id="battle-name-next-btn" onclick="submitBattleNickname()" style="width:220px;padding:10px 18px;font-size:20px;">決定</button>
-            </div>
-
             <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
             <div id="battle-quick-section">
                 <button class="start-btn" id="battle-quick-btn" onclick="toggleQuickMatch()">⚡ 빠른 매칭 (랜덤 대전)</button>
@@ -2896,11 +2889,21 @@
                 initialAppleBtn: '🍎 Apple ID 連携 / 復元',
                 confirmPermanentName: name => `本当に「${name}」で登録しますか？\n⚠️ 一度登録すると二度と名前を変更できません！`,
                 alertNameTaken: 'すでに他のプレイヤーが使用している名前です。別の名前を入力してください。',
+                alertNameAlreadyTaken: name => `「${name}」はすでに他のプレイヤーが使用しています。別の名前を入力してください。`,
+                alertForbiddenName: '⚠️ 使用できない単語（不適切な表現・禁止ワード・運営用語）が含まれています。別の名前を入力してください。',
+                forbiddenNameInlineHint: '🚫 使用できない単語が含まれているため自動ブロックされました',
                 introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 自己ベスト: ${best}点 ${synced ? '☁️' : '(🔗アカウント連携)'}`,
+                introProfilePillText: (name, synced) => `👤 ${name} ${synced ? '· ☁️ 連携済' : '· 🔗 ID連携'}`,
                 newRecordAutoSaved: '🎉 自己ベスト更新！サーバーに自動登録されました',
                 bestRecordKept: best => `🏆 自己ベスト記録: ${best}点 (最高記録のみ維持)`,
+                rankStatusNewBest: (name, score) => `🎉 自己ベスト更新！(${score}点) サーバーに自動登録されました`,
+                rankStatusKeptBest: best => `🏆 自己ベスト記録: ${best}点 (最高記録1つのみ維持)`,
                 alertAccountRestored: name => `✅ アカウント復元完了！「${name}」選手の記録と購入履歴を復元しました。`,
+                accountRestoredAlert: (name, best) => `✅ アカウント復元完了！「${name}」選手（自己ベスト ${best}点）の記録と購入履歴を復元しました。`,
                 alertAccountLinked: name => `☁️ アカウント連携完了！「${name}」選手の記録がGoogle/Apple IDに安全に保存されました。`,
+                accountLinkedNewAlert: name => `☁️ アカウント連携完了！「${name}」選手の記録と購入履歴がGoogle/Apple IDに安全に保存されました。`,
+                accountRestoreNotFoundAlert: 'このIDに保存された記録はまだありません。新しく名前を登録するとこのIDに自動連携されます。',
+                promptAccountEmailForSync: label => `${label} (メールアドレスまたは固有ID) を入力してください。\nアプリを削除して再インストールしても同じ名前・記録・購入履歴が復元されます：`,
                 promptLinkAccount: 'Google ID または Apple ID と連携しますか？\n連携するとアプリを削除して再インストールしても、同じ名前・記録・購入履歴で再開できます。\n\n[OK] = Google ID 連携 / [キャンセル] = Apple ID 連携',
             },
             en: {
@@ -2988,11 +2991,21 @@
                 initialAppleBtn: '🍎 Apple ID Link / Restore',
                 confirmPermanentName: name => `Register "${name}" as your permanent name?\n⚠️ You CANNOT change your name after this!`,
                 alertNameTaken: 'This name is already registered by another player. Please choose a different name.',
+                alertNameAlreadyTaken: name => `"${name}" is already registered by another player. Please choose a different name.`,
+                alertForbiddenName: '⚠️ This name contains inappropriate, offensive, or reserved words and cannot be used.',
+                forbiddenNameInlineHint: '🚫 Blocked: Inappropriate or reserved word detected',
                 introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 BEST: ${best} ${synced ? '☁️' : '(🔗 Link ID)'}`,
+                introProfilePillText: (name, synced) => `👤 ${name} ${synced ? '· ☁️ Linked' : '· 🔗 Link ID'}`,
                 newRecordAutoSaved: '🎉 NEW PERSONAL BEST! Automatically saved to server',
                 bestRecordKept: best => `🏆 Personal Best: ${best} PTS (Only highest score is kept)`,
+                rankStatusNewBest: (name, score) => `🎉 NEW PERSONAL BEST! (${score} PTS) Saved to server`,
+                rankStatusKeptBest: best => `🏆 Personal Best: ${best} PTS (Only highest score is kept)`,
                 alertAccountRestored: name => `✅ Account Restored! Welcome back, "${name}"! Your records and purchases are restored.`,
+                accountRestoredAlert: (name, best) => `✅ Account Restored! Welcome back, "${name}" (Best: ${best} PTS)! All records and purchases are restored.`,
                 alertAccountLinked: name => `☁️ Account Linked! "${name}" and all records/purchases are now backed up to your Google/Apple ID.`,
+                accountLinkedNewAlert: name => `☁️ Account Linked! "${name}" and all records/purchases are now backed up to your Google/Apple ID.`,
+                accountRestoreNotFoundAlert: 'No previous profile found for this ID yet. Register your name now and it will be linked to this ID automatically.',
+                promptAccountEmailForSync: label => `Enter your ${label} (email or account ID).\nReinstalling with the same ID will restore your permanent name, records, and purchases:`,
                 promptLinkAccount: 'Link your Google ID or Apple ID?\nLinking ensures your name, records, and purchases are restored if you reinstall the app.\n\n[OK] = Google ID / [Cancel] = Apple ID',
             },
             ko: {
@@ -3080,11 +3093,21 @@
                 initialAppleBtn: '🍎 Apple ID 연동/복원',
                 confirmPermanentName: name => `정말 "${name}"(으)로 이름을 등록하시겠습니까?\n⚠️ 한 번 등록한 이름은 절대 변경할 수 없습니다!`,
                 alertNameTaken: '이미 다른 플레이어가 등록한 이름입니다. 다른 이름을 선택해주세요.',
+                alertNameAlreadyTaken: name => `"${name}"(은)는 이미 다른 플레이어가 사용 중인 이름입니다. 다른 이름을 입력해주세요.`,
+                alertForbiddenName: '⚠️ 사용할 수 없는 단어(욕설·비속어·혐오표현·운영자 사칭 등)가 포함되어 있습니다. 다른 이름을 입력해주세요.',
+                forbiddenNameInlineHint: '🚫 욕설·비속어·금칙어는 자동으로 입력이 차단됩니다',
                 introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 최고 기록: ${best}점 ${synced ? '☁️' : '(🔗 계정 연동)'}`,
+                introProfilePillText: (name, synced) => `👤 ${name} ${synced ? '· ☁️ 계정 연동됨' : '· 🔗 계정 연동'}`,
                 newRecordAutoSaved: '🎉 최고 기록 경신! 서버 랭킹에 자동 등록되었습니다',
                 bestRecordKept: best => `🏆 나의 최고 기록: ${best}점 (최고 점수 1개만 유지)`,
+                rankStatusNewBest: (name, score) => `🎉 최고 기록 경신! (${score}점) 서버에 자동 등록되었습니다`,
+                rankStatusKeptBest: best => `🏆 나의 최고 기록: ${best}점 (최고 점수 1개만 유지)`,
                 alertAccountRestored: name => `✅ 계정 복원 완료! "${name}"님의 이름과 기록·구매 내역을 그대로 불러왔습니다.`,
+                accountRestoredAlert: (name, best) => `✅ 계정 복원 완료! "${name}"님(최고 기록 ${best}점)의 이름과 기록·구매 내역을 그대로 복원했습니다.`,
                 alertAccountLinked: name => `☁️ 계정 연동 완료! "${name}"님의 이름과 기록·구매 내역이 Google/Apple ID에 안전하게 보관됩니다.`,
+                accountLinkedNewAlert: name => `☁️ 계정 연동 완료! "${name}"님의 이름과 기록·구매 내역이 Google/Apple ID에 안전하게 보관됩니다.`,
+                accountRestoreNotFoundAlert: '해당 계정에 저장된 이전 기록이 아직 없습니다. 지금 이름을 등록하시면 이 계정에 자동으로 연동됩니다.',
+                promptAccountEmailForSync: label => `연동/복원할 ${label} (이메일 또는 계정 ID)를 입력해주세요.\n앱을 지웠다 다시 깔아도 같은 ID를 입력하면 이름·기록·구매내역이 그대로 복원됩니다:`,
                 promptLinkAccount: 'Google ID 또는 Apple ID를 연동하시겠습니까?\n연동해 두면 앱을 지웠다 다시 깔아도 같은 이름과 기록·구매 내역으로 그대로 시작할 수 있습니다.\n\n[확인] = Google ID 연동 / [취소] = Apple ID 연동',
             }
         };
@@ -5255,20 +5278,132 @@
             updateIntroProfilePillUI();
         }
 
+        // ── 욕설·비속어·혐오표현·성적표현·운영자 사칭 금칙어 자동 차단 필터 (한/영/일 + 초성 + 특수문자 우회 차단) ──
+        const FORBIDDEN_SUBSTRINGS = [
+            // 한국어 욕설 / 비속어 / 패드립 / 성적 비하 / 혐오 / 정치·극단 / 운영자 사칭
+            '시발', '씨발', '쉬발', '슈발', '시벌', '씨벌', '시바', '씨바', '십새', '씹새', '시팔', '씨팔',
+            '개새', '개세', '개색', '개소리', '개년', '개놈', '개돼지',
+            '병신', '빙신', '븅신', '벼신', '지랄', '염병', '옘병', '미친', '미칯', '꺼져', '닥쳐', '뒤져', '디져',
+            '창녀', '창년', '갈보', '걸레', '화냥', '보지', '자지', '잠지', '부랄', '불알',
+            '애미', '애비', '에미', '에비', '느금', '니기미', '니미', '느개비',
+            '좆', '조까', '족까', '썅', '쌍년', '쌍놈', '년놈', '씹',
+            '강간', '성폭행', '야동', '섹스', '쎅쓰', '성교', '자위', '콘돔', '매춘', '성매매',
+            '일베', '메갈', '워마드', '한남', '한녀', '틀딱', '급식충', '맘충', '운지',
+            '노무현', '김대중', '문재인', '윤석열', '이재명', '박근혜', '전두환', '히틀러', '나치',
+            '운영자', '관리자', '어드민', '시스템', '개발자', '공지사항', '마스터',
+            // 한국어 초성 욕설
+            'ㅅㅂ', 'ㅆㅂ', 'ㅂㅅ', 'ㅈㄹ', 'ㄱㅅㄲ', 'ㅅㄲ', 'ㅈ같', 'ㅈ까', 'ㅆㄹㄱ', 'ㅁㅊ', 'ㄴㄱㅁ', 'ㅇㅁ',
+            // 영어 욕설 / 인종·성소수자 혐오 / 성적 / 운영자 사칭
+            'fuck', 'fuk', 'fck', 'fuxk', 'fuq', 'fvvck', 'phuck',
+            'shit', 'sh1t', 'bitch', 'b1tch', 'biatch', 'asshole', 'azzhole', 'bastard',
+            'cunt', 'dick', 'd1ck', 'cock', 'c0ck', 'pussy', 'penis', 'vagina', 'boob', 'tits',
+            'whore', 'slut', 'skank', 'nigger', 'nigga', 'n1gger', 'n1gga', 'faggot', 'fag', 'retard',
+            'rape', 'rapist', 'pedo', 'pedophile', 'incest', 'porn', 'hentai', 'sex', 'nazi', 'hitler', 'kkk',
+            'admin', 'administrator', 'system', 'operator', 'moderator', 'official', 'developer', 'noname',
+            // 일본어 욕설 / 비속어 / 성적 / 차별어 / 운영자 사칭
+            '死ね', 'しね', 'シネ', '殺す', 'ころす', 'コロス',
+            'バカ', 'ばか', '馬鹿', 'アホ', 'あほ', '阿呆', 'クソ', 'くそ', '糞',
+            'ファック', 'ふぁっく', 'ビッチ', 'びっち',
+            'ちんこ', 'チンコ', 'ちんぽ', 'チンポ', 'まんこ', 'マンコ', 'おっぱい', 'オッパイ',
+            'セックス', 'せっくす', 'レイプ', 'れいぷ', 'エロ', 'えろ', '変態', 'へんたい',
+            'キチガイ', 'きちがい', '基地外', 'ガイジ', 'がいじ', '障害者',
+            'かす', 'カス', 'ゴミ', 'ごみ', 'ブス', 'ぶす', 'デブ', 'でぶ', '消えろ', 'きえろ',
+            '運営', '管理者', '公式'
+        ];
+
+        const FORBIDDEN_EXACT_WORDS = new Set(['gm', 'dev', 'null', 'undefined', 'bot', 'host']);
+
+        function sanitizeAllowedNameChars(raw) {
+            // 한글(완성형/자모), 영문, 숫자, 일본어(히라가나/가타카나/한자), 일반 공백/언더바만 허용 (특수기호·제어문자 입력 즉시 제거)
+            return String(raw || '')
+                .replace(/[^\uAC00-\uD7A3\u3131-\u318E\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAFa-zA-Z0-9 _\-]/g, '');
+        }
+
+        function isForbiddenPlayerName(rawName) {
+            const trimmed = String(rawName || '').trim();
+            if (!trimmed) return false;
+            const lower = trimmed.toLowerCase();
+            if (FORBIDDEN_EXACT_WORDS.has(lower)) return true;
+
+            // 공백·특수문자·숫자 끼워넣기(예: 시1발, f_u_c_k) 제거 정규화본
+            const compactAll = lower.replace(/[\s_\-0-9]/g, '');
+            const compactKeepDigits = lower.replace(/[\s_\-]/g, '');
+            // 영문 리트스피크(0->o, 1->i, 3->e, 4->a, 5->s) 변환본
+            const leetNormalized = compactKeepDigits
+                .replace(/0/g, 'o')
+                .replace(/1/g, 'i')
+                .replace(/3/g, 'e')
+                .replace(/4/g, 'a')
+                .replace(/5/g, 's');
+
+            for (const bad of FORBIDDEN_SUBSTRINGS) {
+                const b = bad.toLowerCase();
+                if (
+                    lower.includes(b) ||
+                    compactAll.includes(b) ||
+                    compactKeepDigits.includes(b) ||
+                    leetNormalized.includes(b)
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        let lastSafeInitialName = '';
+        let forbiddenHintResetTimer = null;
+
+        function showForbiddenNameInlineFeedback() {
+            const hintEl = document.getElementById('initial-name-hint');
+            const inputEl = document.getElementById('initial-name-input');
+            if (inputEl) {
+                inputEl.style.borderColor = '#e11d48';
+            }
+            if (hintEl) {
+                hintEl.innerText = textFor('forbiddenNameInlineHint') || '🚫';
+                hintEl.style.color = '#e11d48';
+                if (forbiddenHintResetTimer) clearTimeout(forbiddenHintResetTimer);
+                forbiddenHintResetTimer = setTimeout(() => {
+                    hintEl.innerText = textFor('initialNameHint');
+                    hintEl.style.color = '';
+                    if (inputEl) inputEl.style.borderColor = '';
+                }, 2400);
+            }
+        }
+
         function handleInitialNameInput() {
             const input = document.getElementById('initial-name-input');
             if (!input) return;
-            const clamped = clampBattleName(input.value);
+            const sanitized = sanitizeAllowedNameChars(input.value);
+            const clamped = clampBattleName(sanitized);
+            if (isForbiddenPlayerName(clamped)) {
+                // 욕설/금칙어가 감지되면 즉시 직전 안전한 입력값으로 되돌려 자동 차단
+                input.value = isForbiddenPlayerName(lastSafeInitialName) ? '' : lastSafeInitialName;
+                showForbiddenNameInlineFeedback();
+                return;
+            }
             if (input.value !== clamped) input.value = clamped;
+            lastSafeInitialName = clamped;
         }
 
         function submitInitialPermanentName() {
             const input = document.getElementById('initial-name-input');
-            const rawVal = input ? input.value : '';
+            const rawVal = input ? sanitizeAllowedNameChars(input.value) : '';
             const candidateName = clampBattleName(rawVal).trim();
             if (!candidateName) {
                 alert(textFor('alertNickname'));
                 if (input) input.focus();
+                return;
+            }
+
+            if (isForbiddenPlayerName(candidateName)) {
+                showForbiddenNameInlineFeedback();
+                alert(textFor('alertForbiddenName'));
+                if (input) {
+                    input.value = '';
+                    lastSafeInitialName = '';
+                    input.focus();
+                }
                 return;
             }
 
@@ -5996,13 +6131,12 @@
         }
 
         function getBattleNickname() {
-            const input = document.getElementById('battle-name-input');
-            return clampBattleName(input ? input.value : '').trim();
+            return clampBattleName(getSavedPlayerName() || getSavedBattleNickname()).trim();
         }
 
         function getSavedBattleNickname() {
             try {
-                return clampBattleName(localStorage.getItem(BATTLE_NAME_STORAGE_KEY) || '').trim();
+                return clampBattleName(localStorage.getItem(PLAYER_NAME_KEY) || localStorage.getItem(BATTLE_NAME_STORAGE_KEY) || '').trim();
             } catch(e) {
                 return '';
             }
@@ -6012,68 +6146,23 @@
             try { localStorage.setItem(BATTLE_NAME_STORAGE_KEY, name); } catch(e) {}
         }
 
-        function hydrateBattleNameInput() {
-            const input = document.getElementById('battle-name-input');
-            if (!input) return;
-            input.value = getSavedBattleNickname();
-        }
+        function hydrateBattleNameInput() {}
 
         function showBattleProfileStep() {
-            battleProfileReady = false;
-            document.querySelector('.battle-profile-panel').style.display = 'flex';
-            const quickSection = document.getElementById('battle-quick-section');
-            if (quickSection) quickSection.style.display = 'none';
-            document.getElementById('battle-create-section').style.display = 'none';
-            document.getElementById('battle-divider').style.display = 'none';
-            document.getElementById('battle-join-section').style.display = 'none';
+            showBattleRoomStep();
         }
 
         function showBattleRoomStep() {
             battleProfileReady = true;
-            document.querySelector('.battle-profile-panel').style.display = 'none';
             const quickSection = document.getElementById('battle-quick-section');
             if (quickSection) quickSection.style.display = 'flex';
-            document.getElementById('battle-create-section').style.display = 'flex';
-            document.getElementById('battle-divider').style.display = 'block';
-            document.getElementById('battle-join-section').style.display = 'flex';
+            const createSection = document.getElementById('battle-create-section');
+            if (createSection) createSection.style.display = 'flex';
+            const divider = document.getElementById('battle-divider');
+            if (divider) divider.style.display = 'block';
+            const joinSection = document.getElementById('battle-join-section');
+            if (joinSection) joinSection.style.display = 'flex';
             updateQuickMatchUI();
-        }
-
-        function handleBattleNameInput() {
-            const input = document.getElementById('battle-name-input');
-            if (!input) return;
-
-            const clamped = clampBattleName(input.value);
-            if (input.value !== clamped) input.value = clamped;
-            commitBattleNickname();
-        }
-
-        function commitBattleNickname() {
-            const name = getBattleNickname();
-            const input = document.getElementById('battle-name-input');
-            if (input && input.value !== name) input.value = name;
-
-            saveBattleNickname(name);
-
-            if (!battleRoomId || !battlePlayerId || !battlePlayers[battlePlayerId]) return;
-            battlePlayers[battlePlayerId].name = name;
-            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/name').set(name);
-        }
-
-        function submitBattleNickname() {
-            const name = getBattleNickname();
-            const input = document.getElementById('battle-name-input');
-            if (!name) {
-                alert(textFor('alertNickname'));
-                if (input) input.focus();
-                return;
-            }
-
-            if (input) input.value = name;
-            saveBattleNickname(name);
-            showBattleRoomStep();
-            if (!battleRoomId) createBattleRoom(name);
-            else commitBattleNickname();
         }
 
         function getBattlePlayerList(room = null) {
@@ -6850,10 +6939,6 @@
             document.getElementById('battle-join-btn').innerText       = textFor('battleJoin');
             document.getElementById('battle-exit-btn').innerText       = textFor('battleExit');
             document.getElementById('battle-start-btn').innerText      = textFor('battleStart');
-            document.getElementById('battle-name-label').innerText     = textFor('battleNameLabel');
-            document.getElementById('battle-name-input').placeholder   = textFor('battleNamePlaceholder');
-            document.getElementById('battle-name-hint').innerText      = textFor('battleNameHint');
-            document.getElementById('battle-name-next-btn').innerText  = textFor('battleNameNext');
             document.getElementById('battle-code-label').innerText     = textFor('battleCodeLabel');
             document.getElementById('battle-join-label').innerText     = textFor('battleJoinLabel');
             document.getElementById('battle-divider').innerText        = textFor('battleDivider');
