@@ -1059,6 +1059,97 @@
             color: #000;
         }
 
+        /* Battle Phase HUD & Banner & Vignette */
+        #battle-hud-wrap {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .battle-phase-pill {
+            margin-top: 6px;
+            background: linear-gradient(135deg, #ff3b30, #ff9500);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 3px 12px;
+            border-radius: 20px;
+            border: 2px solid #000000;
+            box-shadow: 0 3px 0 #000000;
+            pointer-events: none;
+            text-align: center;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .battle-phase-pill.hidden {
+            display: none;
+        }
+
+        .battle-phase-banner {
+            position: absolute;
+            top: 38%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            background: rgba(10, 15, 29, 0.92);
+            border: 4px solid var(--palette-yellow);
+            border-radius: 20px;
+            padding: 16px 28px;
+            text-align: center;
+            z-index: 60;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 10px 0 #000000, 0 0 35px rgba(255, 215, 0, 0.65);
+            transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.28s ease;
+        }
+
+        .battle-phase-banner.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .bpb-sub {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--palette-yellow);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .bpb-title {
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 2px 2px 0 #000000;
+            white-space: nowrap;
+        }
+
+        #battle-final-vignette {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            animation: finalVignettePulse 1.2s infinite alternate ease-in-out;
+        }
+
+        #battle-final-vignette.active {
+            opacity: 1;
+        }
+
+        @keyframes finalVignettePulse {
+            0% { box-shadow: inset 0 0 50px rgba(255, 30, 0, 0.4), inset 0 0 90px rgba(255, 180, 0, 0.25); }
+            100% { box-shadow: inset 0 0 85px rgba(255, 30, 0, 0.7), inset 0 0 140px rgba(255, 180, 0, 0.5); }
+        }
+
         /* 대전 결과 화면 */
         #battle-result-screen {
             background: linear-gradient(rgba(185, 236, 255, 0.9), rgba(255, 247, 216, 0.94)), url('./main_background.png') center top / cover no-repeat;
@@ -1805,6 +1896,31 @@
             letter-spacing: 3px;
         }
 
+        .battle-phase-pill {
+            margin-top: 14px;
+            font-size: 32px;
+            padding: 8px 32px;
+            border-radius: 40px;
+            border-width: 5px;
+            box-shadow: 0 8px 0 #000000;
+        }
+
+        .battle-phase-banner {
+            border-width: 8px;
+            border-radius: 44px;
+            padding: 38px 65px;
+            box-shadow: 0 20px 0 #000000, 0 0 70px rgba(255, 215, 0, 0.7);
+        }
+
+        .bpb-sub {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .bpb-title {
+            font-size: 56px;
+        }
+
         .battle-result-title {
             font-size: 199px;
             text-shadow: 11px 11px 0 #ffffff, 19px 19px 0 #000000;
@@ -2373,8 +2489,20 @@
             <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;color:#1e293b;border-color:#1e293b;" id="battle-cancel-btn">メインへ</button>
         </div>
 
-        <!-- 대전 중 상단 HUD -->
-        <div id="battle-hud"></div>
+        <!-- 대전 중 상단 HUD 및 페이즈 배지 -->
+        <div id="battle-hud-wrap">
+            <div id="battle-phase-pill" class="battle-phase-pill hidden">PHASE 1</div>
+            <div id="battle-hud"></div>
+        </div>
+
+        <!-- 대전 페이즈 전환 알림 배너 -->
+        <div id="battle-phase-banner" class="battle-phase-banner">
+            <div class="bpb-sub" id="bpb-sub">PHASE 2</div>
+            <div class="bpb-title" id="bpb-title">🔥 11번 파이어볼 개막!</div>
+        </div>
+
+        <!-- 1 vs 1 결승 서든데스 화면 비네트 -->
+        <div id="battle-final-vignette"></div>
 
         <!-- 대전 결과 화면 -->
         <div id="battle-result-screen" class="screen hidden">
@@ -3289,6 +3417,18 @@
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
         function getPitchInterval(n) {
+            // 온라인 대전 모드: 5단계 서든데스 페이즈별 가속
+            if (battleMode) {
+                const phase = typeof getBattlePhase === 'function' ? getBattlePhase() : 1;
+                if (phase === 1) return 1000;
+                if (phase === 2) return 900;
+                if (phase === 3) return 800;
+                if (phase === 4) return 700;
+                if (n >= 331) return 400;
+                if (n >= 231) return 500;
+                return 600;
+            }
+            // 개인 기록 모드: 기존 룰 100% 보존
             if (n < 31)  return 1000;
             if (n < 131) return 900;
             if (n < 231) return 800;
@@ -3791,6 +3931,21 @@
             flashballTriggered  = false;
             setPitcherThrowing(false);
             stopFlashball();
+            if (battleMode) {
+                battlePhase = 1;
+                battleMirrorballTriggered = false;
+                battleStripeballTriggered = false;
+                battleFlashballTriggered = false;
+                battleStripeBaseRowIndex = 9;
+                const vignette = document.getElementById('battle-final-vignette');
+                if (vignette) vignette.classList.remove('active');
+                if (typeof updateBattlePhasePill === 'function') updateBattlePhasePill(1);
+            } else {
+                const pill = document.getElementById('battle-phase-pill');
+                if (pill) pill.classList.add('hidden');
+                const vignette = document.getElementById('battle-final-vignette');
+                if (vignette) vignette.classList.remove('active');
+            }
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
@@ -4239,6 +4394,23 @@
         }
 
         function scheduleMirrorballIfNeeded() {
+            // 온라인 대전 모드: Phase 3 (5명 이하 생존 OR 51번 도달)
+            if (battleMode) {
+                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 3 : (nextExpectedNumber >= 51);
+                if (!shouldTrigger || battleMirrorballTriggered || mirrorballDoneCount > 0 || mirrorballCharging || mirrorballShotPending) return;
+                battleMirrorballTriggered = true;
+                mirrorballCharging = true;
+                triggerMirrorball();
+                setTimeout(() => {
+                    if (gameState !== 'PLAYING') return;
+                    mirrorballShotPending = true;
+                    mirrorballCharging = false;
+                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                }, MIRRORBALL_ANNOUNCE_DURATION + MIRRORBALL_POST_ANNOUNCE_DELAY);
+                return;
+            }
+
+            // 개인 기록 모드: 기존 룰 100% 보존 (94점 이후 101번)
             const expectedMirrorCount = score >= MIRRORBALL_TRIGGER_SCORE ? 1 : 0;
             if (expectedMirrorCount <= mirrorballDoneCount || mirrorballCharging || mirrorballShotPending) return;
 
@@ -4269,6 +4441,10 @@
 
         function isStripeNormalRow(num) {
             const rowIndex = Math.floor((num - 1) / 10);
+            if (battleMode) {
+                if (rowIndex < battleStripeBaseRowIndex) return false;
+                return (rowIndex - battleStripeBaseRowIndex) % 2 === 0;
+            }
             if (rowIndex < STRIPEBALL_BASE_ROW_INDEX) return false;
             return (rowIndex - STRIPEBALL_BASE_ROW_INDEX) % 2 === 0;
         }
@@ -4284,6 +4460,24 @@
         }
 
         function scheduleStripeballIfNeeded() {
+            // 온라인 대전 모드: Phase 4 (3명 이하 생존 OR 91번 도달)
+            if (battleMode) {
+                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 4 : (nextExpectedNumber >= 91);
+                if (!shouldTrigger || battleStripeballTriggered || stripeballCharging || stripeballShotPending) return;
+                battleStripeballTriggered = true;
+                battleStripeBaseRowIndex = Math.floor((nextExpectedNumber - 1) / 10);
+                stripeballCharging = true;
+                triggerStripeball();
+                setTimeout(() => {
+                    if (gameState !== 'PLAYING') return;
+                    stripeballShotPending = true;
+                    stripeballCharging = false;
+                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                }, STRIPEBALL_ANNOUNCE_DURATION + STRIPEBALL_POST_ANNOUNCE_DELAY);
+                return;
+            }
+
+            // 개인 기록 모드: 기존 룰 100% 보존 (201번)
             if (nextExpectedNumber < STRIPEBALL_TRIGGER_NUMBER || stripeballTriggered || stripeballCharging || stripeballShotPending) return;
 
             stripeballCharging = true;
@@ -4346,6 +4540,23 @@
         }
 
         function scheduleFlashballIfNeeded() {
+            // 온라인 대전 모드: Phase 5 (2명 이하 결승 OR 131번 도달)
+            if (battleMode) {
+                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 5 : (nextExpectedNumber >= 131);
+                if (!shouldTrigger || battleFlashballTriggered || flashballCharging || flashballShotPending) return;
+                battleFlashballTriggered = true;
+                flashballCharging = true;
+                triggerFlashball();
+                setTimeout(() => {
+                    if (gameState !== 'PLAYING') return;
+                    flashballShotPending = true;
+                    flashballCharging = false;
+                    lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                }, FLASHBALL_SHOT_DELAY);
+                return;
+            }
+
+            // 개인 기록 모드: 기존 룰 100% 보존 (301번)
             if (nextExpectedNumber < FLASHBALL_TRIGGER_NUMBER || flashballTriggered || flashballCharging || flashballShotPending) return;
 
             flashballCharging = true;
@@ -4370,9 +4581,13 @@
             while (destroyedNumbers.has(nextExpectedNumber)) {
                 nextExpectedNumber++;
             }
-            scheduleMirrorballIfNeeded();
-            scheduleStripeballIfNeeded();
-            scheduleFlashballIfNeeded();
+            if (battleMode && typeof checkBattlePhaseTransition === 'function') {
+                checkBattlePhaseTransition();
+            } else {
+                scheduleMirrorballIfNeeded();
+                scheduleStripeballIfNeeded();
+                scheduleFlashballIfNeeded();
+            }
         }
 
         let isPageInactive = false;
@@ -4396,8 +4611,10 @@
             if (!fireballCharging && !fireballActive && !mirrorballCharging && !stripeballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
-                // 31, 131, 231... → 파이어볼
-                const isFireballTurn = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                // 31, 131, 231... (개인 기록) / 11, 111, 211... (온라인 대전) → 파이어볼
+                const isFireballTurn = battleMode
+                    ? (nextExpectedNumber >= 11 && (nextExpectedNumber - 11) % 100 === 0)
+                    : (nextExpectedNumber >= 31 && (nextExpectedNumber - 31) % 100 === 0);
 
                 if (isFireballTurn) {
                     fireballCharging = true;
@@ -4690,7 +4907,9 @@
                 if (drawY > height || drawY < -blk.height) return;
 
                 const isNext = blk.num === nextExpectedNumber;
-                const isFireballNext = (nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31;
+                const isFireballNext = battleMode
+                    ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
+                    : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
                 ctx.drawImage(getBlockTileCanvas(blk.size, blk.height, isGuide), blk.x, drawY, blk.size, blk.height);
 
@@ -6079,9 +6298,133 @@
         let botSimTimers = {};
         let battleDisconnectRef = null;
         let battleHostDisconnectRef = null;
+        let battlePhase = 1;
+        let battleMirrorballTriggered = false;
+        let battleStripeballTriggered = false;
+        let battleFlashballTriggered = false;
+        let battleStripeBaseRowIndex = 9;
+        let battlePhaseBannerTimer = null;
         const BATTLE_NAME_STORAGE_KEY = 'infinitePitcherBattleName';
         const BATTLE_STATS_STORAGE_KEY = 'infinitePitcherBattleStats_v1';
         const BATTLE_NAME_MAX_WEIGHT = 10;
+
+        function getBattleAliveCount() {
+            if (!battlePlayers) return 8;
+            const list = Object.values(battlePlayers);
+            if (!list.length) return 8;
+            return list.filter(p => p && !p.done && !p.disconnected).length;
+        }
+
+        function getBattlePhase() {
+            if (!battleMode) return 1;
+            const alive = getBattleAliveCount();
+            // Phase 5: 최후 2인 결승 1:1 OR 131번 도달
+            if (alive <= 2 || nextExpectedNumber >= 131) return 5;
+            // Phase 4: 생존자 3명 이하 OR 91번 도달
+            if (alive <= 3 || nextExpectedNumber >= 91) return 4;
+            // Phase 3: 생존자 5명 이하 OR 51번 도달
+            if (alive <= 5 || nextExpectedNumber >= 51) return 3;
+            // Phase 2: 11번 파이어볼 도달
+            if (nextExpectedNumber >= 11) return 2;
+            // Phase 1: 기본 워밍업 (1~10번)
+            return 1;
+        }
+
+        function getBattlePhaseTitle(phase) {
+            const lang = currentLang || 'ko';
+            const TITLES = {
+                ja: {
+                    1: { sub: 'PHASE 1', title: '⚾ ウォーミングアップ！' },
+                    2: { sub: 'PHASE 2', title: '🔥 11番 ファイヤーボール開幕！' },
+                    3: { sub: 'PHASE 3', title: '🪞 TOP 5 突入！ミラーボール開幕！' },
+                    4: { sub: 'PHASE 4', title: '🦓 TOP 3 激突！ストライプ開幕！' },
+                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 サドンデス！フラッシュボール！' }
+                },
+                ko: {
+                    1: { sub: 'PHASE 1', title: '⚾ 워밍업 스타트!' },
+                    2: { sub: 'PHASE 2', title: '🔥 11번 파이어볼 개막!' },
+                    3: { sub: 'PHASE 3', title: '🪞 TOP 5 돌입! 미러볼 개막!' },
+                    4: { sub: 'PHASE 4', title: '🦓 TOP 3 격돌! 스트라이프볼 개막!' },
+                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 결승 서든데스! 플래시볼!' }
+                },
+                en: {
+                    1: { sub: 'PHASE 1', title: '⚾ Warm-Up Pitch!' },
+                    2: { sub: 'PHASE 2', title: '🔥 #11 Fireball Unleashed!' },
+                    3: { sub: 'PHASE 3', title: '🪞 TOP 5! Mirrorball Active!' },
+                    4: { sub: 'PHASE 4', title: '🦓 TOP 3! Stripeball Active!' },
+                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 Sudden Death! Flashball!' }
+                }
+            };
+            const set = TITLES[lang] || TITLES.ko;
+            return set[phase] || set[1];
+        }
+
+        function showBattlePhaseBanner(phase) {
+            const banner = document.getElementById('battle-phase-banner');
+            const subEl = document.getElementById('bpb-sub');
+            const titleEl = document.getElementById('bpb-title');
+            if (!banner || !subEl || !titleEl) return;
+            const info = getBattlePhaseTitle(phase);
+            subEl.innerText = info.sub;
+            titleEl.innerText = info.title;
+
+            banner.classList.remove('show');
+            void banner.offsetWidth;
+            banner.classList.add('show');
+            playSfx(phase === 5 ? 'flashball' : (phase >= 3 ? 'mirrorball' : 'fireball'), 1.0);
+            triggerHaptic(phase >= 4 ? 'heavy' : 'medium');
+
+            if (battlePhaseBannerTimer) clearTimeout(battlePhaseBannerTimer);
+            battlePhaseBannerTimer = setTimeout(() => {
+                banner.classList.remove('show');
+            }, 1800);
+        }
+
+        function updateBattlePhasePill(phase) {
+            const pill = document.getElementById('battle-phase-pill');
+            if (!pill) return;
+            if (!battleMode) {
+                pill.classList.add('hidden');
+                return;
+            }
+            pill.classList.remove('hidden');
+            const info = getBattlePhaseTitle(phase);
+            pill.innerText = `${info.sub} · ${info.title.split(' ')[0]} ${info.title.split(' ')[1] || ''}`;
+            if (phase === 5) {
+                pill.style.background = 'linear-gradient(135deg, #ff0055, #ffcc00)';
+                pill.style.boxShadow = '0 0 15px rgba(255, 0, 85, 0.8), 0 4px 0 #000';
+            } else if (phase === 4) {
+                pill.style.background = 'linear-gradient(135deg, #7c3aed, #a855f7)';
+                pill.style.boxShadow = '0 0 12px rgba(168, 85, 247, 0.6), 0 4px 0 #000';
+            } else if (phase === 3) {
+                pill.style.background = 'linear-gradient(135deg, #2563eb, #38bdf8)';
+                pill.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.6), 0 4px 0 #000';
+            } else if (phase === 2) {
+                pill.style.background = 'linear-gradient(135deg, #ea580c, #f97316)';
+                pill.style.boxShadow = '0 0 10px rgba(249, 115, 22, 0.6), 0 4px 0 #000';
+            } else {
+                pill.style.background = '';
+                pill.style.boxShadow = '';
+            }
+        }
+
+        function checkBattlePhaseTransition() {
+            if (!battleMode || gameState !== 'PLAYING') return;
+            const newPhase = getBattlePhase();
+            if (newPhase > battlePhase) {
+                battlePhase = newPhase;
+                showBattlePhaseBanner(newPhase);
+                updateBattlePhasePill(newPhase);
+                if (newPhase === 5) {
+                    const vignette = document.getElementById('battle-final-vignette');
+                    if (vignette) vignette.classList.add('active');
+                }
+            }
+            updateBattlePhasePill(battlePhase);
+            scheduleMirrorballIfNeeded();
+            scheduleStripeballIfNeeded();
+            scheduleFlashballIfNeeded();
+        }
 
         function getBattleStats() {
             try {
@@ -6641,6 +6984,17 @@
             battleResultShown = false;
             battleRematchStarted = false;
             battleProfileReady = false;
+            battlePhase = 1;
+            battleMirrorballTriggered = false;
+            battleStripeballTriggered = false;
+            battleFlashballTriggered = false;
+            const vignette = document.getElementById('battle-final-vignette');
+            if (vignette) vignette.classList.remove('active');
+            const pill = document.getElementById('battle-phase-pill');
+            if (pill) pill.classList.add('hidden');
+            const banner = document.getElementById('battle-phase-banner');
+            if (banner) banner.classList.remove('show');
+            if (battlePhaseBannerTimer) { clearTimeout(battlePhaseBannerTimer); battlePhaseBannerTimer = null; }
         }
 
         function returnToIntroAfterBattle(removeHostRoom = false) {
@@ -6978,6 +7332,9 @@
                 const meClass = player.id === battlePlayerId ? ' me' : '';
                 return `<div class="battle-hud-box${meClass}">${label}<span>${scoreText}</span></div>`;
             }).join('');
+            if (battleMode && gameState === 'PLAYING' && typeof checkBattlePhaseTransition === 'function') {
+                checkBattlePhaseTransition();
+            }
         }
 
         function applyBattleLang() {
@@ -7008,6 +7365,16 @@
             clearRematchListener();
             battleMode = true;
 
+            // 배틀 5단계 페이즈 초기화
+            battlePhase = 1;
+            battleMirrorballTriggered = false;
+            battleStripeballTriggered = false;
+            battleFlashballTriggered = false;
+            battleStripeBaseRowIndex = 9;
+            const vignette = document.getElementById('battle-final-vignette');
+            if (vignette) vignette.classList.remove('active');
+            updateBattlePhasePill(1);
+
             document.getElementById('battle-hud').style.display = 'flex';
             renderBattleHud({ players: battlePlayers });
 
@@ -7030,6 +7397,12 @@
         function battleGameOver() {
             if (!battleMode || !battleRoomId || !battlePlayerId) return;
             battleMode = false;
+            const vignette = document.getElementById('battle-final-vignette');
+            if (vignette) vignette.classList.remove('active');
+            const pill = document.getElementById('battle-phase-pill');
+            if (pill) pill.classList.add('hidden');
+            const banner = document.getElementById('battle-phase-banner');
+            if (banner) banner.classList.remove('show');
             const savedScore = score;
             if (battlePlayers[battlePlayerId]) {
                 battlePlayers[battlePlayerId].score = savedScore;
