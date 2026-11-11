@@ -1239,18 +1239,18 @@
             color: var(--palette-blue);
         }
 
-        /* 메인화면 랭킹 버튼 */
+        /* 메인화면 랭킹 버튼 (좌측 상단) */
         #intro-ranking-btn {
             position: absolute;
-            top: 16px;
-            right: -41px;
+            top: 14px;
+            left: -41px;
             width: 144px;
             height: auto;
             background: transparent;
             border: 0;
             padding: 0;
             cursor: pointer;
-            z-index: 2;
+            z-index: 5;
             touch-action: auto !important;
         }
 
@@ -1259,6 +1259,216 @@
             width: 100%;
             height: auto;
             pointer-events: none;
+        }
+
+        /* 메인화면 설정 톱니바퀴 버튼 (우측 상단) */
+        .intro-settings-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 44px;
+            height: 44px;
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 3px solid #000000;
+            border-radius: 14px;
+            box-shadow: 0 4px 0 var(--palette-blue), 0 4px 0 1px #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
+            touch-action: auto !important;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        }
+
+        .intro-settings-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--palette-blue), 0 2px 0 1px #000000;
+        }
+
+        .intro-settings-btn svg {
+            display: block;
+            pointer-events: none;
+        }
+
+        /* 메인화면 설정 모달 */
+        #settings-modal {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(185, 236, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            padding: 24px 20px;
+            box-sizing: border-box;
+            backdrop-filter: blur(2px);
+        }
+
+        .settings-modal-inner {
+            background: var(--palette-cream);
+            border: 3.5px solid #000000;
+            border-radius: 26px;
+            width: 100%;
+            max-width: 420px;
+            padding: 24px 20px 20px;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 10px 0 var(--palette-pink), 0 10px 0 2px #000000;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .settings-modal-title {
+            margin: 0;
+            color: #111827;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 900;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            text-shadow: 1px 1px 0 #ffffff;
+        }
+
+        .settings-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid #000000;
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: 0 3px 0 var(--palette-blue);
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-label {
+            font-size: 15px;
+            font-weight: 900;
+            color: #1e293b;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+        }
+
+        .settings-val-badge {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--palette-blue);
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            padding: 2px 8px;
+            box-shadow: 0 2px 0 #000000;
+            font-family: 'Darumadrop One', monospace;
+        }
+
+        .settings-lang-toggle {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            margin-top: 2px;
+        }
+
+        .settings-lang-btn {
+            flex: 1;
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 2px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0 3px 0 #cbd5e1, 0 3px 0 1px #000000;
+            cursor: pointer;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 9px 4px;
+            text-align: center;
+            touch-action: auto !important;
+            transition: all 0.1s ease;
+        }
+
+        .settings-lang-btn.active {
+            background: var(--palette-yellow);
+            box-shadow: 0 3px 0 var(--palette-pink), 0 3px 0 1px #000000;
+            transform: translateY(-1px);
+        }
+
+        .settings-slider-wrap {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 4px 2px;
+            box-sizing: border-box;
+        }
+
+        .retro-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 14px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            box-shadow: 0 2px 0 var(--palette-blue);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .retro-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            background: var(--palette-yellow);
+            border: 2.5px solid #000000;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 var(--palette-pink);
+            cursor: pointer;
+            transition: transform 0.08s ease;
+        }
+
+        .retro-slider::-webkit-slider-thumb:active {
+            transform: scale(1.15);
+        }
+
+        .retro-slider::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            background: var(--palette-yellow);
+            border: 2.5px solid #000000;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 var(--palette-pink);
+            cursor: pointer;
+        }
+
+        .settings-confirm-btn {
+            width: 100%;
+            margin-top: 4px;
+            padding: 12px 0;
+            font-size: 19px;
+        }
+
+        .settings-close-x {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            background: var(--palette-pink);
+            border: 2px solid #000000;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 28px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #000000;
         }
 
         /* 메인화면 랭킹 모달 */
@@ -1507,9 +1717,101 @@
         }
 
         #intro-ranking-btn {
-            top: 44px;
-            right: -113px;
+            top: 36px;
+            left: -113px;
+            right: auto;
             width: 398px;
+        }
+
+        .intro-settings-btn {
+            top: 36px;
+            right: 36px;
+            width: 96px;
+            height: 96px;
+            border-width: 6px;
+            border-radius: 28px;
+            box-shadow: 0 8px 0 var(--palette-blue), 0 8px 0 2px #000000;
+        }
+
+        .intro-settings-btn svg {
+            width: 50px;
+            height: 50px;
+        }
+
+        #settings-modal {
+            padding: 60px 40px;
+        }
+
+        .settings-modal-inner {
+            max-width: 680px;
+            border-width: 7px;
+            border-radius: 44px;
+            padding: 44px 40px 36px;
+            box-shadow: 0 18px 0 var(--palette-pink), 0 18px 0 4px #000000;
+            gap: 28px;
+        }
+
+        .settings-modal-title {
+            font-size: 52px;
+        }
+
+        .settings-section {
+            border-width: 4px;
+            border-radius: 28px;
+            padding: 22px 24px;
+            box-shadow: 0 6px 0 var(--palette-blue);
+            gap: 14px;
+        }
+
+        .settings-label {
+            font-size: 28px;
+        }
+
+        .settings-val-badge {
+            font-size: 26px;
+            border-width: 3px;
+            border-radius: 16px;
+            padding: 4px 14px;
+        }
+
+        .settings-lang-btn {
+            border-width: 4px;
+            border-radius: 20px;
+            font-size: 26px;
+            padding: 16px 8px;
+            box-shadow: 0 6px 0 #cbd5e1, 0 6px 0 2px #000000;
+        }
+
+        .settings-lang-btn.active {
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+        }
+
+        .retro-slider {
+            height: 24px;
+            border-width: 3.5px;
+            border-radius: 16px;
+        }
+
+        .retro-slider::-webkit-slider-thumb {
+            width: 48px;
+            height: 48px;
+            border-width: 4px;
+            box-shadow: 0 5px 0 var(--palette-pink);
+        }
+
+        .settings-confirm-btn {
+            font-size: 34px;
+            padding: 20px 0;
+        }
+
+        .settings-close-x {
+            top: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            font-size: 32px;
+            line-height: 56px;
+            border-width: 4px;
         }
 
         #intro-ranking-modal {
@@ -2452,9 +2754,9 @@
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
         <div id="initial-profile-screen" class="screen hidden">
             <div class="lang-switcher" aria-label="Language">
-                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
-                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
                 <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
+                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
             </div>
             <div class="profile-setup-card">
                 <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
@@ -2475,13 +2777,14 @@
         </div>
 
         <div id="intro-screen" class="screen hidden">
-            <div class="lang-switcher" id="lang-switcher" aria-label="Language">
-                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
-                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
-                <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
-            </div>
             <button id="intro-ranking-btn" onclick="toggleIntroRanking()" aria-label="TOP 1000">
                 <img class="intro-ranking-img" src="./top100.png" alt="TOP 1000">
+            </button>
+            <button id="intro-settings-btn" class="intro-settings-btn" onclick="openSettingsModal()" aria-label="Settings">
+                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
             </button>
 
             <img class="title-art" src="./title.png" alt="無限ピッチング">
@@ -2508,6 +2811,48 @@
                         <button class="test-sel-btn"        id="test-num-300" onclick="setTestStart(300)">300</button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 메인화면 설정 모달 -->
+        <div id="settings-modal" class="hidden" onclick="if(event.target===this) closeSettingsModal()">
+            <div class="settings-modal-inner">
+                <button type="button" class="settings-close-x" onclick="closeSettingsModal()">✕</button>
+                <h3 id="settings-modal-title" class="settings-modal-title">⚙️ 설정</h3>
+
+                <!-- 1. 언어 설정 (토글 형태) -->
+                <div class="settings-section">
+                    <div class="settings-label" id="settings-lang-label">🌐 언어</div>
+                    <div class="settings-lang-toggle">
+                        <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">한국어</button>
+                        <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">English</button>
+                        <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">日本語</button>
+                    </div>
+                </div>
+
+                <!-- 2. BGM 볼륨 -->
+                <div class="settings-section">
+                    <div class="settings-row">
+                        <span class="settings-label" id="settings-bgm-label">🎵 배경음악 (BGM)</span>
+                        <span class="settings-val-badge" id="settings-bgm-val">80%</span>
+                    </div>
+                    <div class="settings-slider-wrap">
+                        <input type="range" id="settings-bgm-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleBgmSliderChange(this.value)">
+                    </div>
+                </div>
+
+                <!-- 3. SFX 볼륨 -->
+                <div class="settings-section">
+                    <div class="settings-row">
+                        <span class="settings-label" id="settings-sfx-label">🔊 효과음 (SFX)</span>
+                        <span class="settings-val-badge" id="settings-sfx-val">80%</span>
+                    </div>
+                    <div class="settings-slider-wrap">
+                        <input type="range" id="settings-sfx-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleSfxSliderChange(this.value)">
+                    </div>
+                </div>
+
+                <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
         </div>
 
@@ -2711,6 +3056,8 @@
         let gameBgmBuffer = null;
         let gameBgmSource = null;
         const GAME_BGM_VOLUME = 0.8;
+        let bgmVolume = Number(localStorage.getItem('infinite_pitcher_bgm_vol') ?? 0.8);
+        let sfxVolume = Number(localStorage.getItem('infinite_pitcher_sfx_vol') ?? 0.8);
 
         // 모든 효과음을 Web Audio API 버퍼로 관리
         const sfxBuffers = {};
@@ -2757,7 +3104,10 @@
         });
 
         function playHtmlSfx(key, volume, onended) {
-            if (pageAudioMuted || document.visibilityState === 'hidden') return false;
+            if (pageAudioMuted || document.visibilityState === 'hidden' || sfxVolume <= 0.001) {
+                if (onended) onended();
+                return false;
+            }
             const base = sfxAudioEls[key];
             if (!base) {
                 console.warn('[SFX] missing audio element:', key);
@@ -2766,7 +3116,7 @@
             }
 
             const el = base.cloneNode(true);
-            el.volume = volume !== undefined ? volume : 1.0;
+            el.volume = Math.max(0, Math.min(1, (volume !== undefined ? volume : 1.0) * sfxVolume));
             const cleanup = () => activeHtmlSfxEls.delete(el);
             activeHtmlSfxEls.add(el);
             el.addEventListener('ended', cleanup, { once: true });
@@ -2780,18 +3130,24 @@
         }
 
         function playSfx(key, volume, onended) {
-            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            if (pageAudioMuted || document.visibilityState === 'hidden' || sfxVolume <= 0.001) {
+                if (onended) onended();
+                return;
+            }
             const buf = sfxBuffers[key];
             if (!buf) {
                 playHtmlSfx(key, volume, onended);
                 return;
             }
             audioCtx.resume().then(() => {
-                if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                if (pageAudioMuted || document.visibilityState === 'hidden' || sfxVolume <= 0.001) {
+                    if (onended) onended();
+                    return;
+                }
                 const src = audioCtx.createBufferSource();
                 src.buffer = buf;
                 const gain = audioCtx.createGain();
-                gain.gain.value = volume !== undefined ? volume : 1.0;
+                gain.gain.value = (volume !== undefined ? volume : 1.0) * sfxVolume;
                 src.connect(gain);
                 gain.connect(audioCtx.destination);
                 activeSfxSources.add(src);
@@ -2851,16 +3207,16 @@
         let titleBgmSource = null;
         let titleBgmEl = null;
         let titleGain = audioCtx.createGain();
-        titleGain.gain.value = 0.6;
+        titleGain.gain.value = 0.6 * bgmVolume;
         titleGain.connect(audioCtx.destination);
 
         // HTMLAudioElement 폴백 (bgm_game.wav Web Audio API 실패 시)
         const bgmGameEl  = new Audio('./bgm_game.wav');
         bgmGameEl.loop   = true;
-        bgmGameEl.volume = GAME_BGM_VOLUME;
+        bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
         let bgmGameUseEl = false;
         const gameBgmGain = audioCtx.createGain();
-        gameBgmGain.gain.value = GAME_BGM_VOLUME;
+        gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
         gameBgmGain.connect(audioCtx.destination);
 
         function playThrow() {
@@ -2937,7 +3293,7 @@
                 titleBgmEl.currentTime = 0;
                 titleBgmEl = null;
             }
-            titleGain.gain.value = 0.6;
+            titleGain.gain.value = 0.6 * bgmVolume;
             if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
             bgmGameEl.pause();
             bgmGameEl.currentTime = 0;
@@ -2945,7 +3301,7 @@
         }
 
         function playTitleBgm() {
-            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
             if (!sfxBuffers['bgm_title']) {
                 if (titleBgmEl) {
                     titleBgmEl.pause();
@@ -2955,19 +3311,19 @@
                 if (!base) return;
                 titleBgmEl = base.cloneNode(true);
                 titleBgmEl.loop = true;
-                titleBgmEl.volume = 0.6;
+                titleBgmEl.volume = 0.6 * bgmVolume;
                 titleBgmEl.play().catch(e => console.warn('[BGM] title fallback play failed:', e));
                 return;
             }
             audioCtx.resume().then(() => {
-                if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
                 if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
                 if (titleBgmEl) {
                     titleBgmEl.pause();
                     titleBgmEl.currentTime = 0;
                     titleBgmEl = null;
                 }
-                titleGain.gain.value = 0.6;
+                titleGain.gain.value = 0.6 * bgmVolume;
                 const src = audioCtx.createBufferSource();
                 src.buffer = sfxBuffers['bgm_title'];
                 src.loop = true;
@@ -2999,13 +3355,13 @@
                         titleBgmEl.currentTime = 0;
                         titleBgmEl = null;
                     }
-                    titleGain.gain.value = 0.6;
+                    titleGain.gain.value = 0.6 * bgmVolume;
                 }
             }, interval);
         }
 
-        // ── 언어 시스템 ──────────────────────────────────────────
-        let currentLang = 'ja';
+        // ── 언어 시스템 (기본값: 한국어 'ko') ────────────────────────────
+        let currentLang = localStorage.getItem('infinite_pitcher_lang') || 'ko';
 
         const TEXTS = {
             ja: {
@@ -3115,6 +3471,11 @@
                 accountRestoreNotFoundAlert: 'このIDに保存された記録はまだありません。新しく名前を登録するとこのIDに自動連携されます。',
                 promptAccountEmailForSync: label => `${label} (メールアドレスまたは固有ID) を入力してください。\nアプリを削除して再インストールしても同じ名前・記録・購入履歴が復元されます：`,
                 promptLinkAccount: 'Google ID または Apple ID と連携しますか？\n連携するとアプリを削除して再インストールしても、同じ名前・記録・購入履歴で再開できます。\n\n[OK] = Google ID 連携 / [キャンセル] = Apple ID 連携',
+                settingsTitle: '⚙️ 設定',
+                settingsLang: '言語',
+                settingsBgm: 'BGM 音量',
+                settingsSfx: '効果音 (SFX)',
+                settingsClose: '閉じる',
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
@@ -3223,6 +3584,11 @@
                 accountRestoreNotFoundAlert: 'No previous profile found for this ID yet. Register your name now and it will be linked to this ID automatically.',
                 promptAccountEmailForSync: label => `Enter your ${label} (email or account ID).\nReinstalling with the same ID will restore your permanent name, records, and purchases:`,
                 promptLinkAccount: 'Link your Google ID or Apple ID?\nLinking ensures your name, records, and purchases are restored if you reinstall the app.\n\n[OK] = Google ID / [Cancel] = Apple ID',
+                settingsTitle: '⚙️ Settings',
+                settingsLang: 'Language',
+                settingsBgm: 'BGM Volume',
+                settingsSfx: 'SFX Volume',
+                settingsClose: 'Close',
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
@@ -3331,6 +3697,11 @@
                 accountRestoreNotFoundAlert: '해당 계정에 저장된 이전 기록이 아직 없습니다. 지금 이름을 등록하시면 이 계정에 자동으로 연동됩니다.',
                 promptAccountEmailForSync: label => `연동/복원할 ${label} (이메일 또는 계정 ID)를 입력해주세요.\n앱을 지웠다 다시 깔아도 같은 ID를 입력하면 이름·기록·구매내역이 그대로 복원됩니다:`,
                 promptLinkAccount: 'Google ID 또는 Apple ID를 연동하시겠습니까?\n연동해 두면 앱을 지웠다 다시 깔아도 같은 이름과 기록·구매 내역으로 그대로 시작할 수 있습니다.\n\n[확인] = Google ID 연동 / [취소] = Apple ID 연동',
+                settingsTitle: '⚙️ 설정',
+                settingsLang: '언어',
+                settingsBgm: '배경음악 (BGM)',
+                settingsSfx: '효과음 (SFX)',
+                settingsClose: '확인',
             }
         };
 
@@ -3397,18 +3768,97 @@
             setTxt('initial-google-btn', t.initialGoogleBtn);
             setTxt('initial-apple-btn', t.initialAppleBtn);
 
+            // Settings Modal Texts
+            setTxt('settings-modal-title', t.settingsTitle);
+            setTxt('settings-lang-label', t.settingsLang);
+            setTxt('settings-bgm-label', t.settingsBgm);
+            setTxt('settings-sfx-label', t.settingsSfx);
+            setTxt('settings-close-btn', t.settingsClose);
+
             if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             setBattleRematchButtonText();
             document.querySelectorAll('.lang-switch-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
+            document.querySelectorAll('.settings-lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            updateSettingsUI();
             applyBattleLang();
         }
 
         function setLanguage(lang) {
             if (!TEXTS[lang]) return;
+            localStorage.setItem('infinite_pitcher_lang', lang);
             applyLang(lang);
+        }
+
+        function openSettingsModal() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            updateSettingsUI();
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function selectSettingsLanguage(lang) {
+            if (!TEXTS[lang]) return;
+            playSfx('click', 0.8);
+            triggerHaptic('selection');
+            setLanguage(lang);
+        }
+
+        function handleBgmSliderChange(val) {
+            const num = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+            setBgmVolume(num / 100);
+        }
+
+        function handleSfxSliderChange(val) {
+            const num = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+            setSfxVolume(num / 100);
+            playSfx('click', 0.8);
+        }
+
+        function setBgmVolume(vol) {
+            bgmVolume = Math.max(0, Math.min(1, Number(vol)));
+            localStorage.setItem('infinite_pitcher_bgm_vol', String(bgmVolume));
+            if (titleGain) titleGain.gain.value = 0.6 * bgmVolume;
+            if (gameBgmGain) gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
+            if (titleBgmEl) titleBgmEl.volume = 0.6 * bgmVolume;
+            if (bgmGameEl) bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
+            updateSettingsUI();
+        }
+
+        function setSfxVolume(vol) {
+            sfxVolume = Math.max(0, Math.min(1, Number(vol)));
+            localStorage.setItem('infinite_pitcher_sfx_vol', String(sfxVolume));
+            updateSettingsUI();
+        }
+
+        function updateSettingsUI() {
+            document.querySelectorAll('.settings-lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+
+            const bgmPercent = Math.round(bgmVolume * 100);
+            const bgmSlider = document.getElementById('settings-bgm-slider');
+            const bgmValEl = document.getElementById('settings-bgm-val');
+            if (bgmSlider && parseInt(bgmSlider.value, 10) !== bgmPercent) bgmSlider.value = bgmPercent;
+            if (bgmValEl) bgmValEl.innerText = `${bgmPercent}%`;
+
+            const sfxPercent = Math.round(sfxVolume * 100);
+            const sfxSlider = document.getElementById('settings-sfx-slider');
+            const sfxValEl = document.getElementById('settings-sfx-val');
+            if (sfxSlider && parseInt(sfxSlider.value, 10) !== sfxPercent) sfxSlider.value = sfxPercent;
+            if (sfxValEl) sfxValEl.innerText = `${sfxPercent}%`;
         }
 
         let splashDismissed = false;
@@ -3482,19 +3932,19 @@
         }, { once: true, passive: true });
 
         function playGameBgm() {
-            if (pageAudioMuted || document.visibilityState === 'hidden') return;
+            if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
             stopAllBgm();
             console.log('[BGM] playGameBgm called. buffer:', !!gameBgmBuffer, '/ audioCtx.state:', audioCtx.state);
             if (gameBgmBuffer) {
                 audioCtx.resume().then(() => {
-                    if (pageAudioMuted || document.visibilityState === 'hidden') return;
+                    if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
                     console.log('[BGM] AudioContext resumed, starting Web Audio loop');
                     const src = audioCtx.createBufferSource();
                     src.buffer    = gameBgmBuffer;
                     src.loop      = true;
                     src.loopStart = 0;
                     src.loopEnd   = gameBgmLoopEnd;
-                    gameBgmGain.gain.value = GAME_BGM_VOLUME;
+                    gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
                     src.connect(gameBgmGain);
                     src.start(0);
                     gameBgmSource = src;
@@ -3503,7 +3953,7 @@
                 console.log('[BGM] buffer null → fallback HTMLAudioElement');
                 bgmGameUseEl = true;
                 bgmGameEl.currentTime = 0;
-                bgmGameEl.volume = GAME_BGM_VOLUME;
+                bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
                 bgmGameEl.play().catch(e => console.warn('[BGM] fallback play failed:', e));
             }
         }
