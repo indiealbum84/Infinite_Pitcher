@@ -2848,7 +2848,7 @@
                 <div class="intro-main-actions">
                     <button id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">⚡ 세계 8인 배틀</button>
                     <div class="intro-sub-actions">
-                        <button id="start-btn-id" class="start-btn">🧢 나홀로 특훈</button>
+                        <button id="start-btn-id" class="start-btn" onclick="startSoloPractice()">🧢 나홀로 특훈</button>
                         <button id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">🤝 친구와 특훈</button>
                     </div>
                 </div>
@@ -4069,8 +4069,24 @@
 
         applyTestModeAvailability();
 
+        function startSoloPractice() {
+            leaveBattleRoom(true);
+            stopQuickMatchTimer(false);
+            battleMode = false;
+            battleStarted = false;
+            battleRole = null;
+            battleRoomId = null;
+            battlePlayerId = null;
+            battlePlayers = {};
+            const hudEl = document.getElementById('battle-hud');
+            if (hudEl) hudEl.style.display = 'none';
+            const pillEl = document.getElementById('battle-phase-pill');
+            if (pillEl) pillEl.classList.add('hidden');
+            startGame();
+        }
+
         startBtn.addEventListener('click', () => {
-            if (gameState === 'INTRO') startGame();
+            if (gameState === 'INTRO') startSoloPractice();
         });
 
         let width, height;
@@ -4643,11 +4659,22 @@
             document.getElementById('game-over-screen').classList.add('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('play-gate-screen').classList.add('hidden');
-            document.getElementById('canvas').style.display = 'block';
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl) {
+                canvasEl.style.display = 'block';
+                canvasEl.style.visibility = 'visible';
+                canvasEl.style.opacity = '1';
+            }
             if (battleMode) {
                 document.getElementById('ui-layer').classList.add('hidden');
+                document.getElementById('battle-hud').style.display = 'flex';
             } else {
                 document.getElementById('ui-layer').classList.remove('hidden');
+                document.getElementById('battle-hud').style.display = 'none';
+                const pill = document.getElementById('battle-phase-pill');
+                if (pill) pill.classList.add('hidden');
+                const vignette = document.getElementById('battle-final-vignette');
+                if (vignette) vignette.classList.remove('active');
             }
             updateUI();
 
@@ -8737,8 +8764,8 @@
             if (firstResultRender) {
                 if (canvasEl) {
                     canvasEl.style.display = 'none';
-                    canvasEl.style.visibility = 'hidden';
-                    canvasEl.style.opacity = '0';
+                    canvasEl.style.visibility = 'visible';
+                    canvasEl.style.opacity = '1';
                 }
                 if (ctx && canvas) {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -8806,11 +8833,15 @@
         }
 
         function cancelBattle() {
+            stopQuickMatchTimer(false);
             leaveBattleRoom(true);
+            battleMode = false;
+            battleStarted = false;
             const canvasEl = document.getElementById('canvas');
             if (canvasEl) {
                 canvasEl.style.display = 'none';
-                canvasEl.style.visibility = 'hidden';
+                canvasEl.style.visibility = 'visible';
+                canvasEl.style.opacity = '1';
             }
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
@@ -8871,8 +8902,19 @@
         }
 
         function goToMain() {
+            leaveBattleRoom(true);
+            stopQuickMatchTimer(false);
+            battleMode = false;
+            battleStarted = false;
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl) {
+                canvasEl.style.display = 'none';
+                canvasEl.style.visibility = 'visible';
+                canvasEl.style.opacity = '1';
+            }
             document.getElementById('game-over-screen').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
+            document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('ui-layer').classList.add('hidden');
             stopAllBgm();
             gameState = 'INTRO';
@@ -8888,16 +8930,20 @@
             battleResultPendingRoom = null;
             battleLobbyCountdownActive = false;
             leaveBattleRoom(Boolean(forceRemoveRoom));
+            battleMode = false;
+            battleStarted = false;
             const canvasEl = document.getElementById('canvas');
             if (canvasEl) {
                 canvasEl.style.display = 'none';
-                canvasEl.style.visibility = 'hidden';
+                canvasEl.style.visibility = 'visible';
+                canvasEl.style.opacity = '1';
             }
             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
+            document.getElementById('ui-layer').classList.add('hidden');
             stopAllBgm();
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
