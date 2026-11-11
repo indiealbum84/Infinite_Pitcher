@@ -3592,12 +3592,36 @@
         /**
          * BLOCK MANAGEMENT
          */
-        function createRow(startNum) {
-            let row = [];
+        let battleBoardSeed = 0;
+
+        function getSeededRandom(seed) {
+            let s = (seed % 2147483647) || 1234567;
+            if (s <= 0) s += 2147483646;
+            return function() {
+                s = (s * 16807) % 2147483647;
+                return (s - 1) / 2147483646;
+            };
+        }
+
+        // 특정 행 번호(startNum)에 대한 결정론적 번호 셔플 생성 (대전 시 전원 100% 동일 배열)
+        function getRowNumbers(startNum, seed = 0) {
             let numbers = [];
             for (let i = 0; i < 10; i++) numbers.push(startNum + i);
-            // Shuffle inside row
-            numbers.sort(() => Math.random() - 0.5);
+            if (seed > 0) {
+                const rng = getSeededRandom(seed + startNum * 31);
+                for (let i = numbers.length - 1; i > 0; i--) {
+                    const j = Math.floor(rng() * (i + 1));
+                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+                }
+            } else {
+                numbers.sort(() => Math.random() - 0.5);
+            }
+            return numbers;
+        }
+
+        function createRow(startNum) {
+            let row = [];
+            const numbers = getRowNumbers(startNum, battleMode ? battleBoardSeed : 0);
 
             const blockSize = getBlockSize();
             const blockHeight = getBlockHeight();
@@ -6287,6 +6311,7 @@
         let battleListener = null;
         let battleMode = false;
         let battleStarted = false;
+        let battleSimStarted = false;
         let battleResultShown = false;
         let battleResultListener = null;
         let battleRematchStarted = false;
@@ -6483,16 +6508,22 @@
         }
 
         const BATTLE_BOT_POOL = [
-            { name: '🇯🇵 REN', minTarget: 26, maxTarget: 95 },
-            { name: '🇺🇸 ALEX', minTarget: 20, maxTarget: 82 },
-            { name: '🇰🇷 강속구왕', minTarget: 32, maxTarget: 118 },
-            { name: '🇹🇼 LEO', minTarget: 22, maxTarget: 76 },
-            { name: '🇲🇽 MATEO', minTarget: 18, maxTarget: 64 },
-            { name: '🇬🇧 RYAN', minTarget: 24, maxTarget: 88 },
-            { name: '🇨🇦 NOAH', minTarget: 19, maxTarget: 72 },
-            { name: '🇯🇵 HARU', minTarget: 28, maxTarget: 105 },
-            { name: '🇰🇷 에이스', minTarget: 25, maxTarget: 92 },
-            { name: '🇩🇪 LUKAS', minTarget: 21, maxTarget: 78 }
+            { name: '🇯🇵 REN', tier: 'rival', minTarget: 110, maxTarget: 145 },
+            { name: '🇺🇸 ALEX', tier: 'early', minTarget: 22, maxTarget: 36 },
+            { name: '🇰🇷 불꽃피처', tier: 'rival', minTarget: 115, maxTarget: 155 },
+            { name: '🇹🇼 LEO', tier: 'early', minTarget: 20, maxTarget: 32 },
+            { name: '🇲🇽 MATEO', tier: 'mid', minTarget: 44, maxTarget: 62 },
+            { name: '🇬🇧 RYAN', tier: 'late', minTarget: 74, maxTarget: 96 },
+            { name: '🇨🇦 NOAH', tier: 'early', minTarget: 24, maxTarget: 38 },
+            { name: '🇯🇵 HARU', tier: 'late', minTarget: 78, maxTarget: 102 },
+            { name: '🇰🇷 마구마스터', tier: 'mid', minTarget: 48, maxTarget: 66 },
+            { name: '🇩🇪 LUKAS', tier: 'mid', minTarget: 42, maxTarget: 58 },
+            { name: '🇫🇷 LIAM', tier: 'early', minTarget: 25, maxTarget: 35 },
+            { name: '🇦🇺 OLIVER', tier: 'late', minTarget: 70, maxTarget: 92 },
+            { name: '🇧🇷 LUCAS', tier: 'mid', minTarget: 46, maxTarget: 64 },
+            { name: '🇪🇸 DIEGO', tier: 'late', minTarget: 75, maxTarget: 98 },
+            { name: '🇮🇹 MARCO', tier: 'early', minTarget: 21, maxTarget: 34 },
+            { name: '🇻🇳 MINH', tier: 'mid', minTarget: 40, maxTarget: 60 }
         ];
 
         function genCode() {
@@ -6777,19 +6808,30 @@
             }, 1000);
         }
 
+        let botStates = {};
+
         function pickRandomBattleBots(count, existingNames = []) {
             const used = new Set(existingNames.map(n => String(n || '').toUpperCase()));
             const shuffled = [...BATTLE_BOT_POOL].sort(() => Math.random() - 0.5);
             const picked = [];
-            for (const candidate of shuffled) {
-                if (picked.length >= count) break;
-                if (used.has(candidate.name.toUpperCase())) continue;
+
+            // 티어별 순차 분배 (early -> mid -> early -> mid -> late -> late -> rival -> mid)
+            const tiersOrder = ['early', 'mid', 'early', 'mid', 'late', 'late', 'rival', 'mid'];
+            for (let i = 0; i < count; i++) {
+                const preferredTier = tiersOrder[i % tiersOrder.length];
+                let candidate = shuffled.find(c => !used.has(c.name.toUpperCase()) && c.tier === preferredTier);
+                if (!candidate) {
+                    candidate = shuffled.find(c => !used.has(c.name.toUpperCase()));
+                }
+                if (!candidate) {
+                    candidate = { name: `BOT ${i + 1}`, minTarget: 30, maxTarget: 80 };
+                }
                 used.add(candidate.name.toUpperCase());
                 const targetScore = Math.floor(
                     candidate.minTarget + Math.random() * (candidate.maxTarget - candidate.minTarget + 1)
                 );
-                const botMatches = Math.floor(5 + Math.random() * 34);
-                const botWins = Math.min(botMatches, Math.floor(1 + Math.random() * Math.max(2, Math.round(botMatches * 0.42))));
+                const botMatches = Math.floor(8 + Math.random() * 32);
+                const botWins = Math.min(botMatches, Math.floor(1 + Math.random() * Math.max(2, Math.round(botMatches * 0.35))));
                 picked.push({
                     id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + picked.length,
                     name: candidate.name,
@@ -6825,11 +6867,11 @@
                     joinLocked: true
                 };
 
-                // 실제 온라인 유저가 아무도 안 들어왔다면 AI 챌린저 1~3명 자동 합류
-                if (existingList.length < 2) {
-                    const botCount = Math.floor(1 + Math.random() * 3); // 1~3 bots (총 2~4인 매칭)
+                // 무조건 8명 풀방(MAX_BATTLE_PLAYERS = 8)으로 부족한 만큼 봇을 채움!
+                const neededBots = Math.max(0, MAX_BATTLE_PLAYERS - existingList.length);
+                if (neededBots > 0) {
                     const existingNames = existingList.map(p => p.name);
-                    const bots = pickRandomBattleBots(botCount, existingNames);
+                    const bots = pickRandomBattleBots(neededBots, existingNames);
                     const now = getEstimatedServerTimeMs();
                     bots.forEach((bot, idx) => {
                         updates['players/' + bot.id] = {
@@ -6864,65 +6906,126 @@
                 clearTimeout(botSimTimers[botId]);
             });
             botSimTimers = {};
+            botStates = {};
+        }
+
+        // 봇의 특정 파이어볼 열 관통으로 파괴되는 번호 계산
+        function getBotFireballDestroyedNumbers(seed, cycleStart, targetCol) {
+            const destroyed = new Set();
+            for (let r = 0; r < 10; r++) {
+                const rowStart = cycleStart + r * 10;
+                const numbers = getRowNumbers(rowStart, seed);
+                if (numbers && numbers[targetCol] !== undefined) {
+                    destroyed.add(numbers[targetCol]);
+                }
+            }
+            return destroyed;
         }
 
         function startBotSimulation(room) {
             if (battleRole !== 'host' || !battleRoomId || !room || room.status !== 'playing') return;
             const roomId = battleRoomId;
+            const seed = Number(room.boardSeed || battleBoardSeed) || 12345;
             const players = getBattlePlayerList(room);
             const bots = players.filter(p => p.isBot && !p.done);
 
+            stopBotSimulation();
+
             bots.forEach(bot => {
-                if (botSimTimers[bot.id]) return;
-                const targetScore = Number(bot.targetScore || Math.floor(22 + Math.random() * 68));
+                const targetScore = Number(bot.targetScore || Math.floor(25 + Math.random() * 60));
+                botStates[bot.id] = {
+                    score: 0,
+                    nextExpected: 1,
+                    destroyedNumbers: new Set(),
+                    targetScore: targetScore,
+                    isFireballCharging: false
+                };
 
                 const stepBot = () => {
                     delete botSimTimers[bot.id];
                     if (!battleRoomId || battleRoomId !== roomId || battleRole !== 'host') return;
 
+                    const state = botStates[bot.id];
                     const latestBot = battlePlayers[bot.id];
-                    if (!latestBot || latestBot.done) return;
+                    if (!state || !latestBot || latestBot.done) return;
 
-                    const currentBotScore = Number(latestBot.score || 0);
                     const humanPlayers = Object.keys(battlePlayers)
                         .map(id => battlePlayers[id])
                         .filter(p => p && !p.isBot);
                     const allHumansDone = humanPlayers.length > 0 && humanPlayers.every(p => p.done);
-                    const maxHumanScore = humanPlayers.reduce((m, p) => Math.max(m, Number(p.score || 0)), 0);
-
-                    // 모든 실제 플레이어가 게임오버된 경우:
-                    // 남은 봇이 1명뿐이거나 목표 점수에 도달했으면 즉시 종료,
-                    // 2명 이상 남아 관전 중이면 빠른 템포(220ms)로 진행하여 끝까지 관전하거나 바로 나갈 수 있게 함
                     const remainingPlayers = Object.keys(battlePlayers)
                         .map(id => battlePlayers[id])
                         .filter(p => p && !p.done);
-                    if (allHumansDone && (remainingPlayers.length <= 1 || currentBotScore >= targetScore)) {
-                        finishBattlePlayerById(bot.id, currentBotScore);
+
+                    // 모든 실제 플레이어가 게임오버된 경우: 관전 편의를 위해 빠른 진행 또는 즉시 종료
+                    if (allHumansDone && (remainingPlayers.length <= 1 || state.score >= state.targetScore)) {
+                        finishBattlePlayerById(bot.id, state.score);
                         return;
                     }
 
-                    if (currentBotScore >= targetScore) {
-                        finishBattlePlayerById(bot.id, currentBotScore);
+                    // 봇의 목표 점수 도달 시 실수(사망)
+                    if (state.score >= state.targetScore) {
+                        finishBattlePlayerById(bot.id, state.score);
                         return;
                     }
 
-                    const nextScore = currentBotScore + 1;
-                    if (battlePlayers[bot.id]) {
-                        battlePlayers[bot.id].score = nextScore;
+                    // 11, 111, 211... 파이어볼 체크
+                    const isFireball = (state.nextExpected >= 11 && (state.nextExpected - 11) % 100 === 0);
+
+                    if (isFireball && !state.isFireballCharging) {
+                        state.isFireballCharging = true;
+                        // 파이어볼 차징 2200ms 동안 대기 (유저와 100% 동일한 연출 시간!)
+                        botSimTimers[bot.id] = setTimeout(() => {
+                            if (!battleRoomId || battleRoomId !== roomId || battleRole !== 'host') return;
+                            state.isFireballCharging = false;
+
+                            // 0~9열 중 랜덤 열 관통 폭파!
+                            const targetCol = Math.floor(Math.random() * 10);
+                            const cycleStart = Math.floor((state.nextExpected - 1) / 100) * 100 + 1;
+                            const destroyed = getBotFireballDestroyedNumbers(seed, cycleStart, targetCol);
+                            destroyed.forEach(num => state.destroyedNumbers.add(num));
+
+                            // 파이어볼 적중: 점수 +1, 다음 번호로 이동
+                            state.score++;
+                            state.nextExpected++;
+                            while (state.destroyedNumbers.has(state.nextExpected)) {
+                                state.nextExpected++;
+                            }
+
+                            if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
+                            battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
+
+                            // 파이어볼 후 즉시 1단계 가속 적용
+                            const nextInterval = allHumansDone ? 200 : getPitchInterval(state.nextExpected);
+                            botSimTimers[bot.id] = setTimeout(stepBot, nextInterval);
+                        }, 2200);
+                        return;
                     }
-                    battleRef.child(roomId + '/players/' + bot.id + '/score').set(nextScore);
+
+                    // 일반 투구 적중: 점수 +1
+                    state.score++;
+                    state.nextExpected++;
+                    while (state.destroyedNumbers.has(state.nextExpected)) {
+                        state.nextExpected++;
+                    }
+
+                    if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
+                    battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
 
                     if (allHumansDone) {
                         botSimTimers[bot.id] = setTimeout(stepBot, 220);
                         return;
                     }
-                    const baseInterval = getPitchInterval(nextScore);
-                    const jitter = 0.96 + Math.random() * 0.24;
-                    botSimTimers[bot.id] = setTimeout(stepBot, Math.round(baseInterval * jitter));
+
+                    // 유저와 동일한 투구 간격 + 인간적인 미세 손떨림 오차 (±20ms 이내)
+                    const baseInterval = getPitchInterval(state.nextExpected);
+                    const jitter = (Math.random() * 40 - 20);
+                    const delay = Math.max(300, Math.round(baseInterval + jitter));
+                    botSimTimers[bot.id] = setTimeout(stepBot, delay);
                 };
 
-                // 카운트다운(3초) + 첫 공 도달 시간 후 첫 득점 시작
-                const initialDelay = 3800 + Math.floor(Math.random() * 700);
+                // 카운트다운(3초) + 첫 공 투구 도달 시간(약 4200ms) 후 유저의 첫 타격 시점에 맞춰 봇도 첫 득점 시작!
+                const initialDelay = 4200 + Math.floor(Math.random() * 80);
                 botSimTimers[bot.id] = setTimeout(stepBot, initialDelay);
             });
         }
@@ -6985,6 +7088,7 @@
             battlePlayers = {};
             battleMode = false;
             battleStarted = false;
+            battleSimStarted = false;
             battleResultShown = false;
             battleRematchStarted = false;
             battleProfileReady = false;
@@ -7174,6 +7278,7 @@
                     status: 'playing',
                     isPublicWaiting: false,
                     joinLocked: true,
+                    boardSeed: Math.floor(100000 + Math.random() * 900000),
                     startedAt: getEstimatedServerTimeMs(),
                     endedAt: null,
                     finishCounter: 0,
@@ -7248,6 +7353,7 @@
                     clearRematchListener();
                     if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
                     battleStarted = false;
+                    battleSimStarted = false;
                     battleMode = false;
                     battleResultShown = false;
                     battleRematchStarted = false;
@@ -7261,9 +7367,13 @@
                 }
 
                 if (room.status === 'playing') {
+                    if (room.boardSeed) {
+                        battleBoardSeed = Number(room.boardSeed) || 0;
+                    }
                     stopQuickMatchTimer();
                     renderBattleHud(room);
-                    if (battleRole === 'host') {
+                    if (battleRole === 'host' && !battleSimStarted) {
+                        battleSimStarted = true;
                         startBotSimulation(room);
                     }
                     if (battlePlayers[battlePlayerId].done) {
@@ -7282,6 +7392,7 @@
                 if (room.status === 'ended') {
                     stopQuickMatchTimer();
                     stopBotSimulation();
+                    battleSimStarted = false;
                     renderBattleHud(room);
                     if (battleMode) {
                         battleMode = false;
