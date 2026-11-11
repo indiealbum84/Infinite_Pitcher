@@ -1152,11 +1152,7 @@
 
         /* 대전 결과 화면 */
         #battle-result-screen {
-            background-color: #b9ecff;
-            background-image: url('./main_background.png');
-            background-position: center top;
-            background-size: cover;
-            background-repeat: no-repeat;
+            background: linear-gradient(180deg, #b9ecff 0%, #d8f3fe 60%, #c4eec4 100%);
             z-index: 100;
         }
 
@@ -1952,16 +1948,16 @@
         .battle-score-card {
             border-width: 6px;
             border-radius: 22px;
-            padding: 24px 16px;
+            padding: 18px 12px;
             width: 280px;
-            height: 236px;
+            height: 250px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             box-shadow: 0 11px 0 var(--palette-blue);
-            contain: layout style paint;
+            overflow: hidden;
         }
 
         .battle-score-card.me {
@@ -1969,7 +1965,8 @@
         }
 
         .battle-score-card .bsc-name {
-            font-size: 32px;
+            font-size: 26px;
+            line-height: 1.2;
             font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
@@ -1978,15 +1975,16 @@
         }
 
         .battle-score-card .bsc-score {
-            font-size: 96px;
-            height: 100px;
-            line-height: 100px;
+            font-size: 82px;
+            height: 86px;
+            line-height: 86px;
             font-variant-numeric: tabular-nums;
-            margin: 2px 0;
+            margin: 4px 0;
         }
 
         .battle-score-card .bsc-record {
-            font-size: 26px;
+            font-size: 22px;
+            line-height: 1.2;
             color: #64748b;
             white-space: nowrap;
         }
@@ -7711,82 +7709,78 @@
             });
         }
 
-        let battleResultRafId = 0;
+        let battleResultPendingRoom = null;
+        let battleResultThrottleTimer = null;
+        let lastBattleResultRenderTime = 0;
+        const BATTLE_RESULT_THROTTLE_MS = 250;
+
         function scheduleBattleResult(room) {
-            if (battleResultRafId) cancelAnimationFrame(battleResultRafId);
-            battleResultRafId = requestAnimationFrame(() => {
-                battleResultRafId = 0;
+            battleResultPendingRoom = room;
+            const now = performance.now();
+            const timeSinceLast = now - lastBattleResultRenderTime;
+
+            if (room && room.status === 'ended') {
+                if (battleResultThrottleTimer) {
+                    clearTimeout(battleResultThrottleTimer);
+                    battleResultThrottleTimer = null;
+                }
+                lastBattleResultRenderTime = now;
                 showBattleResult(room);
-            });
+                return;
+            }
+
+            if (timeSinceLast >= BATTLE_RESULT_THROTTLE_MS && !battleResultThrottleTimer) {
+                lastBattleResultRenderTime = now;
+                showBattleResult(room);
+            } else if (!battleResultThrottleTimer) {
+                battleResultThrottleTimer = setTimeout(() => {
+                    battleResultThrottleTimer = null;
+                    lastBattleResultRenderTime = performance.now();
+                    if (battleResultPendingRoom) {
+                        showBattleResult(battleResultPendingRoom);
+                    }
+                }, Math.max(20, BATTLE_RESULT_THROTTLE_MS - timeSinceLast));
+            }
         }
 
         function renderBattleScoreCards(players, rankMap, isEnded) {
             const listEl = document.getElementById('battle-score-list');
             if (!listEl) return;
 
-            const existingCards = {};
-            listEl.querySelectorAll('.battle-score-card').forEach(card => {
-                const pid = card.getAttribute('data-player-id');
-                if (pid) existingCards[pid] = card;
-            });
-
-            const hasAllCards = players.length > 0 && players.every(p => existingCards[p.id]);
-
-            if (!hasAllCards) {
-                // 최초 진입 시 카드 DOM 일괄 생성 (깜빡임 방지를 위해 1회만 innerHTML 생성)
-                listEl.innerHTML = players.map((player, index) => {
-                    const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                    const scoreText = Number(player.score || 0);
-                    const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
-                    const rankText = `${rankNum}. ${label}`;
-                    const record = escapeBattleText(formatPlayerRecordBadge(player));
-                    const meClass = player.id === battlePlayerId ? ' me' : '';
-                    const doneClass = player.done ? ' done' : '';
-                    return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}" style="order: ${index};">
-                        <div class="bsc-name">${rankText}</div>
-                        <div class="bsc-score">${scoreText}</div>
-                        <div class="bsc-record">${record}</div>
-                    </div>`;
-                }).join('');
-                return;
+            let cards = listEl.querySelectorAll('.battle-score-card');
+            if (cards.length !== players.length) {
+                listEl.innerHTML = players.map((p, i) => `
+                    <div class="battle-score-card" data-slot="${i}">
+                        <div class="bsc-name"></div>
+                        <div class="bsc-score">0</div>
+                        <div class="bsc-record"></div>
+                    </div>
+                `).join('');
+                cards = listEl.querySelectorAll('.battle-score-card');
             }
 
-            // 실시간 점수 업데이트: DOM을 파괴하지 않고 기존 요소를 제자리에서 텍스트/스타일만 갱신 (깜빡임 완전 제거)
             players.forEach((player, index) => {
-                const card = existingCards[player.id];
+                const card = cards[index];
                 if (!card) return;
 
-                if (isEnded) {
-                    const finalOrder = String(index);
-                    if (card.style.order !== finalOrder) {
-                        card.style.order = finalOrder;
-                    }
-                }
+                const isMe = player.id === battlePlayerId;
+                const isDone = !!player.done;
+                const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const rankText = `${rankNum}. ${label}`;
+                const scoreText = String(Number(player.score || 0));
+                const recordText = escapeBattleText(formatPlayerRecordBadge(player));
+
+                const expectedClass = 'battle-score-card' + (isMe ? ' me' : '') + (isDone ? ' done' : '');
+                if (card.className !== expectedClass) card.className = expectedClass;
 
                 const nameEl = card.querySelector('.bsc-name');
                 const scoreEl = card.querySelector('.bsc-score');
                 const recordEl = card.querySelector('.bsc-record');
 
-                const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const scoreText = String(Number(player.score || 0));
-                const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
-                const rankText = `${rankNum}. ${label}`;
-
-                if (nameEl && nameEl.innerText !== rankText) {
-                    nameEl.innerText = rankText;
-                }
-                if (scoreEl && scoreEl.innerText !== scoreText) {
-                    scoreEl.innerText = scoreText;
-                }
-                const recordText = escapeBattleText(formatPlayerRecordBadge(player));
-                if (recordEl && recordEl.innerText !== recordText) {
-                    recordEl.innerText = recordText;
-                }
-                if (player.done) {
-                    if (!card.classList.contains('done')) card.classList.add('done');
-                } else {
-                    if (card.classList.contains('done')) card.classList.remove('done');
-                }
+                if (nameEl && nameEl.innerText !== rankText) nameEl.innerText = rankText;
+                if (scoreEl && scoreEl.innerText !== scoreText) scoreEl.innerText = scoreText;
+                if (recordEl && recordEl.innerText !== recordText) recordEl.innerText = recordText;
             });
         }
 
@@ -7826,9 +7820,8 @@
                 rankMap[p.id] = p.rank ? p.rank : (idx + 1);
             });
 
-            // 관전 중에는 카드가 이리저리 자리바꿈(텔레포트)하여 깜빡이지 않도록 고정 슬롯(가입 순) 유지!
-            // 게임이 완전히 끝났을 때만 최종 순위순(1위~8위)으로 정렬
-            const displayPlayers = isEnded ? rankedList : allPlayers;
+            // 실시간 1위~8위 순위 순으로 가지런히 배치
+            const displayPlayers = rankedList;
 
             const myPlayer = allPlayers.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
@@ -7992,6 +7985,8 @@
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
             if (battleLobbyCountdownTimer) { clearInterval(battleLobbyCountdownTimer); battleLobbyCountdownTimer = null; }
+            if (battleResultThrottleTimer) { clearTimeout(battleResultThrottleTimer); battleResultThrottleTimer = null; }
+            battleResultPendingRoom = null;
             battleLobbyCountdownActive = false;
             leaveBattleRoom(Boolean(forceRemoveRoom));
             const canvasEl = document.getElementById('canvas');
