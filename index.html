@@ -6955,6 +6955,7 @@
         let battleRole = null; // 'host' | 'guest'
         let battlePlayerId = null;
         let battlePlayers = {};
+        let battleViewMode = 'world8'; // 'world8' | 'friend'
         let battleListener = null;
         let battleMode = false;
         let battleStarted = false;
@@ -7234,16 +7235,39 @@
             showBattleRoomStep();
         }
 
+        function updateBattleViewModeUI() {
+            const titleEl = document.getElementById('battle-screen-title');
+            const quickSection = document.getElementById('battle-quick-section');
+            const createSection = document.getElementById('battle-create-section');
+            const codeLabel = document.getElementById('battle-code-label');
+            const codeBox = document.getElementById('battle-room-code');
+            const divider = document.getElementById('battle-divider');
+            const joinSection = document.getElementById('battle-join-section');
+            const startBtn = document.getElementById('battle-start-btn');
+
+            if (createSection) createSection.style.display = 'flex';
+
+            if (battleViewMode === 'world8') {
+                if (titleEl) titleEl.innerText = textFor('battleWorldTitle');
+                if (quickSection) quickSection.style.display = 'flex';
+                if (codeLabel) codeLabel.style.display = 'none';
+                if (codeBox) codeBox.style.display = 'none';
+                if (divider) divider.style.display = 'none';
+                if (joinSection) joinSection.style.display = 'none';
+                if (startBtn) startBtn.style.display = 'none';
+            } else {
+                if (titleEl) titleEl.innerText = textFor('battleFriendTitle');
+                if (quickSection) quickSection.style.display = 'none';
+                if (codeLabel) codeLabel.style.display = 'block';
+                if (codeBox) codeBox.style.display = 'block';
+                if (divider) divider.style.display = 'block';
+                if (joinSection) joinSection.style.display = 'flex';
+            }
+        }
+
         function showBattleRoomStep() {
             battleProfileReady = true;
-            const quickSection = document.getElementById('battle-quick-section');
-            if (quickSection) quickSection.style.display = 'flex';
-            const createSection = document.getElementById('battle-create-section');
-            if (createSection) createSection.style.display = 'flex';
-            const divider = document.getElementById('battle-divider');
-            if (divider) divider.style.display = 'block';
-            const joinSection = document.getElementById('battle-join-section');
-            if (joinSection) joinSection.style.display = 'flex';
+            updateBattleViewModeUI();
             updateQuickMatchUI();
         }
 
@@ -7474,6 +7498,7 @@
                     }
 
                     leaveBattleRoom(true);
+                    battleViewMode = 'world8';
                     battleRoomId = targetCode;
                     battleRole = 'guest';
                     battlePlayerId = newPlayerId;
@@ -7518,6 +7543,7 @@
 
             leaveBattleRoom(true);
 
+            battleViewMode = 'world8';
             battleRoomId = code;
             battleRole = 'host';
             battlePlayerId = playerId;
@@ -7917,28 +7943,12 @@
                 return;
             }
 
+            battleViewMode = 'world8';
             leaveBattleRoom(true);
             saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
-            document.getElementById('battle-screen-title').innerText = textFor('battleWorldTitle');
-            
-            // 빠른 매칭 전용 뷰: 친구 방 관련 UI는 숨기고 빠른 매칭 바로 시작
-            const quickSec = document.getElementById('battle-quick-section');
-            if (quickSec) quickSec.style.display = 'block';
-            const divider = document.getElementById('battle-divider');
-            if (divider) divider.style.display = 'none';
-            const createSec = document.getElementById('battle-create-section');
-            if (createSec) createSec.style.display = 'block';
-            const codeLabel = document.getElementById('battle-code-label');
-            if (codeLabel) codeLabel.style.display = 'none';
-            const codeBox = document.getElementById('battle-room-code');
-            if (codeBox) codeBox.style.display = 'none';
-            const startBtn = document.getElementById('battle-start-btn');
-            if (startBtn) startBtn.style.display = 'none';
-            const joinSec = document.getElementById('battle-join-section');
-            if (joinSec) joinSec.style.display = 'none';
 
             hydrateBattleNameInput();
             applyBattleLang();
@@ -7962,28 +7972,12 @@
                 return;
             }
 
+            battleViewMode = 'friend';
             leaveBattleRoom(true);
             saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
-            document.getElementById('battle-screen-title').innerText = textFor('battleFriendTitle');
-
-            // 친구와 특훈 뷰: 빠른 매칭 섹션은 숨기고, 내 방 코드와 참가 섹션 노출!
-            const quickSec = document.getElementById('battle-quick-section');
-            if (quickSec) quickSec.style.display = 'none';
-            const divider = document.getElementById('battle-divider');
-            if (divider) divider.style.display = 'block';
-            const createSec = document.getElementById('battle-create-section');
-            if (createSec) createSec.style.display = 'block';
-            const codeLabel = document.getElementById('battle-code-label');
-            if (codeLabel) codeLabel.style.display = 'block';
-            const codeBox = document.getElementById('battle-room-code');
-            if (codeBox) codeBox.style.display = 'block';
-            const startBtn = document.getElementById('battle-start-btn');
-            if (startBtn) startBtn.style.display = 'block';
-            const joinSec = document.getElementById('battle-join-section');
-            if (joinSec) joinSec.style.display = 'flex';
 
             document.getElementById('battle-code-input').value = '';
             document.getElementById('battle-room-code').innerText = '----';
@@ -7999,6 +7993,7 @@
         }
 
         function createBattleRoom(hostName) {
+            battleViewMode = 'friend';
             const code = genCode();
             const playerId = genBattlePlayerId();
             const myStats = getBattleStats();
@@ -8094,6 +8089,7 @@
                     }
 
                     leaveBattleRoom(true);
+                    battleViewMode = 'friend';
                     battleRoomId = code;
                     battleRole = 'guest';
                     battlePlayerId = playerId;
@@ -8271,6 +8267,7 @@
         }
 
         function renderBattleLobby(room) {
+            updateBattleViewModeUI();
             const players = getBattlePlayerList(room);
             const isHost = battleRole === 'host';
             const waitingEl = document.getElementById('battle-waiting-text');
@@ -8281,32 +8278,39 @@
             const humanCount = humanPlayers.length;
 
             if (!battleLobbyCountdownActive) {
-                if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
-                    const fn = textFor('matchFoundCountdown');
-                    waitingEl.innerText = typeof fn === 'function' ? fn(5) : '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...';
-                } else if (humanCount >= 2) {
-                    const friendNote = isHost
-                        ? `🎮 <b>실제 플레이어 ${humanCount}명 참가!</b><br>원하시면 [바로 시작]을 눌러 봇을 채우고 즉시 시작하세요!`
-                        : `🎮 <b>실제 플레이어 ${humanCount}명 참가!</b><br>잠시 후 경기가 시작됩니다...`;
-                    waitingEl.innerHTML = friendNote;
+                if (battleViewMode === 'world8') {
+                    if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
+                        const fn = textFor('matchFoundCountdown');
+                        waitingEl.innerText = typeof fn === 'function' ? fn(5) : '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...';
+                    } else if (humanCount >= 2) {
+                        waitingEl.innerHTML = `🎮 <b>실제 플레이어 ${humanCount}명 참가!</b><br>매칭 완료 시 자동으로 경기가 시작됩니다...`;
+                    } else {
+                        waitingEl.innerText = isHost
+                            ? '대결 상대를 찾는 중입니다...'
+                            : '매칭 대기 중...';
+                    }
                 } else {
-                    waitingEl.innerText = isHost
-                        ? textFor('lobbyStartable')(players.length)
-                        : textFor('lobbyWaitingHost')(players.length);
+                    if (players.length >= 2) {
+                        waitingEl.innerHTML = isHost
+                            ? `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`
+                            : `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`;
+                    } else {
+                        waitingEl.innerText = isHost
+                            ? textFor('lobbyStartable')(players.length)
+                            : textFor('lobbyWaitingHost')(players.length);
+                    }
                 }
             }
 
-            if (isHost) {
-                startBtn.style.display = 'block';
-                startBtn.disabled = false;
-                startBtn.innerText = quickMatchActive ? '⚡ 지금 바로 시작 (봇 채우기)' : textFor('battleStart');
-                startBtn.onclick = () => {
-                    if (quickMatchActive) {
-                        finalizeQuickMatchCountdown();
-                    } else {
-                        startBattleRoom();
-                    }
-                };
+            if (battleViewMode === 'friend') {
+                if (isHost) {
+                    startBtn.style.display = 'block';
+                    startBtn.disabled = players.length < 2;
+                    startBtn.innerText = textFor('battleStart');
+                    startBtn.onclick = () => startBattleRoom();
+                } else {
+                    startBtn.style.display = 'none';
+                }
             } else {
                 startBtn.style.display = 'none';
             }
@@ -8344,7 +8348,7 @@
             setTxt('battle-btn', TEXTS[currentLang] && TEXTS[currentLang].battleBtn);
             setTxt('battle-quick-main-btn', TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn);
             setTxt('battle-friend-btn', TEXTS[currentLang] && TEXTS[currentLang].battleFriendBtn);
-            setTxt('battle-screen-title', textFor('battleScreenTitle'));
+            setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
             setTxt('battle-waiting-text', textFor('battleWaiting'));
             setTxt('battle-cancel-btn', textFor('battleCancel'));
             setTxt('battle-join-btn', textFor('battleJoin'));
