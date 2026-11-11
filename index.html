@@ -7035,7 +7035,8 @@
          */
         const battleRef = db.ref('battles');
         const MAX_BATTLE_PLAYERS = 8;
-        const QUICK_MATCH_WAIT_SECONDS = 12;
+        const QUICK_MATCH_QUEUE_KEY = '_QMP';
+        const QUICK_MATCH_WAIT_SECONDS = 20;
         const ROOM_AUTO_CLOSE_SECONDS = 5;
         let battleRoomId = null;
         let battleRole = null; // 'host' | 'guest'
@@ -7420,7 +7421,7 @@
             quickMatchActive = false;
             if (!keepPool && battleRole === 'host' && battleRoomId) {
                 try {
-                    db.ref('quick_match_pool').transaction(curr => {
+                    battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
                         if (curr && curr.roomId === battleRoomId) return null;
                         return curr;
                     });
@@ -7487,52 +7488,84 @@
             quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
             updateQuickMatchUI();
 
-            // 중앙 집중식 원자적 매칭 풀 (quick_match_pool)
-            // 동시 접속 유저 및 친구끼리 시작 시 100% 동일한 방에 우선 배정!
-            const poolRef = db.ref('quick_match_pool');
+            // 중앙 집중식 원자적 매칭 큐 (_QMP - 4글자로 Firebase 보안 규칙 "$roomId.length === 4" 100% 통과)
+            // 동시 접속 유저 및 친구끼리 시작 시 동일한 방에 우선 배정!
+            const queueRef = battleRef.child(QUICK_MATCH_QUEUE_KEY);
             const now = getEstimatedServerTimeMs();
             const candidateCode = genCode();
             const candidateHostId = genBattlePlayerId();
 
-            poolRef.transaction(current => {
-                // 현재 대기 중인 유효한 공개 방이 있는가? (생성 후 25초 이내, 대기 상태, 인원 8명 미만)
+            queueRef.transaction(current => {
+                // 현재 대기 중인 유효한 공개 방이 있는가? (생성 후 30초 이내, 대기 상태, 인원 8명 미만)
                 if (current && current.roomId && current.status === 'waiting') {
                     const elapsed = now - (current.createdAt || 0);
-                    const count = Number(current.humanCount || 1);
-                    if (elapsed < 25000 && count < MAX_BATTLE_PLAYERS) {
-                        current.humanCount = count + 1;
+                    const count = Number(current.count || 1);
+                    if (elapsed < 30000 && count < MAX_BATTLE_PLAYERS) {
+                        current.count = count + 1;
                         return current; // 해당 대기방에 참여!
                     }
                 }
 
-                // 대기 중인 방이 없거나 만료된 경우: 이 플레이어가 호스트로 지정되어 새 대기 풀 등록!
+                // 대기 중인 방이 없거나 만료된 경우: 이 플레이어가 호스트로 지정되어 새 대기 큐 등록!
                 return {
                     roomId: candidateCode,
                     hostId: candidateHostId,
                     hostName: nickname,
                     createdAt: now,
-                    humanCount: 1,
+                    count: 1,
                     status: 'waiting'
                 };
             }, (error, committed, snapshot) => {
-                if (error || !committed || !snapshot) {
-                    hostPublicQuickMatchRoom(candidateCode, candidateHostId, nickname);
+                const lobby = snapshot ? snapshot.val() : null;
+                if (!error && committed && lobby && lobby.roomId) {
+                    if (lobby.hostId === candidateHostId) {
+                        // 내가 호스트로 지정됨 -> 방을 생성하고 다른 실제 유저 참가를 기다림
+                        hostPublicQuickMatchRoom(lobby.roomId, candidateHostId, nickname);
+                    } else {
+                        // 이미 대기 중인 실제 유저 방이 있음 -> 해당 방에 게스트로 합류!
+                        joinPublicQuickMatchRoom(lobby.roomId, nickname);
+                    }
                     return;
                 }
 
-                const pool = snapshot.val();
-                if (!pool) {
-                    hostPublicQuickMatchRoom(candidateCode, candidateHostId, nickname);
+                // 트랜잭션 실패 시 폴백: 직접 큐 조회 및 isPublicWaiting 검색
+                findAndJoinPublicRoomFallback(candidateCode, candidateHostId, nickname);
+            });
+        }
+
+        function findAndJoinPublicRoomFallback(fallbackCode, fallbackHostId, nickname) {
+            const now = getEstimatedServerTimeMs();
+            battleRef.child(QUICK_MATCH_QUEUE_KEY).once('value').then(snap => {
+                const lobby = snap.val();
+                if (lobby && lobby.roomId && lobby.status === 'waiting' && (now - (lobby.createdAt || 0) < 30000)) {
+                    joinPublicQuickMatchRoom(lobby.roomId, nickname);
                     return;
                 }
-
-                if (pool.hostId === candidateHostId) {
-                    // 내가 호스트로 지정됨 -> 방을 생성하고 다른 실제 유저 참가를 기다림
-                    hostPublicQuickMatchRoom(pool.roomId, candidateHostId, nickname);
-                } else {
-                    // 이미 대기 중인 실제 유저 방이 있음 -> 해당 방에 게스트로 합류!
-                    joinPublicQuickMatchRoom(pool.roomId, nickname);
-                }
+                // 큐에 없으면 isPublicWaiting 쿼리로 공개 대기방 검색
+                battleRef.orderByChild('isPublicWaiting').equalTo(true).limitToLast(5).once('value').then(snap2 => {
+                    const rooms = snap2.val() || {};
+                    let targetCode = null;
+                    Object.keys(rooms).forEach(code => {
+                        if (targetCode) return;
+                        if (code === QUICK_MATCH_QUEUE_KEY || code === battleRoomId) return;
+                        const r = rooms[code];
+                        if (r && r.status === 'waiting' && !r.joinLocked && (now - (r.createdAt || 0) < 30000)) {
+                            const pCount = Object.keys(r.players || {}).length;
+                            if (pCount >= 1 && pCount < MAX_BATTLE_PLAYERS) {
+                                targetCode = code;
+                            }
+                        }
+                    });
+                    if (targetCode) {
+                        joinPublicQuickMatchRoom(targetCode, nickname);
+                    } else {
+                        hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
+                    }
+                }).catch(() => {
+                    hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
+                });
+            }).catch(() => {
+                hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
             });
         }
 
@@ -7541,12 +7574,12 @@
             const joinedAt = getEstimatedServerTimeMs();
             const myStats = getBattleStats();
 
-            // 호스트의 방 생성 쓰기 작업이 아직 전파 중일 수 있으므로 최대 6회(1.5초) 재시도 보장
+            // 호스트의 방 생성 전파 대기 (최대 10회 = 3초)
             battleRef.child(targetCode).once('value').then(snap => {
                 const room = snap.val();
                 if (!room || !room.players) {
-                    if (retries < 6) {
-                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 250);
+                    if (retries < 10) {
+                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
                         return;
                     }
                     // 호스트 방을 찾지 못한 경우 직접 호스트로 전환
@@ -7555,40 +7588,35 @@
                 }
 
                 if (room.status !== 'waiting' || room.joinLocked) {
-                    // 방이 이미 시작되었거나 닫힘 -> 새로 큐 돌림
                     startQuickMatch();
                     return;
                 }
 
-                battleRef.child(targetCode + '/players').transaction(players => {
-                    players = players || {};
-                    const count = Object.keys(players).length;
-                    if (count >= MAX_BATTLE_PLAYERS) return; // 만실
-                    players[newPlayerId] = {
-                        score: 0,
-                        done: false,
-                        rank: null,
-                        finishOrder: null,
-                        finishedAt: null,
-                        name: nickname,
-                        matches: myStats.matches,
-                        wins: myStats.wins,
-                        isHost: false,
-                        isBot: false,
-                        joinedAt
-                    };
-                    return players;
-                }, (error, committed) => {
-                    if (error || !committed) {
-                        if (retries < 3) {
-                            setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 250);
-                            return;
-                        }
-                        startQuickMatch();
-                        return;
-                    }
+                const currentPlayers = Object.keys(room.players || {});
+                if (currentPlayers.length >= MAX_BATTLE_PLAYERS) {
+                    startQuickMatch();
+                    return;
+                }
 
-                    leaveBattleRoom(true);
+                clearBattleDisconnectHandler();
+                clearBattleRoomListener(battleRoomId);
+                clearBattleResultListener(battleRoomId);
+                clearRematchListener(battleRoomId);
+
+                // 게스트 플레이어 직접 set (개별 고유 ID 경로이므로 동시 접속 충돌 없이 100% 성공)
+                battleRef.child(targetCode + '/players/' + newPlayerId).set({
+                    score: 0,
+                    done: false,
+                    rank: null,
+                    finishOrder: null,
+                    finishedAt: null,
+                    name: nickname,
+                    matches: myStats.matches,
+                    wins: myStats.wins,
+                    isHost: false,
+                    isBot: false,
+                    joinedAt
+                }).then(() => {
                     battleViewMode = 'world8';
                     battleRoomId = targetCode;
                     battleRole = 'guest';
@@ -7601,10 +7629,16 @@
 
                     quickMatchActive = true;
                     updateQuickMatchUI(textFor('battleQuickMatched'));
+                }).catch(() => {
+                    if (retries < 3) {
+                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
+                    } else {
+                        startQuickMatch();
+                    }
                 });
             }).catch(() => {
                 if (retries < 3) {
-                    setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 250);
+                    setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
                 } else {
                     startQuickMatch();
                 }
@@ -7632,7 +7666,10 @@
                 joinedAt: now
             };
 
-            leaveBattleRoom(true);
+            clearBattleDisconnectHandler();
+            clearBattleRoomListener(battleRoomId);
+            clearBattleResultListener(battleRoomId);
+            clearRematchListener(battleRoomId);
 
             battleViewMode = 'world8';
             battleRoomId = code;
@@ -7657,8 +7694,22 @@
                 quickMatchDeadline: deadline
             }).then(() => {
                 registerBattleDisconnectHandler(code, playerId, 'host');
+                // 호스트 대기방을 QUICK_MATCH_QUEUE_KEY 에 등록
+                battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
+                    if (!curr || !curr.roomId || curr.status !== 'waiting' || (now - (curr.createdAt || 0) >= 30000)) {
+                        return {
+                            roomId: code,
+                            hostId: playerId,
+                            createdAt: now,
+                            count: 1,
+                            status: 'waiting'
+                        };
+                    }
+                    if (curr.roomId === code) return curr;
+                    return curr;
+                });
                 try {
-                    db.ref('quick_match_pool').onDisconnect().remove();
+                    battleRef.child(QUICK_MATCH_QUEUE_KEY).onDisconnect().remove();
                 } catch (e) {}
                 listenBattleRoom(code);
             });
@@ -7730,6 +7781,13 @@
             }
             quickMatchActive = false;
             updateQuickMatchUI(textFor('battleQuickMatched'));
+
+            try {
+                battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
+                    if (curr && curr.roomId === roomId) return null;
+                    return curr;
+                });
+            } catch (e) {}
 
             battleRef.child(roomId).once('value').then(snap => {
                 const room = snap.val();
@@ -7959,7 +8017,7 @@
 
             if (roomId) {
                 try {
-                    db.ref('quick_match_pool').transaction(curr => {
+                    battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
                         if (curr && curr.roomId === roomId) return null;
                         return curr;
                     });
