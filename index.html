@@ -3360,39 +3360,43 @@
             currentLang = lang;
             document.documentElement.lang = lang;
             const t = TEXTS[lang];
-            document.getElementById('intro-bubble').innerHTML      = t.introBubble;
-            document.getElementById('start-btn-id').innerText      = t.startBtn;
-            const quickBtn = document.getElementById('battle-quick-main-btn');
-            if (quickBtn) quickBtn.innerText = t.battleQuickMainBtn;
-            const friendBtn = document.getElementById('battle-friend-btn');
-            if (friendBtn) friendBtn.innerText = t.battleFriendBtn;
-            const battleBtn = document.getElementById('battle-btn');
-            if (battleBtn) battleBtn.innerText = t.battleBtn;
-            document.getElementById('rank-suffix').innerText       = t.rankSuffix;
-            document.getElementById('retry-btn').innerText         = t.retryBtn;
-            document.getElementById('home-btn').innerText               = t.homeBtn;
-            document.getElementById('play-gate-title').innerText        = t.playGateTitle;
-            document.getElementById('play-gate-ad-btn').innerText       = t.playGateAdBtn;
-            document.getElementById('play-gate-noads-btn').innerText    = t.playGateNoAdsBtn;
-            document.getElementById('play-gate-restore-btn').innerText  = t.playGateRestoreBtn;
-            document.getElementById('play-gate-close-btn').innerText    = t.playGateCloseBtn;
-            document.getElementById('reward-ad-msg').innerText          = t.rewardAdMsg;
-            const initTitleEl = document.getElementById('initial-profile-title');
-            if (initTitleEl) initTitleEl.innerText = t.initialProfileTitle;
-            const initWarnEl = document.getElementById('initial-profile-warning');
-            if (initWarnEl) initWarnEl.innerText = t.initialProfileWarning;
+            if (!t) return;
+
+            const setTxt = (id, txt) => {
+                const el = document.getElementById(id);
+                if (el && txt !== undefined) el.innerText = txt;
+            };
+            const setHtml = (id, html) => {
+                const el = document.getElementById(id);
+                if (el && html !== undefined) el.innerHTML = html;
+            };
+
+            setHtml('intro-bubble', t.introBubble);
+            setTxt('start-btn-id', t.startBtn);
+            setTxt('start-btn', t.startBtn);
+            setTxt('battle-quick-main-btn', t.battleQuickMainBtn);
+            setTxt('battle-friend-btn', t.battleFriendBtn);
+            setTxt('battle-btn', t.battleBtn);
+            setTxt('rank-suffix', t.rankSuffix);
+            setTxt('retry-btn', t.retryBtn);
+            setTxt('home-btn', t.homeBtn);
+            setTxt('play-gate-title', t.playGateTitle);
+            setTxt('play-gate-ad-btn', t.playGateAdBtn);
+            setTxt('play-gate-noads-btn', t.playGateNoAdsBtn);
+            setTxt('play-gate-restore-btn', t.playGateRestoreBtn);
+            setTxt('play-gate-close-btn', t.playGateCloseBtn);
+            setTxt('reward-ad-msg', t.rewardAdMsg);
+
+            setTxt('initial-profile-title', t.initialProfileTitle);
+            setTxt('initial-profile-warning', t.initialProfileWarning);
             const initInputEl = document.getElementById('initial-name-input');
-            if (initInputEl) initInputEl.placeholder = t.initialNamePlaceholder;
-            const initHintEl = document.getElementById('initial-name-hint');
-            if (initHintEl) initHintEl.innerText = t.initialNameHint;
-            const initSubmitEl = document.getElementById('initial-name-submit-btn');
-            if (initSubmitEl) initSubmitEl.innerText = t.initialNameSubmitBtn;
-            const initSyncLabelEl = document.getElementById('initial-account-sync-label');
-            if (initSyncLabelEl) initSyncLabelEl.innerText = t.initialAccountSyncLabel;
-            const initGoogleBtnEl = document.getElementById('initial-google-btn');
-            if (initGoogleBtnEl) initGoogleBtnEl.innerText = t.initialGoogleBtn;
-            const initAppleBtnEl = document.getElementById('initial-apple-btn');
-            if (initAppleBtnEl) initAppleBtnEl.innerText = t.initialAppleBtn;
+            if (initInputEl && t.initialNamePlaceholder) initInputEl.placeholder = t.initialNamePlaceholder;
+            setTxt('initial-name-hint', t.initialNameHint);
+            setTxt('initial-name-submit-btn', t.initialNameSubmitBtn);
+            setTxt('initial-account-sync-label', t.initialAccountSyncLabel);
+            setTxt('initial-google-btn', t.initialGoogleBtn);
+            setTxt('initial-apple-btn', t.initialAppleBtn);
+
             if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             setBattleRematchButtonText();
@@ -3418,7 +3422,11 @@
                 clearTimeout(splashAutoTimer);
                 splashAutoTimer = null;
             }
-            applyLang(currentLang);
+            try {
+                applyLang(currentLang);
+            } catch (e) {
+                console.error('applyLang error:', e);
+            }
             const splashEl = document.getElementById('splash-screen');
             if (splashEl) {
                 splashEl.classList.add('splash-fade-out');
@@ -3436,10 +3444,17 @@
                     playTitleBgm();
                 }).catch(() => {});
             }
-            if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
-                ensurePermanentPlayerProfileOnStart();
-            } else {
-                document.getElementById('intro-screen').classList.remove('hidden');
+            try {
+                if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
+                    ensurePermanentPlayerProfileOnStart();
+                } else {
+                    const intro = document.getElementById('intro-screen');
+                    if (intro) intro.classList.remove('hidden');
+                }
+            } catch (e) {
+                console.error('profile error:', e);
+                const intro = document.getElementById('intro-screen');
+                if (intro) intro.classList.remove('hidden');
             }
         }
 
@@ -5919,8 +5934,18 @@
 
             // 네이티브 스토어 계정 ID 또는 Firebase Auth 세션이 있으면 자동 복원 시도
             const currentKey = getAccountKey();
+            let resolved = false;
+            const fallbackTimer = setTimeout(() => {
+                if (resolved) return;
+                resolved = true;
+                openInitialProfileScreen();
+            }, 1000);
+
             usersRef.child(currentKey).once('value')
                 .then(snap => {
+                    if (resolved) return;
+                    resolved = true;
+                    clearTimeout(fallbackTimer);
                     const remoteProfile = snap.val();
                     if (remoteProfile && remoteProfile.name) {
                         applyCloudProfileDataToLocal(remoteProfile);
@@ -5931,6 +5956,9 @@
                     openInitialProfileScreen();
                 })
                 .catch(() => {
+                    if (resolved) return;
+                    resolved = true;
+                    clearTimeout(fallbackTimer);
                     openInitialProfileScreen();
                 });
         }
@@ -7859,16 +7887,22 @@
         }
 
         function applyBattleLang() {
-            document.getElementById('battle-btn').innerText            = TEXTS[currentLang].battleBtn;
-            document.getElementById('battle-screen-title').innerText   = textFor('battleScreenTitle');
-            document.getElementById('battle-waiting-text').innerText   = textFor('battleWaiting');
-            document.getElementById('battle-cancel-btn').innerText     = textFor('battleCancel');
-            document.getElementById('battle-join-btn').innerText       = textFor('battleJoin');
-            document.getElementById('battle-exit-btn').innerText       = textFor('battleExit');
-            document.getElementById('battle-start-btn').innerText      = textFor('battleStart');
-            document.getElementById('battle-code-label').innerText     = textFor('battleCodeLabel');
-            document.getElementById('battle-join-label').innerText     = textFor('battleJoinLabel');
-            document.getElementById('battle-divider').innerText        = textFor('battleDivider');
+            const setTxt = (id, txt) => {
+                const el = document.getElementById(id);
+                if (el && txt !== undefined) el.innerText = txt;
+            };
+            setTxt('battle-btn', TEXTS[currentLang] && TEXTS[currentLang].battleBtn);
+            setTxt('battle-quick-main-btn', TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn);
+            setTxt('battle-friend-btn', TEXTS[currentLang] && TEXTS[currentLang].battleFriendBtn);
+            setTxt('battle-screen-title', textFor('battleScreenTitle'));
+            setTxt('battle-waiting-text', textFor('battleWaiting'));
+            setTxt('battle-cancel-btn', textFor('battleCancel'));
+            setTxt('battle-join-btn', textFor('battleJoin'));
+            setTxt('battle-exit-btn', textFor('battleExit'));
+            setTxt('battle-start-btn', textFor('battleStart'));
+            setTxt('battle-code-label', textFor('battleCodeLabel'));
+            setTxt('battle-join-label', textFor('battleJoinLabel'));
+            setTxt('battle-divider', textFor('battleDivider'));
             updateQuickMatchUI();
             updateBattleStatsUI();
             setBattleRematchButtonText();
