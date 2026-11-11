@@ -1152,10 +1152,12 @@
 
         /* 대전 결과 화면 */
         #battle-result-screen {
-            background: #b9ecff url('./main_background.png') center top / cover no-repeat;
-            z-index: 25;
-            transform: translateZ(0);
-            will-change: transform;
+            background-color: #b9ecff;
+            background-image: url('./main_background.png');
+            background-position: center top;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 100;
         }
 
         .battle-result-title {
@@ -2976,6 +2978,8 @@
                 resultLose: 'LOSE',
                 rankText: rank => `${rank}位`,
                 othersPlaying: '👀 他のプレイヤーがプレイ中... (いつでも退出可能)',
+                matchEndedWaitExit: '🏆 全試合終了！結果確認後、戻るを押してください',
+                matchFoundCountdown: sec => `🎮 マッチング完了！${sec}秒後に試合が始まります...`,
                 roomClosingIn: sec => `⏳ ${sec}秒後にルームが自動終了します...`,
                 battleStatsText: (matches, wins) => `🏆 自分の対戦記録: ${matches}戦  |  🥇 1位: ${wins}回`,
                 playerRecordBadge: (matches, wins) => `${matches}戦 · 🥇1位 ${wins}回`,
@@ -3078,6 +3082,8 @@
                 resultLose: 'LOSE',
                 rankText: rank => `${rank}${getEnglishOrdinalSuffix(rank)}`,
                 othersPlaying: '👀 Others still playing... (Watch live or leave anytime)',
+                matchEndedWaitExit: '🏆 Match finished! Tap Back when ready',
+                matchFoundCountdown: sec => `🎮 Match found! Game starting in ${sec}s...`,
                 roomClosingIn: sec => `⏳ Room closing automatically in ${sec}s...`,
                 battleStatsText: (matches, wins) => `🏆 My Battle Record: ${matches} Played  |  🥇 1st Place: ${wins}`,
                 playerRecordBadge: (matches, wins) => `${matches}G · 🥇1st ${wins}W`,
@@ -3180,6 +3186,8 @@
                 resultLose: '패배...',
                 rankText: rank => `${rank}위`,
                 othersPlaying: '👀 다른 플레이어 경기 중... (바로 나가거나 끝까지 관전 가능)',
+                matchEndedWaitExit: '🏆 모든 경기 종료! 결과 확인 후 돌아가기를 눌러주세요',
+                matchFoundCountdown: sec => `🎮 매칭 완료! ${sec}초 후 경기가 시작됩니다...`,
                 roomClosingIn: sec => `⏳ ${sec}초 후 방이 자동으로 종료됩니다...`,
                 battleStatsText: (matches, wins) => `🏆 나의 대전 기록: ${matches}판  |  🥇 1위: ${wins}회`,
                 playerRecordBadge: (matches, wins) => `${matches}판 · 🥇1위 ${wins}회`,
@@ -4480,9 +4488,14 @@
             mbAnnounce.classList.add('show');
         }
 
+        function isCurrentBattlePlayerDone() {
+            return !battleMode || !battlePlayerId || !battlePlayers[battlePlayerId] || !!battlePlayers[battlePlayerId].done;
+        }
+
         function scheduleMirrorballIfNeeded() {
             // 온라인 대전 모드: Phase 3 (5명 이하 생존 OR 51번 도달)
             if (battleMode) {
+                if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 3 : (nextExpectedNumber >= 51);
                 if (!shouldTrigger || battleMirrorballTriggered || mirrorballDoneCount > 0 || mirrorballCharging || mirrorballShotPending) return;
                 battleMirrorballTriggered = true;
@@ -4549,6 +4562,7 @@
         function scheduleStripeballIfNeeded() {
             // 온라인 대전 모드: Phase 4 (3명 이하 생존 OR 91번 도달)
             if (battleMode) {
+                if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 4 : (nextExpectedNumber >= 91);
                 if (!shouldTrigger || battleStripeballTriggered || stripeballCharging || stripeballShotPending) return;
                 battleStripeballTriggered = true;
@@ -4629,6 +4643,7 @@
         function scheduleFlashballIfNeeded() {
             // 온라인 대전 모드: Phase 5 (2명 이하 결승 OR 131번 도달)
             if (battleMode) {
+                if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 5 : (nextExpectedNumber >= 131);
                 if (!shouldTrigger || battleFlashballTriggered || flashballCharging || flashballShotPending) return;
                 battleFlashballTriggered = true;
@@ -6383,6 +6398,8 @@
         let quickMatchActive = false;
         let quickMatchTimer = null;
         let quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
+        let battleLobbyCountdownActive = false;
+        let battleLobbyCountdownTimer = null;
         let botSimTimers = {};
         let battleDisconnectRef = null;
         let battleHostDisconnectRef = null;
@@ -6448,6 +6465,7 @@
         }
 
         function showBattlePhaseBanner(phase) {
+            if (isCurrentBattlePlayerDone()) return;
             const banner = document.getElementById('battle-phase-banner');
             const subEl = document.getElementById('bpb-sub');
             const titleEl = document.getElementById('bpb-title');
@@ -6502,7 +6520,7 @@
         }
 
         function checkBattlePhaseTransition() {
-            if (!battleMode || gameState !== 'PLAYING') return;
+            if (!battleMode || gameState !== 'PLAYING' || isCurrentBattlePlayerDone()) return;
             const newPhase = getBattlePhase();
             if (newPhase > battlePhase) {
                 battlePhase = newPhase;
@@ -6711,6 +6729,11 @@
                 clearInterval(quickMatchTimer);
                 quickMatchTimer = null;
             }
+            if (battleLobbyCountdownTimer) {
+                clearInterval(battleLobbyCountdownTimer);
+                battleLobbyCountdownTimer = null;
+            }
+            battleLobbyCountdownActive = false;
             quickMatchActive = false;
             updateQuickMatchUI();
         }
@@ -6956,11 +6979,37 @@
                 }
 
                 battleRef.child(roomId).update(updates).then(() => {
-                    setTimeout(() => {
-                        if (battleRoomId === roomId && battleRole === 'host') {
-                            startBattleRoom();
+                    battleLobbyCountdownActive = true;
+                    let countdownSec = 5;
+                    const updateCountdownUI = () => {
+                        const waitingEl = document.getElementById('battle-waiting-text');
+                        if (waitingEl) {
+                            const fn = textFor('matchFoundCountdown');
+                            waitingEl.innerText = typeof fn === 'function' ? fn(countdownSec) : `🎮 매칭 완료! ${countdownSec}초 후 시작...`;
                         }
-                    }, 650);
+                        if (countdownSec > 0) {
+                            playSfx('click', 0.6);
+                            triggerHaptic('light');
+                        }
+                    };
+                    updateCountdownUI();
+                    if (battleLobbyCountdownTimer) {
+                        clearInterval(battleLobbyCountdownTimer);
+                        battleLobbyCountdownTimer = null;
+                    }
+                    battleLobbyCountdownTimer = setInterval(() => {
+                        countdownSec--;
+                        if (countdownSec > 0) {
+                            updateCountdownUI();
+                        } else {
+                            clearInterval(battleLobbyCountdownTimer);
+                            battleLobbyCountdownTimer = null;
+                            battleLobbyCountdownActive = false;
+                            if (battleRoomId === roomId && battleRole === 'host') {
+                                startBattleRoom();
+                            }
+                        }
+                    }, 1000);
                 });
             });
         }
@@ -7059,8 +7108,8 @@
                             if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
                             battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
 
-                            // 파이어볼 후 즉시 1단계 가속 적용
-                            const nextInterval = allHumansDone ? (550 + Math.floor(Math.random() * 200)) : getPitchInterval(state.nextExpected);
+                            // 파이어볼 후 즉시 1단계 가속 적용 (유저와 동일 템포)
+                            const nextInterval = getPitchInterval(state.nextExpected);
                             botSimTimers[bot.id] = setTimeout(stepBot, nextInterval);
                         }, 2200);
                         return;
@@ -7075,11 +7124,6 @@
 
                     if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
                     battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
-
-                    if (allHumansDone) {
-                        botSimTimers[bot.id] = setTimeout(stepBot, 550 + Math.floor(Math.random() * 200));
-                        return;
-                    }
 
                     // 유저와 동일한 투구 간격 + 인간적인 미세 손떨림 오차 (±20ms 이내)
                     const baseInterval = getPitchInterval(state.nextExpected);
@@ -7489,9 +7533,16 @@
             const startBtn = document.getElementById('battle-start-btn');
             const listEl = document.getElementById('battle-player-list');
 
-            waitingEl.innerText = isHost
-                ? textFor('lobbyStartable')(players.length)
-                : textFor('lobbyWaitingHost')(players.length);
+            if (!battleLobbyCountdownActive) {
+                if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
+                    const fn = textFor('matchFoundCountdown');
+                    waitingEl.innerText = typeof fn === 'function' ? fn(5) : '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...';
+                } else {
+                    waitingEl.innerText = isHost
+                        ? textFor('lobbyStartable')(players.length)
+                        : textFor('lobbyWaitingHost')(players.length);
+                }
+            }
 
             startBtn.style.display = isHost ? 'block' : 'none';
             startBtn.disabled = !isHost || players.length < 2;
@@ -7793,8 +7844,13 @@
                 goScreen.classList.add('hidden');
             }
             const canvasEl = document.getElementById('canvas');
-            if (canvasEl && canvasEl.style.display !== 'none') {
+            if (canvasEl) {
                 canvasEl.style.display = 'none';
+                canvasEl.style.visibility = 'hidden';
+                canvasEl.style.opacity = '0';
+            }
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
 
             let resultText, resultClass;
@@ -7845,7 +7901,10 @@
             battleResultShown = true;
             const statusEl = document.getElementById('rematch-status');
             if (room.status === 'ended') {
-                if (!battleRematchStarted) startRoomCloseCountdown();
+                if (statusEl) {
+                    const endedText = textFor('matchEndedWaitExit');
+                    if (statusEl.innerText !== endedText) statusEl.innerText = endedText;
+                }
             } else {
                 if (statusEl) {
                     const othersText = textFor('othersPlaying');
@@ -7857,40 +7916,23 @@
         function cancelBattle() {
             leaveBattleRoom(true);
             const canvasEl = document.getElementById('canvas');
-            if (canvasEl) canvasEl.style.display = 'none';
+            if (canvasEl) {
+                canvasEl.style.display = 'none';
+                canvasEl.style.visibility = 'hidden';
+            }
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('intro-screen').classList.remove('hidden');
         }
 
         function startRoomCloseCountdown() {
+            // 결과 화면은 자동 종료되지 않고 사용자가 "돌아가기"를 누를 때까지 정지(스톱) 상태 유지
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
-            battleRematchStarted = true;
-
-            rematchSeconds = ROOM_AUTO_CLOSE_SECONDS;
             const statusEl = document.getElementById('rematch-status');
-            const closingTextFn = textFor('roomClosingIn');
             if (statusEl) {
-                statusEl.innerText = typeof closingTextFn === 'function'
-                    ? closingTextFn(rematchSeconds)
-                    : `${rematchSeconds}s...`;
+                statusEl.innerText = textFor('matchEndedWaitExit');
             }
-
-            rematchTimer = setInterval(() => {
-                rematchSeconds--;
-                if (rematchSeconds <= 0) {
-                    clearInterval(rematchTimer);
-                    rematchTimer = null;
-                    exitBattle(true);
-                    return;
-                }
-                if (statusEl) {
-                    statusEl.innerText = typeof closingTextFn === 'function'
-                        ? closingTextFn(rematchSeconds)
-                        : `${rematchSeconds}s...`;
-                }
-            }, 1000);
         }
 
         function loadIntroRankList() {
@@ -7947,9 +7989,19 @@
         }
 
         function exitBattle(forceRemoveRoom = false) {
+            clearRematchListener();
+            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
+            if (battleLobbyCountdownTimer) { clearInterval(battleLobbyCountdownTimer); battleLobbyCountdownTimer = null; }
+            battleLobbyCountdownActive = false;
             leaveBattleRoom(Boolean(forceRemoveRoom));
             const canvasEl = document.getElementById('canvas');
-            if (canvasEl) canvasEl.style.display = 'none';
+            if (canvasEl) {
+                canvasEl.style.display = 'none';
+                canvasEl.style.visibility = 'hidden';
+            }
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             stopAllBgm();
