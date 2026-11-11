@@ -3736,6 +3736,10 @@
             return Date.now() + firebaseServerTimeOffsetMs;
         }
 
+        function getEstimatedServerTimeMs() {
+            return getServerNowMs();
+        }
+
         function getUtcDateKey() {
             // 전 세계 동일하게 UTC 00:00 (한국/일본 오전 09:00) 기준 리셋
             return new Date(getServerNowMs()).toISOString().slice(0, 10);
