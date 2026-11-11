@@ -1938,17 +1938,28 @@
         }
 
         .battle-scores {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 22px;
             margin: 39px 0;
             max-width: 942px;
+            width: 100%;
         }
 
         .battle-score-card {
             border-width: 6px;
             border-radius: 22px;
-            padding: 28px 33px;
-            min-width: 199px;
+            padding: 24px 16px;
+            width: 280px;
+            height: 236px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             box-shadow: 0 11px 0 var(--palette-blue);
+            contain: layout style paint;
         }
 
         .battle-score-card.me {
@@ -1956,11 +1967,26 @@
         }
 
         .battle-score-card .bsc-name {
-            font-size: 36px;
+            font-size: 32px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .battle-score-card .bsc-score {
-            font-size: 105px;
+            font-size: 96px;
+            height: 100px;
+            line-height: 100px;
+            font-variant-numeric: tabular-nums;
+            margin: 2px 0;
+        }
+
+        .battle-score-card .bsc-record {
+            font-size: 26px;
+            color: #64748b;
+            white-space: nowrap;
         }
 
         #battle-rematch-btn {
@@ -7034,7 +7060,7 @@
                             battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
 
                             // 파이어볼 후 즉시 1단계 가속 적용
-                            const nextInterval = allHumansDone ? 200 : getPitchInterval(state.nextExpected);
+                            const nextInterval = allHumansDone ? (550 + Math.floor(Math.random() * 200)) : getPitchInterval(state.nextExpected);
                             botSimTimers[bot.id] = setTimeout(stepBot, nextInterval);
                         }, 2200);
                         return;
@@ -7051,7 +7077,7 @@
                     battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
 
                     if (allHumansDone) {
-                        botSimTimers[bot.id] = setTimeout(stepBot, 220);
+                        botSimTimers[bot.id] = setTimeout(stepBot, 550 + Math.floor(Math.random() * 200));
                         return;
                     }
 
@@ -7423,7 +7449,7 @@
                             gameState = 'GAMEOVER';
                             stopAllBgm();
                         }
-                        showBattleResult(room);
+                        scheduleBattleResult(room);
                     } else {
                         startBattle();
                     }
@@ -7443,7 +7469,7 @@
                         gameState = 'GAMEOVER';
                         stopAllBgm();
                     }
-                    showBattleResult(room);
+                    scheduleBattleResult(room);
                 }
             };
             battleRef.child(roomId).on('value', battleListener);
@@ -7628,13 +7654,22 @@
                 if (!error && committed && room) {
                     battlePlayers = room.players || {};
                     if (targetPlayerId === battlePlayerId || (battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done)) {
-                        showBattleResult(room);
+                        scheduleBattleResult(room);
                     }
                 }
             });
         }
 
-        function renderBattleScoreCards(players) {
+        let battleResultRafId = 0;
+        function scheduleBattleResult(room) {
+            if (battleResultRafId) cancelAnimationFrame(battleResultRafId);
+            battleResultRafId = requestAnimationFrame(() => {
+                battleResultRafId = 0;
+                showBattleResult(room);
+            });
+        }
+
+        function renderBattleScoreCards(players, rankMap, isEnded) {
             const listEl = document.getElementById('battle-score-list');
             if (!listEl) return;
 
@@ -7651,7 +7686,7 @@
                 listEl.innerHTML = players.map((player, index) => {
                     const label = escapeBattleText(getBattlePlayerLabel(player, index));
                     const scoreText = Number(player.score || 0);
-                    const rankNum = player.rank ? player.rank : (index + 1);
+                    const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
                     const rankText = `${rankNum}. ${label}`;
                     const record = escapeBattleText(formatPlayerRecordBadge(player));
                     const meClass = player.id === battlePlayerId ? ' me' : '';
@@ -7670,9 +7705,11 @@
                 const card = existingCards[player.id];
                 if (!card) return;
 
-                const currentOrder = String(index);
-                if (card.style.order !== currentOrder) {
-                    card.style.order = currentOrder;
+                if (isEnded) {
+                    const finalOrder = String(index);
+                    if (card.style.order !== finalOrder) {
+                        card.style.order = finalOrder;
+                    }
                 }
 
                 const nameEl = card.querySelector('.bsc-name');
@@ -7681,7 +7718,7 @@
 
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const scoreText = String(Number(player.score || 0));
-                const rankNum = player.rank ? player.rank : (index + 1);
+                const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
                 const rankText = `${rankNum}. ${label}`;
 
                 if (nameEl && nameEl.innerText !== rankText) {
@@ -7705,12 +7742,13 @@
         function showBattleResult(room) {
             const firstResultRender = !battleResultShown;
             battlePlayers = room.players || {};
+            const isEnded = room.status === 'ended';
 
-            // 1위부터 순서대로 정렬:
-            // 게임 중: 생존자(점수 높은 순) -> 탈락자(순위 높은 순: 2위 탈락 > ... > 8위 탈락)
-            // 게임 종료: 확정 순위(rank) 오름차순 (1위가 최상단)
-            const players = getBattlePlayerList(room).sort((a, b) => {
-                if (room.status === 'ended') {
+            const allPlayers = getBattlePlayerList(room);
+
+            // 실시간 순위 계산 (생존자 점수 높은 순 > 탈락자 확정 순위 순)
+            const rankedList = [...allPlayers].sort((a, b) => {
+                if (isEnded) {
                     const rankA = Number(a.rank || 999);
                     const rankB = Number(b.rank || 999);
                     if (rankA !== rankB) return rankA - rankB;
@@ -7731,10 +7769,20 @@
                 }
             });
 
-            const myPlayer = players.find(player => player.id === battlePlayerId) || { score: 0 };
+            // 각 플레이어의 표시 순위 맵
+            const rankMap = {};
+            rankedList.forEach((p, idx) => {
+                rankMap[p.id] = p.rank ? p.rank : (idx + 1);
+            });
+
+            // 관전 중에는 카드가 이리저리 자리바꿈(텔레포트)하여 깜빡이지 않도록 고정 슬롯(가입 순) 유지!
+            // 게임이 완전히 끝났을 때만 최종 순위순(1위~8위)으로 정렬
+            const displayPlayers = isEnded ? rankedList : allPlayers;
+
+            const myPlayer = allPlayers.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
-            const myRank = Number(myPlayer.rank || 0);
-            const topScore = players.length ? Number(players[0].score || 0) : 0;
+            const myRank = Number(myPlayer.rank || rankMap[battlePlayerId] || 0);
+            const topScore = rankedList.length ? Number(rankedList[0].score || 0) : 0;
 
             const hudEl = document.getElementById('battle-hud');
             if (hudEl && hudEl.style.display !== 'none') {
@@ -7757,7 +7805,7 @@
                 resultText = textFor('rankText')(myRank);
                 resultClass = 'lose';
             } else {
-                const topCount = players.filter(player => Number(player.score || 0) === topScore).length;
+                const topCount = allPlayers.filter(player => Number(player.score || 0) === topScore).length;
                 if (myScore === topScore && topCount === 1) {
                     resultText = textFor('resultWin');
                     resultClass = 'win';
@@ -7788,7 +7836,7 @@
                 if (titleEl.className !== expectedClass) titleEl.className = expectedClass;
             }
 
-            renderBattleScoreCards(players);
+            renderBattleScoreCards(displayPlayers, rankMap, isEnded);
 
             const resultScreen = document.getElementById('battle-result-screen');
             if (resultScreen && resultScreen.classList.contains('hidden')) {
