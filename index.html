@@ -1946,6 +1946,7 @@
         }
 
         .battle-score-card {
+            position: relative;
             border-width: 6px;
             border-radius: 22px;
             padding: 18px 12px;
@@ -1960,7 +1961,48 @@
             overflow: hidden;
             transform: translateZ(0);
             backface-visibility: hidden;
-            transition: order 0.2s ease;
+        }
+
+        .battle-stamp-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            border: 6px solid #e11d48;
+            color: #e11d48;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 8px 18px;
+            font-size: 44px;
+            font-weight: 900;
+            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
+            border-radius: 16px;
+            letter-spacing: 2px;
+            box-shadow: 0 0 0 4px #ffffff, 0 10px 24px rgba(0, 0, 0, 0.28);
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 1px 1px 0 #ffffff;
+            animation: stampPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            white-space: nowrap;
+        }
+
+        .battle-stamp-badge.champion {
+            border-color: #d97706;
+            color: #b45309;
+            background: rgba(254, 243, 199, 0.96);
+            box-shadow: 0 0 0 4px #ffffff, 0 10px 28px rgba(245, 158, 11, 0.45);
+            transform: translate(-50%, -50%) rotate(0deg) scale(1.06);
+            font-size: 38px;
+        }
+
+        @keyframes stampPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) rotate(-25deg) scale(2.2);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(-12deg) scale(1);
+            }
         }
 
         .battle-score-card.me {
@@ -7758,15 +7800,14 @@
 
             const hasAllCards = players.length > 0 && players.every(p => existingCards[p.id]);
             if (!hasAllCards) {
-                // 최초 1회만 DOM 일괄 생성 (절대 카드 DOM을 재성성하지 않음)
+                // 1번부터 8번까지 입장 순서대로 슬롯 고정 생성 (절대 카드 위치가 이동하지 않음)
                 listEl.innerHTML = players.map((player, index) => {
                     const label = escapeBattleText(getBattlePlayerLabel(player, index));
                     const scoreText = Number(player.score || 0);
-                    const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
                     const meClass = player.id === battlePlayerId ? ' me' : '';
                     const doneClass = player.done ? ' done' : '';
-                    return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}" style="order: ${index};">
-                        <div class="bsc-name">${rankNum}. ${label}</div>
+                    return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}">
+                        <div class="bsc-name">${index + 1}. ${label}</div>
                         <div class="bsc-score">${scoreText}</div>
                         <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}</div>
                     </div>`;
@@ -7774,34 +7815,39 @@
                 return;
             }
 
-            // 실시간 점수 업데이트: 오직 점수가 바뀐 카드만 점수 textContent 갱신, 순위는 CSS order로만 이동!
+            // 실시간 점수 업데이트: 카드는 그 자리에 100% 멈춰 서서 숫자만 갱신, 끝난 사람은 순위 도장 쾅!
             players.forEach((player, index) => {
                 const card = existingCards[player.id];
                 if (!card) return;
 
-                const targetOrder = String(index);
-                if (card.style.order !== targetOrder) {
-                    card.style.order = targetOrder;
-                }
-
+                // 1. 점수 갱신 (점수가 바뀐 경우에만 숫자 textContent 변경)
                 const scoreEl = card.querySelector('.bsc-score');
                 const scoreStr = String(Number(player.score || 0));
                 if (scoreEl && scoreEl.textContent !== scoreStr) {
                     scoreEl.textContent = scoreStr;
                 }
 
-                const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
-                const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const rankText = `${rankNum}. ${label}`;
-                const nameEl = card.querySelector('.bsc-name');
-                if (nameEl && nameEl.textContent !== rankText) {
-                    nameEl.textContent = rankText;
-                }
+                // 2. 이미 끝난(탈락 또는 1위 확정) 플레이어: 카드 위에 순위 도장 찍기!
+                if (player.done) {
+                    if (!card.classList.contains('done')) {
+                        card.classList.add('done');
+                    }
+                    let stampEl = card.querySelector('.battle-stamp-badge');
+                    const rankNum = Number((rankMap && rankMap[player.id]) || player.rank || 0);
+                    const isChampion = rankNum === 1;
+                    const stampText = isChampion
+                        ? (currentLang === 'en' ? '🥇 1st WIN!' : (currentLang === 'ja' ? '🥇 1位 WIN!' : '🥇 1위 WIN!'))
+                        : (typeof textFor('rankText') === 'function' ? textFor('rankText')(rankNum) : `${rankNum}위`);
 
-                if (player.done && !card.classList.contains('done')) {
-                    card.classList.add('done');
-                } else if (!player.done && card.classList.contains('done')) {
-                    card.classList.remove('done');
+                    if (!stampEl && rankNum > 0) {
+                        stampEl = document.createElement('div');
+                        stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
+                        stampEl.textContent = stampText;
+                        card.appendChild(stampEl);
+                    } else if (stampEl && stampEl.textContent !== stampText && rankNum > 0) {
+                        stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
+                        stampEl.textContent = stampText;
+                    }
                 }
             });
         }
@@ -7813,7 +7859,7 @@
 
             const allPlayers = getBattlePlayerList(room);
 
-            // 실시간 순위 계산 (생존자 점수 높은 순 > 탈락자 확정 순위 순)
+            // 순위 계산 (스탬프 도장 및 1위 판정용)
             const rankedList = [...allPlayers].sort((a, b) => {
                 if (isEnded) {
                     const rankA = Number(a.rank || 999);
@@ -7836,14 +7882,14 @@
                 }
             });
 
-            // 각 플레이어의 표시 순위 맵
+            // 각 플레이어의 확정 표시 순위 맵
             const rankMap = {};
             rankedList.forEach((p, idx) => {
                 rankMap[p.id] = p.rank ? p.rank : (idx + 1);
             });
 
-            // 실시간 1위~8위 순위 순으로 가지런히 배치
-            const displayPlayers = rankedList;
+            // 사용자의 요청: 입장 순서대로 1번부터 8번까지 고정 슬롯 배치 (절대 카드 위치가 이동하지 않음)
+            const displayPlayers = allPlayers;
 
             const myPlayer = allPlayers.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
