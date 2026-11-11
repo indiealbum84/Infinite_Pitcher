@@ -1152,8 +1152,10 @@
 
         /* 대전 결과 화면 */
         #battle-result-screen {
-            background: linear-gradient(rgba(185, 236, 255, 0.9), rgba(255, 247, 216, 0.94)), url('./main_background.png') center top / cover no-repeat;
+            background: #b9ecff url('./main_background.png') center top / cover no-repeat;
             z-index: 25;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .battle-result-title {
@@ -2030,9 +2032,13 @@
         }
 
         #canvas {
-            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
+            display: none;
         }
 
         /* Play Gate & Remove Ads ($4.99) Modal */
@@ -2328,6 +2334,7 @@
     <div id="safe-area-probe" aria-hidden="true"></div>
 
     <div id="game-wrapper">
+        <canvas id="canvas"></canvas>
         <div id="ui-layer" class="hidden">
             <div class="stat-box">
                 <span class="stat-label">SCORE</span>
@@ -2524,8 +2531,6 @@
         <div id="countdown-screen" class="screen hidden">
             <div id="countdown-text">3</div>
         </div>
-
-        <canvas id="canvas"></canvas>
 
         <!-- 미러볼 알림 오버레이 -->
         <div id="flashball-announce">
@@ -3987,7 +3992,9 @@
             initBlocks();
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('play-gate-screen').classList.add('hidden');
+            document.getElementById('canvas').style.display = 'block';
             document.getElementById('ui-layer').classList.remove('hidden');
             updateUI();
 
@@ -4163,6 +4170,8 @@
             gameState = 'GAMEOVER';
             setPitcherThrowing(false);
             stopAllBgm();
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl) canvasEl.style.display = 'none';
             document.getElementById('play-gate-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
@@ -7735,6 +7744,10 @@
             if (goScreen && !goScreen.classList.contains('hidden')) {
                 goScreen.classList.add('hidden');
             }
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl && canvasEl.style.display !== 'none') {
+                canvasEl.style.display = 'none';
+            }
 
             let resultText, resultClass;
             if (myRank === 1) {
@@ -7795,6 +7808,8 @@
 
         function cancelBattle() {
             leaveBattleRoom(true);
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl) canvasEl.style.display = 'none';
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('intro-screen').classList.remove('hidden');
@@ -7885,6 +7900,8 @@
 
         function exitBattle(forceRemoveRoom = false) {
             leaveBattleRoom(Boolean(forceRemoveRoom));
+            const canvasEl = document.getElementById('canvas');
+            if (canvasEl) canvasEl.style.display = 'none';
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             stopAllBgm();
