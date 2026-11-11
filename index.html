@@ -1958,6 +1958,9 @@
             align-items: center;
             box-shadow: 0 11px 0 var(--palette-blue);
             overflow: hidden;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            transition: order 0.2s ease;
         }
 
         .battle-score-card.me {
@@ -7747,40 +7750,59 @@
             const listEl = document.getElementById('battle-score-list');
             if (!listEl) return;
 
-            let cards = listEl.querySelectorAll('.battle-score-card');
-            if (cards.length !== players.length) {
-                listEl.innerHTML = players.map((p, i) => `
-                    <div class="battle-score-card" data-slot="${i}">
-                        <div class="bsc-name"></div>
-                        <div class="bsc-score">0</div>
-                        <div class="bsc-record"></div>
-                    </div>
-                `).join('');
-                cards = listEl.querySelectorAll('.battle-score-card');
+            const existingCards = {};
+            listEl.querySelectorAll('.battle-score-card').forEach(card => {
+                const pid = card.getAttribute('data-player-id');
+                if (pid) existingCards[pid] = card;
+            });
+
+            const hasAllCards = players.length > 0 && players.every(p => existingCards[p.id]);
+            if (!hasAllCards) {
+                // 최초 1회만 DOM 일괄 생성 (절대 카드 DOM을 재성성하지 않음)
+                listEl.innerHTML = players.map((player, index) => {
+                    const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                    const scoreText = Number(player.score || 0);
+                    const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
+                    const meClass = player.id === battlePlayerId ? ' me' : '';
+                    const doneClass = player.done ? ' done' : '';
+                    return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}" style="order: ${index};">
+                        <div class="bsc-name">${rankNum}. ${label}</div>
+                        <div class="bsc-score">${scoreText}</div>
+                        <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}</div>
+                    </div>`;
+                }).join('');
+                return;
             }
 
+            // 실시간 점수 업데이트: 오직 점수가 바뀐 카드만 점수 textContent 갱신, 순위는 CSS order로만 이동!
             players.forEach((player, index) => {
-                const card = cards[index];
+                const card = existingCards[player.id];
                 if (!card) return;
 
-                const isMe = player.id === battlePlayerId;
-                const isDone = !!player.done;
+                const targetOrder = String(index);
+                if (card.style.order !== targetOrder) {
+                    card.style.order = targetOrder;
+                }
+
+                const scoreEl = card.querySelector('.bsc-score');
+                const scoreStr = String(Number(player.score || 0));
+                if (scoreEl && scoreEl.textContent !== scoreStr) {
+                    scoreEl.textContent = scoreStr;
+                }
+
                 const rankNum = (rankMap && rankMap[player.id]) || player.rank || (index + 1);
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const rankText = `${rankNum}. ${label}`;
-                const scoreText = String(Number(player.score || 0));
-                const recordText = escapeBattleText(formatPlayerRecordBadge(player));
-
-                const expectedClass = 'battle-score-card' + (isMe ? ' me' : '') + (isDone ? ' done' : '');
-                if (card.className !== expectedClass) card.className = expectedClass;
-
                 const nameEl = card.querySelector('.bsc-name');
-                const scoreEl = card.querySelector('.bsc-score');
-                const recordEl = card.querySelector('.bsc-record');
+                if (nameEl && nameEl.textContent !== rankText) {
+                    nameEl.textContent = rankText;
+                }
 
-                if (nameEl && nameEl.innerText !== rankText) nameEl.innerText = rankText;
-                if (scoreEl && scoreEl.innerText !== scoreText) scoreEl.innerText = scoreText;
-                if (recordEl && recordEl.innerText !== recordText) recordEl.innerText = recordText;
+                if (player.done && !card.classList.contains('done')) {
+                    card.classList.add('done');
+                } else if (!player.done && card.classList.contains('done')) {
+                    card.classList.remove('done');
+                }
             });
         }
 
@@ -7837,13 +7859,15 @@
                 goScreen.classList.add('hidden');
             }
             const canvasEl = document.getElementById('canvas');
-            if (canvasEl) {
-                canvasEl.style.display = 'none';
-                canvasEl.style.visibility = 'hidden';
-                canvasEl.style.opacity = '0';
-            }
-            if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (firstResultRender) {
+                if (canvasEl) {
+                    canvasEl.style.display = 'none';
+                    canvasEl.style.visibility = 'hidden';
+                    canvasEl.style.opacity = '0';
+                }
+                if (ctx && canvas) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
             }
 
             let resultText, resultClass;
