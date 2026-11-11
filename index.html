@@ -308,30 +308,32 @@
 
         .intro-main-actions {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .intro-sub-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
         }
 
         #intro-screen .intro-main-actions .start-btn {
-            width: 142px;
-            min-height: 50px;
-            padding: 8px 12px;
             margin-top: 0;
-            font-size: 24px;
             line-height: 1.1;
             white-space: nowrap;
         }
 
-        #intro-screen #start-btn-id {
-            background-color: var(--palette-mint);
-            color: #ffffff;
-            border-color: #000000;
-            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
-        }
-
-        #intro-screen #battle-btn {
+        #intro-screen #battle-quick-main-btn {
+            width: 294px;
+            min-height: 52px;
+            padding: 8px 12px;
+            font-size: 24px;
             background-color: var(--palette-blue);
             color: #ffffff;
             border-color: #000000;
@@ -339,8 +341,28 @@
             text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
         }
 
-        html[lang="ja"] #intro-screen #battle-btn {
+        #intro-screen #start-btn-id {
+            width: 142px;
+            min-height: 48px;
+            padding: 8px 10px;
             font-size: 19px;
+            background-color: var(--palette-mint);
+            color: #ffffff;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
+        }
+
+        #intro-screen #battle-friend-btn {
+            width: 142px;
+            min-height: 48px;
+            padding: 8px 10px;
+            font-size: 19px;
+            background-color: var(--palette-yellow);
+            color: #000000;
+            border-color: #000000;
+            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
         }
 
         html[lang="ja"] body,
@@ -1418,22 +1440,32 @@
         }
 
         .intro-main-actions {
-            gap: 28px;
+            gap: 20px;
         }
 
-        #intro-screen .intro-main-actions .start-btn {
-            width: 393px;
-            min-height: 138px;
-            padding: 22px 33px;
-            font-size: 66px;
+        .intro-sub-actions {
+            gap: 20px;
         }
 
-        html[lang="ja"] #intro-screen #battle-btn {
-            font-size: 52px;
+        #intro-screen #battle-quick-main-btn {
+            width: 808px;
+            min-height: 126px;
+            padding: 18px 24px;
+            font-size: 58px;
+            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
+            text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
         }
 
         #intro-screen #start-btn-id,
-        #intro-screen #battle-btn,
+        #intro-screen #battle-friend-btn {
+            width: 394px;
+            min-height: 116px;
+            padding: 16px 20px;
+            font-size: 46px;
+            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
+            text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
+        }
+
         #battle-screen .start-btn,
         #battle-result-screen .start-btn,
         #game-over-screen .start-btn {
@@ -2459,8 +2491,11 @@
             <div class="intro-menu">
                 <button type="button" id="intro-profile-pill" class="intro-profile-pill" onclick="promptAccountSyncFromIntro()">👤 -  |  🏆 BEST: 0</button>
                 <div class="intro-main-actions">
-                    <button id="start-btn-id" class="start-btn">スタート</button>
-                    <button id="battle-btn" class="start-btn" onclick="openBattleScreen()">みんなで対戦</button>
+                    <button id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">⚡ 세계 8인 배틀</button>
+                    <div class="intro-sub-actions">
+                        <button id="start-btn-id" class="start-btn">🧢 나홀로 특훈</button>
+                        <button id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">🤝 친구와 특훈</button>
+                    </div>
                 </div>
                 <button type="button" id="intro-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">🎁 本日1回無料  |  🚫 広告削除 $4.99</button>
                 <div id="test-start-row">
@@ -2975,9 +3010,13 @@
         const TEXTS = {
             ja: {
                 introBubble: '<span class="bubble-nowrap">よしっ！世界一のピッチャーになるために、</span><br>今日も特訓だ！',
-                startBtn:    'スタート',
-                battleBtn:   'みんなで対戦',
-                rankSuffix:  '位達成！',
+                startBtn:            '🧢 ひとり特訓',
+                battleQuickMainBtn:  '⚡ 世界8人バトル',
+                battleFriendBtn:     '🤝 フレンド特訓',
+                battleFriendTitle:   '🤝 フレンド特訓',
+                battleWorldTitle:    '⚡ 世界8人バトル',
+                battleBtn:           'みんなで対戦',
+                rankSuffix:          '位達成！',
                 nameHolder:  '名前を入力してください',
                 registerBtn: '登録して続ける',
                 retryBtn:    'リトライ',
@@ -3079,9 +3118,13 @@
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
-                startBtn:    'START',
-                battleBtn:   'BATTLE',
-                rankSuffix:  ' PLACE!',
+                startBtn:            '🧢 Solo Training',
+                battleQuickMainBtn:  '⚡ World 8P Battle',
+                battleFriendBtn:     '🤝 Friend Training',
+                battleFriendTitle:   '🤝 Friend Training',
+                battleWorldTitle:    '⚡ World 8P Battle',
+                battleBtn:           'BATTLE',
+                rankSuffix:          ' PLACE!',
                 nameHolder:  'Enter your name',
                 registerBtn: 'Save and continue',
                 retryBtn:    'Retry',
@@ -3183,9 +3226,13 @@
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
-                startBtn:    '스타트',
-                battleBtn:   '대전',
-                rankSuffix:  '위 달성!',
+                startBtn:            '🧢 나홀로 특훈',
+                battleQuickMainBtn:  '⚡ 세계 8인 배틀',
+                battleFriendBtn:     '🤝 친구와 특훈',
+                battleFriendTitle:   '🤝 친구와 특훈',
+                battleWorldTitle:    '⚡ 세계 8인 배틀',
+                battleBtn:           '대전',
+                rankSuffix:          '위 달성!',
                 nameHolder:  '이름을 입력하세요',
                 registerBtn: '등록하고 계속하기',
                 retryBtn:    '다시 하기',
@@ -3315,7 +3362,12 @@
             const t = TEXTS[lang];
             document.getElementById('intro-bubble').innerHTML      = t.introBubble;
             document.getElementById('start-btn-id').innerText      = t.startBtn;
-            document.getElementById('battle-btn').innerText        = t.battleBtn;
+            const quickBtn = document.getElementById('battle-quick-main-btn');
+            if (quickBtn) quickBtn.innerText = t.battleQuickMainBtn;
+            const friendBtn = document.getElementById('battle-friend-btn');
+            if (friendBtn) friendBtn.innerText = t.battleFriendBtn;
+            const battleBtn = document.getElementById('battle-btn');
+            if (battleBtn) battleBtn.innerText = t.battleBtn;
             document.getElementById('rank-suffix').innerText       = t.rankSuffix;
             document.getElementById('retry-btn').innerText         = t.retryBtn;
             document.getElementById('home-btn').innerText               = t.homeBtn;
@@ -7267,13 +7319,13 @@
             playTitleBgm();
         }
 
-        function openBattleScreen() {
+        function startWorld8Battle() {
             if (testMode) {
                 alert(textFor('alertTestBattle'));
                 return;
             }
             if (!canPlayWithoutAd('battle')) {
-                openPlayGateModal(() => openBattleScreen(), 'battle');
+                openPlayGateModal(() => startWorld8Battle(), 'battle');
                 return;
             }
 
@@ -7288,6 +7340,69 @@
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-screen-title').innerText = textFor('battleWorldTitle');
+            
+            // 빠른 매칭 전용 뷰: 친구 방 관련 UI는 숨기고 빠른 매칭 바로 시작
+            const quickSec = document.getElementById('battle-quick-section');
+            if (quickSec) quickSec.style.display = 'block';
+            const divider = document.getElementById('battle-divider');
+            if (divider) divider.style.display = 'none';
+            const createSec = document.getElementById('battle-create-section');
+            if (createSec) createSec.style.display = 'block';
+            const codeLabel = document.getElementById('battle-code-label');
+            if (codeLabel) codeLabel.style.display = 'none';
+            const codeBox = document.getElementById('battle-room-code');
+            if (codeBox) codeBox.style.display = 'none';
+            const startBtn = document.getElementById('battle-start-btn');
+            if (startBtn) startBtn.style.display = 'none';
+            const joinSec = document.getElementById('battle-join-section');
+            if (joinSec) joinSec.style.display = 'none';
+
+            hydrateBattleNameInput();
+            applyBattleLang();
+            showBattleRoomStep();
+            startQuickMatch();
+        }
+
+        function openFriendBattleScreen() {
+            if (testMode) {
+                alert(textFor('alertTestBattle'));
+                return;
+            }
+            if (!canPlayWithoutAd('battle')) {
+                openPlayGateModal(() => openFriendBattleScreen(), 'battle');
+                return;
+            }
+
+            const permanentName = getSavedPlayerName() || getSavedBattleNickname();
+            if (!permanentName) {
+                ensurePermanentPlayerProfileOnStart();
+                return;
+            }
+
+            leaveBattleRoom(true);
+            saveBattleNickname(permanentName);
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('battle-screen').classList.remove('hidden');
+            document.getElementById('battle-result-screen').classList.add('hidden');
+            document.getElementById('battle-screen-title').innerText = textFor('battleFriendTitle');
+
+            // 친구와 특훈 뷰: 빠른 매칭 섹션은 숨기고, 내 방 코드와 참가 섹션 노출!
+            const quickSec = document.getElementById('battle-quick-section');
+            if (quickSec) quickSec.style.display = 'none';
+            const divider = document.getElementById('battle-divider');
+            if (divider) divider.style.display = 'block';
+            const createSec = document.getElementById('battle-create-section');
+            if (createSec) createSec.style.display = 'block';
+            const codeLabel = document.getElementById('battle-code-label');
+            if (codeLabel) codeLabel.style.display = 'block';
+            const codeBox = document.getElementById('battle-room-code');
+            if (codeBox) codeBox.style.display = 'block';
+            const startBtn = document.getElementById('battle-start-btn');
+            if (startBtn) startBtn.style.display = 'block';
+            const joinSec = document.getElementById('battle-join-section');
+            if (joinSec) joinSec.style.display = 'flex';
+
             document.getElementById('battle-code-input').value = '';
             document.getElementById('battle-room-code').innerText = '----';
             document.getElementById('battle-player-list').innerHTML = '';
@@ -7295,6 +7410,10 @@
             applyBattleLang();
             showBattleRoomStep();
             createBattleRoom(permanentName);
+        }
+
+        function openBattleScreen() {
+            openFriendBattleScreen();
         }
 
         function createBattleRoom(hostName) {
