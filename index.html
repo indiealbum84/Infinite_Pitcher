@@ -1192,6 +1192,15 @@
             background: var(--palette-yellow);
         }
 
+        .battle-score-card.done {
+            opacity: 0.72;
+            background: #f1f3f5;
+        }
+
+        .battle-score-card.me.done {
+            background: #fff3bf;
+        }
+
         .battle-score-card .bsc-name {
             font-size: 13px;
             color: #586070;
@@ -6400,7 +6409,12 @@
             banner.classList.remove('show');
             void banner.offsetWidth;
             banner.classList.add('show');
-            playSfx(phase === 5 ? 'flashball' : (phase >= 3 ? 'mirrorball' : 'fireball'), 1.0);
+            if (phase === 5) {
+                playSfx('flashball', 1.0);
+            } else if (phase >= 3) {
+                playSfx('mirrorball', 1.0);
+            }
+            // Phase 2(파이어볼)는 투구 루프에서 자체 사운드가 재생되므로 중복 방지
             triggerHaptic(phase >= 4 ? 'heavy' : 'medium');
 
             if (battlePhaseBannerTimer) clearTimeout(battlePhaseBannerTimer);
@@ -7371,12 +7385,15 @@
                         battleBoardSeed = Number(room.boardSeed) || 0;
                     }
                     stopQuickMatchTimer();
-                    renderBattleHud(room);
+                    const isMyDone = !!(battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done);
+                    if (!isMyDone) {
+                        renderBattleHud(room);
+                    }
                     if (battleRole === 'host' && !battleSimStarted) {
                         battleSimStarted = true;
                         startBotSimulation(room);
                     }
-                    if (battlePlayers[battlePlayerId].done) {
+                    if (isMyDone) {
                         if (battleMode) {
                             battleMode = false;
                             gameState = 'GAMEOVER';
@@ -7393,7 +7410,10 @@
                     stopQuickMatchTimer();
                     stopBotSimulation();
                     battleSimStarted = false;
-                    renderBattleHud(room);
+                    const isMyDone = !!(battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done);
+                    if (!isMyDone) {
+                        renderBattleHud(room);
+                    }
                     if (battleMode) {
                         battleMode = false;
                         gameState = 'GAMEOVER';
@@ -7590,23 +7610,116 @@
             });
         }
 
+        function renderBattleScoreCards(players) {
+            const listEl = document.getElementById('battle-score-list');
+            if (!listEl) return;
+
+            const existingCards = {};
+            listEl.querySelectorAll('.battle-score-card').forEach(card => {
+                const pid = card.getAttribute('data-player-id');
+                if (pid) existingCards[pid] = card;
+            });
+
+            const hasAllCards = players.length > 0 && players.every(p => existingCards[p.id]);
+
+            if (!hasAllCards) {
+                // 최초 진입 시 카드 DOM 일괄 생성 (깜빡임 방지를 위해 1회만 innerHTML 생성)
+                listEl.innerHTML = players.map((player, index) => {
+                    const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                    const scoreText = Number(player.score || 0);
+                    const rankNum = player.rank ? player.rank : (index + 1);
+                    const rankText = `${rankNum}. ${label}`;
+                    const record = escapeBattleText(formatPlayerRecordBadge(player));
+                    const meClass = player.id === battlePlayerId ? ' me' : '';
+                    const doneClass = player.done ? ' done' : '';
+                    return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}" style="order: ${index};">
+                        <div class="bsc-name">${rankText}</div>
+                        <div class="bsc-score">${scoreText}</div>
+                        <div class="bsc-record">${record}</div>
+                    </div>`;
+                }).join('');
+                return;
+            }
+
+            // 실시간 점수 업데이트: DOM을 파괴하지 않고 기존 요소를 제자리에서 텍스트/스타일만 갱신 (깜빡임 완전 제거)
+            players.forEach((player, index) => {
+                const card = existingCards[player.id];
+                if (!card) return;
+
+                const currentOrder = String(index);
+                if (card.style.order !== currentOrder) {
+                    card.style.order = currentOrder;
+                }
+
+                const nameEl = card.querySelector('.bsc-name');
+                const scoreEl = card.querySelector('.bsc-score');
+                const recordEl = card.querySelector('.bsc-record');
+
+                const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const scoreText = String(Number(player.score || 0));
+                const rankNum = player.rank ? player.rank : (index + 1);
+                const rankText = `${rankNum}. ${label}`;
+
+                if (nameEl && nameEl.innerText !== rankText) {
+                    nameEl.innerText = rankText;
+                }
+                if (scoreEl && scoreEl.innerText !== scoreText) {
+                    scoreEl.innerText = scoreText;
+                }
+                const recordText = escapeBattleText(formatPlayerRecordBadge(player));
+                if (recordEl && recordEl.innerText !== recordText) {
+                    recordEl.innerText = recordText;
+                }
+                if (player.done) {
+                    if (!card.classList.contains('done')) card.classList.add('done');
+                } else {
+                    if (card.classList.contains('done')) card.classList.remove('done');
+                }
+            });
+        }
+
         function showBattleResult(room) {
             const firstResultRender = !battleResultShown;
             battlePlayers = room.players || {};
+
+            // 1위부터 순서대로 정렬:
+            // 게임 중: 생존자(점수 높은 순) -> 탈락자(순위 높은 순: 2위 탈락 > ... > 8위 탈락)
+            // 게임 종료: 확정 순위(rank) 오름차순 (1위가 최상단)
             const players = getBattlePlayerList(room).sort((a, b) => {
-                const rankA = Number(a.rank || 999);
-                const rankB = Number(b.rank || 999);
-                const rankDiff = rankA - rankB;
-                const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
-                return rankDiff || scoreDiff || ((a.joinedAt || 0) - (b.joinedAt || 0));
+                if (room.status === 'ended') {
+                    const rankA = Number(a.rank || 999);
+                    const rankB = Number(b.rank || 999);
+                    if (rankA !== rankB) return rankA - rankB;
+                    return Number(b.score || 0) - Number(a.score || 0);
+                }
+                const doneA = !!a.done;
+                const doneB = !!b.done;
+                if (doneA !== doneB) return doneA ? 1 : -1;
+                if (!doneA) {
+                    const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
+                    if (scoreDiff !== 0) return scoreDiff;
+                    return (a.joinedAt || 0) - (b.joinedAt || 0);
+                } else {
+                    const rankA = Number(a.rank || 999);
+                    const rankB = Number(b.rank || 999);
+                    if (rankA !== rankB) return rankA - rankB;
+                    return Number(b.score || 0) - Number(a.score || 0);
+                }
             });
+
             const myPlayer = players.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
             const myRank = Number(myPlayer.rank || 0);
             const topScore = players.length ? Number(players[0].score || 0) : 0;
 
-            document.getElementById('battle-hud').style.display = 'none';
-            document.getElementById('game-over-screen').classList.add('hidden');
+            const hudEl = document.getElementById('battle-hud');
+            if (hudEl && hudEl.style.display !== 'none') {
+                hudEl.style.display = 'none';
+            }
+            const goScreen = document.getElementById('game-over-screen');
+            if (goScreen && !goScreen.classList.contains('hidden')) {
+                goScreen.classList.add('hidden');
+            }
 
             let resultText, resultClass;
             if (myRank === 1) {
@@ -7641,28 +7754,27 @@
             }
 
             const titleEl = document.getElementById('battle-result-title');
-            titleEl.innerText = resultText;
-            titleEl.className = 'battle-result-title ' + resultClass;
+            if (titleEl) {
+                if (titleEl.innerText !== resultText) titleEl.innerText = resultText;
+                const expectedClass = 'battle-result-title ' + resultClass;
+                if (titleEl.className !== expectedClass) titleEl.className = expectedClass;
+            }
 
-            document.getElementById('battle-score-list').innerHTML = players.map((player, index) => {
-                const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const scoreText = Number(player.score || 0);
-                const rankText = player.rank ? player.rank : index + 1;
-                const record = escapeBattleText(formatPlayerRecordBadge(player));
-                const meClass = player.id === battlePlayerId ? ' me' : '';
-                return `<div class="battle-score-card${meClass}">
-                    <div class="bsc-name">${rankText}. ${label}</div>
-                    <div class="bsc-score">${scoreText}</div>
-                    <div class="bsc-record">${record}</div>
-                </div>`;
-            }).join('');
+            renderBattleScoreCards(players);
 
-            document.getElementById('battle-result-screen').classList.remove('hidden');
+            const resultScreen = document.getElementById('battle-result-screen');
+            if (resultScreen && resultScreen.classList.contains('hidden')) {
+                resultScreen.classList.remove('hidden');
+            }
             battleResultShown = true;
+            const statusEl = document.getElementById('rematch-status');
             if (room.status === 'ended') {
                 if (!battleRematchStarted) startRoomCloseCountdown();
             } else {
-                document.getElementById('rematch-status').innerText = textFor('othersPlaying');
+                if (statusEl) {
+                    const othersText = textFor('othersPlaying');
+                    if (statusEl.innerText !== othersText) statusEl.innerText = othersText;
+                }
             }
         }
 
