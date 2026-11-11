@@ -1973,8 +1973,7 @@
 
         /* Countdown Screen */
         #countdown-screen {
-            background-color: rgba(255, 247, 216, 0.45);
-            backdrop-filter: blur(4px);
+            background-color: rgba(255, 247, 216, 0.65);
             z-index: 15;
             display: flex;
             justify-content: center;
@@ -2038,8 +2037,7 @@
 
         /* Play Gate & Remove Ads ($4.99) Modal */
         #play-gate-screen {
-            background: rgba(15, 23, 42, 0.84);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.92);
             z-index: 35;
             gap: 28px;
         }
@@ -2048,8 +2046,10 @@
             background: var(--palette-cream);
             border: 8px solid #000000;
             border-radius: 55px;
-            padding: 58px 48px;
+            padding: 48px 40px;
             width: min(880px, calc(100% - 72px));
+            max-height: calc(100% - 80px);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -2194,8 +2194,7 @@
 
         /* 최초 1회 영구 게임 이름 등록 & Google/Apple 계정 복원 화면 */
         #initial-profile-screen {
-            background: rgba(15, 23, 42, 0.88);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.94);
             z-index: 45;
             padding: 32px;
         }
@@ -2416,13 +2415,13 @@
         <div id="play-gate-screen" class="screen hidden">
             <div class="continue-card">
                 <h2 class="continue-title" id="play-gate-title">NEXT PLAY</h2>
-                <p class="continue-desc" id="play-gate-desc">本日の無料プレイ(1回)を使用しました。
-次のゲームをプレイするには広告を1回視聴してください！</p>
-                <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 広告を1回見てプレイ</button>
-                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 広告削除・無制限プレイ ($4.99)</button>
+                <p class="continue-desc" id="play-gate-desc">오늘의 무료 플레이를 모두 사용했습니다.<br>다음 게임을 플레이하려면 광고를 시청해주세요!</p>
+                <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 광고 보고 플레이</button>
+                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 광고 제거·무제한 플레이 ($4.99)</button>
                 <div class="play-gate-sub-actions">
-                    <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">購入を復元</button>
-                    <button id="play-gate-close-btn" class="continue-skip-btn" onclick="closePlayGateModal()">閉じる</button>
+                    <button id="play-gate-test-free-btn" class="continue-skip-btn" style="background:var(--palette-yellow);color:#000;" onclick="skipAdForTest()">🛠️ 무료 테스트 플레이</button>
+                    <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">구매 복원</button>
+                    <button id="play-gate-close-btn" class="continue-skip-btn" onclick="closePlayGateModal()">닫기</button>
                 </div>
             </div>
         </div>
@@ -3877,6 +3876,8 @@
 
         function canPlayWithoutAd(mode = 'solo') {
             if (isNoAdsPurchased()) return true;
+            // 웹 브라우저/GitHub Pages 테스트 환경에서는 게임 플레이가 막히지 않도록 무제한 허용 (네이티브 앱 Capacitor 패키징 시에만 3회 제한 적용)
+            if (!window.Capacitor) return true;
             if (mode === 'solo' && !isSoloFireballUnlocked()) return true;
             return hasDailyFreePlay(mode) || hasAdPlayCredit(mode);
         }
@@ -4227,8 +4228,22 @@
             }
             if (adBtnEl) {
                 adBtnEl.style.display = needAdNow ? 'block' : 'none';
+                adBtnEl.innerText = textFor('playGateAdBtn');
             }
+            const noadsBtn = document.getElementById('play-gate-noads-btn');
+            if (noadsBtn) noadsBtn.innerText = textFor('playGateNoAdsBtn');
+            const restoreBtn = document.getElementById('play-gate-restore-btn');
+            if (restoreBtn) restoreBtn.innerText = textFor('playGateRestoreBtn');
+            const closeBtn = document.getElementById('play-gate-close-btn');
+            if (closeBtn) closeBtn.innerText = textFor('playGateCloseBtn');
+
             document.getElementById('play-gate-screen').classList.remove('hidden');
+        }
+
+        function skipAdForTest() {
+            const cb = pendingPlayGateCallback;
+            closePlayGateModal();
+            if (typeof cb === 'function') cb();
         }
 
         function closePlayGateModal() {
