@@ -3397,9 +3397,10 @@
                 battleCodeLabel: '自分のルームコード (友達招待)',
                 battleJoinLabel: '友達のコード入力',
                 battleDivider: '── または ──',
-                battleQuickBtn: '⚡ クイックマッチ (ランダム対戦)',
+                battleQuickBtn: '⚡ マッチング開始',
                 battleQuickCancelBtn: '⏹ マッチング中止',
                 battleQuickIdle: '世界中のプレイヤーと即時マッチングします',
+                battleWorldIdleWaiting: '[マッチング開始] ボタンを押すとマッチングが始まります。',
                 battleQuickSearching: sec => `🔍 対戦相手を探しています... (${sec}秒)`,
                 battleQuickMatched: '✅ マッチング完了！まもなく開始します！',
                 rematchBtn: 'もう一度',
@@ -3510,9 +3511,10 @@
                 battleCodeLabel: 'Your room code (Invite friends)',
                 battleJoinLabel: 'Enter friend code',
                 battleDivider: '── OR ──',
-                battleQuickBtn: '⚡ Quick Match (Random)',
+                battleQuickBtn: '⚡ Start Matchmaking',
                 battleQuickCancelBtn: '⏹ Cancel Matchmaking',
                 battleQuickIdle: 'Instant match with players worldwide',
+                battleWorldIdleWaiting: 'Press [Start Matchmaking] to begin matchmaking.',
                 battleQuickSearching: sec => `🔍 Searching for opponents... (${sec}s)`,
                 battleQuickMatched: '✅ Match found! Starting game...',
                 rematchBtn: 'Rematch',
@@ -3623,9 +3625,10 @@
                 battleCodeLabel: '내 방 코드 (친구 초대)',
                 battleJoinLabel: '친구 코드 입력',
                 battleDivider: '── 또는 ──',
-                battleQuickBtn: '⚡ 빠른 매칭 (랜덤 대전)',
+                battleQuickBtn: '⚡ 매칭 시작',
                 battleQuickCancelBtn: '⏹ 매칭 취소',
                 battleQuickIdle: '전 세계 플레이어와 즉시 매칭합니다',
+                battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 다른 플레이어들과 매칭됩니다.',
                 battleQuickSearching: sec => `🔍 온라인 상대 찾는 중... (${sec}초)`,
                 battleQuickMatched: '✅ 매칭 완료! 잠시 후 시작합니다!',
                 rematchBtn: '다시하기',
@@ -7376,6 +7379,11 @@
                     quickMatchDeadline: null
                 });
             }
+            leaveBattleRoom(true);
+            const listEl = document.getElementById('battle-player-list');
+            if (listEl) listEl.innerHTML = '';
+            const waitingEl = document.getElementById('battle-waiting-text');
+            if (waitingEl) waitingEl.innerText = textFor('battleWorldIdleWaiting') || '대기 중...';
             updateQuickMatchUI();
         }
 
@@ -7945,15 +7953,20 @@
 
             battleViewMode = 'world8';
             leaveBattleRoom(true);
+            stopQuickMatchTimer(false);
             saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('battle-screen').classList.remove('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
 
+            const listEl = document.getElementById('battle-player-list');
+            if (listEl) listEl.innerHTML = '';
+            const waitingEl = document.getElementById('battle-waiting-text');
+            if (waitingEl) waitingEl.innerText = textFor('battleWorldIdleWaiting') || '대기 중...';
+
             hydrateBattleNameInput();
             applyBattleLang();
             showBattleRoomStep();
-            startQuickMatch();
         }
 
         function openFriendBattleScreen() {
@@ -8349,7 +8362,11 @@
             setTxt('battle-quick-main-btn', TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn);
             setTxt('battle-friend-btn', TEXTS[currentLang] && TEXTS[currentLang].battleFriendBtn);
             setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
-            setTxt('battle-waiting-text', textFor('battleWaiting'));
+            if (battleViewMode === 'world8' && !quickMatchActive) {
+                setTxt('battle-waiting-text', textFor('battleWorldIdleWaiting'));
+            } else {
+                setTxt('battle-waiting-text', textFor('battleWaiting'));
+            }
             setTxt('battle-cancel-btn', textFor('battleCancel'));
             setTxt('battle-join-btn', textFor('battleJoin'));
             setTxt('battle-exit-btn', textFor('battleExit'));
