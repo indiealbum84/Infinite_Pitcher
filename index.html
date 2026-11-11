@@ -371,6 +371,7 @@
         html[lang="ja"] .name-input,
         html[lang="ja"] .battle-title,
         html[lang="ja"] .battle-result-title,
+        html[lang="ja"] .battle-hud-box .bhb-score,
         html[lang="ja"] .battle-hud-box span,
         html[lang="ja"] .test-sel-btn {
             font-family: 'Zen Maru Gothic', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
@@ -384,6 +385,7 @@
         html[lang="ko"] .name-input,
         html[lang="ko"] .battle-title,
         html[lang="ko"] .battle-result-title,
+        html[lang="ko"] .battle-hud-box .bhb-score,
         html[lang="ko"] .battle-hud-box span,
         html[lang="ko"] .test-sel-btn {
             font-family: 'Gamja Flower', 'Noto Sans JP', sans-serif;
@@ -1036,51 +1038,6 @@
             pointer-events: auto !important;
         }
 
-        /* 게임 중 점수 HUD */
-        #battle-hud {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-            padding: 0 6px;
-            z-index: 6;
-            pointer-events: none;
-        }
-
-        .battle-hud-box {
-            background: var(--palette-cream);
-            color: var(--palette-ink);
-            font-size: 11px;
-            font-weight: 900;
-            padding: 4px 8px;
-            border-radius: 0 0 10px 10px;
-            border: 2px solid #000000;
-            border-top: 0;
-            box-shadow: 0 3px 0 var(--palette-pink);
-            text-align: center;
-            min-width: 52px;
-        }
-
-        .battle-hud-box.me {
-            background: var(--palette-yellow);
-            color: var(--palette-ink);
-        }
-
-        .battle-hud-box span {
-            display: block;
-            font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
-            font-size: 20px;
-            color: var(--palette-blue);
-            letter-spacing: 1px;
-        }
-
-        .battle-hud-box.me span {
-            color: #000;
-        }
-
         /* Battle Phase HUD & Banner & Vignette */
         #battle-hud-wrap {
             position: absolute;
@@ -1088,8 +1045,93 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 15;
+            z-index: 25;
             pointer-events: none;
+            width: 100%;
+        }
+
+        /* 게임 중 8인 점수 HUD (상단 1줄 가로 전원 배치) */
+        #battle-hud {
+            position: relative;
+            width: 100%;
+            display: none;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 3px;
+            padding: 3px 4px;
+            box-sizing: border-box;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(2px);
+            border-bottom: 2px solid #000000;
+            pointer-events: none;
+        }
+
+        .battle-hud-box {
+            flex: 1 1 0;
+            min-width: 0;
+            background: #ffffff;
+            color: var(--palette-ink);
+            padding: 2px 1px;
+            border-radius: 6px;
+            border: 1.5px solid #000000;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            transition: transform 0.1s ease, border-color 0.15s ease;
+        }
+
+        .battle-hud-box .bhb-num {
+            font-size: 10px;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #64748b;
+            letter-spacing: -0.2px;
+        }
+
+        .battle-hud-box .bhb-score {
+            font-family: 'Fredoka', 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--palette-blue);
+            letter-spacing: 0.2px;
+        }
+
+        /* 내 번호 박스: 눈에 확 띄는 강조 테두리 + 배경 */
+        .battle-hud-box.me {
+            background: var(--palette-yellow) !important;
+            border: 2.5px solid #e11d48 !important;
+            outline: 2px solid #fbbf24;
+            box-shadow: 0 2px 0 #000000, 0 0 6px rgba(225, 29, 72, 0.5) !important;
+            transform: scale(1.03);
+            z-index: 2;
+        }
+
+        .battle-hud-box.me .bhb-num {
+            color: #be123c !important;
+            font-weight: 900;
+        }
+
+        .battle-hud-box.me .bhb-score {
+            color: #000000 !important;
+            font-weight: 900;
+        }
+
+        /* 탈락/완료된 플레이어 */
+        .battle-hud-box.done {
+            opacity: 0.45;
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .battle-hud-box.done .bhb-score {
+            color: #64748b;
         }
 
         .battle-phase-pill {
@@ -2220,23 +2262,33 @@
         }
 
         #battle-hud {
-            gap: 11px;
-            padding: 0 17px;
+            gap: 8px;
+            padding: 8px 14px;
+            border-bottom-width: 4px;
         }
 
         .battle-hud-box {
-            font-size: 30px;
-            padding: 11px 22px;
-            border-radius: 0 0 28px 28px;
-            border-width: 6px;
-            border-top: 0;
-            box-shadow: 0 8px 0 var(--palette-pink);
-            min-width: 144px;
+            padding: 6px 4px;
+            border-radius: 12px;
+            border-width: 3px;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+            min-width: 0;
         }
 
-        .battle-hud-box span {
-            font-size: 55px;
-            letter-spacing: 3px;
+        .battle-hud-box .bhb-num {
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .battle-hud-box .bhb-score {
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        .battle-hud-box.me {
+            border-width: 4px !important;
+            outline-width: 3px;
+            box-shadow: 0 4px 0 #000000, 0 0 12px rgba(225, 29, 72, 0.6) !important;
         }
 
         .battle-phase-pill {
@@ -2957,8 +3009,8 @@
 
         <!-- 대전 중 상단 HUD 및 페이즈 배지 -->
         <div id="battle-hud-wrap">
-            <div id="battle-phase-pill" class="battle-phase-pill hidden">PHASE 1</div>
             <div id="battle-hud"></div>
+            <div id="battle-phase-pill" class="battle-phase-pill hidden">PHASE 1</div>
         </div>
 
         <!-- 대전 페이즈 전환 알림 배너 -->
@@ -4592,7 +4644,11 @@
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('play-gate-screen').classList.add('hidden');
             document.getElementById('canvas').style.display = 'block';
-            document.getElementById('ui-layer').classList.remove('hidden');
+            if (battleMode) {
+                document.getElementById('ui-layer').classList.add('hidden');
+            } else {
+                document.getElementById('ui-layer').classList.remove('hidden');
+            }
             updateUI();
 
             const countdownScreen = document.getElementById('countdown-screen');
@@ -8341,13 +8397,39 @@
 
         function renderBattleHud(room) {
             const hud = document.getElementById('battle-hud');
+            if (!hud) return;
             const players = getBattlePlayerList(room);
-            hud.innerHTML = players.map((player, index) => {
-                const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const scoreText = Number(player.score || 0);
-                const meClass = player.id === battlePlayerId ? ' me' : '';
-                return `<div class="battle-hud-box${meClass}">${label}<span>${scoreText}</span></div>`;
-            }).join('');
+            const count = players.length;
+
+            if (hud.children.length !== count) {
+                hud.innerHTML = players.map((player, index) => {
+                    const numLabel = `${index + 1}P`;
+                    const scoreText = Number(player.score || 0);
+                    const isMe = player.id === battlePlayerId;
+                    const meClass = isMe ? ' me' : '';
+                    const doneClass = player.done ? ' done' : '';
+                    return `<div class="battle-hud-box${meClass}${doneClass}" data-player-id="${player.id}">
+                        <div class="bhb-num">${numLabel}</div>
+                        <div class="bhb-score">${scoreText}</div>
+                    </div>`;
+                }).join('');
+            } else {
+                players.forEach((player, index) => {
+                    const box = hud.children[index];
+                    if (!box) return;
+                    const scoreEl = box.querySelector('.bhb-score');
+                    const scoreText = String(Number(player.score || 0));
+                    if (scoreEl && scoreEl.textContent !== scoreText) {
+                        scoreEl.textContent = scoreText;
+                    }
+                    const isMe = player.id === battlePlayerId;
+                    const expectedClass = `battle-hud-box${isMe ? ' me' : ''}${player.done ? ' done' : ''}`;
+                    if (box.className !== expectedClass) {
+                        box.className = expectedClass;
+                    }
+                });
+            }
+
             if (battleMode && gameState === 'PLAYING' && typeof checkBattlePhaseTransition === 'function') {
                 checkBattlePhaseTransition();
             }
