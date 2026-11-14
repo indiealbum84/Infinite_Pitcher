@@ -343,10 +343,19 @@
         }
 
         #intro-screen #battle-quick-main-btn.locked {
-            background-color: #64748b;
-            box-shadow: 0 6px 0 #334155, 0 6px 0 2px #000000;
-            font-size: 16px;
-            opacity: 0.92;
+            background-color: #475569;
+            box-shadow: 0 6px 0 #1e293b, 0 6px 0 2px #000000;
+            font-size: 20px;
+            line-height: 1.2;
+            opacity: 1;
+        }
+
+        #intro-screen #battle-quick-main-btn.locked .w8-lock-sub {
+            display: block;
+            font-size: 0.65em;
+            color: #fef08a;
+            margin-top: 3px;
+            letter-spacing: -0.02em;
         }
 
         #intro-screen #start-btn-id {
@@ -1962,6 +1971,12 @@
             font-size: 58px;
             box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
             text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
+        }
+
+        #intro-screen #battle-quick-main-btn.locked {
+            font-size: 46px;
+            padding: 14px 20px;
+            box-shadow: 0 17px 0 #1e293b, 0 17px 0 6px #000000;
         }
 
         #intro-screen #start-btn-id,
@@ -10293,7 +10308,7 @@
             } else {
                 btn.classList.add('locked');
                 const shortHint = TEXTS[currentLang] && TEXTS[currentLang].world8UnlockShort ? TEXTS[currentLang].world8UnlockShort : '솔로 31점 해금';
-                btn.innerText = `🔒 ${label} (${shortHint})`;
+                btn.innerHTML = `🔒 ${label}<span class="w8-lock-sub">${shortHint}</span>`;
             }
         }
 
