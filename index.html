@@ -10659,7 +10659,7 @@
                     players[winnerId].rank = 1;
                     players[winnerId].wins = Math.max(0, Number(players[winnerId].wins || 0)) + 1;
 
-                    // 2~8위는 최종 점수 내림차순 + 동점 시 올림픽식 공동 순위 (예: 공동 2위 2명 -> 다음은 4위)
+                    // 1위(최후 생존자)와 동점인 경우 공동 1위, 그 외 2~8위는 최종 점수 내림차순 + 올림픽식 공동 순위
                     const others = ids.filter(id => id !== winnerId).sort((a, b) => {
                         const scoreDiff = Number(players[b].score || 0) - Number(players[a].score || 0);
                         if (scoreDiff !== 0) return scoreDiff;
@@ -10667,12 +10667,20 @@
                         if (orderDiff !== 0) return orderDiff;
                         return a.localeCompare(b);
                     });
-                    let currentRank = 2;
+                    let prevScore = Number(players[winnerId].score || 0);
+                    let currentRank = 1;
                     others.forEach((oid, idx) => {
-                        if (idx > 0 && Number(players[oid].score || 0) < Number(players[others[idx - 1]].score || 0)) {
+                        const sc = Number(players[oid].score || 0);
+                        if (idx === 0 && sc > prevScore) {
+                            currentRank = 2;
+                        } else if (sc < prevScore) {
                             currentRank = idx + 2;
                         }
                         players[oid].rank = currentRank;
+                        if (currentRank === 1) {
+                            players[oid].wins = Math.max(0, Number(players[oid].wins || 0)) + 1;
+                        }
+                        prevScore = sc;
                     });
 
                     room.status = 'ended';
@@ -10866,12 +10874,15 @@
                 }
             }
 
+            const rank1Count = isEnded ? allPlayers.filter(p => Number(rankMap[p.id] || p.rank || 0) === 1).length : 0;
             let resultText, resultClass;
             if (!isEnded) {
                 resultText = currentLang === 'en' ? 'OUT (IN PROGRESS)' : (currentLang === 'ja' ? '脱落 (進行中)' : '탈락 (경기 진행 중)');
                 resultClass = 'lose';
             } else if (myRank === 1) {
-                resultText = textFor('resultWin');
+                resultText = rank1Count > 1
+                    ? (currentLang === 'en' ? 'TIE 1st WIN!' : (currentLang === 'ja' ? '1位タイ WIN!' : '공동 1위 WIN!'))
+                    : textFor('resultWin');
                 resultClass = 'win';
             } else if (myRank > 1) {
                 resultText = textFor('rankText')(myRank);
