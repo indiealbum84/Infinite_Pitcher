@@ -9825,20 +9825,23 @@
                         });
                     } catch (e) {}
                 });
-                const otherActiveHumans = Object.keys(battlePlayers || {}).filter(pid => {
+                const otherConnectedHumans = Object.keys(battlePlayers || {}).filter(pid => {
                     if (pid === playerId) return false;
                     const p = battlePlayers[pid];
-                    return p && !p.isBot && !p.done && !p.disconnected;
+                    return p && !p.isBot && !p.disconnected;
                 });
 
-                if (removeHostRoom || otherActiveHumans.length === 0) {
+                if (removeHostRoom || otherConnectedHumans.length === 0) {
                     battleRef.child(roomId).remove();
                 } else if (playerId) {
                     if (role === 'host') {
-                        // 방장이 먼저 나가더라도 남은 실제 플레이어 중 1명에게 즉시 방장(봇 시뮬레이션) 권한을 승계!
-                        const nextHostId = otherActiveHumans.sort((a, b) => {
-                            const ja = Number((battlePlayers[a] && battlePlayers[a].joinedAt) || 0);
-                            const jb = Number((battlePlayers[b] && battlePlayers[b].joinedAt) || 0);
+                        // 방장이 먼저 나가더라도 남은 실제 플레이어(플레이 중 우선, 없으면 결과창 관전자)에게 방장 권한 승계
+                        const nextHostId = otherConnectedHumans.sort((a, b) => {
+                            const pa = battlePlayers[a] || {};
+                            const pb = battlePlayers[b] || {};
+                            if (!!pa.done !== !!pb.done) return pa.done ? 1 : -1;
+                            const ja = Number(pa.joinedAt || 0);
+                            const jb = Number(pb.joinedAt || 0);
                             return ja !== jb ? ja - jb : a.localeCompare(b);
                         })[0];
                         const updates = {
