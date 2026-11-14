@@ -6031,6 +6031,40 @@
                         ctx.beginPath();
                         ctx.rect(b.x - scalePx(3), b.y, scalePx(6), scalePx(28));
                         ctx.fill();
+                    } else if (equippedSkin === 'double_rainbow') {
+                        // 찬란한 이중 쌍무지개 빔 + 반짝이는 별가루
+                        const grad1 = ctx.createLinearGradient(b.x - scalePx(4), b.y, b.x - scalePx(4), b.y + scalePx(32));
+                        grad1.addColorStop(0, 'rgba(239, 68, 68, 0.85)');
+                        grad1.addColorStop(0.2, 'rgba(249, 115, 22, 0.75)');
+                        grad1.addColorStop(0.4, 'rgba(234, 179, 8, 0.75)');
+                        grad1.addColorStop(0.6, 'rgba(34, 197, 94, 0.75)');
+                        grad1.addColorStop(0.8, 'rgba(59, 130, 246, 0.65)');
+                        grad1.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        ctx.fillStyle = grad1;
+                        ctx.beginPath();
+                        ctx.rect(b.x - scalePx(5), b.y, scalePx(4), scalePx(32));
+                        ctx.fill();
+
+                        const grad2 = ctx.createLinearGradient(b.x + scalePx(4), b.y, b.x + scalePx(4), b.y + scalePx(32));
+                        grad2.addColorStop(0, 'rgba(168, 85, 247, 0.85)');
+                        grad2.addColorStop(0.2, 'rgba(59, 130, 246, 0.75)');
+                        grad2.addColorStop(0.4, 'rgba(34, 197, 94, 0.75)');
+                        grad2.addColorStop(0.6, 'rgba(234, 179, 8, 0.75)');
+                        grad2.addColorStop(0.8, 'rgba(249, 115, 22, 0.65)');
+                        grad2.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                        ctx.fillStyle = grad2;
+                        ctx.beginPath();
+                        ctx.rect(b.x + scalePx(1), b.y, scalePx(4), scalePx(32));
+                        ctx.fill();
+
+                        for (let s = 0; s < 2; s++) {
+                            const starY = b.y + scalePx(8 + s * 12);
+                            const starX = b.x + Math.sin(t * 0.015 + s * 3) * scalePx(7);
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                            ctx.beginPath();
+                            ctx.arc(starX, starY, scalePx(1.5), 0, Math.PI * 2);
+                            ctx.fill();
+                        }
                     } else if (equippedSkin === 'prism') {
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 9);
@@ -6299,6 +6333,34 @@
                         ctx.beginPath();
                         ctx.arc(px, py - scalePx(10), r, rot + i * stepAngle, rot + (i + 1) * stepAngle);
                         ctx.stroke();
+                    }
+                } else if (equippedSkin === 'double_rainbow') {
+                    const rInner = scalePx(34 + Math.sin(t * 0.005) * 3);
+                    const rOuter = scalePx(42 + Math.cos(t * 0.005) * 4);
+                    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'];
+                    const stepAngle = (Math.PI * 2) / colors.length;
+                    const rot1 = t * 0.003;
+                    const rot2 = -t * 0.003;
+                    ctx.lineWidth = scalePx(2.5);
+                    for (let i = 0; i < colors.length; i++) {
+                        ctx.strokeStyle = colors[i];
+                        ctx.beginPath();
+                        ctx.arc(px, py - scalePx(10), rInner, rot1 + i * stepAngle, rot1 + (i + 1) * stepAngle);
+                        ctx.stroke();
+
+                        ctx.strokeStyle = colors[colors.length - 1 - i];
+                        ctx.beginPath();
+                        ctx.arc(px, py - scalePx(10), rOuter, rot2 + i * stepAngle, rot2 + (i + 1) * stepAngle);
+                        ctx.stroke();
+                    }
+                    for (let s = 0; s < 4; s++) {
+                        const a = t * 0.004 + s * (Math.PI / 2);
+                        const sx = px + Math.cos(a) * (rOuter + scalePx(4));
+                        const sy = py - scalePx(10) + Math.sin(a) * (rOuter + scalePx(4));
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, scalePx(2), 0, Math.PI * 2);
+                        ctx.fill();
                     }
                 } else if (equippedSkin === 'prism') {
                     const r = scalePx(36 + Math.sin(t * 0.006) * 5);
@@ -6616,6 +6678,7 @@
                 battleRating: typeof getBattleRating === 'function' ? getBattleRating() : 1000,
                 battleStreak: typeof getBattleStreak === 'function' ? getBattleStreak() : 0,
                 battleMaxStreak: typeof getBattleMaxStreak === 'function' ? getBattleMaxStreak() : 0,
+                dailyBattleMaxMatches: typeof getDailyBattleMaxMatches === 'function' ? getDailyBattleMaxMatches() : 0,
                 equippedSkin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
                 unlockedSkins: typeof getUnlockedSkins === 'function' ? getUnlockedSkins() : ['classic'],
                 country: userCountry,
@@ -6640,6 +6703,7 @@
                     },
                     battleRating: Math.max(600, Number(current.battleRating) || payload.battleRating),
                     battleMaxStreak: Math.max(Number(current.battleMaxStreak) || 0, payload.battleMaxStreak),
+                    dailyBattleMaxMatches: Math.max(Number(current.dailyBattleMaxMatches) || 0, payload.dailyBattleMaxMatches),
                     equippedSkin: current.equippedSkin || payload.equippedSkin,
                     unlockedSkins: mergedUnlockedSkins,
                     country: payload.country || current.country || 'KR',
@@ -6694,6 +6758,13 @@
                 try {
                     const localMax = getBattleMaxStreak();
                     if (ms > localMax) localStorage.setItem(BATTLE_MAX_STREAK_KEY, String(ms));
+                } catch (e) {}
+            }
+            if (remoteData.dailyBattleMaxMatches !== undefined) {
+                const dbm = Math.max(0, parseInt(remoteData.dailyBattleMaxMatches, 10) || 0);
+                try {
+                    const localDbm = typeof getDailyBattleMaxMatches === 'function' ? getDailyBattleMaxMatches() : 0;
+                    if (dbm > localDbm) localStorage.setItem(DAILY_BATTLE_MAX_COUNT_KEY, String(dbm));
                 } catch (e) {}
             }
             if (Array.isArray(remoteData.unlockedSkins)) {
@@ -7636,7 +7707,45 @@
             };
         }
 
-        // ── 6종 캔버스 볼 궤적 & 피처 오라 스킨 카탈로그 ──
+        const DAILY_BATTLE_PLAY_DATE_KEY = 'infinitePitcherDailyBattlePlayDate_v1';
+        const DAILY_BATTLE_PLAY_COUNT_KEY = 'infinitePitcherDailyBattlePlayCount_v1';
+        const DAILY_BATTLE_MAX_COUNT_KEY = 'infinitePitcherDailyBattleMaxCount_v1';
+
+        function getDailyBattleMatches() {
+            try {
+                const today = getUtcDateKey();
+                const savedDate = localStorage.getItem(DAILY_BATTLE_PLAY_DATE_KEY) || '';
+                if (savedDate !== today) return 0;
+                return Math.max(0, parseInt(localStorage.getItem(DAILY_BATTLE_PLAY_COUNT_KEY), 10) || 0);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function getDailyBattleMaxMatches() {
+            try {
+                return Math.max(0, parseInt(localStorage.getItem(DAILY_BATTLE_MAX_COUNT_KEY), 10) || 0);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function recordDailyBattlePlay() {
+            try {
+                const today = getUtcDateKey();
+                const savedDate = localStorage.getItem(DAILY_BATTLE_PLAY_DATE_KEY) || '';
+                let current = (savedDate === today) ? Math.max(0, parseInt(localStorage.getItem(DAILY_BATTLE_PLAY_COUNT_KEY), 10) || 0) : 0;
+                current += 1;
+                localStorage.setItem(DAILY_BATTLE_PLAY_DATE_KEY, today);
+                localStorage.setItem(DAILY_BATTLE_PLAY_COUNT_KEY, String(current));
+                const prevMax = getDailyBattleMaxMatches();
+                if (current > prevMax) {
+                    localStorage.setItem(DAILY_BATTLE_MAX_COUNT_KEY, String(current));
+                }
+            } catch (e) {}
+        }
+
+        // ── 7종 캔버스 볼 궤적 & 피처 오라 스킨 카탈로그 ──
         const SKINS_CATALOG = [
             {
                 id: 'classic',
@@ -7648,43 +7757,51 @@
             },
             {
                 id: 'flame',
-                name: { ko: '골든 플레임', ja: 'ゴールデンフレーム', en: 'Golden Flame' },
+                name: { ko: '골든 프레임', ja: 'ゴールデンフレーム', en: 'Golden Flame' },
                 icon: '🔥',
-                desc: { ko: '타오르는 골든 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura' },
-                condition: { ko: '8인 배틀 10판 플레이', ja: '8人バトル10回プレイ', en: 'Play 10 Battle matches' },
-                checkUnlock: (stats) => stats.matches >= 10
+                desc: { ko: '타오르는 황금 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura' },
+                condition: { ko: '하루에 배틀 100판 플레이 달성', ja: '1日にバトル100回プレイ達成', en: 'Play 100 Battles in a single day' },
+                checkUnlock: (stats, bestScore, maxStreak, rating, dailyMax) => (dailyMax || getDailyBattleMaxMatches()) >= 100
             },
             {
                 id: 'spark',
                 name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark' },
                 icon: '⚡',
                 desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura' },
-                condition: { ko: '8인 배틀 5승 달성', ja: '8人バトル5勝達成', en: 'Win 5 Battle matches' },
-                checkUnlock: (stats) => stats.wins >= 5
+                condition: { ko: '8인 배틀 100승 달성', ja: '8人バトル100勝達成', en: 'Win 100 Battle matches' },
+                checkUnlock: (stats) => stats.wins >= 100
             },
             {
                 id: 'sakura',
                 name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom' },
                 icon: '🌸',
                 desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura' },
-                condition: { ko: '개인 최고 기록 100점 돌파', ja: '個人最高スコア100点突破', en: 'Reach 100+ pts in Solo mode' },
-                checkUnlock: (stats, bestScore) => bestScore >= 100
+                condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode' },
+                checkUnlock: (stats, bestScore) => bestScore >= 200
             },
             {
                 id: 'rainbow',
                 name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow' },
                 icon: '🌈',
                 desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura' },
-                condition: { ko: '8인 배틀 3연승 달성', ja: '8人バトル3連勝達成', en: 'Achieve 3 Win Streak in Battle' },
-                checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 3
+                condition: { ko: '8인 배틀 5연승 달성', ja: '8人バトル5連勝達成', en: 'Achieve 5 Win Streak in Battle' },
+                checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 5
+            },
+            {
+                id: 'double_rainbow',
+                name: { ko: '더블 레인보우', ja: 'ダブルレインボー', en: 'Double Rainbow' },
+                icon: '🌌',
+                desc: { ko: '찬란한 쌍무지개 빛 잔상 + 은하수 네온 오라', ja: '輝く二重虹の残像＋天の川ネオンオーラ', en: 'Double rainbow trail & galaxy aura' },
+                condition: { ko: '8인 배틀 10연승 달성', ja: '8人バトル10連勝達成', en: 'Achieve 10 Win Streak in Battle' },
+                checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 10
             },
             {
                 id: 'prism',
                 name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism' },
                 icon: '💎',
-                desc: { ko: '다이아몬드 광채 프리즘 이펙트', ja: 'ダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura' },
-                condition: { ko: '마스터 리그(1,200 PT) 진입 달성', ja: 'マスターリーグ(1,200 PT)突入達成', en: 'Reach Master League (1,200+ PT)' },
-                checkUnlock: (stats, bestScore, maxStreak, rating) => rating > MASTER_LEAGUE_THRESHOLD
+                desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura' },
+                condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League' },
+                checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 1500
             }
         ];
 
@@ -7740,10 +7857,11 @@
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
             const maxStreak = getBattleMaxStreak();
             const rating = getBattleRating();
+            const dailyMax = typeof getDailyBattleMaxMatches === 'function' ? getDailyBattleMaxMatches() : 0;
             const newlyUnlocked = [];
 
             SKINS_CATALOG.forEach(skin => {
-                if (skin.checkUnlock(stats, bestScore, maxStreak, rating)) {
+                if (skin.checkUnlock(stats, bestScore, maxStreak, rating, dailyMax)) {
                     if (unlockSkin(skin.id)) {
                         newlyUnlocked.push(skin);
                     }
@@ -8008,9 +8126,11 @@
         function recordBattleMatchPlayed() {
             if (battleMatchCounted) return;
             battleMatchCounted = true;
+            if (typeof recordDailyBattlePlay === 'function') recordDailyBattlePlay();
             const stats = getBattleStats();
             stats.matches += 1;
             saveBattleStats(stats);
+            if (typeof checkSkinUnlocks === 'function') checkSkinUnlocks();
         }
 
         function recordBattleWin() {
@@ -8020,6 +8140,7 @@
             stats.wins += 1;
             if (stats.wins > stats.matches) stats.matches = stats.wins;
             saveBattleStats(stats);
+            if (typeof checkSkinUnlocks === 'function') checkSkinUnlocks();
         }
 
         function updateBattleStatsUI() {
@@ -8456,6 +8577,7 @@
                     rating: myRating,
                     league: myLeague,
                     streak: myStreak,
+                    skin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
                     isHost: false,
                     isBot: false,
                     joinedAt
@@ -8513,6 +8635,7 @@
                 rating: myRating,
                 league: myLeague,
                 streak: myStreak,
+                skin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
                 isHost: true,
                 isBot: false,
                 joinedAt: now
@@ -8618,6 +8741,21 @@
                 const luckyBonus = Math.random() < 0.12 ? Math.floor(Math.random() * (isMaster ? 25 : 12)) : 0;
                 const targetScore = Math.max(floorScore, Math.round(botTemplate.baseTarget - randSkew * (botTemplate.baseTarget - floorScore) + luckyBonus));
 
+                let botSkin = 'classic';
+                if (botTemplate.rating >= 1500 && Math.random() < 0.65) {
+                    botSkin = 'prism';
+                } else if (botTemplate.streak >= 10 || (isMaster && Math.random() < 0.08)) {
+                    botSkin = 'double_rainbow';
+                } else if (botTemplate.streak >= 5 || (isMaster && Math.random() < 0.2)) {
+                    botSkin = 'rainbow';
+                } else if (botTemplate.wins >= 100) {
+                    botSkin = 'spark';
+                } else if (botTemplate.matches >= 100 && Math.random() < 0.3) {
+                    botSkin = 'flame';
+                } else if (Math.random() < 0.15) {
+                    botSkin = 'sakura';
+                }
+
                 picked.push({
                     id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + picked.length,
                     name: botTemplate.name,
@@ -8626,6 +8764,7 @@
                     wins: botTemplate.wins,
                     streak: botTemplate.streak,
                     league: activeLeague,
+                    skin: botSkin,
                     targetScore
                 });
             }
@@ -9313,6 +9452,12 @@
             battleRef.child(roomId).on('value', battleListener);
         }
 
+        function getSkinIcon(skinId) {
+            if (!skinId || skinId === 'classic') return '';
+            const s = (typeof SKINS_CATALOG !== 'undefined') ? SKINS_CATALOG.find(x => x.id === skinId) : null;
+            return s ? s.icon : '';
+        }
+
         function formatPlayerRecordBadge(player) {
             const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
             const leagueBadge = rating > MASTER_LEAGUE_THRESHOLD ? '👑' : '🥈';
@@ -9320,7 +9465,10 @@
             const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
             const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
             const streakText = streak >= 2 ? ` 🔥${streak}` : '';
-            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}`;
+            const skinId = (player && player.skin) ? player.skin : ((player && player.id === battlePlayerId && typeof getEquippedSkin === 'function') ? getEquippedSkin() : 'classic');
+            const skinIcon = getSkinIcon(skinId);
+            const skinBadge = skinIcon ? ` ${skinIcon}` : '';
+            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}${skinBadge}`;
         }
 
         function renderBattleLobby(room) {
