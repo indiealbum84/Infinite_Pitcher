@@ -3479,12 +3479,12 @@
             </div>
         </div>
 
-        <!-- 메인화면 스킨 선택 모달 -->
+        <!-- 메인화면 컬렉션 모달 -->
         <div id="skin-modal" class="hidden" onclick="if(event.target===this) closeSkinModal()">
             <div class="skin-modal-inner">
                 <button type="button" class="settings-close-x" onclick="closeSkinModal()">✕</button>
-                <h3 id="skin-modal-title" class="settings-modal-title">🎨 볼 & 피처 스킨</h3>
-                <p class="skin-modal-subtitle" id="skin-modal-subtitle">업적을 달성하여 특별한 궤적과 오라를 획득하세요!</p>
+                <h3 id="skin-modal-title" class="settings-modal-title">🏆 컬렉션</h3>
+                <p class="skin-modal-subtitle" id="skin-modal-subtitle">업적을 달성하여 특별한 볼과 피처 컬렉션을 획득하세요!</p>
                 <div class="skin-grid" id="skin-grid"></div>
             </div>
         </div>
@@ -4121,8 +4121,8 @@
                 leagueMaster: 'マスターリーグ',
                 leagueStandardDesc: '1,200 PT以下',
                 leagueMasterDesc: '1,200 PT超過',
-                skinModalTitle: '🎨 ボール＆ピッチャースキン',
-                skinModalSubtitle: '実績を達成して特別な軌跡とオーラを獲得しよう！',
+                skinModalTitle: '🏆 コレクション',
+                skinModalSubtitle: '実績を達成して特別なボールとピッチャーのコレクションを獲得しよう！',
                 skinEquipped: '装着中',
                 skinEquip: '装着する',
                 skinLocked: '未達成',
@@ -4247,8 +4247,8 @@
                 leagueMaster: 'Master League',
                 leagueStandardDesc: '1,200 PT & Under',
                 leagueMasterDesc: 'Over 1,200 PT',
-                skinModalTitle: '🎨 Ball & Pitcher Skins',
-                skinModalSubtitle: 'Complete achievements to unlock special trails and auras!',
+                skinModalTitle: '🏆 Collection',
+                skinModalSubtitle: 'Complete achievements to unlock special ball & pitcher collections!',
                 skinEquipped: 'EQUIPPED',
                 skinEquip: 'EQUIP',
                 skinLocked: 'LOCKED',
@@ -4373,8 +4373,8 @@
                 leagueMaster: '마스터 리그',
                 leagueStandardDesc: '1,200 PT 이하',
                 leagueMasterDesc: '1,200 PT 초과',
-                skinModalTitle: '🎨 볼 & 피처 스킨',
-                skinModalSubtitle: '업적을 달성하여 특별한 궤적과 오라를 획득하세요!',
+                skinModalTitle: '🏆 컬렉션',
+                skinModalSubtitle: '업적을 달성하여 특별한 볼과 피처 컬렉션을 획득하세요!',
                 skinEquipped: '장착중',
                 skinEquip: '장착하기',
                 skinLocked: '잠김',
@@ -4447,12 +4447,19 @@
             setTxt('initial-google-btn', t.initialGoogleBtn);
             setTxt('initial-apple-btn', t.initialAppleBtn);
 
-            // Settings Modal Texts
+            // Settings & Collection Modal Texts
             setTxt('settings-modal-title', t.settingsTitle);
             setTxt('settings-lang-label', t.settingsLang);
             setTxt('settings-bgm-label', t.settingsBgm);
             setTxt('settings-sfx-label', t.settingsSfx);
             setTxt('settings-close-btn', t.settingsClose);
+            setTxt('skin-modal-title', t.skinModalTitle);
+            setTxt('skin-modal-subtitle', t.skinModalSubtitle);
+            const introSkinBtn = document.getElementById('intro-skin-btn');
+            if (introSkinBtn) {
+                introSkinBtn.title = t.skinModalTitle || '컬렉션';
+                introSkinBtn.setAttribute('aria-label', t.skinModalTitle || '컬렉션');
+            }
 
             if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
@@ -6986,6 +6993,15 @@
             updateIntroProfilePillUI();
         }
 
+        function getEquippedSkinIcon(skinId) {
+            const id = skinId || (typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
+            if (typeof SKINS_CATALOG !== 'undefined') {
+                const s = SKINS_CATALOG.find(x => x.id === id);
+                if (s && s.icon) return s.icon;
+            }
+            return '⚾';
+        }
+
         function updateIntroProfilePillUI() {
             const pill = document.getElementById('intro-profile-pill');
             const battleCard = document.getElementById('battle-my-profile-card');
@@ -7004,8 +7020,7 @@
             const streak = typeof getBattleStreak === 'function' ? getBattleStreak() : 0;
             const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streak}연승</span>` : '';
             const skinId = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
-            const skinIcon = typeof getSkinIcon === 'function' ? getSkinIcon(skinId) : '';
-            const skinBadge = skinIcon ? `<span class="ipp-skin-badge" title="장착 스킨">${skinIcon}</span>` : '';
+            const skinIcon = getEquippedSkinIcon(skinId);
             const synced = isCloudAccountLinked();
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
             const safeName = typeof escapeBattleText === 'function' ? escapeBattleText(savedName) : savedName;
@@ -7018,9 +7033,8 @@
             const cardMarkup = `
                 <div class="ipp-left">
                     <div class="ipp-name-row">
-                        <span class="ipp-user-icon">👤</span>
+                        <span class="ipp-user-icon" title="컬렉션">${skinIcon}</span>
                         <span class="ipp-player-name">${safeName}</span>
-                        ${skinBadge}
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
                     </div>
                     <div class="ipp-sub-row">
@@ -8323,6 +8337,7 @@
                 playSfx('hit', 1.0);
                 triggerHaptic('medium');
                 renderSkinGrid();
+                if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             }
         }
 
@@ -10105,7 +10120,7 @@
                 const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
                 const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
                 const skinId = (player && player.skin) ? player.skin : (isMe && typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
-                const skinIcon = (typeof getSkinIcon === 'function') ? getSkinIcon(skinId) : '';
+                const skinIcon = (typeof getEquippedSkinIcon === 'function') ? getEquippedSkinIcon(skinId) : '⚾';
 
                 return `<div class="battle-player-pill${meClass}${leagueClass}">
                     <div class="bpp-header">
@@ -10114,7 +10129,7 @@
                             <span class="bpp-name" title="${label}">${label}</span>
                         </div>
                         <div class="bpp-badges">
-                            ${skinIcon ? `<span class="bpp-skin-icon" title="Equipped Skin">${skinIcon}</span>` : ''}
+                            <span class="bpp-skin-icon" title="컬렉션">${skinIcon}</span>
                             ${isMe ? `<span class="bpp-me-badge">ME</span>` : ''}
                         </div>
                     </div>
