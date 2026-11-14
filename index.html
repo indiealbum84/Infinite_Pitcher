@@ -1647,6 +1647,85 @@
             cursor: pointer;
         }
 
+        .settings-account-section {
+            gap: 10px;
+        }
+
+        .settings-account-badge {
+            font-size: 13px;
+            font-weight: 900;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            padding: 2px 8px;
+            box-shadow: 0 2px 0 #000000;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .settings-account-badge.linked {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #166534;
+        }
+
+        .settings-account-desc {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .settings-account-actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .settings-account-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 8px;
+            border: 2.5px solid #000000;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            touch-action: auto !important;
+            font-family: inherit;
+            box-shadow: 0 3px 0 #000000;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .settings-account-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #000000;
+        }
+
+        .settings-account-btn.google {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        .settings-account-btn.apple {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .settings-account-btn.sync {
+            background: var(--palette-blue);
+            color: #ffffff;
+        }
+
+        .settings-account-btn.switch {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
         .settings-confirm-btn {
             width: 100%;
             margin-top: 4px;
@@ -2009,6 +2088,36 @@
             height: 48px;
             border-width: 4px;
             box-shadow: 0 5px 0 var(--palette-pink);
+        }
+
+        .settings-account-badge {
+            font-size: 24px;
+            border-width: 3.5px;
+            border-radius: 14px;
+            padding: 4px 14px;
+            box-shadow: 0 3px 0 #000000;
+        }
+
+        .settings-account-desc {
+            font-size: 22px;
+            line-height: 1.4;
+        }
+
+        .settings-account-actions {
+            gap: 14px;
+        }
+
+        .settings-account-btn {
+            padding: 16px 12px;
+            border-width: 4px;
+            border-radius: 20px;
+            font-size: 24px;
+            box-shadow: 0 5px 0 #000000;
+        }
+
+        .settings-account-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #000000;
         }
 
         .settings-confirm-btn {
@@ -3475,6 +3584,19 @@
                     </div>
                 </div>
 
+                <!-- 4. 로그인 / 계정 연동 -->
+                <div class="settings-section settings-account-section">
+                    <div class="settings-row">
+                        <span class="settings-label" id="settings-account-label">☁️ 로그인 / 계정 연동</span>
+                        <span class="settings-account-badge" id="settings-account-status-badge">미연동</span>
+                    </div>
+                    <p class="settings-account-desc" id="settings-account-desc">Google 또는 Apple ID로 로그인하면 기기 변경이나 재설치 시에도 데이터가 안전하게 보관됩니다.</p>
+                    <div class="settings-account-actions" id="settings-account-actions">
+                        <button type="button" class="settings-account-btn google" id="settings-google-btn" onclick="handleSettingsAccountSync('google')">🌐 Google 로그인</button>
+                        <button type="button" class="settings-account-btn apple" id="settings-apple-btn" onclick="handleSettingsAccountSync('apple')">🍎 Apple 로그인</button>
+                    </div>
+                </div>
+
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
         </div>
@@ -4116,6 +4238,7 @@
                 settingsLang: '言語',
                 settingsBgm: 'BGM 音量',
                 settingsSfx: '効果音 (SFX)',
+                settingsAccountLabel: '☁️ ログイン・アカウント連携',
                 settingsClose: '閉じる',
                 leagueStandard: '一般リーグ',
                 leagueMaster: 'マスターリーグ',
@@ -4242,6 +4365,7 @@
                 settingsLang: 'Language',
                 settingsBgm: 'BGM Volume',
                 settingsSfx: 'SFX Volume',
+                settingsAccountLabel: '☁️ Login & Account Link',
                 settingsClose: 'Close',
                 leagueStandard: 'Standard League',
                 leagueMaster: 'Master League',
@@ -4368,6 +4492,7 @@
                 settingsLang: '언어',
                 settingsBgm: '배경음악 (BGM)',
                 settingsSfx: '효과음 (SFX)',
+                settingsAccountLabel: '☁️ 로그인 / 계정 연동',
                 settingsClose: '확인',
                 leagueStandard: '일반 리그',
                 leagueMaster: '마스터 리그',
@@ -4452,6 +4577,7 @@
             setTxt('settings-lang-label', t.settingsLang);
             setTxt('settings-bgm-label', t.settingsBgm);
             setTxt('settings-sfx-label', t.settingsSfx);
+            setTxt('settings-account-label', t.settingsAccountLabel);
             setTxt('settings-close-btn', t.settingsClose);
             setTxt('skin-modal-title', t.skinModalTitle);
             setTxt('skin-modal-subtitle', t.skinModalSubtitle);
@@ -4545,6 +4671,82 @@
             const sfxValEl = document.getElementById('settings-sfx-val');
             if (sfxSlider && parseInt(sfxSlider.value, 10) !== sfxPercent) sfxSlider.value = sfxPercent;
             if (sfxValEl) sfxValEl.innerText = `${sfxPercent}%`;
+
+            const isLinked = typeof isCloudAccountLinked === 'function' ? isCloudAccountLinked() : false;
+            const badgeEl = document.getElementById('settings-account-status-badge');
+            const descEl = document.getElementById('settings-account-desc');
+            const actionsEl = document.getElementById('settings-account-actions');
+            const lang = currentLang || 'ko';
+            if (badgeEl && descEl && actionsEl) {
+                if (isLinked) {
+                    let prov = 'Cloud';
+                    try { prov = localStorage.getItem(ACCOUNT_PROVIDER_STORAGE) || 'Cloud'; } catch(e){}
+                    const provLabel = prov === 'apple' ? 'Apple ID' : (prov === 'google' ? 'Google' : 'Cloud');
+                    badgeEl.className = 'settings-account-badge linked';
+                    badgeEl.innerText = lang === 'ko' ? `☁️ ${provLabel} 연동됨` : (lang === 'ja' ? `☁️ ${provLabel} 連携済` : `☁️ ${provLabel} Linked`);
+                    descEl.innerText = lang === 'ko'
+                        ? '현재 계정과 안전하게 연동되어 있습니다. (이름, 점수, 컬렉션, 구매 내역 자동 백업 중)'
+                        : (lang === 'ja'
+                            ? '現在のアカウントと連携されています。（記録・コレクション・購入情報を自動バックアップ中）'
+                            : 'Safely linked with your cloud account. (Auto-backup enabled for records, collections & purchases)');
+                    actionsEl.innerHTML = `
+                        <button type="button" class="settings-account-btn sync" onclick="handleSettingsCloudSyncNow()">☁️ ${lang === 'ko' ? '지금 동기화' : (lang === 'ja' ? '今すぐ同期' : 'Sync Now')}</button>
+                        <button type="button" class="settings-account-btn switch" onclick="handleSettingsSwitchAccount()">🔄 ${lang === 'ko' ? '계정 변경/복원' : (lang === 'ja' ? 'アカウント切替' : 'Switch Account')}</button>
+                    `;
+                } else {
+                    badgeEl.className = 'settings-account-badge';
+                    badgeEl.innerText = lang === 'ko' ? '⚠️ 미연동' : (lang === 'ja' ? '⚠️ 未連携' : '⚠️ Unlinked');
+                    descEl.innerText = lang === 'ko'
+                        ? 'Google 또는 Apple ID로 로그인하면 기기를 변경하거나 앱을 재설치해도 데이터가 그대로 보존됩니다.'
+                        : (lang === 'ja'
+                            ? 'Google または Apple IDで連携すると、機種変更や再インストール時もデータが復元されます。'
+                            : 'Link your Google or Apple ID to safely restore your data when switching devices or reinstalling.');
+                    actionsEl.innerHTML = `
+                        <button type="button" class="settings-account-btn google" onclick="handleSettingsAccountSync('google')">🌐 ${lang === 'en' ? 'Sign in with Google' : 'Google 로그인'}</button>
+                        <button type="button" class="settings-account-btn apple" onclick="handleSettingsAccountSync('apple')">🍎 ${lang === 'en' ? 'Sign in with Apple' : 'Apple 로그인'}</button>
+                    `;
+                }
+            }
+        }
+
+        function handleSettingsAccountSync(provider) {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            if (typeof signInAndSyncAccount === 'function') {
+                signInAndSyncAccount(provider);
+            }
+            setTimeout(() => {
+                updateSettingsUI();
+                if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            }, 600);
+        }
+
+        function handleSettingsCloudSyncNow() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            if (typeof syncProfileToCloud === 'function') {
+                syncProfileToCloud().then(ok => {
+                    const savedName = getSavedPlayerName();
+                    const alertFn = textFor('accountLinkedNewAlert');
+                    if (typeof alertFn === 'function') alert(alertFn(savedName));
+                    else alert('☁️ 클라우드 동기화가 완료되었습니다!');
+                    updateSettingsUI();
+                    if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+                });
+            }
+        }
+
+        function handleSettingsSwitchAccount() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            const isIOS = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent || '');
+            if (typeof signInAndSyncAccount === 'function') {
+                signInAndSyncAccount(isIOS ? 'apple' : 'google');
+            }
+            setTimeout(() => {
+                updateSettingsUI();
+                if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            }, 600);
         }
 
         let splashDismissed = false;
@@ -7481,6 +7683,8 @@
                     if (typeof alertFn === 'function') {
                         alert(alertFn(remoteProfile.name, restoredBest));
                     }
+                    if (typeof updateSettingsUI === 'function') updateSettingsUI();
+                    if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                     return true;
                 } else {
                     // 서버에 아직 기록이 없는 계정:
@@ -7492,15 +7696,21 @@
                             if (getPersonalBestScore() > 0) {
                                 saveBestScoreToServer(localName, getPersonalBestScore(), true);
                             }
+                            if (typeof updateSettingsUI === 'function') updateSettingsUI();
+                            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                         });
                         const linkedFn = textFor('accountLinkedNewAlert');
                         if (typeof linkedFn === 'function') {
                             alert(linkedFn(localName));
                         }
+                        if (typeof updateSettingsUI === 'function') updateSettingsUI();
+                        if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                         return true;
                     } else {
                         // 아직 이름도 만들기 전이면 이 계정 키를 먼저 세팅하고 이름 생성 유도
                         setAccountKey(cloudKey, providerType, trimmedId);
+                        if (typeof updateSettingsUI === 'function') updateSettingsUI();
+                        if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                         if (!silentIfNone) {
                             alert(textFor('accountRestoreNotFoundAlert'));
                         }
