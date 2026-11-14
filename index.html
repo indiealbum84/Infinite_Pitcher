@@ -94,7 +94,6 @@
             overflow: hidden;
             border: 1px solid #e2e8f0;
             transform-origin: center center;
-            will-change: transform;
         }
 
         /* --- Screens --- */
@@ -1216,8 +1215,16 @@
 
         /* 대전 결과 화면 */
         #battle-result-screen {
+            background: #d8f3fe;
             background: linear-gradient(180deg, #b9ecff 0%, #d8f3fe 60%, #c4eec4 100%);
             z-index: 100;
+            transition: none !important;
+            overflow-y: auto;
+        }
+
+        #battle-result-screen > * {
+            position: relative;
+            z-index: 2;
         }
 
         .battle-result-title {
@@ -2825,27 +2832,31 @@
         }
 
         .battle-result-title {
-            font-size: 199px;
-            text-shadow: 11px 11px 0 #ffffff, 19px 19px 0 #000000;
+            font-size: 164px;
+            text-shadow: 10px 10px 0 #ffffff, 18px 18px 0 #000000;
+            position: relative;
+            z-index: 2;
         }
 
         .battle-scores {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 22px;
-            margin: 39px 0;
+            gap: 20px;
+            margin: 24px 0;
             max-width: 942px;
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         .battle-score-card {
             position: relative;
             border-width: 6px;
             border-radius: 22px;
-            padding: 18px 12px;
+            padding: 16px 12px;
             width: 280px;
-            height: 250px;
+            height: 226px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -2853,8 +2864,6 @@
             align-items: center;
             box-shadow: 0 11px 0 var(--palette-blue);
             overflow: hidden;
-            transform: translateZ(0);
-            backface-visibility: hidden;
         }
 
         .battle-stamp-badge {
@@ -2864,39 +2873,27 @@
             transform: translate(-50%, -50%) rotate(-12deg);
             border: 6px solid #e11d48;
             color: #e11d48;
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(255, 255, 255, 0.96);
             padding: 8px 18px;
             font-size: 44px;
             font-weight: 900;
             font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', cursive;
             border-radius: 16px;
             letter-spacing: 2px;
-            box-shadow: 0 0 0 4px #ffffff, 0 10px 24px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 0 0 4px #ffffff, 0 6px 14px rgba(0, 0, 0, 0.22);
             pointer-events: none;
             z-index: 10;
             text-shadow: 1px 1px 0 #ffffff;
-            animation: stampPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             white-space: nowrap;
         }
 
         .battle-stamp-badge.champion {
             border-color: #d97706;
             color: #b45309;
-            background: rgba(254, 243, 199, 0.96);
-            box-shadow: 0 0 0 4px #ffffff, 0 10px 28px rgba(245, 158, 11, 0.45);
-            transform: translate(-50%, -50%) rotate(0deg) scale(1.06);
+            background: rgba(254, 243, 199, 0.98);
+            box-shadow: 0 0 0 4px #ffffff, 0 6px 16px rgba(245, 158, 11, 0.35);
+            transform: translate(-50%, -50%) rotate(0deg) scale(1.04);
             font-size: 38px;
-        }
-
-        @keyframes stampPop {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) rotate(-25deg) scale(2.2);
-            }
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) rotate(-12deg) scale(1);
-            }
         }
 
         .battle-score-card.me {
@@ -10772,6 +10769,12 @@
             }
             const canvasEl = document.getElementById('canvas');
             if (firstResultRender) {
+                const uiLayerEl = document.getElementById('ui-layer');
+                if (uiLayerEl) uiLayerEl.classList.add('hidden');
+                const vigEl = document.getElementById('battle-final-vignette');
+                if (vigEl) vigEl.classList.remove('active');
+                const bannerEl = document.getElementById('battle-phase-banner');
+                if (bannerEl) bannerEl.classList.remove('active');
                 if (canvasEl) {
                     canvasEl.style.display = 'none';
                     canvasEl.style.visibility = 'visible';
