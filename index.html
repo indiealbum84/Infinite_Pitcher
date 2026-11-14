@@ -3179,17 +3179,12 @@
             border: 6px solid #000000;
             border-radius: 36px;
             box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
-            cursor: pointer;
+            cursor: default;
+            user-select: none;
+            -webkit-user-select: none;
             touch-action: auto !important;
             font-family: inherit;
             box-sizing: border-box;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        .intro-profile-pill:active,
-        .battle-my-profile-card:active {
-            transform: translateY(7px);
-            box-shadow: 0 7px 0 var(--palette-blue), 0 7px 0 5px #000000;
         }
 
         .intro-profile-pill {
@@ -3420,7 +3415,7 @@
                 よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
             </div>
             <div class="intro-menu">
-                <button type="button" id="intro-profile-pill" class="intro-profile-pill" onclick="promptAccountSyncFromIntro()">👤 -  |  🏆 BEST: 0</button>
+                <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
                 <div class="intro-main-actions">
                     <button id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">⚡ 세계 8인 배틀</button>
                     <div class="intro-sub-actions">
@@ -3569,8 +3564,8 @@
                 <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
             </div>
 
-            <!-- 메인화면과 동일한 대형 내 프로필 & 배틀 레이팅 카드 (980px 너비) -->
-            <button type="button" id="battle-my-profile-card" class="battle-my-profile-card" onclick="promptAccountSyncFromIntro()" title="내 프로필 및 클라우드 연동"></button>
+            <!-- 메인화면과 동일한 대형 내 프로필 & 배틀 레이팅 카드 (808px 너비) -->
+            <div id="battle-my-profile-card" class="battle-my-profile-card"></div>
 
             <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
             <div id="battle-quick-section">
