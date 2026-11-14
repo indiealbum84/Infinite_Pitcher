@@ -6433,6 +6433,7 @@
             try {
                 localStorage.setItem(PERSONAL_BEST_SCORE_KEY, String(nextBest));
             } catch (e) {}
+            if (typeof checkSkinUnlocks === 'function') checkSkinUnlocks();
             return nextBest;
         }
 
@@ -9404,7 +9405,9 @@
 
             if (hud.children.length !== count) {
                 hud.innerHTML = players.map((player, index) => {
-                    const numLabel = `${index + 1}P`;
+                    const streakVal = Number(player.streak) || 0;
+                    const streakBadge = streakVal >= 2 ? ` 🔥${streakVal}` : '';
+                    const numLabel = `${index + 1}P${streakBadge}`;
                     const scoreText = Number(player.score || 0);
                     const isMe = player.id === battlePlayerId;
                     const meClass = isMe ? ' me' : '';
@@ -9418,6 +9421,13 @@
                 players.forEach((player, index) => {
                     const box = hud.children[index];
                     if (!box) return;
+                    const streakVal = Number(player.streak) || 0;
+                    const streakBadge = streakVal >= 2 ? ` 🔥${streakVal}` : '';
+                    const numLabel = `${index + 1}P${streakBadge}`;
+                    const numEl = box.querySelector('.bhb-num');
+                    if (numEl && numEl.textContent !== numLabel) {
+                        numEl.textContent = numLabel;
+                    }
                     const scoreEl = box.querySelector('.bhb-score');
                     const scoreText = String(Number(player.score || 0));
                     if (scoreEl && scoreEl.textContent !== scoreText) {
