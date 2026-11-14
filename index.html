@@ -2337,7 +2337,7 @@
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            width: 775px;
+            width: 980px;
             background: rgba(255, 255, 255, 0.82);
             border: 6px solid #000000;
             border-radius: 36px;
@@ -2347,7 +2347,7 @@
         }
 
         #battle-quick-btn {
-            width: 660px !important;
+            width: 860px !important;
             padding: 22px 36px !important;
             font-size: 46px !important;
             background: linear-gradient(180deg, #ff6b9d 0%, #ff3d77 100%) !important;
@@ -2369,12 +2369,8 @@
             text-align: center;
         }
 
-        .battle-profile-panel,
-        .battle-player-list {
-            width: 775px;
-        }
-
         .battle-profile-panel {
+            width: 775px;
             gap: 14px;
         }
 
@@ -2408,6 +2404,7 @@
             flex-direction: column;
             align-items: center;
             gap: 14px !important;
+            width: 100%;
         }
 
         .battle-code-box {
@@ -2425,40 +2422,201 @@
         }
 
         .battle-player-list {
-            gap: 14px;
-            margin: -4px 0 4px;
+            width: 980px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin: 4px 0 12px;
+            box-sizing: border-box;
         }
 
         .battle-player-pill {
-            border-width: 6px;
-            border-radius: 30px;
-            font-size: 30px;
-            padding: 12px 18px;
-            box-shadow: 0 6px 0 var(--palette-blue);
+            min-height: 154px;
+            padding: 16px 20px;
+            border: 6px solid #000000;
+            border-radius: 28px;
+            background: #ffffff;
+            box-shadow: 0 10px 0 var(--palette-blue), 0 10px 0 4px #000000;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            text-align: left;
+            position: relative;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .battle-player-pill.me {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef08a 45%, #fde047 100%);
+            box-shadow: 0 10px 0 var(--palette-pink), 0 10px 0 5px #000000;
+        }
+
+        .battle-player-pill.empty {
+            background: rgba(255, 255, 255, 0.45);
+            border: 5px dashed #94a3b8;
+            box-shadow: none;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            line-height: 1.15;
+            min-height: 154px;
+        }
+
+        .battle-player-pill .bpp-empty-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .battle-player-pill .bpp-empty-slot {
+            background: #94a3b8;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 12px;
+            line-height: 1;
+        }
+
+        .battle-player-pill .bpp-empty-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: #64748b;
+            animation: blink 1.5s infinite;
+        }
+
+        .battle-player-pill .bpp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .battle-player-pill .bpp-identity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 78%;
+        }
+
+        .battle-player-pill .bpp-slot {
+            background: var(--palette-blue);
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 2px solid #000000;
+            line-height: 1.1;
+            flex-shrink: 0;
+        }
+
+        .battle-player-pill.me .bpp-slot {
+            background: #0f172a;
+            color: var(--palette-yellow);
         }
 
         .battle-player-pill .bpp-name {
-            font-size: 30px;
+            font-size: 32px;
             font-weight: 900;
-            max-width: 100%;
+            color: #0f172a;
+            max-width: 250px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .battle-player-pill .bpp-record {
+        .battle-player-pill .bpp-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .battle-player-pill .bpp-skin-icon {
+            font-size: 32px;
+            line-height: 1;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+        }
+
+        .battle-player-pill .bpp-me-badge {
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 900;
+            padding: 2px 10px;
+            border-radius: 999px;
+            border: 2px solid #000000;
+            line-height: 1.1;
+        }
+
+        .battle-player-pill .bpp-score-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 0 6px;
+        }
+
+        .battle-player-pill .bpp-league-icon {
+            font-size: 36px;
+            line-height: 1;
+        }
+
+        .battle-player-pill .bpp-score-val {
+            font-size: 50px;
+            font-weight: 900;
+            color: #0369a1;
+            letter-spacing: -1px;
+            line-height: 1;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.08);
+        }
+
+        .battle-player-pill.master .bpp-score-val {
+            color: #b45309;
+        }
+
+        .battle-player-pill.me .bpp-score-val {
+            color: #000000;
+        }
+
+        .battle-player-pill .bpp-score-unit {
+            font-size: 24px;
+            font-weight: 900;
+            color: #64748b;
+        }
+
+        .battle-player-pill.me .bpp-score-unit {
+            color: #475569;
+        }
+
+        .battle-player-pill .bpp-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .battle-player-pill .bpp-stat-tag {
             font-size: 22px;
             font-weight: 800;
             color: #334155;
             background: rgba(15, 23, 42, 0.08);
+            padding: 3px 12px;
             border-radius: 999px;
-            padding: 2px 12px;
+            line-height: 1.1;
+        }
+
+        .battle-player-pill .bpp-streak-tag {
+            font-size: 22px;
+            font-weight: 900;
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 2px solid #f87171;
+            padding: 2px 10px;
+            border-radius: 999px;
+            line-height: 1.1;
         }
 
         .battle-score-card .bsc-record {
@@ -2997,21 +3155,153 @@
         }
 
         .intro-profile-pill {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.88);
+            justify-content: space-between;
+            width: 808px;
+            min-height: 126px;
+            padding: 18px 28px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #0b1329 0%, #172554 50%, #0f172a 100%);
             color: #ffffff;
-            border: 4px solid #000000;
+            border: 6px solid #000000;
             border-radius: 36px;
-            padding: 10px 26px;
-            font-size: 26px;
-            font-weight: 900;
-            box-shadow: 0 6px 0 var(--palette-blue), 0 6px 0 3px #000000;
+            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
             cursor: pointer;
             touch-action: auto !important;
             font-family: inherit;
+            box-sizing: border-box;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .intro-profile-pill:active {
+            transform: translateY(7px);
+            box-shadow: 0 7px 0 var(--palette-blue), 0 7px 0 5px #000000;
+        }
+
+        .intro-profile-pill .ipp-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .intro-profile-pill .ipp-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .intro-profile-pill .ipp-user-icon {
+            font-size: 38px;
+            line-height: 1;
+        }
+
+        .intro-profile-pill .ipp-player-name {
+            font-size: 46px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-shadow: 3px 3px 0 #000000;
+            max-width: 440px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .intro-profile-pill .ipp-skin-badge {
+            font-size: 36px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+        }
+
+        .intro-profile-pill .ipp-cloud-icon {
+            font-size: 28px;
+        }
+
+        .intro-profile-pill .ipp-sub-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .intro-profile-pill .ipp-league-tag {
+            font-size: 26px;
+            font-weight: 900;
+            padding: 4px 14px;
+            border-radius: 999px;
+            line-height: 1.1;
+        }
+
+        .intro-profile-pill .ipp-league-tag.standard {
+            background: rgba(56, 189, 248, 0.25);
+            color: #38bdf8;
+            border: 2px solid #0284c7;
+        }
+
+        .intro-profile-pill .ipp-league-tag.master {
+            background: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
+            border: 2px solid #f59e0b;
+        }
+
+        .intro-profile-pill .ipp-streak-badge {
+            font-size: 24px;
+            font-weight: 900;
+            background: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            border: 2px solid #ef4444;
+            padding: 3px 12px;
+            border-radius: 999px;
+            line-height: 1.1;
+        }
+
+        .intro-profile-pill .ipp-best-tag {
+            font-size: 24px;
+            font-weight: 800;
+            color: #94a3b8;
+            line-height: 1.1;
+        }
+
+        .intro-profile-pill .ipp-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            padding-left: 14px;
+        }
+
+        .intro-profile-pill .ipp-pt-title {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #93c5fd;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .intro-profile-pill .ipp-pt-score {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .intro-profile-pill .ipp-pt-number {
+            font-size: 64px;
+            font-weight: 900;
+            color: var(--palette-yellow);
+            text-shadow: 4px 4px 0 #000000;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .intro-profile-pill .ipp-pt-unit {
+            font-size: 30px;
+            font-weight: 900;
+            color: #fde047;
+            text-shadow: 2px 2px 0 #000000;
         }
     </style>
 </head>
@@ -6650,13 +6940,42 @@
                 pill.style.display = 'none';
                 return;
             }
-            pill.style.display = 'inline-block';
-            const rating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
-            const leagueBadge = rating > 1200 ? '👑' : '🥈';
+            pill.style.display = 'flex';
+            const rating = typeof getBattleRating === 'function' ? getBattleRating() : DEFAULT_BATTLE_RATING;
+            const isMaster = rating > MASTER_LEAGUE_THRESHOLD;
+            const leagueBadge = isMaster ? '👑' : '🥈';
+            const leagueName = isMaster ? '마스터 리그' : '일반 리그';
             const streak = typeof getBattleStreak === 'function' ? getBattleStreak() : 0;
-            const streakText = streak >= 2 ? ` | 🔥${streak}` : '';
+            const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streak}연승</span>` : '';
+            const skinId = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
+            const skinIcon = typeof getSkinIcon === 'function' ? getSkinIcon(skinId) : '';
+            const skinBadge = skinIcon ? `<span class="ipp-skin-badge" title="장착 스킨">${skinIcon}</span>` : '';
             const synced = isCloudAccountLinked();
-            pill.innerText = `👤 ${savedName} | ${leagueBadge} ${rating.toLocaleString()} PT${streakText} ${synced ? '☁️' : ''}`.trim();
+            const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
+            const safeName = typeof escapeBattleText === 'function' ? escapeBattleText(savedName) : savedName;
+
+            pill.innerHTML = `
+                <div class="ipp-left">
+                    <div class="ipp-name-row">
+                        <span class="ipp-user-icon">👤</span>
+                        <span class="ipp-player-name">${safeName}</span>
+                        ${skinBadge}
+                        ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
+                    </div>
+                    <div class="ipp-sub-row">
+                        <span class="ipp-league-tag ${isMaster ? 'master' : 'standard'}">${leagueBadge} ${leagueName}</span>
+                        ${streakBadge}
+                        <span class="ipp-best-tag">나홀로 BEST: ${bestScore}점</span>
+                    </div>
+                </div>
+                <div class="ipp-right">
+                    <div class="ipp-pt-title">BATTLE RATING</div>
+                    <div class="ipp-pt-score">
+                        <span class="ipp-pt-number">${rating.toLocaleString()}</span>
+                        <span class="ipp-pt-unit">PT</span>
+                    </div>
+                </div>
+            `;
             pill.classList.toggle('is-synced', synced);
         }
 
@@ -9534,15 +9853,55 @@
                 startBtn.style.display = 'none';
             }
 
-            listEl.innerHTML = players.map((player, index) => {
+            const renderedCards = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const record = escapeBattleText(formatPlayerRecordBadge(player));
-                const meClass = player.id === battlePlayerId ? ' me' : '';
-                return `<div class="battle-player-pill${meClass}">
-                    <div class="bpp-name">${label}</div>
-                    <div class="bpp-record">${record}</div>
+                const isMe = player.id === battlePlayerId;
+                const meClass = isMe ? ' me' : '';
+                const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
+                const isMaster = rating > MASTER_LEAGUE_THRESHOLD;
+                const leagueBadge = isMaster ? '👑' : '🥈';
+                const leagueClass = isMaster ? ' master' : ' standard';
+                const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
+                const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
+                const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
+                const skinId = (player && player.skin) ? player.skin : (isMe && typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
+                const skinIcon = (typeof getSkinIcon === 'function') ? getSkinIcon(skinId) : '';
+
+                return `<div class="battle-player-pill${meClass}${leagueClass}">
+                    <div class="bpp-header">
+                        <div class="bpp-identity">
+                            <span class="bpp-slot">${index + 1}P</span>
+                            <span class="bpp-name" title="${label}">${label}</span>
+                        </div>
+                        <div class="bpp-badges">
+                            ${skinIcon ? `<span class="bpp-skin-icon" title="Equipped Skin">${skinIcon}</span>` : ''}
+                            ${isMe ? `<span class="bpp-me-badge">ME</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="bpp-score-row">
+                        <span class="bpp-league-icon">${leagueBadge}</span>
+                        <span class="bpp-score-val">${rating.toLocaleString()}</span>
+                        <span class="bpp-score-unit">PT</span>
+                    </div>
+                    <div class="bpp-stats-row">
+                        <span class="bpp-stat-tag">${matches}G 🥇${wins}W</span>
+                        ${streak >= 2 ? `<span class="bpp-streak-tag">🔥 ${streak}연승</span>` : ''}
+                    </div>
                 </div>`;
-            }).join('');
+            });
+
+            for (let i = players.length; i < MAX_BATTLE_PLAYERS; i++) {
+                renderedCards.push(`
+                    <div class="battle-player-pill empty">
+                        <div class="bpp-empty-inner">
+                            <span class="bpp-empty-slot">${i + 1}P</span>
+                            <span class="bpp-empty-text">⏳ 매칭 대기 중...</span>
+                        </div>
+                    </div>
+                `);
+            }
+
+            listEl.innerHTML = renderedCards.join('');
         }
 
         function renderBattleHud(room) {
