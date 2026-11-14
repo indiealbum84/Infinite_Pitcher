@@ -123,39 +123,46 @@ InfinitePitcher/
 ├── database.rules.json          # Firebase Realtime Database 보안 규칙 (점수 갱신/계정 보호)
 ├── manifest.json                # PWA 및 모바일 웹 앱 설정 매니페스트
 ├── guide.html                   # 게임 가이드/소개 웹페이지
+├── README.md                    # 저장소 개요 및 실행 안내 문서
 │
-├── DESIGN_ORDER_SHEET.html      # 디자이너 발주용 리스트 (HTML 인터랙티브 뷰)
-├── DESIGN_ORDER_SHEET.csv       # 디자이너 발주용 리스트 (스프레드시트/엑셀용 CSV)
-├── GLOBAL_TOP50_UI_REFERENCE.html # 글로벌 Top 50 모바일 게임 UI 레퍼런스 (HTML 뷰)
-├── GLOBAL_TOP50_UI_REFERENCE.csv  # 글로벌 Top 50 모바일 게임 UI 레퍼런스 (CSV)
+├── docs/                        # 📑 기획 및 디자인 문서 폴더
+│   ├── DESIGN_ORDER_SHEET.html      # 디자이너 발주용 리스트 (HTML 인터랙티브 뷰)
+│   ├── DESIGN_ORDER_SHEET.csv       # 디자이너 발주용 리스트 (스프레드시트/엑셀용 CSV)
+│   ├── GLOBAL_TOP50_UI_REFERENCE.html # 글로벌 Top 50 모바일 게임 UI 레퍼런스 (HTML 뷰)
+│   ├── GLOBAL_TOP50_UI_REFERENCE.csv  # 글로벌 Top 50 모바일 게임 UI 레퍼런스 (CSV)
+│   ├── PROJECT_HANDOVER.md          # 프로젝트 종합 인수인계 문서
+│   ├── author.txt                   # 제작자 메타 정보
+│   └── title.txt                    # 게임 공식 타이틀 텍스트
 │
-├── splash_108project.png        # 🏢 회사 로고 스플래시 화면 (2160x3840)
-├── title.png                    # 타이틀 로고 아트
-├── main_background.png          # 메인 인트로 화면 배경
-├── pitcher.png                  # 투수 기본 대기 스프라이트
-├── pitcher_throw.png            # 투수 투구 동작 스프라이트
-├── cart.png                     # 야구공 볼 카트 스프라이트
-├── fireball.png                 # 파이어볼 이펙트 아트
-├── mirrorball.png               # 미러볼 이펙트 아트
-├── stripeball.png               # 스트라이프볼 이펙트 아트
-├── flashball.png                # 플래시볼 이펙트 아트
-├── top100.png                   # 랭킹 모달 호출 버튼 아이콘
-├── thumbnail.png                # 앱 썸네일 아이콘
-├── splash.png                   # 레거시 타이틀 배경
+├── images/                      # 🎨 그래픽 및 스프라이트 이미지 폴더
+│   ├── splash_108project.png        # 🏢 회사 로고 스플래시 화면 (2160x3840)
+│   ├── title.png                    # 타이틀 로고 아트
+│   ├── main_background.png          # 메인 인트로 화면 배경
+│   ├── pitcher.png                  # 투수 기본 대기 스프라이트
+│   ├── pitcher_throw.png            # 투수 투구 동작 스프라이트
+│   ├── cart.png                     # 야구공 볼 카트 스프라이트
+│   ├── fireball.png                 # 파이어볼 이펙트 아트
+│   ├── mirrorball.png               # 미러볼 이펙트 아트
+│   ├── stripeball.png               # 스트라이프볼 이펙트 아트
+│   ├── flashball.png                # 플래시볼 이펙트 아트
+│   ├── top100.png                   # 랭킹 모달 호출 버튼 아이콘
+│   ├── thumbnail.png                # 앱 썸네일 아이콘
+│   └── splash.png                   # 레거시 타이틀 배경
 │
-├── bgm_title.mp3                # 인트로 / 메인 로비 BGM
-├── bgm_game.wav                 # 인게임 플레이 BGM (Web Audio 루프)
-├── throw.mp3                    # 일반 투구 SFX
-├── throw_hit.mp3                # 블록 명중 타격 SFX
-├── throw_fireball.mp3           # 파이어볼 투구 SFX
-├── fireball.mp3                 # 파이어볼 관통 폭발 SFX
-├── throw_mirrorball.mp3         # 미러볼 투구 SFX
-├── mirrorball.mp3               # 숫자 반전 발동 SFX
-├── stripeball.mp3               # 스트라이프볼 발동 SFX
-├── flashball.mp3                # 플래시볼 발동 SFX
-├── click.mp3                    # 버튼 클릭 SFX
-├── win.mp3                      # 대전 1위 / 승리 SFX
-└── gameover.mp3                 # 탈락 / 게임오버 SFX
+└── sounds/                      # 🔊 BGM 및 사운드 효과음 폴더
+    ├── bgm_title.mp3                # 인트로 / 메인 로비 BGM
+    ├── bgm_game.wav                 # 인게임 플레이 BGM (Web Audio 무손실 루프)
+    ├── throw.mp3                    # 일반 투구 SFX
+    ├── throw_hit.mp3                # 블록 명중 타격 SFX
+    ├── throw_fireball.mp3           # 파이어볼 투구 SFX
+    ├── fireball.mp3                 # 파이어볼 관통 폭발 SFX
+    ├── throw_mirrorball.mp3         # 미러볼 투구 SFX
+    ├── mirrorball.mp3               # 숫자 반전 발동 SFX
+    ├── stripeball.mp3               # 스트라이프볼 발동 SFX
+    ├── flashball.mp3                # 플래시볼 발동 SFX
+    ├── click.mp3                    # 버튼 클릭 SFX
+    ├── win.mp3                      # 대전 1위 / 승리 SFX
+    └── gameover.mp3                 # 탈락 / 게임오버 SFX
 ```
 
 ---
