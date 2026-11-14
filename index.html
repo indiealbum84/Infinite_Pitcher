@@ -342,6 +342,13 @@
             text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
         }
 
+        #intro-screen #battle-quick-main-btn.locked {
+            background-color: #64748b;
+            box-shadow: 0 6px 0 #334155, 0 6px 0 2px #000000;
+            font-size: 16px;
+            opacity: 0.92;
+        }
+
         #intro-screen #start-btn-id {
             width: 142px;
             min-height: 48px;
@@ -4256,6 +4263,8 @@
                 streakText: n => `🔥 ${n}連勝中！`,
                 streakEndText: '連勝終了',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+                world8UnlockShort: 'ひとり特訓31点で解放',
+                alertWorld8Locked: best => `🔒 世界8人バトルは「ひとり特訓」で31点以上を達成すると解放されます！\n(現在の最高記録: ${best}点 / 目標: 31点)`,
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
@@ -4383,6 +4392,8 @@
                 streakText: n => `🔥 ${n} Win Streak!`,
                 streakEndText: 'Streak Ended',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+                world8UnlockShort: 'Unlock at Solo 31+',
+                alertWorld8Locked: best => `🔒 World 8P Battle unlocks when you reach 31+ pts in Solo Practice!\n(Your Best: ${best} pts / Goal: 31 pts)`,
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
@@ -4510,6 +4521,8 @@
                 streakText: n => `🔥 ${n}연승 달성!`,
                 streakEndText: '연승 종료',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+                world8UnlockShort: '솔로 31점 해금',
+                alertWorld8Locked: best => `🔒 세계 8인 배틀은 [나홀로 특훈]에서 31점 이상 달성 시 해금됩니다!\n(현재 최고 기록: ${best}점 / 목표: 31점)`,
             },
             'zh-TW': {
                 introBubble: '好！為了成為世界第一的投手，<br>今天也要全力特訓！',
@@ -4637,6 +4650,8 @@
                 streakText: n => `🔥 ${n}連勝達成！`,
                 streakEndText: '連勝終止',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+                world8UnlockShort: '單人31分解鎖',
+                alertWorld8Locked: best => `🔒 世界8人對戰需在「單人特訓」突破 31 分後解鎖！\n(目前最高紀錄: ${best}分 / 目標: 31分)`,
             },
             es: {
                 introBubble: '¡Bien! Para ser el mejor lanzador del mundo,<br>¡a entrenar hoy también!',
@@ -4764,6 +4779,8 @@
                 streakText: n => `🔥 ¡Racha de ${n}!`,
                 streakEndText: 'Racha terminada',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+                world8UnlockShort: 'Desbloquea con 31+ Solo',
+                alertWorld8Locked: best => `🔒 ¡La Batalla Mundial 8P se desbloquea al superar 31 pts en Entrenar Solo!\n(Tu récord: ${best} pts / Meta: 31 pts)`,
             }
         };
 
@@ -4847,6 +4864,7 @@
 
             if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             setBattleRematchButtonText();
             document.querySelectorAll('.lang-switch-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -7537,6 +7555,7 @@
         }
 
         function updateIntroProfilePillUI() {
+            if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             const pill = document.getElementById('intro-profile-pill');
             const battleCard = document.getElementById('battle-my-profile-card');
             const savedName = getSavedPlayerName();
@@ -10259,9 +10278,33 @@
             playTitleBgm();
         }
 
+        function isWorld8BattleUnlocked() {
+            return (typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0) >= 31;
+        }
+
+        function updateWorld8BattleLockUI() {
+            const btn = document.getElementById('battle-quick-main-btn');
+            if (!btn) return;
+            const unlocked = isWorld8BattleUnlocked();
+            const label = TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn ? TEXTS[currentLang].battleQuickMainBtn : '⚡ 세계 8인 배틀';
+            if (unlocked) {
+                btn.classList.remove('locked');
+                btn.innerText = label;
+            } else {
+                btn.classList.add('locked');
+                const shortHint = TEXTS[currentLang] && TEXTS[currentLang].world8UnlockShort ? TEXTS[currentLang].world8UnlockShort : '솔로 31점 해금';
+                btn.innerText = `🔒 ${label} (${shortHint})`;
+            }
+        }
+
         function startWorld8Battle() {
             if (testMode) {
                 alert(textFor('alertTestBattle'));
+                return;
+            }
+            if (!isWorld8BattleUnlocked()) {
+                const best = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
+                alert(textFor('alertWorld8Locked')(best));
                 return;
             }
             if (!canPlayWithoutAd('battle')) {
@@ -10896,7 +10939,7 @@
                 if (el && txt !== undefined) el.innerText = txt;
             };
             setTxt('battle-btn', TEXTS[currentLang] && TEXTS[currentLang].battleBtn);
-            setTxt('battle-quick-main-btn', TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn);
+            if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             setTxt('battle-friend-btn', TEXTS[currentLang] && TEXTS[currentLang].battleFriendBtn);
             setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
             if (battleViewMode === 'world8' && !quickMatchActive) {
