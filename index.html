@@ -2242,18 +2242,30 @@
         }
 
         .battle-title {
-            font-size: 64px;
-            margin: 0;
+            font-size: 78px;
+            font-weight: 900;
+            margin: 0 0 4px;
             text-shadow: 8px 8px 0 var(--palette-yellow);
+            text-align: center;
+        }
+
+        .battle-header-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 980px;
+            margin: 2px 0 8px;
+            flex-wrap: wrap;
         }
 
         .battle-stats-pill {
             background: rgba(15, 23, 42, 0.88);
             color: #ffffff;
-            border: 5px solid #000000;
+            border: 6px solid #000000;
             border-radius: 999px;
-            padding: 12px 32px;
-            font-size: 29px;
+            padding: 14px 36px;
+            font-size: 32px;
             font-weight: 900;
             letter-spacing: 0.5px;
             box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
@@ -2264,10 +2276,10 @@
         .battle-league-pill {
             background: rgba(15, 23, 42, 0.92);
             color: #ffffff;
-            border: 5px solid #000000;
+            border: 6px solid #000000;
             border-radius: 999px;
-            padding: 10px 30px;
-            font-size: 27px;
+            padding: 14px 36px;
+            font-size: 32px;
             font-weight: 900;
             letter-spacing: 0.5px;
             box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
@@ -3154,19 +3166,17 @@
             touch-action: auto !important;
         }
 
-        .intro-profile-pill {
+        .intro-profile-pill,
+        .battle-my-profile-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 808px;
             min-height: 126px;
             padding: 18px 28px;
-            margin-bottom: 20px;
             background: linear-gradient(135deg, #0b1329 0%, #172554 50%, #0f172a 100%);
             color: #ffffff;
             border: 6px solid #000000;
             border-radius: 36px;
-            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
             cursor: pointer;
             touch-action: auto !important;
             font-family: inherit;
@@ -3174,12 +3184,30 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
+        .intro-profile-pill {
+            width: 808px;
+            margin-bottom: 20px;
+            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
+        }
+
         .intro-profile-pill:active {
             transform: translateY(7px);
             box-shadow: 0 7px 0 var(--palette-blue), 0 7px 0 5px #000000;
         }
 
-        .intro-profile-pill .ipp-left {
+        .battle-my-profile-card {
+            width: 980px;
+            margin: 6px 0 16px;
+            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 5px #000000;
+        }
+
+        .battle-my-profile-card:active {
+            transform: translateY(7px);
+            box-shadow: 0 7px 0 var(--palette-pink), 0 7px 0 5px #000000;
+        }
+
+        .intro-profile-pill .ipp-left,
+        .battle-my-profile-card .ipp-left {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -3188,46 +3216,53 @@
             text-align: left;
         }
 
-        .intro-profile-pill .ipp-name-row {
+        .intro-profile-pill .ipp-name-row,
+        .battle-my-profile-card .ipp-name-row {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .intro-profile-pill .ipp-user-icon {
+        .intro-profile-pill .ipp-user-icon,
+        .battle-my-profile-card .ipp-user-icon {
             font-size: 38px;
             line-height: 1;
         }
 
-        .intro-profile-pill .ipp-player-name {
+        .intro-profile-pill .ipp-player-name,
+        .battle-my-profile-card .ipp-player-name {
             font-size: 46px;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 1px;
             text-shadow: 3px 3px 0 #000000;
-            max-width: 440px;
+            max-width: 520px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .intro-profile-pill .ipp-skin-badge {
+        .intro-profile-pill .ipp-skin-badge,
+        .battle-my-profile-card .ipp-skin-badge {
             font-size: 36px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
         }
 
-        .intro-profile-pill .ipp-cloud-icon {
+        .intro-profile-pill .ipp-cloud-icon,
+        .battle-my-profile-card .ipp-cloud-icon {
             font-size: 28px;
         }
 
-        .intro-profile-pill .ipp-sub-row {
+        .intro-profile-pill .ipp-sub-row,
+        .battle-my-profile-card .ipp-sub-row {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .intro-profile-pill .ipp-league-tag {
+        .intro-profile-pill .ipp-league-tag,
+        .battle-my-profile-card .ipp-league-tag {
             font-size: 26px;
             font-weight: 900;
             padding: 4px 14px;
@@ -3235,19 +3270,22 @@
             line-height: 1.1;
         }
 
-        .intro-profile-pill .ipp-league-tag.standard {
+        .intro-profile-pill .ipp-league-tag.standard,
+        .battle-my-profile-card .ipp-league-tag.standard {
             background: rgba(56, 189, 248, 0.25);
             color: #38bdf8;
             border: 2px solid #0284c7;
         }
 
-        .intro-profile-pill .ipp-league-tag.master {
+        .intro-profile-pill .ipp-league-tag.master,
+        .battle-my-profile-card .ipp-league-tag.master {
             background: rgba(245, 158, 11, 0.3);
             color: #fbbf24;
             border: 2px solid #f59e0b;
         }
 
-        .intro-profile-pill .ipp-streak-badge {
+        .intro-profile-pill .ipp-streak-badge,
+        .battle-my-profile-card .ipp-streak-badge {
             font-size: 24px;
             font-weight: 900;
             background: rgba(239, 68, 68, 0.3);
@@ -3258,14 +3296,16 @@
             line-height: 1.1;
         }
 
-        .intro-profile-pill .ipp-best-tag {
+        .intro-profile-pill .ipp-best-tag,
+        .battle-my-profile-card .ipp-best-tag {
             font-size: 24px;
             font-weight: 800;
             color: #94a3b8;
             line-height: 1.1;
         }
 
-        .intro-profile-pill .ipp-right {
+        .intro-profile-pill .ipp-right,
+        .battle-my-profile-card .ipp-right {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -3273,7 +3313,8 @@
             padding-left: 14px;
         }
 
-        .intro-profile-pill .ipp-pt-title {
+        .intro-profile-pill .ipp-pt-title,
+        .battle-my-profile-card .ipp-pt-title {
             font-size: 22px;
             font-weight: 900;
             letter-spacing: 2px;
@@ -3282,13 +3323,15 @@
             margin-bottom: 2px;
         }
 
-        .intro-profile-pill .ipp-pt-score {
+        .intro-profile-pill .ipp-pt-score,
+        .battle-my-profile-card .ipp-pt-score {
             display: flex;
             align-items: baseline;
             gap: 6px;
         }
 
-        .intro-profile-pill .ipp-pt-number {
+        .intro-profile-pill .ipp-pt-number,
+        .battle-my-profile-card .ipp-pt-number {
             font-size: 64px;
             font-weight: 900;
             color: var(--palette-yellow);
@@ -3297,7 +3340,8 @@
             line-height: 1;
         }
 
-        .intro-profile-pill .ipp-pt-unit {
+        .intro-profile-pill .ipp-pt-unit,
+        .battle-my-profile-card .ipp-pt-unit {
             font-size: 30px;
             font-weight: 900;
             color: #fde047;
@@ -3509,9 +3553,14 @@
 
         <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
-            <p class="battle-title" id="battle-screen-title">最大8人で対戦</p>
-            <div class="battle-league-pill" id="battle-league-pill">🥈 일반 리그 (1,200 PT 이하)</div>
-            <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
+            <p class="battle-title" id="battle-screen-title">⚡ 세계 8인 배틀</p>
+            <div class="battle-header-badges">
+                <div class="battle-league-pill" id="battle-league-pill">🥈 일반 리그 (1,200 PT 이하)</div>
+                <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
+            </div>
+
+            <!-- 메인화면과 동일한 대형 내 프로필 & 배틀 레이팅 카드 (980px 너비) -->
+            <button type="button" id="battle-my-profile-card" class="battle-my-profile-card" onclick="promptAccountSyncFromIntro()" title="내 프로필 및 클라우드 연동"></button>
 
             <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
             <div id="battle-quick-section">
@@ -6934,13 +6983,15 @@
 
         function updateIntroProfilePillUI() {
             const pill = document.getElementById('intro-profile-pill');
-            if (!pill) return;
+            const battleCard = document.getElementById('battle-my-profile-card');
             const savedName = getSavedPlayerName();
             if (!savedName) {
-                pill.style.display = 'none';
+                if (pill) pill.style.display = 'none';
+                if (battleCard) battleCard.style.display = 'none';
                 return;
             }
-            pill.style.display = 'flex';
+            if (pill) pill.style.display = 'flex';
+            if (battleCard) battleCard.style.display = 'flex';
             const rating = typeof getBattleRating === 'function' ? getBattleRating() : DEFAULT_BATTLE_RATING;
             const isMaster = rating > MASTER_LEAGUE_THRESHOLD;
             const leagueBadge = isMaster ? '👑' : '🥈';
@@ -6954,7 +7005,7 @@
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
             const safeName = typeof escapeBattleText === 'function' ? escapeBattleText(savedName) : savedName;
 
-            pill.innerHTML = `
+            const cardMarkup = `
                 <div class="ipp-left">
                     <div class="ipp-name-row">
                         <span class="ipp-user-icon">👤</span>
@@ -6976,7 +7027,14 @@
                     </div>
                 </div>
             `;
-            pill.classList.toggle('is-synced', synced);
+            if (pill) {
+                pill.innerHTML = cardMarkup;
+                pill.classList.toggle('is-synced', synced);
+            }
+            if (battleCard) {
+                battleCard.innerHTML = cardMarkup;
+                battleCard.classList.toggle('is-synced', synced);
+            }
         }
 
         function syncProfileToCloud() {
@@ -9569,6 +9627,8 @@
 
             hydrateBattleNameInput();
             applyBattleLang();
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
             currentBattleLeague = getPlayerLeague();
             const leaguePill = document.getElementById('battle-league-pill');
             if (leaguePill) {
@@ -9614,6 +9674,8 @@
             document.getElementById('battle-player-list').innerHTML = '';
             hydrateBattleNameInput();
             applyBattleLang();
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
             currentBattleLeague = getPlayerLeague();
             const leaguePill = document.getElementById('battle-league-pill');
             if (leaguePill) {
@@ -10109,6 +10171,7 @@
             setTxt('battle-divider', textFor('battleDivider'));
             updateQuickMatchUI();
             updateBattleStatsUI();
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             setBattleRematchButtonText();
         }
 
