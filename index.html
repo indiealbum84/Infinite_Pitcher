@@ -9096,16 +9096,33 @@
             shuffleArray(solidIndices);
             shuffleArray(aceIndices);
 
-            // 매치 참가 인원별 황금 비율 배정 (에이스 1~2명, 중수 3~4명, 루키 2명)
-            let neededAce = Math.max(1, Math.round(count * 0.25));
-            let neededRookie = Math.max(1, Math.round(count * 0.28));
-            let neededSolid = count - neededAce - neededRookie;
-            if (neededSolid < 1) neededSolid = 1;
+            // 매 판마다 방 난이도 성향 3단계 랜덤화:
+            // 1. 쉬운 판 (약 25%): 1위 봇이 25~38점대 탈락 (유저가 28~36점 정도로도 기분 좋게 1위 달성!)
+            // 2. 보통 판 (약 50%): 1위 봇이 42~60점대 탈락 (31번 스트라이프볼 전후 표준 배틀)
+            // 3. 어려운 판 (약 25%): 에이스가 65~88점까지 생존 (보스급 진검승부)
+            const lobbyRoll = Math.random();
+            const lobbyDifficulty = lobbyRoll < 0.25 ? 'easy' : (lobbyRoll < 0.75 ? 'normal' : 'hard');
+
+            let neededAce, neededRookie, neededSolid;
+            if (lobbyDifficulty === 'easy') {
+                neededAce = Math.random() < 0.2 ? 1 : 0;
+                neededRookie = Math.min(count - neededAce, Math.max(2, Math.round(count * 0.45)));
+                neededSolid = count - neededAce - neededRookie;
+            } else if (lobbyDifficulty === 'hard') {
+                neededAce = Math.max(1, Math.round(count * 0.28));
+                neededRookie = Math.max(1, Math.round(count * 0.20));
+                neededSolid = count - neededAce - neededRookie;
+            } else {
+                neededAce = Math.max(1, Math.round(count * 0.16));
+                neededRookie = Math.max(1, Math.round(count * 0.30));
+                neededSolid = count - neededAce - neededRookie;
+            }
+            if (neededSolid < 0) neededSolid = 0;
 
             const selectedIndices = [];
             let rIdx = 0, sIdx = 0, aIdx = 0;
 
-            // 1. 에이스 라이벌 봇 선발
+            // 1. 에이스 봇 선발
             while (selectedIndices.length < neededAce && aIdx < aceIndices.length) {
                 selectedIndices.push(aceIndices[aIdx++]);
             }
@@ -9134,40 +9151,40 @@
                 const isMaster = (activeLeague === 'master');
                 const tier = botTemplate.tier; // 0: 루키, 1: 중수, 2: 에이스
 
+                // 각 봇의 당일 컨디션 및 이변(Upset) 난수:
+                // 15% 확률로 에이스의 초반 헛스윙 실수 / 15% 확률로 중수의 인생 경기
+                const conditionRoll = Math.random();
+                const isUpset = (conditionRoll < 0.16);
+                const isHotHand = (conditionRoll > 0.84);
+
                 let targetScore;
                 if (isMaster) {
                     if (tier === 0) {
-                        // 도전자 (42 ~ 68점)
-                        const skew = Math.pow(Math.random(), 2.0) * 14;
-                        const bonus = Math.random() < 0.15 ? Math.floor(Math.random() * 10) : 0;
-                        targetScore = Math.max(38, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 도전자 마스터
+                        const base = (lobbyDifficulty === 'easy' ? 44 : (lobbyDifficulty === 'hard' ? 62 : 52));
+                        targetScore = Math.max(32, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 15 : (isUpset ? -12 : 0))));
                     } else if (tier === 1) {
-                        // 마스터 (68 ~ 105점)
-                        const skew = Math.pow(Math.random(), 2.2) * 18;
-                        const bonus = Math.random() < 0.18 ? Math.floor(Math.random() * 14) : 0;
-                        targetScore = Math.max(62, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 베테랑 마스터
+                        const base = (lobbyDifficulty === 'easy' ? 60 : (lobbyDifficulty === 'hard' ? 95 : 78));
+                        targetScore = Math.max(48, Math.round(base + (Math.random() * 22 - 11) + (isHotHand ? 20 : (isUpset ? -18 : 0))));
                     } else {
-                        // 챔피언 (100 ~ 160점+)
-                        const skew = Math.pow(Math.random(), 2.5) * 20;
-                        const bonus = Math.random() < 0.25 ? Math.floor(Math.random() * 20) : 0;
-                        targetScore = Math.max(95, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 챔피언 마스터
+                        const base = (lobbyDifficulty === 'easy' ? 68 : (lobbyDifficulty === 'hard' ? 125 : 98));
+                        targetScore = Math.max(55, Math.round(base + (Math.random() * 28 - 14) + (isHotHand ? 25 : (isUpset ? -25 : 0))));
                     }
                 } else {
                     if (tier === 0) {
-                        // 일반 리그 - 루키 (12 ~ 26점): Phase 1 후반 ~ Phase 2 초반 탈락
-                        const skew = Math.random() * 6;
-                        const bonus = Math.random() < 0.1 ? 4 : 0;
-                        targetScore = Math.max(12, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 일반 리그 - 루키 (12 ~ 22점)
+                        const base = (lobbyDifficulty === 'easy' ? 14 : (lobbyDifficulty === 'hard' ? 20 : 17));
+                        targetScore = Math.max(12, Math.round(base + (Math.random() * 8 - 4) + (isHotHand ? 6 : (isUpset ? -4 : 0))));
                     } else if (tier === 1) {
-                        // 일반 리그 - 중수 (28 ~ 55점): 31번 스트라이프볼 통과하며 중반 경쟁
-                        const skew = Math.pow(Math.random(), 2.0) * 10;
-                        const bonus = Math.random() < 0.15 ? Math.floor(Math.random() * 8) : 0;
-                        targetScore = Math.max(26, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 일반 리그 - 중수 (22 ~ 48점)
+                        const base = (lobbyDifficulty === 'easy' ? 26 : (lobbyDifficulty === 'hard' ? 44 : 36));
+                        targetScore = Math.max(18, Math.round(base + (Math.random() * 12 - 6) + (isHotHand ? 12 : (isUpset ? -10 : 0))));
                     } else {
-                        // 일반 리그 - 에이스 라이벌 (58 ~ 88점!): 61번 플래시볼 전후로 결승 1위 쟁탈전!
-                        const skew = Math.pow(Math.random(), 2.5) * 12;
-                        const bonus = Math.random() < 0.2 ? Math.floor(Math.random() * 14) : 0;
-                        targetScore = Math.max(52, Math.round(botTemplate.baseTarget - skew + bonus));
+                        // 일반 리그 - 에이스 (쉬운판 28~38점, 보통판 45~60점, 어려운판 65~88점!)
+                        const base = (lobbyDifficulty === 'easy' ? 34 : (lobbyDifficulty === 'hard' ? 74 : 52));
+                        targetScore = Math.max(26, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 14 : (isUpset ? -18 : 0))));
                     }
                 }
 
