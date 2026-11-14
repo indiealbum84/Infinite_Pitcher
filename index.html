@@ -6625,6 +6625,41 @@
                             ctx.moveTo(b.x, trailY - glint); ctx.lineTo(b.x, trailY + glint);
                             ctx.stroke();
                         }
+                    } else if (equippedSkin === 'emerald') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 9);
+                            const tr = b.radius * (1 - i * 0.24);
+                            ctx.fillStyle = i === 1 ? 'rgba(52, 211, 153, 0.7)' : (i === 2 ? 'rgba(16, 185, 129, 0.45)' : 'rgba(5, 150, 105, 0.22)');
+                            ctx.beginPath();
+                            ctx.arc(b.x + Math.cos(t * 0.01 + i) * scalePx(2), trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (equippedSkin === 'sunset') {
+                        const grad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + scalePx(30));
+                        grad.addColorStop(0, 'rgba(251, 146, 60, 0.85)');
+                        grad.addColorStop(0.45, 'rgba(244, 63, 94, 0.65)');
+                        grad.addColorStop(0.8, 'rgba(168, 85, 247, 0.4)');
+                        grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.rect(b.x - scalePx(3.5), b.y, scalePx(7), scalePx(30));
+                        ctx.fill();
+                    } else if (equippedSkin === 'emperor') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 10);
+                            const tr = b.radius * (0.95 - i * 0.2);
+                            ctx.fillStyle = i === 1 ? 'rgba(254, 240, 138, 0.85)' : 'rgba(250, 204, 21, 0.5)';
+                            ctx.beginPath();
+                            ctx.arc(b.x, trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                            ctx.lineWidth = scalePx(1.2);
+                            const glint = scalePx(5 - i);
+                            ctx.beginPath();
+                            ctx.moveTo(b.x - glint, trailY); ctx.lineTo(b.x + glint, trailY);
+                            ctx.moveTo(b.x, trailY - glint); ctx.lineTo(b.x, trailY + glint);
+                            ctx.stroke();
+                        }
                     }
                     ctx.restore();
                 }
@@ -6928,6 +6963,45 @@
                     ctx.moveTo(px - glintLen, py - scalePx(10)); ctx.lineTo(px + glintLen, py - scalePx(10));
                     ctx.moveTo(px, py - scalePx(10) - glintLen); ctx.lineTo(px, py - scalePx(10) + glintLen);
                     ctx.stroke();
+                } else if (equippedSkin === 'emerald') {
+                    const r = scalePx(34 + Math.sin(t * 0.005) * 4);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(110, 231, 183, 0.5)');
+                    auraGrad.addColorStop(0.65, 'rgba(16, 185, 129, 0.25)');
+                    auraGrad.addColorStop(1, 'rgba(5, 150, 105, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (equippedSkin === 'sunset') {
+                    const r = scalePx(36 + Math.sin(t * 0.004) * 4);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(253, 186, 116, 0.5)');
+                    auraGrad.addColorStop(0.55, 'rgba(244, 63, 94, 0.28)');
+                    auraGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (equippedSkin === 'emperor') {
+                    const r = scalePx(38 + Math.sin(t * 0.005) * 5);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
+                    auraGrad.addColorStop(0.45, 'rgba(250, 204, 21, 0.45)');
+                    auraGrad.addColorStop(1, 'rgba(234, 179, 8, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let s = 0; s < 4; s++) {
+                        const a = t * 0.0035 + s * (Math.PI / 2);
+                        const sx = px + Math.cos(a) * (r * 0.82);
+                        const sy = py - scalePx(10) + Math.sin(a) * (r * 0.82);
+                        ctx.fillStyle = 'rgba(254, 240, 138, 0.95)';
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, scalePx(2.2), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
                 ctx.restore();
             }
@@ -8353,7 +8427,7 @@
             } catch (e) {}
         }
 
-        // ── 7종 캔버스 볼 궤적 & 피처 오라 스킨 카탈로그 ──
+        // ── 10종 캔버스 볼 궤적 & 피처 오라 스킨 카탈로그 ──
         const SKINS_CATALOG = [
             {
                 id: 'classic',
@@ -8362,6 +8436,22 @@
                 desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher' },
                 condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked' },
                 checkUnlock: () => true
+            },
+            {
+                id: 'emerald',
+                name: { ko: '루키 에메랄드', ja: 'ルーキーエメラルド', en: 'Rookie Emerald' },
+                icon: '🌱',
+                desc: { ko: '산뜻한 에메랄드 그린 궤적 + 잔디 오라', ja: '爽やかなエメラルド軌跡＋芝生オーラ', en: 'Fresh emerald trail & turf aura' },
+                condition: { ko: '8인 배틀 첫 1승 달성', ja: '8人バトル初勝利達成', en: 'Win your first Battle match' },
+                checkUnlock: (stats) => stats.wins >= 1
+            },
+            {
+                id: 'sunset',
+                name: { ko: '선셋 레트로', ja: 'サンセットレトロ', en: 'Sunset Retro' },
+                icon: '☀️',
+                desc: { ko: '노을빛 주황·자홍 궤적 + 황혼 구장 오라', ja: '夕焼けグラデ軌跡＋黄昏オーラ', en: 'Sunset orange-magenta trail & dusk aura' },
+                condition: { ko: '8인 배틀 10승 달성', ja: '8人バトル10勝達成', en: 'Win 10 Battle matches' },
+                checkUnlock: (stats) => stats.wins >= 10
             },
             {
                 id: 'flame',
@@ -8386,6 +8476,14 @@
                 desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura' },
                 condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode' },
                 checkUnlock: (stats, bestScore) => bestScore >= 200
+            },
+            {
+                id: 'emperor',
+                name: { ko: '황제 크라운', ja: 'エンペラークラウン', en: 'Emperor Crown' },
+                icon: '👑',
+                desc: { ko: '백금·황금 별빛 궤적 + 황제 크라운 오라', ja: '白金・黄金の星光軌跡＋皇帝オーラ', en: 'Royal gold starlight trail & crown aura' },
+                condition: { ko: '나홀로 특훈 500점 돌파', ja: 'ひとり特訓500点突破', en: 'Reach 500+ pts in Solo mode' },
+                checkUnlock: (stats, bestScore) => bestScore >= 500
             },
             {
                 id: 'rainbow',
