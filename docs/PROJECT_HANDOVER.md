@@ -126,6 +126,7 @@ InfinitePitcher/
 ├── README.md                    # 저장소 개요 및 실행 안내 문서
 │
 ├── docs/                        # 📑 기획 및 디자인 문서 폴더
+│   ├── GAME_DESIGN_DOCUMENT.md      # ⭐ 정식 게임 기획서 (GDD)
 │   ├── DESIGN_ORDER_SHEET.html      # 디자이너 발주용 리스트 (HTML 인터랙티브 뷰)
 │   ├── DESIGN_ORDER_SHEET.csv       # 디자이너 발주용 리스트 (스프레드시트/엑셀용 CSV)
 │   ├── GLOBAL_TOP50_UI_REFERENCE.html # 글로벌 Top 50 모바일 게임 UI 레퍼런스 (HTML 뷰)
