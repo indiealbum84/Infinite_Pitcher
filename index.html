@@ -9465,11 +9465,7 @@
             // 대기실 로스터에 골고루 섞이도록 셔플
             shuffleArray(selectedIndices);
 
-            for (let i = 0; i < selectedIndices.length && picked.length < count; i++) {
-                const botTemplate = generateLeagueBot(selectedIndices[i], activeLeague);
-                if (used.has(botTemplate.name.toUpperCase())) continue;
-                used.add(botTemplate.name.toUpperCase());
-
+            const createBotInstance = (botTemplate, botIndex) => {
                 const isMaster = (activeLeague === 'master');
                 const tier = botTemplate.tier; // 0: 루키, 1: 중수, 2: 에이스
 
@@ -9482,35 +9478,28 @@
                 let targetScore;
                 if (isMaster) {
                     if (tier === 0) {
-                        // 도전자 마스터
                         const base = (lobbyDifficulty === 'easy' ? 44 : (lobbyDifficulty === 'hard' ? 62 : 52));
                         targetScore = Math.max(32, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 15 : (isUpset ? -12 : 0))));
                     } else if (tier === 1) {
-                        // 베테랑 마스터
                         const base = (lobbyDifficulty === 'easy' ? 60 : (lobbyDifficulty === 'hard' ? 95 : 78));
                         targetScore = Math.max(48, Math.round(base + (Math.random() * 22 - 11) + (isHotHand ? 20 : (isUpset ? -18 : 0))));
                     } else {
-                        // 챔피언 마스터
                         const base = (lobbyDifficulty === 'easy' ? 68 : (lobbyDifficulty === 'hard' ? 125 : 98));
                         targetScore = Math.max(55, Math.round(base + (Math.random() * 28 - 14) + (isHotHand ? 25 : (isUpset ? -25 : 0))));
                     }
                 } else {
                     if (tier === 0) {
-                        // 일반 리그 - 루키 (12 ~ 22점)
                         const base = (lobbyDifficulty === 'easy' ? 14 : (lobbyDifficulty === 'hard' ? 20 : 17));
                         targetScore = Math.max(12, Math.round(base + (Math.random() * 8 - 4) + (isHotHand ? 6 : (isUpset ? -4 : 0))));
                     } else if (tier === 1) {
-                        // 일반 리그 - 중수 (22 ~ 48점)
                         const base = (lobbyDifficulty === 'easy' ? 26 : (lobbyDifficulty === 'hard' ? 44 : 36));
                         targetScore = Math.max(18, Math.round(base + (Math.random() * 12 - 6) + (isHotHand ? 12 : (isUpset ? -10 : 0))));
                     } else {
-                        // 일반 리그 - 에이스 (쉬운판 28~38점, 보통판 45~60점, 어려운판 65~88점!)
                         const base = (lobbyDifficulty === 'easy' ? 34 : (lobbyDifficulty === 'hard' ? 74 : 52));
                         targetScore = Math.max(26, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 14 : (isUpset ? -18 : 0))));
                     }
                 }
 
-                // 티어에 맞는 현실적인 스킨 장착
                 let botSkin = 'classic';
                 if (isMaster) {
                     if (tier === 2) {
@@ -9530,8 +9519,8 @@
                     }
                 }
 
-                picked.push({
-                    id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + picked.length,
+                return {
+                    id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + botIndex,
                     name: botTemplate.name,
                     rating: botTemplate.rating,
                     matches: botTemplate.matches,
@@ -9540,8 +9529,36 @@
                     league: activeLeague,
                     skin: botSkin,
                     targetScore
-                });
+                };
+            };
+
+            for (let i = 0; i < selectedIndices.length && picked.length < count; i++) {
+                const botTemplate = generateLeagueBot(selectedIndices[i], activeLeague);
+                if (used.has(botTemplate.name.toUpperCase())) continue;
+                used.add(botTemplate.name.toUpperCase());
+                picked.push(createBotInstance(botTemplate, picked.length));
             }
+
+            // 100% 무조건 count명 충원 보장 1단계: 이름 중복 등으로 인해 누락된 봇이 있다면 1,000명 풀에서 겹치지 않게 추가 선발
+            if (picked.length < count) {
+                const allIndices = [...aceIndices, ...solidIndices, ...rookieIndices];
+                for (let k = 0; k < allIndices.length && picked.length < count; k++) {
+                    const botTemplate = generateLeagueBot(allIndices[k], activeLeague);
+                    if (used.has(botTemplate.name.toUpperCase())) continue;
+                    used.add(botTemplate.name.toUpperCase());
+                    picked.push(createBotInstance(botTemplate, picked.length));
+                }
+            }
+
+            // 100% 무조건 count명 충원 보장 2단계(최후 안전장치): 고유 번호를 붙여서라도 무조건 정확히 count명을 채움
+            let safetyNum = 1;
+            while (picked.length < count) {
+                const rndIdx = Math.floor(Math.random() * 1000);
+                const botTemplate = generateLeagueBot(rndIdx, activeLeague);
+                botTemplate.name = clampBattleName(`${botTemplate.name} ${safetyNum++}`);
+                picked.push(createBotInstance(botTemplate, picked.length));
+            }
+
             return picked;
         }
 
@@ -9598,6 +9615,7 @@
                             rating: bot.rating,
                             league: bot.league,
                             streak: bot.streak,
+                            skin: bot.skin || 'classic',
                             isHost: false,
                             isBot: true,
                             targetScore: bot.targetScore,
@@ -10086,8 +10104,8 @@
             stopQuickMatchTimer();
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();
-                const players = getBattlePlayerList(room);
-                if (!room || room.status !== 'waiting' || players.length < 2) {
+                let players = getBattlePlayerList(room);
+                if (!room || room.status !== 'waiting' || players.length < 1) {
                     alert(textFor('alertNeedPlayers'));
                     return;
                 }
@@ -10102,6 +10120,42 @@
                     finishCounter: 0,
                     rematch: null
                 };
+
+                // 무조건 8인 풀방 보장 (세계 8인 배틀):
+                // 시작 시점에 8명이 다 차지 않았거나 대기 중 게스트 이탈 등으로 인원이 부족하면 즉시 봇을 채워 100% 8명으로 시작
+                const isWorld8 = (battleViewMode === 'world8' || (room && (room.isPublic || room.league)));
+                const targetPlayerCount = isWorld8 ? MAX_BATTLE_PLAYERS : (players.length >= 2 ? players.length : 2);
+                const neededBots = Math.max(0, targetPlayerCount - players.length);
+
+                if (neededBots > 0) {
+                    const existingNames = players.map(p => p.name);
+                    const roomLeague = room.league || getPlayerLeague();
+                    const bots = pickRandomBattleBots(neededBots, existingNames, roomLeague);
+                    const now = getEstimatedServerTimeMs();
+                    bots.forEach((bot, idx) => {
+                        const botData = {
+                            score: 0,
+                            done: false,
+                            rank: null,
+                            finishOrder: null,
+                            finishedAt: null,
+                            name: bot.name,
+                            matches: bot.matches,
+                            wins: bot.wins,
+                            rating: bot.rating,
+                            league: bot.league,
+                            streak: bot.streak,
+                            skin: bot.skin || 'classic',
+                            isHost: false,
+                            isBot: true,
+                            targetScore: bot.targetScore,
+                            joinedAt: now + idx + 1
+                        };
+                        updates['players/' + bot.id] = botData;
+                        players.push({ id: bot.id, ...botData });
+                    });
+                }
+
                 players.forEach(player => {
                     updates['players/' + player.id + '/score'] = 0;
                     updates['players/' + player.id + '/done'] = false;
