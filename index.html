@@ -5777,6 +5777,7 @@
             stopFlashball();
             if (battleMode) {
                 battlePhase = 1;
+                battlePhaseEnteredBall = 1;
                 battleMirrorballTriggered = false;
                 battleStripeballTriggered = false;
                 battleFlashballTriggered = false;
@@ -6278,7 +6279,7 @@
             // 온라인 대전 모드: Phase 3 (5명 이하 생존 OR 51번 도달)
             if (battleMode) {
                 if (isCurrentBattlePlayerDone()) return;
-                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 3 : (nextExpectedNumber >= 51);
+                const shouldTrigger = battlePhase >= 3;
                 if (!shouldTrigger || battleMirrorballTriggered || mirrorballDoneCount > 0 || mirrorballCharging || mirrorballShotPending) return;
                 battleMirrorballTriggered = true;
                 mirrorballCharging = true;
@@ -6345,7 +6346,7 @@
             // 온라인 대전 모드: Phase 4 (3명 이하 생존 OR 91번 도달)
             if (battleMode) {
                 if (isCurrentBattlePlayerDone()) return;
-                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 4 : (nextExpectedNumber >= 91);
+                const shouldTrigger = battlePhase >= 4;
                 if (!shouldTrigger || battleStripeballTriggered || stripeballCharging || stripeballShotPending) return;
                 battleStripeballTriggered = true;
                 battleStripeBaseRowIndex = Math.floor((nextExpectedNumber - 1) / 10);
@@ -6426,7 +6427,7 @@
             // 온라인 대전 모드: Phase 5 (2명 이하 결승 OR 131번 도달)
             if (battleMode) {
                 if (isCurrentBattlePlayerDone()) return;
-                const shouldTrigger = typeof getBattlePhase === 'function' ? getBattlePhase() >= 5 : (nextExpectedNumber >= 131);
+                const shouldTrigger = battlePhase >= 5;
                 if (!shouldTrigger || battleFlashballTriggered || flashballCharging || flashballShotPending) return;
                 battleFlashballTriggered = true;
                 flashballCharging = true;
@@ -8968,6 +8969,7 @@
         let battleDisconnectRef = null;
         let battleHostDisconnectRef = null;
         let battlePhase = 1;
+        let battlePhaseEnteredBall = 1;
         let battleMirrorballTriggered = false;
         let battleStripeballTriggered = false;
         let battleFlashballTriggered = false;
@@ -9085,12 +9087,21 @@
 
         function checkBattlePhaseTransition() {
             if (!battleMode || gameState !== 'PLAYING' || isCurrentBattlePlayerDone()) return;
-            const newPhase = getBattlePhase();
-            if (newPhase > battlePhase) {
-                battlePhase = newPhase;
-                showBattlePhaseBanner(newPhase);
-                updateBattlePhasePill(newPhase);
-                if (newPhase === 5) {
+            const targetPhase = getBattlePhase();
+            let nextPhase = battlePhase;
+            if (targetPhase > battlePhase) {
+                if (battlePhase === 1) {
+                    nextPhase = (targetPhase >= 3 && nextExpectedNumber < 11) ? 3 : 2;
+                } else if ((nextExpectedNumber - battlePhaseEnteredBall) >= 2) {
+                    nextPhase = battlePhase + 1;
+                }
+            }
+            if (nextPhase > battlePhase) {
+                battlePhase = nextPhase;
+                battlePhaseEnteredBall = nextExpectedNumber;
+                showBattlePhaseBanner(nextPhase);
+                updateBattlePhasePill(nextPhase);
+                if (nextPhase === 5) {
                     const vignette = document.getElementById('battle-final-vignette');
                     if (vignette) vignette.classList.add('active');
                 }
@@ -10270,6 +10281,7 @@
             battleRematchStarted = false;
             battleProfileReady = false;
             battlePhase = 1;
+            battlePhaseEnteredBall = 1;
             battleMirrorballTriggered = false;
             battleStripeballTriggered = false;
             battleFlashballTriggered = false;
@@ -10989,6 +11001,7 @@
 
             // 배틀 5단계 페이즈 초기화
             battlePhase = 1;
+            battlePhaseEnteredBall = 1;
             battleMirrorballTriggered = false;
             battleStripeballTriggered = false;
             battleFlashballTriggered = false;
