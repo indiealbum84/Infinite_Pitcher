@@ -1334,6 +1334,165 @@
             pointer-events: none;
         }
 
+        /* 메인화면 스킨 버튼 (설정 톱니바퀴 좌측) */
+        .intro-skin-btn {
+            position: absolute;
+            top: 14px;
+            right: 66px;
+            width: 44px;
+            height: 44px;
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 3px solid #000000;
+            border-radius: 14px;
+            box-shadow: 0 4px 0 var(--palette-yellow), 0 4px 0 1px #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 5;
+            touch-action: auto !important;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        }
+
+        .intro-skin-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--palette-yellow), 0 2px 0 1px #000000;
+        }
+
+        /* 메인화면 스킨 선택 모달 */
+        #skin-modal {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(185, 236, 255, 0.88);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            padding: 24px 16px;
+            box-sizing: border-box;
+            backdrop-filter: blur(2px);
+        }
+
+        .skin-modal-inner {
+            background: var(--palette-cream);
+            border: 3.5px solid #000000;
+            border-radius: 26px;
+            width: 100%;
+            max-width: 460px;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 22px 18px 18px;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 10px 0 var(--palette-pink), 0 10px 0 2px #000000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .skin-modal-subtitle {
+            margin: 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .skin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .skin-card {
+            background: #ffffff;
+            border: 2.5px solid #000000;
+            border-radius: 16px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            box-shadow: 0 4px 0 #cbd5e1, 0 4px 0 1px #000000;
+            transition: transform 0.08s ease;
+            position: relative;
+        }
+
+        .skin-card.equipped {
+            border-color: #f59e0b;
+            box-shadow: 0 4px 0 #d97706, 0 4px 0 2px #000000;
+            background: #fffbeb;
+        }
+
+        .skin-card.locked {
+            opacity: 0.65;
+            background: #f1f5f9;
+        }
+
+        .skin-card-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .skin-card-name {
+            font-size: 15px;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+        .skin-card-desc {
+            font-size: 10px;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.25;
+            min-height: 25px;
+        }
+
+        .skin-card-condition {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .skin-card-btn {
+            width: 100%;
+            padding: 6px 0;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 2px 0 #000000;
+            touch-action: auto !important;
+            font-family: inherit;
+        }
+
+        .skin-card-btn.equip-btn {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        .skin-card-btn.equipped-btn {
+            background: #f59e0b;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .skin-card-btn.locked-btn {
+            background: #94a3b8;
+            color: #ffffff;
+            cursor: not-allowed;
+        }
+
         /* 메인화면 설정 모달 */
         #settings-modal {
             position: absolute;
@@ -1775,6 +1934,17 @@
             box-shadow: 0 8px 0 var(--palette-blue), 0 8px 0 2px #000000;
         }
 
+        .intro-skin-btn {
+            top: 36px;
+            right: 144px;
+            width: 96px;
+            height: 96px;
+            font-size: 46px;
+            border-width: 6px;
+            border-radius: 28px;
+            box-shadow: 0 8px 0 var(--palette-yellow), 0 8px 0 2px #000000;
+        }
+
         .intro-settings-btn svg {
             width: 50px;
             height: 50px;
@@ -2088,6 +2258,65 @@
             letter-spacing: 0.5px;
             box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
             text-align: center;
+        }
+
+        /* 배틀 대기실 리그 배지 */
+        .battle-league-pill {
+            background: rgba(15, 23, 42, 0.92);
+            color: #ffffff;
+            border: 5px solid #000000;
+            border-radius: 999px;
+            padding: 10px 30px;
+            font-size: 27px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        /* 결과 화면 랭킹 점수(PT) 및 연승 배지 */
+        .battle-rating-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            background: rgba(15, 23, 42, 0.94);
+            color: #ffffff;
+            border: 5px solid #000000;
+            border-radius: 999px;
+            padding: 12px 32px;
+            font-size: 28px;
+            font-weight: 900;
+            box-shadow: 0 7px 0 var(--palette-pink), 0 7px 0 4px #000000;
+            margin: 6px auto;
+        }
+
+        .battle-rating-pill .brp-delta {
+            border-radius: 10px;
+            padding: 3px 10px;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .battle-rating-pill .brp-delta.plus {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        .battle-rating-pill .brp-delta.minus {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .battle-rating-pill .brp-delta.zero {
+            background: #64748b;
+            color: #ffffff;
+        }
+
+        .battle-rating-pill .brp-streak {
+            font-size: 24px;
+            color: #fbbf24;
         }
 
         .battle-result-status {
@@ -2838,6 +3067,9 @@
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
             </button>
+            <button id="intro-skin-btn" class="intro-skin-btn" onclick="openSkinModal()" aria-label="Skins">
+                🎨
+            </button>
 
             <img class="title-art" src="./images/title.png" alt="無限ピッチング">
             <div class="speech-bubble" id="intro-bubble">
@@ -2905,6 +3137,16 @@
                 </div>
 
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
+            </div>
+        </div>
+
+        <!-- 메인화면 스킨 선택 모달 -->
+        <div id="skin-modal" class="hidden" onclick="if(event.target===this) closeSkinModal()">
+            <div class="skin-modal-inner">
+                <button type="button" class="settings-close-x" onclick="closeSkinModal()">✕</button>
+                <h3 id="skin-modal-title" class="settings-modal-title">🎨 볼 & 피처 스킨</h3>
+                <p class="skin-modal-subtitle" id="skin-modal-subtitle">업적을 달성하여 특별한 궤적과 오라를 획득하세요!</p>
+                <div class="skin-grid" id="skin-grid"></div>
             </div>
         </div>
 
@@ -2978,6 +3220,7 @@
         <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
             <p class="battle-title" id="battle-screen-title">最大8人で対戦</p>
+            <div class="battle-league-pill" id="battle-league-pill">🥈 일반 리그 (1,200 PT 이하)</div>
             <div class="battle-stats-pill" id="battle-stats-pill">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
 
             <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
@@ -3025,6 +3268,7 @@
         <!-- 대전 결과 화면 -->
         <div id="battle-result-screen" class="screen hidden">
             <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
+            <div class="battle-rating-pill" id="battle-result-rating-pill" style="display:none;"></div>
             <div class="battle-stats-pill" id="battle-result-stats-pill" style="margin-top:10px;">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
             <div class="battle-scores" id="battle-score-list"></div>
             <p id="rematch-status" class="battle-result-status"></p>
@@ -3529,6 +3773,18 @@
                 settingsBgm: 'BGM 音量',
                 settingsSfx: '効果音 (SFX)',
                 settingsClose: '閉じる',
+                leagueStandard: '一般リーグ',
+                leagueMaster: 'マスターリーグ',
+                leagueStandardDesc: '1,200 PT以下',
+                leagueMasterDesc: '1,200 PT超過',
+                skinModalTitle: '🎨 ボール＆ピッチャースキン',
+                skinModalSubtitle: '実績を達成して特別な軌跡とオーラを獲得しよう！',
+                skinEquipped: '装着中',
+                skinEquip: '装着する',
+                skinLocked: '未達成',
+                streakText: n => `🔥 ${n}連勝中！`,
+                streakEndText: '連勝終了',
+                ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
             },
             en: {
                 introBubble: '<span class="bubble-nowrap">All right! To be the best pitcher</span><br>training starts today!',
@@ -3643,6 +3899,18 @@
                 settingsBgm: 'BGM Volume',
                 settingsSfx: 'SFX Volume',
                 settingsClose: 'Close',
+                leagueStandard: 'Standard League',
+                leagueMaster: 'Master League',
+                leagueStandardDesc: '1,200 PT & Under',
+                leagueMasterDesc: 'Over 1,200 PT',
+                skinModalTitle: '🎨 Ball & Pitcher Skins',
+                skinModalSubtitle: 'Complete achievements to unlock special trails and auras!',
+                skinEquipped: 'EQUIPPED',
+                skinEquip: 'EQUIP',
+                skinLocked: 'LOCKED',
+                streakText: n => `🔥 ${n} Win Streak!`,
+                streakEndText: 'Streak Ended',
+                ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
             },
             ko: {
                 introBubble: '좋아! 세계 최고의 투수가 되기 위해<br>오늘도 특훈이다!',
@@ -3757,6 +4025,18 @@
                 settingsBgm: '배경음악 (BGM)',
                 settingsSfx: '효과음 (SFX)',
                 settingsClose: '확인',
+                leagueStandard: '일반 리그',
+                leagueMaster: '마스터 리그',
+                leagueStandardDesc: '1,200 PT 이하',
+                leagueMasterDesc: '1,200 PT 초과',
+                skinModalTitle: '🎨 볼 & 피처 스킨',
+                skinModalSubtitle: '업적을 달성하여 특별한 궤적과 오라를 획득하세요!',
+                skinEquipped: '장착중',
+                skinEquip: '장착하기',
+                skinLocked: '잠김',
+                streakText: n => `🔥 ${n}연승 달성!`,
+                streakEndText: '연승 종료',
+                ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
             }
         };
 
@@ -4095,16 +4375,28 @@
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
         function getPitchInterval(n) {
-            // 온라인 대전 모드: 5단계 서든데스 페이즈별 가속
+            // 온라인 대전 모드: 일반 리그(1.2s 시작) vs 마스터 리그(1.0s 시작) 100ms 균일 감소
             if (battleMode) {
-                const phase = typeof getBattlePhase === 'function' ? getBattlePhase() : 1;
-                if (phase === 1) return 1000;
-                if (phase === 2) return 900;
-                if (phase === 3) return 800;
-                if (phase === 4) return 700;
-                if (n >= 331) return 400;
-                if (n >= 231) return 500;
-                return 600;
+                const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
+                if (isMaster) {
+                    // 마스터 리그 (1,000ms 시작, 페이즈당 100ms씩 감소, 서든데스 400ms까지)
+                    if (n < 11) return 1000;
+                    if (n < 21) return 900;
+                    if (n < 31) return 800;
+                    if (n < 41) return 700;
+                    if (n < 51) return 600;
+                    if (n < 91) return 500;
+                    return 400;
+                } else {
+                    // 일반 리그 (1,200ms 시작, 페이즈당 100ms씩 균일 감소, 서든데스 600ms까지)
+                    if (n < 11) return 1200;
+                    if (n < 21) return 1100;
+                    if (n < 31) return 1000;
+                    if (n < 41) return 900;
+                    if (n < 51) return 800;
+                    if (n < 91) return 700;
+                    return 600;
+                }
             }
             // 개인 기록 모드: 기존 룰 100% 보존
             if (n < 31)  return 1000;
@@ -5696,6 +5988,64 @@
 
             // Draw Balls
             balls.forEach(b => {
+                // 스킨 볼 궤적 (Ball Trail) 렌더링
+                const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
+                if (equippedSkin !== 'classic' && !b.isFireball && !b.isStripeBall && !b.isFlashBall && !b.isMirrorBall) {
+                    ctx.save();
+                    const t = performance.now();
+                    if (equippedSkin === 'flame') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 9);
+                            const tr = b.radius * (1 - i * 0.25);
+                            ctx.fillStyle = i === 1 ? 'rgba(245, 158, 11, 0.65)' : (i === 2 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(220, 38, 38, 0.2)');
+                            ctx.beginPath();
+                            ctx.arc(b.x + Math.sin(t * 0.01 + i) * scalePx(2), trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (equippedSkin === 'spark') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 8);
+                            const tr = b.radius * (1 - i * 0.25);
+                            ctx.fillStyle = i === 1 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(37, 99, 235, 0.35)';
+                            ctx.beginPath();
+                            ctx.arc(b.x + (i % 2 === 0 ? scalePx(3) : scalePx(-3)), trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (equippedSkin === 'sakura') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 10);
+                            ctx.fillStyle = `rgba(244, 114, 182, ${0.6 - i * 0.15})`;
+                            ctx.beginPath();
+                            ctx.ellipse(b.x + Math.sin(t * 0.008 + i) * scalePx(4), trailY, scalePx(3), scalePx(5), 0.5 * i, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (equippedSkin === 'rainbow') {
+                        const grad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + scalePx(28));
+                        grad.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
+                        grad.addColorStop(0.2, 'rgba(249, 115, 22, 0.6)');
+                        grad.addColorStop(0.4, 'rgba(234, 179, 8, 0.6)');
+                        grad.addColorStop(0.6, 'rgba(34, 197, 94, 0.6)');
+                        grad.addColorStop(0.8, 'rgba(59, 130, 246, 0.5)');
+                        grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.rect(b.x - scalePx(3), b.y, scalePx(6), scalePx(28));
+                        ctx.fill();
+                    } else if (equippedSkin === 'prism') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 9);
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 - i * 0.2})`;
+                            ctx.lineWidth = scalePx(1.5);
+                            const glint = scalePx(5 - i);
+                            ctx.beginPath();
+                            ctx.moveTo(b.x - glint, trailY); ctx.lineTo(b.x + glint, trailY);
+                            ctx.moveTo(b.x, trailY - glint); ctx.lineTo(b.x, trailY + glint);
+                            ctx.stroke();
+                        }
+                    }
+                    ctx.restore();
+                }
+
                 if (b.isFireball && isSpriteReady(ballFireImg)) {
                     const size = b.radius * 3.8;
                     ctx.drawImage(ballFireImg, b.x - size / 2, b.y - size / 2, size, size);
@@ -5883,6 +6233,93 @@
         function drawPlayer() {
             const px = player.x;
             const py = player.y;
+
+            // 장착된 스킨에 따른 피처 오라 (Pitcher Aura) 렌더링
+            const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
+            if (equippedSkin !== 'classic') {
+                ctx.save();
+                const t = performance.now();
+                if (equippedSkin === 'flame') {
+                    const r = scalePx(35 + Math.sin(t * 0.005) * 5);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(255, 215, 0, 0.45)');
+                    auraGrad.addColorStop(0.6, 'rgba(245, 158, 11, 0.25)');
+                    auraGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (equippedSkin === 'spark') {
+                    const r = scalePx(34 + Math.sin(t * 0.008) * 4);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
+                    auraGrad.addColorStop(0.7, 'rgba(37, 99, 235, 0.2)');
+                    auraGrad.addColorStop(1, 'rgba(29, 78, 216, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let i = 0; i < 3; i++) {
+                        const angle = (t * 0.006 + i * 2.1) % (Math.PI * 2);
+                        const sparkR = r * 0.85;
+                        ctx.strokeStyle = 'rgba(186, 230, 253, 0.8)';
+                        ctx.lineWidth = scalePx(1.5);
+                        ctx.beginPath();
+                        ctx.moveTo(px + Math.cos(angle) * (sparkR * 0.5), py - scalePx(10) + Math.sin(angle) * (sparkR * 0.5));
+                        ctx.lineTo(px + Math.cos(angle + 0.3) * sparkR, py - scalePx(10) + Math.sin(angle + 0.3) * sparkR);
+                        ctx.stroke();
+                    }
+                } else if (equippedSkin === 'sakura') {
+                    const r = scalePx(35 + Math.sin(t * 0.004) * 4);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(251, 207, 232, 0.45)');
+                    auraGrad.addColorStop(0.7, 'rgba(244, 114, 182, 0.2)');
+                    auraGrad.addColorStop(1, 'rgba(219, 39, 119, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let i = 0; i < 3; i++) {
+                        const angle = (t * 0.002 + i * 2.09) % (Math.PI * 2);
+                        const petX = px + Math.cos(angle) * (r * 0.8);
+                        const petY = py - scalePx(10) + Math.sin(angle) * (r * 0.8);
+                        ctx.fillStyle = 'rgba(244, 114, 182, 0.75)';
+                        ctx.beginPath();
+                        ctx.ellipse(petX, petY, scalePx(3), scalePx(5), angle, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (equippedSkin === 'rainbow') {
+                    const r = scalePx(36 + Math.sin(t * 0.005) * 4);
+                    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'];
+                    const stepAngle = (Math.PI * 2) / colors.length;
+                    const rot = t * 0.003;
+                    ctx.lineWidth = scalePx(3);
+                    for (let i = 0; i < colors.length; i++) {
+                        ctx.strokeStyle = colors[i];
+                        ctx.beginPath();
+                        ctx.arc(px, py - scalePx(10), r, rot + i * stepAngle, rot + (i + 1) * stepAngle);
+                        ctx.stroke();
+                    }
+                } else if (equippedSkin === 'prism') {
+                    const r = scalePx(36 + Math.sin(t * 0.006) * 5);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(2), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+                    auraGrad.addColorStop(0.5, 'rgba(34, 211, 238, 0.3)');
+                    auraGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    const glintLen = scalePx(16 + Math.sin(t * 0.01) * 6);
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.lineWidth = scalePx(2);
+                    ctx.beginPath();
+                    ctx.moveTo(px - glintLen, py - scalePx(10)); ctx.lineTo(px + glintLen, py - scalePx(10));
+                    ctx.moveTo(px, py - scalePx(10) - glintLen); ctx.lineTo(px, py - scalePx(10) + glintLen);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
 
             // cart.png — 아래쪽 (크기 축소)
             const cartW = Math.min(width * 0.13, scalePx(65));
@@ -6151,9 +6588,12 @@
                 return;
             }
             pill.style.display = 'inline-block';
-            const fn = textFor('introProfilePillText');
+            const rating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
+            const leagueBadge = rating > 1200 ? '👑' : '🥈';
+            const streak = typeof getBattleStreak === 'function' ? getBattleStreak() : 0;
+            const streakText = streak >= 2 ? ` | 🔥${streak}` : '';
             const synced = isCloudAccountLinked();
-            pill.innerText = typeof fn === 'function' ? fn(savedName, synced) : `👤 ${savedName}`;
+            pill.innerText = `👤 ${savedName} | ${leagueBadge} ${rating.toLocaleString()} PT${streakText} ${synced ? '☁️' : ''}`.trim();
             pill.classList.toggle('is-synced', synced);
         }
 
@@ -6172,11 +6612,20 @@
                     matches: Math.max(0, Number(stats.matches) || 0),
                     wins: Math.max(0, Number(stats.wins) || 0)
                 },
+                battleRating: typeof getBattleRating === 'function' ? getBattleRating() : 1000,
+                battleStreak: typeof getBattleStreak === 'function' ? getBattleStreak() : 0,
+                battleMaxStreak: typeof getBattleMaxStreak === 'function' ? getBattleMaxStreak() : 0,
+                equippedSkin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
+                unlockedSkins: typeof getUnlockedSkins === 'function' ? getUnlockedSkins() : ['classic'],
                 country: userCountry,
                 updatedAt: Date.now()
             };
             return usersRef.child(accountKey).transaction(current => {
                 if (!current) return payload;
+                const mergedUnlockedSkins = Array.from(new Set([
+                    ...(Array.isArray(current.unlockedSkins) ? current.unlockedSkins : ['classic']),
+                    ...(Array.isArray(payload.unlockedSkins) ? payload.unlockedSkins : ['classic'])
+                ]));
                 return {
                     ...current,
                     // 서버에 한 번 등록된 이름은 절대 변경 불가
@@ -6188,6 +6637,10 @@
                         matches: Math.max(Number(current.battleStats?.matches) || 0, payload.battleStats.matches),
                         wins: Math.max(Number(current.battleStats?.wins) || 0, payload.battleStats.wins)
                     },
+                    battleRating: Math.max(600, Number(current.battleRating) || payload.battleRating),
+                    battleMaxStreak: Math.max(Number(current.battleMaxStreak) || 0, payload.battleMaxStreak),
+                    equippedSkin: current.equippedSkin || payload.equippedSkin,
+                    unlockedSkins: mergedUnlockedSkins,
                     country: payload.country || current.country || 'KR',
                     updatedAt: Date.now()
                 };
@@ -6230,6 +6683,27 @@
                     } catch (e) {}
                     if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
                 }
+            }
+            if (remoteData.battleRating !== undefined) {
+                const r = Math.max(600, parseInt(remoteData.battleRating, 10) || 1000);
+                try { localStorage.setItem(BATTLE_RATING_KEY, String(r)); } catch (e) {}
+            }
+            if (remoteData.battleMaxStreak !== undefined) {
+                const ms = Math.max(0, parseInt(remoteData.battleMaxStreak, 10) || 0);
+                try {
+                    const localMax = getBattleMaxStreak();
+                    if (ms > localMax) localStorage.setItem(BATTLE_MAX_STREAK_KEY, String(ms));
+                } catch (e) {}
+            }
+            if (Array.isArray(remoteData.unlockedSkins)) {
+                try {
+                    const localUnlocked = getUnlockedSkins();
+                    const merged = Array.from(new Set([...localUnlocked, ...remoteData.unlockedSkins]));
+                    localStorage.setItem(UNLOCKED_SKINS_KEY, JSON.stringify(merged));
+                } catch (e) {}
+            }
+            if (remoteData.equippedSkin && typeof getUnlockedSkins === 'function' && getUnlockedSkins().includes(remoteData.equippedSkin)) {
+                try { localStorage.setItem(EQUIPPED_SKIN_KEY, remoteData.equippedSkin); } catch (e) {}
             }
             updatePlayTicketStatusUI();
             updateIntroProfilePillUI();
@@ -7035,9 +7509,316 @@
          */
         const battleRef = db.ref('battles');
         const MAX_BATTLE_PLAYERS = 8;
-        const QUICK_MATCH_QUEUE_KEY = '_QMP';
         const QUICK_MATCH_WAIT_SECONDS = 20;
         const ROOM_AUTO_CLOSE_SECONDS = 5;
+
+        // 2개 리그 분리 매칭 큐 (Firebase 보안 규칙 $roomId.length === 4 충족: 4글자)
+        const QUICK_MATCH_QUEUE_STANDARD = '_QP1'; // 일반 리그 (1,200 PT 이하)
+        const QUICK_MATCH_QUEUE_MASTER = '_QP2';   // 마스터 리그 (1,200 PT 초과)
+
+        // 랭킹 승점(PT) & 연승 & 스킨 저장소 키 및 상수
+        const BATTLE_RATING_KEY = 'infinitePitcherBattleRating_v1';
+        const BATTLE_STREAK_KEY = 'infinitePitcherBattleStreak_v1';
+        const BATTLE_MAX_STREAK_KEY = 'infinitePitcherBattleMaxStreak_v1';
+        const UNLOCKED_SKINS_KEY = 'infinitePitcherUnlockedSkins_v1';
+        const EQUIPPED_SKIN_KEY = 'infinitePitcherEquippedSkin_v1';
+
+        const DEFAULT_BATTLE_RATING = 1000;
+        const MIN_BATTLE_RATING = 600;
+        const MASTER_LEAGUE_THRESHOLD = 1200;
+
+        // 제로섬 승점 배분표 (1위 +20, 2위 +10, 3위 +5, 4~5위 0, 6위 -5, 7위 -10, 8위 -20)
+        const BATTLE_RANK_DELTAS = {
+            1: 20,
+            2: 10,
+            3: 5,
+            4: 0,
+            5: 0,
+            6: -5,
+            7: -10,
+            8: -20
+        };
+
+        let currentBattleLeague = 'standard';
+        let battleRatingProcessed = false;
+        let lastBattleResultRatingData = null;
+
+        function getBattleRating() {
+            try {
+                const val = parseInt(localStorage.getItem(BATTLE_RATING_KEY), 10);
+                return isNaN(val) ? DEFAULT_BATTLE_RATING : Math.max(MIN_BATTLE_RATING, val);
+            } catch (e) {
+                return DEFAULT_BATTLE_RATING;
+            }
+        }
+
+        function saveBattleRating(val) {
+            const clamped = Math.max(MIN_BATTLE_RATING, Math.round(Number(val) || DEFAULT_BATTLE_RATING));
+            try {
+                localStorage.setItem(BATTLE_RATING_KEY, String(clamped));
+            } catch (e) {}
+            checkSkinUnlocks();
+            updateIntroProfilePillUI();
+            if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
+            return clamped;
+        }
+
+        function getBattleStreak() {
+            try {
+                const val = parseInt(localStorage.getItem(BATTLE_STREAK_KEY), 10);
+                return isNaN(val) ? 0 : Math.max(0, val);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function saveBattleStreak(val) {
+            const s = Math.max(0, Math.round(Number(val) || 0));
+            try {
+                localStorage.setItem(BATTLE_STREAK_KEY, String(s));
+                const maxS = getBattleMaxStreak();
+                if (s > maxS) {
+                    localStorage.setItem(BATTLE_MAX_STREAK_KEY, String(s));
+                }
+            } catch (e) {}
+            checkSkinUnlocks();
+            updateIntroProfilePillUI();
+            if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
+            return s;
+        }
+
+        function getBattleMaxStreak() {
+            try {
+                const val = parseInt(localStorage.getItem(BATTLE_MAX_STREAK_KEY), 10);
+                return isNaN(val) ? 0 : Math.max(0, val);
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function getLeagueByRating(rating) {
+            return (rating > MASTER_LEAGUE_THRESHOLD) ? 'master' : 'standard';
+        }
+
+        function getPlayerLeague() {
+            return getLeagueByRating(getBattleRating());
+        }
+
+        function getActiveQueueKey() {
+            return getPlayerLeague() === 'master' ? QUICK_MATCH_QUEUE_MASTER : QUICK_MATCH_QUEUE_STANDARD;
+        }
+
+        function isMasterLeagueBattle() {
+            if (!battleMode) return false;
+            return currentBattleLeague === 'master';
+        }
+
+        function getLeagueInfo(league = null) {
+            const l = league || (typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle() ? 'master' : getPlayerLeague());
+            if (l === 'master') {
+                return {
+                    id: 'master',
+                    name: { ko: '마스터 리그', en: 'Master League', ja: 'マスターリーグ' },
+                    badge: '👑',
+                    color: '#ffb300',
+                    queueKey: QUICK_MATCH_QUEUE_MASTER,
+                    desc: { ko: '1,200 PT 초과', en: 'Over 1,200 PT', ja: '1,200 PT超過' }
+                };
+            }
+            return {
+                id: 'standard',
+                name: { ko: '일반 리그', en: 'Standard League', ja: '一般リーグ' },
+                badge: '🥈',
+                color: '#94a3b8',
+                queueKey: QUICK_MATCH_QUEUE_STANDARD,
+                desc: { ko: '1,200 PT 이하', en: '1,200 PT & Under', ja: '1,200 PT以下' }
+            };
+        }
+
+        // ── 6종 캔버스 볼 궤적 & 피처 오라 스킨 카탈로그 ──
+        const SKINS_CATALOG = [
+            {
+                id: 'classic',
+                name: { ko: '클래식 쇼와', ja: 'クラシック昭和', en: 'Classic Showa' },
+                icon: '⚾',
+                desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher' },
+                condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked' },
+                checkUnlock: () => true
+            },
+            {
+                id: 'flame',
+                name: { ko: '골든 플레임', ja: 'ゴールデンフレーム', en: 'Golden Flame' },
+                icon: '🔥',
+                desc: { ko: '타오르는 골든 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura' },
+                condition: { ko: '8인 배틀 10판 플레이', ja: '8人バトル10回プレイ', en: 'Play 10 Battle matches' },
+                checkUnlock: (stats) => stats.matches >= 10
+            },
+            {
+                id: 'spark',
+                name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark' },
+                icon: '⚡',
+                desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura' },
+                condition: { ko: '8인 배틀 5승 달성', ja: '8人バトル5勝達成', en: 'Win 5 Battle matches' },
+                checkUnlock: (stats) => stats.wins >= 5
+            },
+            {
+                id: 'sakura',
+                name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom' },
+                icon: '🌸',
+                desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura' },
+                condition: { ko: '개인 최고 기록 100점 돌파', ja: '個人最高スコア100点突破', en: 'Reach 100+ pts in Solo mode' },
+                checkUnlock: (stats, bestScore) => bestScore >= 100
+            },
+            {
+                id: 'rainbow',
+                name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow' },
+                icon: '🌈',
+                desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura' },
+                condition: { ko: '8인 배틀 3연승 달성', ja: '8人バトル3連勝達成', en: 'Achieve 3 Win Streak in Battle' },
+                checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 3
+            },
+            {
+                id: 'prism',
+                name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism' },
+                icon: '💎',
+                desc: { ko: '다이아몬드 광채 프리즘 이펙트', ja: 'ダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura' },
+                condition: { ko: '마스터 리그(1,200 PT) 진입 달성', ja: 'マスターリーグ(1,200 PT)突入達成', en: 'Reach Master League (1,200+ PT)' },
+                checkUnlock: (stats, bestScore, maxStreak, rating) => rating > MASTER_LEAGUE_THRESHOLD
+            }
+        ];
+
+        function getUnlockedSkins() {
+            try {
+                const raw = localStorage.getItem(UNLOCKED_SKINS_KEY);
+                const list = raw ? JSON.parse(raw) : ['classic'];
+                if (!Array.isArray(list)) return ['classic'];
+                if (!list.includes('classic')) list.unshift('classic');
+                return list;
+            } catch (e) {
+                return ['classic'];
+            }
+        }
+
+        function unlockSkin(id) {
+            const list = getUnlockedSkins();
+            if (!list.includes(id)) {
+                list.push(id);
+                try {
+                    localStorage.setItem(UNLOCKED_SKINS_KEY, JSON.stringify(list));
+                } catch (e) {}
+                if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
+                return true;
+            }
+            return false;
+        }
+
+        function getEquippedSkin() {
+            try {
+                const skin = localStorage.getItem(EQUIPPED_SKIN_KEY) || 'classic';
+                const unlocked = getUnlockedSkins();
+                return unlocked.includes(skin) ? skin : 'classic';
+            } catch (e) {
+                return 'classic';
+            }
+        }
+
+        function setEquippedSkin(id) {
+            const unlocked = getUnlockedSkins();
+            if (unlocked.includes(id)) {
+                try {
+                    localStorage.setItem(EQUIPPED_SKIN_KEY, id);
+                } catch (e) {}
+                if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
+                return true;
+            }
+            return false;
+        }
+
+        function checkSkinUnlocks() {
+            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
+            const maxStreak = getBattleMaxStreak();
+            const rating = getBattleRating();
+            const newlyUnlocked = [];
+
+            SKINS_CATALOG.forEach(skin => {
+                if (skin.checkUnlock(stats, bestScore, maxStreak, rating)) {
+                    if (unlockSkin(skin.id)) {
+                        newlyUnlocked.push(skin);
+                    }
+                }
+            });
+            return newlyUnlocked;
+        }
+
+        function openSkinModal() {
+            checkSkinUnlocks();
+            renderSkinGrid();
+            const modal = document.getElementById('skin-modal');
+            if (modal) modal.classList.remove('hidden');
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+        }
+
+        function closeSkinModal() {
+            const modal = document.getElementById('skin-modal');
+            if (modal) modal.classList.add('hidden');
+            playSfx('click', 0.6);
+            triggerHaptic('light');
+        }
+
+        function renderSkinGrid() {
+            const grid = document.getElementById('skin-grid');
+            if (!grid) return;
+            const unlocked = getUnlockedSkins();
+            const equipped = getEquippedSkin();
+            const lang = currentLang || 'ko';
+
+            grid.innerHTML = SKINS_CATALOG.map(skin => {
+                const isUnlocked = unlocked.includes(skin.id);
+                const isEquipped = (equipped === skin.id);
+                const name = skin.name[lang] || skin.name.ko;
+                const desc = skin.desc[lang] || skin.desc.ko;
+                const condition = skin.condition[lang] || skin.condition.ko;
+
+                let cardClass = 'skin-card';
+                let btnText = (lang === 'en' ? 'LOCKED' : (lang === 'ja' ? '未達成' : '잠김'));
+                let btnClass = 'skin-card-btn locked-btn';
+                let btnOnClick = '';
+
+                if (isEquipped) {
+                    cardClass += ' equipped';
+                    btnText = (lang === 'en' ? 'EQUIPPED' : (lang === 'ja' ? '装着中' : '장착중'));
+                    btnClass = 'skin-card-btn equipped-btn';
+                } else if (isUnlocked) {
+                    cardClass += ' unlocked';
+                    btnText = (lang === 'en' ? 'EQUIP' : (lang === 'ja' ? '装着する' : '장착하기'));
+                    btnClass = 'skin-card-btn equip-btn';
+                    btnOnClick = `onclick="equipSkin('${skin.id}')"`;
+                } else {
+                    cardClass += ' locked';
+                }
+
+                return `
+                    <div class="${cardClass}">
+                        <div class="skin-card-icon">${skin.icon}</div>
+                        <div class="skin-card-name">${name}</div>
+                        <div class="skin-card-desc">${desc}</div>
+                        <div class="skin-card-condition">${isUnlocked ? '🔓 ' + condition : '🔒 ' + condition}</div>
+                        <button type="button" class="${btnClass}" ${btnOnClick}>${btnText}</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function equipSkin(id) {
+            if (setEquippedSkin(id)) {
+                playSfx('hit', 1.0);
+                triggerHaptic('medium');
+                renderSkinGrid();
+            }
+        }
+
         let battleRoomId = null;
         let battleRole = null; // 'host' | 'guest'
         let battlePlayerId = null;
@@ -7250,24 +8031,68 @@
             if (resultPill) resultPill.innerText = label;
         }
 
-        const BATTLE_BOT_POOL = [
-            { name: '🇯🇵 REN', tier: 'rival', minTarget: 110, maxTarget: 145 },
-            { name: '🇺🇸 ALEX', tier: 'early', minTarget: 22, maxTarget: 36 },
-            { name: '🇰🇷 불꽃피처', tier: 'rival', minTarget: 115, maxTarget: 155 },
-            { name: '🇹🇼 LEO', tier: 'early', minTarget: 20, maxTarget: 32 },
-            { name: '🇲🇽 MATEO', tier: 'mid', minTarget: 44, maxTarget: 62 },
-            { name: '🇬🇧 RYAN', tier: 'late', minTarget: 74, maxTarget: 96 },
-            { name: '🇨🇦 NOAH', tier: 'early', minTarget: 24, maxTarget: 38 },
-            { name: '🇯🇵 HARU', tier: 'late', minTarget: 78, maxTarget: 102 },
-            { name: '🇰🇷 마구마스터', tier: 'mid', minTarget: 48, maxTarget: 66 },
-            { name: '🇩🇪 LUKAS', tier: 'mid', minTarget: 42, maxTarget: 58 },
-            { name: '🇫🇷 LIAM', tier: 'early', minTarget: 25, maxTarget: 35 },
-            { name: '🇦🇺 OLIVER', tier: 'late', minTarget: 70, maxTarget: 92 },
-            { name: '🇧🇷 LUCAS', tier: 'mid', minTarget: 46, maxTarget: 64 },
-            { name: '🇪🇸 DIEGO', tier: 'late', minTarget: 75, maxTarget: 98 },
-            { name: '🇮🇹 MARCO', tier: 'early', minTarget: 21, maxTarget: 34 },
-            { name: '🇻🇳 MINH', tier: 'mid', minTarget: 40, maxTarget: 60 }
+        // ── 리그별 1,000명 봇 풀 & 인간적 하방 편향 실수 공식 (서버 비용 0원 클라이언트 생성) ──
+        const BOT_COUNTRY_FLAGS = ['🇯🇵', '🇰🇷', '🇺🇸', '🇹🇼', '🇨🇦', '🇦🇺', '🇬🇧', '🇩🇪', '🇫🇷', '🇲🇽', '🇧🇷', '🇪🇸', '🇮🇹', '🇻🇳', '🇵🇭', '🇳🇱', '🇦🇷', '🇨🇿', '🇸🇪', '🇫🇮'];
+
+        const BOT_NAME_PREFIXES = [
+            '불꽃', '마구', '번개', '제구', '강속구', '슬라이더', '포크', '커브', '체인지업', '에이스',
+            '폭풍', '질풍', '원더', '골든', '다이아', '터보', '하이퍼', '울트라', '슈퍼', '아이언',
+            '샤프', '스마트', '메가', '베테랑', '루키', '마스터', '캡틴', '타이거', '드래곤', '이글'
         ];
+
+        const BOT_NAME_ROOTS = [
+            'REN', 'HARU', 'SOTA', 'YUTO', 'KENTO', 'DAIKI', 'KAZU', 'SHIN', 'TAKUMI', 'RYO',
+            'ALEX', 'CHRIS', 'MIKE', 'RYAN', 'SAM', 'JAKE', 'LUKE', 'MAX', 'NICK', 'LEO',
+            'MINH', 'CHEN', 'WEI', 'MATEO', 'LUCAS', 'DIEGO', 'MARCO', 'LIAM', 'NOAH', 'OLIVER',
+            'FELIX', 'LUKAS', 'FINN', 'ELIAS', 'HUGO', 'LEON', 'MILO', 'NICO', 'OSCAR', 'THEO',
+            '투수', '피처', '스트라이크', '클로저', '선발', '에이스', '홀드', '마운드', '글러브', '야구왕'
+        ];
+
+        function generateLeagueBot(index, league = 'standard') {
+            const isMaster = league === 'master';
+            const flag = BOT_COUNTRY_FLAGS[(index * 7 + (isMaster ? 11 : 3)) % BOT_COUNTRY_FLAGS.length];
+            const prefix = BOT_NAME_PREFIXES[(index * 13 + (isMaster ? 17 : 5)) % BOT_NAME_PREFIXES.length];
+            const root = BOT_NAME_ROOTS[(index * 19 + (isMaster ? 23 : 7)) % BOT_NAME_ROOTS.length];
+
+            let displayName = '';
+            if (flag === '🇰🇷') {
+                displayName = `${flag} ${prefix}${root.length <= 3 ? root : ''}`;
+            } else {
+                const numTag = (index >= 100) ? String(index % 100) : '';
+                displayName = `${flag} ${root}${numTag ? ' ' + numTag : ''}`;
+            }
+            displayName = clampBattleName(displayName);
+
+            let rating, matches, wins, streak, baseTarget;
+            if (isMaster) {
+                // 마스터 리그 (1,220 ~ 2,400 PT, 판수 80 ~ 350판, 승률 35 ~ 60%, 기본 기대치 55 ~ 95점)
+                rating = 1220 + ((index * 97) % 1180);
+                matches = 80 + ((index * 43) % 270);
+                const winRate = 0.35 + (((index * 17) % 25) / 100);
+                wins = Math.min(matches, Math.max(25, Math.round(matches * winRate)));
+                streak = ((index * 13) % 8 === 0) ? ((index % 4) + 1) : 0;
+                baseTarget = 55 + ((index * 29) % 41);
+            } else {
+                // 일반 리그 (600 ~ 1,180 PT, 판수 10 ~ 80판, 승률 12 ~ 34%, 기본 기대치 18 ~ 42점)
+                rating = 600 + ((index * 71) % 580);
+                matches = 10 + ((index * 37) % 71);
+                const winRate = 0.12 + (((index * 13) % 23) / 100);
+                wins = Math.min(matches, Math.max(1, Math.round(matches * winRate)));
+                streak = ((index * 19) % 15 === 0) ? ((index % 3) + 1) : 0;
+                baseTarget = 18 + ((index * 23) % 25);
+            }
+
+            return {
+                idIndex: index,
+                league,
+                name: displayName,
+                rating,
+                matches,
+                wins,
+                streak,
+                baseTarget
+            };
+        }
 
         function genCode() {
             return Math.floor(1000 + Math.random() * 9000).toString();
@@ -7420,12 +8245,14 @@
             battleLobbyCountdownActive = false;
             quickMatchActive = false;
             if (!keepPool && battleRole === 'host' && battleRoomId) {
-                try {
-                    battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
-                        if (curr && curr.roomId === battleRoomId) return null;
-                        return curr;
-                    });
-                } catch (e) {}
+                [QUICK_MATCH_QUEUE_STANDARD, QUICK_MATCH_QUEUE_MASTER].forEach(qKey => {
+                    try {
+                        battleRef.child(qKey).transaction(curr => {
+                            if (curr && curr.roomId === battleRoomId) return null;
+                            return curr;
+                        });
+                    } catch (e) {}
+                });
             }
             updateQuickMatchUI();
         }
@@ -7488,9 +8315,11 @@
             quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
             updateQuickMatchUI();
 
-            // 중앙 집중식 원자적 매칭 큐 (_QMP - 4글자로 Firebase 보안 규칙 "$roomId.length === 4" 100% 통과)
-            // 동시 접속 유저 및 친구끼리 시작 시 동일한 방에 우선 배정!
-            const queueRef = battleRef.child(QUICK_MATCH_QUEUE_KEY);
+            // 2개 리그 분리 큐 (일반 리그 _QP1 vs 마스터 리그 _QP2: 4글자로 Firebase 보안 규칙 100% 통과)
+            const myLeague = getPlayerLeague();
+            currentBattleLeague = myLeague;
+            const activeQueueKey = getActiveQueueKey();
+            const queueRef = battleRef.child(activeQueueKey);
             const now = getEstimatedServerTimeMs();
             const candidateCode = genCode();
             const candidateHostId = genBattlePlayerId();
@@ -7511,6 +8340,7 @@
                     roomId: candidateCode,
                     hostId: candidateHostId,
                     hostName: nickname,
+                    league: myLeague,
                     createdAt: now,
                     count: 1,
                     status: 'waiting'
@@ -7535,21 +8365,25 @@
 
         function findAndJoinPublicRoomFallback(fallbackCode, fallbackHostId, nickname) {
             const now = getEstimatedServerTimeMs();
-            battleRef.child(QUICK_MATCH_QUEUE_KEY).once('value').then(snap => {
+            const myLeague = getPlayerLeague();
+            const activeQueueKey = getActiveQueueKey();
+
+            battleRef.child(activeQueueKey).once('value').then(snap => {
                 const lobby = snap.val();
                 if (lobby && lobby.roomId && lobby.status === 'waiting' && (now - (lobby.createdAt || 0) < 30000)) {
                     joinPublicQuickMatchRoom(lobby.roomId, nickname);
                     return;
                 }
-                // 큐에 없으면 isPublicWaiting 쿼리로 공개 대기방 검색
-                battleRef.orderByChild('isPublicWaiting').equalTo(true).limitToLast(5).once('value').then(snap2 => {
+                // 큐에 없으면 isPublicWaiting 쿼리로 공개 대기방 검색 (동일 리그만 필터링)
+                battleRef.orderByChild('isPublicWaiting').equalTo(true).limitToLast(10).once('value').then(snap2 => {
                     const rooms = snap2.val() || {};
                     let targetCode = null;
                     Object.keys(rooms).forEach(code => {
                         if (targetCode) return;
-                        if (code === QUICK_MATCH_QUEUE_KEY || code === battleRoomId) return;
+                        if (code === activeQueueKey || code === battleRoomId) return;
                         const r = rooms[code];
-                        if (r && r.status === 'waiting' && !r.joinLocked && (now - (r.createdAt || 0) < 30000)) {
+                        const roomLeague = r.league || 'standard';
+                        if (roomLeague === myLeague && r && r.status === 'waiting' && !r.joinLocked && (now - (r.createdAt || 0) < 30000)) {
                             const pCount = Object.keys(r.players || {}).length;
                             if (pCount >= 1 && pCount < MAX_BATTLE_PLAYERS) {
                                 targetCode = code;
@@ -7573,6 +8407,9 @@
             const newPlayerId = genBattlePlayerId();
             const joinedAt = getEstimatedServerTimeMs();
             const myStats = getBattleStats();
+            const myRating = getBattleRating();
+            const myLeague = getPlayerLeague();
+            const myStreak = getBattleStreak();
 
             // 호스트의 방 생성 전파 대기 (최대 10회 = 3초)
             battleRef.child(targetCode).once('value').then(snap => {
@@ -7598,6 +8435,8 @@
                     return;
                 }
 
+                currentBattleLeague = room.league || myLeague;
+
                 clearBattleDisconnectHandler();
                 clearBattleRoomListener(battleRoomId);
                 clearBattleResultListener(battleRoomId);
@@ -7613,6 +8452,9 @@
                     name: nickname,
                     matches: myStats.matches,
                     wins: myStats.wins,
+                    rating: myRating,
+                    league: myLeague,
+                    streak: myStreak,
                     isHost: false,
                     isBot: false,
                     joinedAt
@@ -7649,8 +8491,14 @@
             const code = forcedCode || genCode();
             const playerId = forcedPlayerId || genBattlePlayerId();
             const myStats = getBattleStats();
+            const myRating = getBattleRating();
+            const myLeague = getPlayerLeague();
+            const myStreak = getBattleStreak();
+            const activeQueueKey = getActiveQueueKey();
             const now = getEstimatedServerTimeMs();
             const deadline = now + QUICK_MATCH_WAIT_SECONDS * 1000;
+
+            currentBattleLeague = myLeague;
 
             const hostPlayer = {
                 score: 0,
@@ -7661,6 +8509,9 @@
                 name: nickname,
                 matches: myStats.matches,
                 wins: myStats.wins,
+                rating: myRating,
+                league: myLeague,
+                streak: myStreak,
                 isHost: true,
                 isBot: false,
                 joinedAt: now
@@ -7690,16 +8541,18 @@
                 isPublic: true,
                 isPublicWaiting: true,
                 joinLocked: false,
+                league: myLeague,
                 createdAt: now,
                 quickMatchDeadline: deadline
             }).then(() => {
                 registerBattleDisconnectHandler(code, playerId, 'host');
-                // 호스트 대기방을 QUICK_MATCH_QUEUE_KEY 에 등록
-                battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
+                // 호스트 대기방을 해당 리그 큐(activeQueueKey)에 등록
+                battleRef.child(activeQueueKey).transaction(curr => {
                     if (!curr || !curr.roomId || curr.status !== 'waiting' || (now - (curr.createdAt || 0) >= 30000)) {
                         return {
                             roomId: code,
                             hostId: playerId,
+                            league: myLeague,
                             createdAt: now,
                             count: 1,
                             status: 'waiting'
@@ -7709,7 +8562,7 @@
                     return curr;
                 });
                 try {
-                    battleRef.child(QUICK_MATCH_QUEUE_KEY).onDisconnect().remove();
+                    battleRef.child(activeQueueKey).onDisconnect().remove();
                 } catch (e) {}
                 listenBattleRoom(code);
             });
@@ -7736,34 +8589,43 @@
 
         let botStates = {};
 
-        function pickRandomBattleBots(count, existingNames = []) {
+        function pickRandomBattleBots(count, existingNames = [], league = null) {
+            const activeLeague = league || (typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle() ? 'master' : getPlayerLeague());
             const used = new Set(existingNames.map(n => String(n || '').toUpperCase()));
-            const shuffled = [...BATTLE_BOT_POOL].sort(() => Math.random() - 0.5);
             const picked = [];
 
-            // 티어별 순차 분배 (early -> mid -> early -> mid -> late -> late -> rival -> mid)
-            const tiersOrder = ['early', 'mid', 'early', 'mid', 'late', 'late', 'rival', 'mid'];
-            for (let i = 0; i < count; i++) {
-                const preferredTier = tiersOrder[i % tiersOrder.length];
-                let candidate = shuffled.find(c => !used.has(c.name.toUpperCase()) && c.tier === preferredTier);
-                if (!candidate) {
-                    candidate = shuffled.find(c => !used.has(c.name.toUpperCase()));
-                }
-                if (!candidate) {
-                    candidate = { name: `BOT ${i + 1}`, minTarget: 30, maxTarget: 80 };
-                }
-                used.add(candidate.name.toUpperCase());
-                const targetScore = Math.floor(
-                    candidate.minTarget + Math.random() * (candidate.maxTarget - candidate.minTarget + 1)
-                );
-                const botMatches = Math.floor(8 + Math.random() * 32);
-                const botWins = Math.min(botMatches, Math.floor(1 + Math.random() * Math.max(2, Math.round(botMatches * 0.35))));
+            // 1,000명의 봇 풀에서 무작위 셔플 샘플링
+            const candidateIndices = [];
+            for (let i = 0; i < 1000; i++) candidateIndices.push(i);
+            for (let i = candidateIndices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const temp = candidateIndices[i];
+                candidateIndices[i] = candidateIndices[j];
+                candidateIndices[j] = temp;
+            }
+
+            for (let i = 0; i < candidateIndices.length && picked.length < count; i++) {
+                const botTemplate = generateLeagueBot(candidateIndices[i], activeLeague);
+                if (used.has(botTemplate.name.toUpperCase())) continue;
+                used.add(botTemplate.name.toUpperCase());
+
+                // 하방 편향(Downward Skewed) 인간적 실수 공식:
+                // 기대 점수 도달 전 초반(Phase 1~3)에서 손가락이 꼬여 어이없이 실수로 탈락하는 비율을 높이는 멱급수 난수
+                const isMaster = (activeLeague === 'master');
+                const randSkew = Math.pow(Math.random(), isMaster ? 2.0 : 2.2);
+                const floorScore = isMaster ? 18 : 6;
+                const luckyBonus = Math.random() < 0.12 ? Math.floor(Math.random() * (isMaster ? 25 : 12)) : 0;
+                const targetScore = Math.max(floorScore, Math.round(botTemplate.baseTarget - randSkew * (botTemplate.baseTarget - floorScore) + luckyBonus));
+
                 picked.push({
                     id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + picked.length,
-                    name: candidate.name,
-                    targetScore,
-                    matches: botMatches,
-                    wins: botWins
+                    name: botTemplate.name,
+                    rating: botTemplate.rating,
+                    matches: botTemplate.matches,
+                    wins: botTemplate.wins,
+                    streak: botTemplate.streak,
+                    league: activeLeague,
+                    targetScore
                 });
             }
             return picked;
@@ -7782,12 +8644,14 @@
             quickMatchActive = false;
             updateQuickMatchUI(textFor('battleQuickMatched'));
 
-            try {
-                battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
-                    if (curr && curr.roomId === roomId) return null;
-                    return curr;
-                });
-            } catch (e) {}
+            [QUICK_MATCH_QUEUE_STANDARD, QUICK_MATCH_QUEUE_MASTER].forEach(qKey => {
+                try {
+                    battleRef.child(qKey).transaction(curr => {
+                        if (curr && curr.roomId === roomId) return null;
+                        return curr;
+                    });
+                } catch (e) {}
+            });
 
             battleRef.child(roomId).once('value').then(snap => {
                 const room = snap.val();
@@ -7804,7 +8668,8 @@
                 const neededBots = Math.max(0, MAX_BATTLE_PLAYERS - existingList.length);
                 if (neededBots > 0) {
                     const existingNames = existingList.map(p => p.name);
-                    const bots = pickRandomBattleBots(neededBots, existingNames);
+                    const roomLeague = room.league || getPlayerLeague();
+                    const bots = pickRandomBattleBots(neededBots, existingNames, roomLeague);
                     const now = getEstimatedServerTimeMs();
                     bots.forEach((bot, idx) => {
                         updates['players/' + bot.id] = {
@@ -7816,6 +8681,9 @@
                             name: bot.name,
                             matches: bot.matches,
                             wins: bot.wins,
+                            rating: bot.rating,
+                            league: bot.league,
+                            streak: bot.streak,
                             isHost: false,
                             isBot: true,
                             targetScore: bot.targetScore,
@@ -8016,12 +8884,14 @@
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
 
             if (roomId) {
-                try {
-                    battleRef.child(QUICK_MATCH_QUEUE_KEY).transaction(curr => {
-                        if (curr && curr.roomId === roomId) return null;
-                        return curr;
-                    });
-                } catch (e) {}
+                [QUICK_MATCH_QUEUE_STANDARD, QUICK_MATCH_QUEUE_MASTER].forEach(qKey => {
+                    try {
+                        battleRef.child(qKey).transaction(curr => {
+                            if (curr && curr.roomId === roomId) return null;
+                            return curr;
+                        });
+                    } catch (e) {}
+                });
                 const otherActiveHumans = Object.keys(battlePlayers || {}).filter(pid => {
                     if (pid === playerId) return false;
                     const p = battlePlayers[pid];
@@ -8107,6 +8977,20 @@
 
             hydrateBattleNameInput();
             applyBattleLang();
+            currentBattleLeague = getPlayerLeague();
+            const leaguePill = document.getElementById('battle-league-pill');
+            if (leaguePill) {
+                const info = getLeagueInfo(currentBattleLeague);
+                const lang = currentLang || 'ko';
+                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
+                if (currentBattleLeague === 'master') {
+                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
+                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
+                } else {
+                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
+                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
+                }
+            }
             showBattleRoomStep();
         }
 
@@ -8138,6 +9022,20 @@
             document.getElementById('battle-player-list').innerHTML = '';
             hydrateBattleNameInput();
             applyBattleLang();
+            currentBattleLeague = getPlayerLeague();
+            const leaguePill = document.getElementById('battle-league-pill');
+            if (leaguePill) {
+                const info = getLeagueInfo(currentBattleLeague);
+                const lang = currentLang || 'ko';
+                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
+                if (currentBattleLeague === 'master') {
+                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
+                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
+                } else {
+                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
+                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
+                }
+            }
             showBattleRoomStep();
             createBattleRoom(permanentName);
         }
@@ -8335,6 +9233,7 @@
                 }
 
                 battlePlayers = room.players || {};
+                currentBattleLeague = room.league || getPlayerLeague();
                 if (!battlePlayers[battlePlayerId]) {
                     if (room.status === 'waiting' || room.status === 'playing' || room.status === 'closed') {
                         returnToIntroAfterBattle();
@@ -8414,14 +9313,31 @@
         }
 
         function formatPlayerRecordBadge(player) {
+            const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
+            const leagueBadge = rating > MASTER_LEAGUE_THRESHOLD ? '👑' : '🥈';
             const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
             const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
-            const fn = textFor('playerRecordBadge');
-            return typeof fn === 'function' ? fn(matches, wins) : `${matches}G · 🥇${wins}W`;
+            const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
+            const streakText = streak >= 2 ? ` 🔥${streak}` : '';
+            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}`;
         }
 
         function renderBattleLobby(room) {
             updateBattleViewModeUI();
+            const leaguePill = document.getElementById('battle-league-pill');
+            if (leaguePill) {
+                const l = room && room.league ? room.league : currentBattleLeague;
+                const info = getLeagueInfo(l);
+                const lang = currentLang || 'ko';
+                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
+                if (l === 'master') {
+                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
+                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
+                } else {
+                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
+                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
+                }
+            }
             const players = getBattlePlayerList(room);
             const isHost = battleRole === 'host';
             const waitingEl = document.getElementById('battle-waiting-text');
@@ -8857,6 +9773,36 @@
             }
             updateBattleStatsUI();
 
+            // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (판당 1회 처리)
+            if (!battleRatingProcessed && (myRank > 0 || isEnded)) {
+                battleRatingProcessed = true;
+                const prevRating = getBattleRating();
+                const delta = BATTLE_RANK_DELTAS[myRank] !== undefined ? BATTLE_RANK_DELTAS[myRank] : 0;
+                const newRating = saveBattleRating(prevRating + delta);
+                const actualDelta = newRating - prevRating;
+
+                const prevStreak = getBattleStreak();
+                let newStreak = 0;
+                if (myRank === 1) {
+                    newStreak = saveBattleStreak(prevStreak + 1);
+                } else {
+                    saveBattleStreak(0);
+                }
+
+                const newlyUnlocked = checkSkinUnlocks();
+                lastBattleResultRatingData = {
+                    prevRating,
+                    newRating,
+                    actualDelta,
+                    prevStreak,
+                    newStreak,
+                    myRank,
+                    newlyUnlocked
+                };
+            }
+
+            renderBattleResultRatingBadge(lastBattleResultRatingData);
+
             if (firstResultRender) {
                 if (resultClass === 'win') playSfx('win', 1.0);
                 else playSfx('gameover', 1.0);
@@ -8890,11 +9836,52 @@
             }
         }
 
+        function renderBattleResultRatingBadge(data) {
+            const pill = document.getElementById('battle-result-rating-pill');
+            if (!pill || !data) return;
+            pill.style.display = 'inline-flex';
+
+            const league = getLeagueByRating(data.newRating);
+            const leagueInfo = getLeagueInfo(league);
+            const lang = currentLang || 'ko';
+            const leagueBadge = leagueInfo.badge;
+
+            const deltaText = data.actualDelta > 0 ? `+${data.actualDelta} PT` : (data.actualDelta < 0 ? `${data.actualDelta} PT` : '±0 PT');
+            const deltaClass = data.actualDelta > 0 ? 'plus' : (data.actualDelta < 0 ? 'minus' : 'zero');
+
+            let streakHtml = '';
+            if (data.newStreak >= 2 || (data.myRank === 1 && data.newStreak >= 1)) {
+                const fn = textFor('streakText');
+                const label = typeof fn === 'function' ? fn(data.newStreak) : `🔥 ${data.newStreak}연승!`;
+                streakHtml = `<span class="brp-streak">${label}</span>`;
+            } else if (data.prevStreak >= 2 && data.newStreak === 0) {
+                streakHtml = `<span class="brp-streak" style="color:#94a3b8;font-size:20px;">${textFor('streakEndText') || '연승 종료'}</span>`;
+            }
+
+            let unlockHtml = '';
+            if (data.newlyUnlocked && data.newlyUnlocked.length > 0) {
+                const names = data.newlyUnlocked.map(s => s.name[lang] || s.name.ko).join(', ');
+                unlockHtml = `<div style="font-size:16px;color:#fbbf24;margin-top:4px;font-weight:900;">🎉 새 스킨 언락: ${names}!</div>`;
+            }
+
+            pill.innerHTML = `
+                <span class="brp-league-icon">${leagueBadge}</span>
+                <span class="brp-score">${data.newRating.toLocaleString()} PT</span>
+                <span class="brp-delta ${deltaClass}">${deltaText}</span>
+                ${streakHtml}
+                ${unlockHtml}
+            `;
+        }
+
         function cancelBattle() {
             stopQuickMatchTimer(false);
             leaveBattleRoom(true);
             battleMode = false;
             battleStarted = false;
+            battleRatingProcessed = false;
+            lastBattleResultRatingData = null;
+            const resRatingPill = document.getElementById('battle-result-rating-pill');
+            if (resRatingPill) resRatingPill.style.display = 'none';
             const canvasEl = document.getElementById('canvas');
             if (canvasEl) {
                 canvasEl.style.display = 'none';
@@ -8904,6 +9891,7 @@
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('intro-screen').classList.remove('hidden');
+            updateIntroProfilePillUI();
         }
 
         function startRoomCloseCountdown() {
@@ -9002,10 +9990,15 @@
             document.getElementById('battle-result-screen').classList.add('hidden');
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('ui-layer').classList.add('hidden');
+            battleRatingProcessed = false;
+            lastBattleResultRatingData = null;
+            const resRatingPill = document.getElementById('battle-result-rating-pill');
+            if (resRatingPill) resRatingPill.style.display = 'none';
             stopAllBgm();
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
             playTitleBgm();
+            updateIntroProfilePillUI();
         }
 
     </script>
