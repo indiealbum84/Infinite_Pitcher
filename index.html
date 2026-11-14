@@ -153,7 +153,9 @@
             position: absolute;
             top: 16px;
             left: 12px;
+            right: 12px;
             display: flex;
+            flex-wrap: wrap;
             gap: 5px;
             z-index: 3;
         }
@@ -1578,13 +1580,15 @@
 
         .settings-lang-toggle {
             display: flex;
+            flex-wrap: wrap;
             gap: 6px;
             width: 100%;
             margin-top: 2px;
         }
 
         .settings-lang-btn {
-            flex: 1;
+            flex: 1 1 30%;
+            min-width: 78px;
             background: #ffffff;
             color: var(--palette-ink);
             border: 2px solid #000000;
@@ -1592,9 +1596,9 @@
             box-shadow: 0 3px 0 #cbd5e1, 0 3px 0 1px #000000;
             cursor: pointer;
             font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 900;
-            padding: 9px 4px;
+            padding: 8px 4px;
             text-align: center;
             touch-action: auto !important;
             transition: all 0.1s ease;
@@ -3483,6 +3487,8 @@
                 <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
                 <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
                 <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
+                <button class="lang-switch-btn" data-lang="zh-TW" onclick="setLanguage('zh-TW')">繁體中文</button>
+                <button class="lang-switch-btn" data-lang="es" onclick="setLanguage('es')">Español</button>
             </div>
             <div class="profile-setup-card">
                 <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
@@ -3556,6 +3562,8 @@
                         <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">한국어</button>
                         <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">English</button>
                         <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">日本語</button>
+                        <button type="button" class="settings-lang-btn" data-lang="zh-TW" onclick="selectSettingsLanguage('zh-TW')">繁體中文</button>
+                        <button type="button" class="settings-lang-btn" data-lang="es" onclick="selectSettingsLanguage('es')">Español</button>
                     </div>
                 </div>
 
@@ -4501,6 +4509,260 @@
                 skinLocked: '잠김',
                 streakText: n => `🔥 ${n}연승 달성!`,
                 streakEndText: '연승 종료',
+                ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+            },
+            'zh-TW': {
+                introBubble: '好！為了成為世界第一的投手，<br>今天也要全力特訓！',
+                startBtn:            '🧢 單人特訓',
+                battleQuickMainBtn:  '⚡ 世界8人對戰',
+                battleFriendBtn:     '🤝 好友特訓',
+                battleFriendTitle:   '🤝 好友特訓',
+                battleWorldTitle:    '⚡ 世界8人對戰',
+                battleBtn:           '對戰',
+                rankSuffix:          '名達成！',
+                nameHolder:  '請輸入玩家名稱',
+                registerBtn: '登錄並繼續',
+                retryBtn:    '再玩一次',
+                rankingBtn:  '排行榜',
+                closeBtn:    '關閉',
+                homeBtn:     '回到主畫面',
+                leaderboardLoginPrompt: '要使用帳號登入嗎？',
+                leaderboardLoginButton: '登入',
+                leaderboardRetryButton: '重新載入',
+                leaderboardLoginHelp: '登入後請回到此畫面重新載入排行榜。',
+                instruction: '移動角色，\n依數字順序擊中棒球吧！',
+                battleScreenTitle: '最多8人對戰',
+                battleWaiting: '正在等待對手...',
+                battleCancel: '回主畫面',
+                battleJoin: '加入',
+                battleExit: '返回',
+                battleStart: '開始遊戲',
+                battleNameLabel: '我的暱稱',
+                battleNamePlaceholder: '輸入暱稱',
+                battleNameHint: '中文5字 / 英文10字以內',
+                battleNameNext: '確認',
+                battleCodeLabel: '我的房間代碼 (邀請好友)',
+                battleJoinLabel: '輸入好友代碼',
+                battleDivider: '── 或 ──',
+                battleQuickBtn: '⚡ 開始配對',
+                battleQuickCancelBtn: '⏹ 取消配對',
+                battleQuickIdle: '優先配對真人玩家 (20秒未滿將補入電腦)',
+                battleWorldIdleWaiting: '點擊 [開始配對] 後，將優先配對真人玩家20秒。',
+                battleQuickSearching: sec => `🔍 正在搜尋真人玩家... (${sec}秒)`,
+                battleQuickMatched: '✅ 配對完成！即將開始！',
+                rematchBtn: '再戰一場',
+                selfLabel: '我',
+                hostLabel: '房主',
+                alertNickname: '請輸入暱稱。',
+                alertRoomFull: '找不到房間或房間已滿。',
+                alertNeedPlayers: '至少需要2名玩家才能開始。',
+                alertTestBattle: 'TEST 模式無法進行線上對戰。',
+                lobbyStartable: count => `玩家 ${count}/${MAX_BATTLE_PLAYERS}人 - 2人以上即可開始`,
+                lobbyWaitingHost: count => `玩家 ${count}/${MAX_BATTLE_PLAYERS}人 - 等待房主開始`,
+                resultWin: '勝利！',
+                resultDraw: '平手',
+                resultLose: '敗北...',
+                rankText: rank => `第${rank}名`,
+                othersPlaying: '👀 其他玩家比賽進行中... (可先離開或觀戰到底)',
+                matchEndedWaitExit: '🏆 比賽全部結束！確認結果後請按返回',
+                matchFoundCountdown: sec => `🎮 配對成功！${sec}秒後開始比賽...`,
+                roomClosingIn: sec => `⏳ 房間將於 ${sec} 秒後自動關閉...`,
+                battleStatsText: (matches, wins) => `🏆 我的對戰紀錄：${matches}場  |  🥇 第1名：${wins}次`,
+                playerRecordBadge: (matches, wins) => `${matches}場 · 🥇第1名 ${wins}次`,
+                waitingHost: '等待房主開始...',
+                rematchJoinStatus: (ready, total) => `準備再戰 ${ready}/${total}`,
+                rematchReady: '已準備再戰',
+                playGateTitle: 'NEXT PLAY',
+                fireballUnlockTitle: '🔥 火球模式解鎖！',
+                fireballUnlockHtml: '🎉 恭喜！您已解鎖我們準備的 <b>第31球火球內容</b>！<br><br>從現在起單人模式每天可 <b>免費遊玩3次</b>，之後需觀看 <b>1次廣告</b> 才能繼續遊玩。<br><br>若不想看廣告，可購買 <b>$4.99 移除廣告</b> 永久無限暢玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $4.99 移除廣告</a>',
+                playGateDescNeedAdSolo: '今日單人模式免費次數(3次)已用完。<br>觀看1次廣告或購買 $4.99 移除廣告，即可立即繼續遊玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $4.99 移除廣告 (無限暢玩)</a>',
+                playGateDescNeedAdBattle: '今日線上對戰免費次數(3次)已用完。<br>觀看1次廣告或購買 $4.99 移除廣告，即可立即進入對戰！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $4.99 移除廣告 (無限暢玩)</a>',
+                playGateResetLine: (h, m) => `⏰ 距離下次免費重置(UTC 00:00)還有 ${h}小時 ${m}分`,
+                playGateDescShop: (soloText, battleRem, max) => `今日剩餘免費次數<br>• 單人模式：<b>${soloText}</b><br>• 線上對戰：<b>${battleRem}/${max}場</b><br><br>購買 $4.99 移除廣告即可終身免廣告無限暢玩所有模式！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $4.99 移除廣告</a>`,
+                soloUnlimitedLabel: '免費無限次 (突破第31球火球前)',
+                playGateAdBtn: '🎬 觀看1次廣告繼續下一場',
+                playGateNoAdsBtn: '👑 移除廣告 + 無限暢玩 ($4.99)',
+                playGateRestoreBtn: '恢復購買',
+                playGateCloseBtn: '關閉',
+                rewardAdMsg: '廣告播放結束後將立即開始下一局...',
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 單人:無限(31球前) · 對戰:${battleRem}/${max}場  |  🚫 去廣告 $4.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 免費 單人:${soloRem}/${max} · 對戰:${battleRem}/${max}  |  🚫 去廣告 $4.99`,
+                ticketPillVip: '👑 已啟用去廣告通行證 (單人·對戰無限)',
+                confirmBuyNoAds: '確定要購買 移除廣告 + 無限暢玩通行證 ($4.99) 嗎？\n(測試模式中將立即套用)',
+                alertNoAdsActivated: '👑 已啟用去廣告通行證 ($4.99)！祝您無限暢玩！',
+                alertRestoreNone: '找不到可恢復的購買紀錄。',
+                loadingRanks: '載入中...',
+                emptyRanks: '尚無紀錄',
+                initialProfileTitle: '⚾ 登錄選手名稱',
+                initialProfileWarning: '⚠️ 名稱一旦登錄後將無法更改，請謹慎決定！\n• 將以您輸入的名稱登錄伺服器，僅保留您的最高分 1 筆紀錄。',
+                initialNamePlaceholder: '輸入遊戲名稱',
+                initialNameHint: '中文5字 / 英文10字以內 (登錄後不可變更)',
+                initialNameSubmitBtn: '以此名稱開始遊戲',
+                initialAccountSyncLabel: '📱 更換裝置或重新安裝過嗎？\n綁定相同的 Google / Apple ID 即可完整還原名稱、紀錄與購買項目。',
+                initialGoogleBtn: '🌐 Google ID 綁定/還原',
+                initialAppleBtn: '🍎 Apple ID 綁定/還原',
+                confirmPermanentName: name => `確定要以「${name}」登錄名稱嗎？\n⚠️ 登錄後將永久無法修改！`,
+                alertNameTaken: '此名稱已被其他玩家使用，請換一個名稱。',
+                alertNameAlreadyTaken: name => `「${name}」已被其他玩家使用，請輸入其他名稱。`,
+                alertForbiddenName: '⚠️ 包含無法使用的字詞（不雅字眼、禁用詞等），請重新輸入。',
+                forbiddenNameInlineHint: '🚫 系統會自動阻擋不雅與禁用字詞',
+                introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 最高紀錄：${best}分 ${synced ? '☁️' : '(🔗 帳號綁定)'}`,
+                introProfilePillText: (name, synced) => `👤 ${name} ${synced ? '· ☁️ 已綁定帳號' : '· 🔗 綁定帳號'}`,
+                newRecordAutoSaved: '🎉 刷新最高紀錄！已自動登錄伺服器排行榜',
+                bestRecordKept: best => `🏆 我的最高紀錄：${best}分 (僅保留最高分)`,
+                rankStatusNewBest: (name, score) => `🎉 刷新最高紀錄！(${score}分) 已自動登錄排行榜`,
+                rankStatusKeptBest: best => `🏆 我的最高紀錄：${best}分 (僅保留最高分)`,
+                alertAccountRestored: name => `✅ 帳號還原成功！已載入「${name}」的名稱、紀錄與購買項目。`,
+                accountRestoredAlert: (name, best) => `✅ 帳號還原成功！已還原「${name}」(最高分 ${best}分) 的全部紀錄與購買項目。`,
+                alertAccountLinked: name => `☁️ 帳號綁定完成！「${name}」的名稱、紀錄與購買項目已安全保存至 Google/Apple ID。`,
+                accountLinkedNewAlert: name => `☁️ 帳號綁定完成！「${name}」的紀錄與購買項目已安全備份。`,
+                accountRestoreNotFoundAlert: '此帳號尚未存有過去紀錄。現在登錄名稱後將會自動綁定到此帳號。',
+                promptAccountEmailForSync: label => `請輸入要綁定/還原的 ${label} (電子信箱或帳號 ID)：`,
+                promptLinkAccount: '要綁定 Google ID 或 Apple ID 嗎？\n綁定後即使重新安裝也能完整還原名稱、紀錄與購買項目。\n\n[確定] = Google ID / [取消] = Apple ID',
+                settingsTitle: '⚙️ 設定',
+                settingsLang: '語言',
+                settingsBgm: '背景音樂 (BGM)',
+                settingsSfx: '音效 (SFX)',
+                settingsAccountLabel: '☁️ 登入 / 帳號綁定',
+                settingsClose: '確認',
+                leagueStandard: '一般聯賽',
+                leagueMaster: '大師聯賽',
+                leagueStandardDesc: '1,200 PT 以下',
+                leagueMasterDesc: '超過 1,200 PT',
+                skinModalTitle: '🏆 收藏館',
+                skinModalSubtitle: '達成成就來解鎖特別的棒球與投手特效！',
+                skinEquipped: '使用中',
+                skinEquip: '裝備',
+                skinLocked: '未解鎖',
+                streakText: n => `🔥 ${n}連勝達成！`,
+                streakEndText: '連勝終止',
+                ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
+            },
+            es: {
+                introBubble: '¡Bien! Para ser el mejor lanzador del mundo,<br>¡a entrenar hoy también!',
+                startBtn:            '🧢 Entrenar Solo',
+                battleQuickMainBtn:  '⚡ Batalla Mundial 8P',
+                battleFriendBtn:     '🤝 Duelo con Amigos',
+                battleFriendTitle:   '🤝 Duelo con Amigos',
+                battleWorldTitle:    '⚡ Batalla Mundial 8P',
+                battleBtn:           'Batalla',
+                rankSuffix:          '° puesto!',
+                nameHolder:  'Ingresa tu nombre',
+                registerBtn: 'Registrar y seguir',
+                retryBtn:    'Reintentar',
+                rankingBtn:  'Ranking',
+                closeBtn:    'Cerrar',
+                homeBtn:     'Menú Principal',
+                leaderboardLoginPrompt: '¿Deseas iniciar sesión con tu cuenta?',
+                leaderboardLoginButton: 'Iniciar sesión',
+                leaderboardRetryButton: 'Recargar',
+                leaderboardLoginHelp: 'Vuelve aquí y recarga después de iniciar sesión.',
+                instruction: '¡Mueve al personaje y\ngolpea las bolas en orden!',
+                battleScreenTitle: 'Batalla hasta 8P',
+                battleWaiting: 'Esperando rivales...',
+                battleCancel: 'Menú',
+                battleJoin: 'Unirse',
+                battleExit: 'Volver',
+                battleStart: 'Iniciar',
+                battleNameLabel: 'Tu Apodo',
+                battleNamePlaceholder: 'Ingresa apodo',
+                battleNameHint: 'Máx. 10 letras (5 en Asia)',
+                battleNameNext: 'Listo',
+                battleCodeLabel: 'Tu Código de Sala (Invitar)',
+                battleJoinLabel: 'Código de Amigo',
+                battleDivider: '── O ──',
+                battleQuickBtn: '⚡ Buscar Partida',
+                battleQuickCancelBtn: '⏹ Cancelar',
+                battleQuickIdle: 'Busca jugadores reales (bots tras 20s si falta gente)',
+                battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para emparejar jugadores reales por 20s.',
+                battleQuickSearching: sec => `🔍 Buscando jugadores reales... (${sec}s)`,
+                battleQuickMatched: '✅ ¡Partida lista! Empezando...',
+                rematchBtn: 'Revancha',
+                selfLabel: 'Tú',
+                hostLabel: 'Anfitrión',
+                alertNickname: 'Por favor ingresa un apodo.',
+                alertRoomFull: 'Sala no encontrada o llena.',
+                alertNeedPlayers: 'Se necesitan al menos 2 jugadores.',
+                alertTestBattle: 'El modo TEST no permite batallas.',
+                lobbyStartable: count => `Jugadores ${count}/${MAX_BATTLE_PLAYERS} - Listo (2+)`,
+                lobbyWaitingHost: count => `Jugadores ${count}/${MAX_BATTLE_PLAYERS} - Esperando al anfitrión`,
+                resultWin: '¡VICTORIA!',
+                resultDraw: 'EMPATE',
+                resultLose: 'DERROTA...',
+                rankText: rank => `${rank}°`,
+                othersPlaying: '👀 Otros siguen jugando... (Puedes salir o mirar)',
+                matchEndedWaitExit: '🏆 ¡Partida terminada! Pulsa Volver al revisar',
+                matchFoundCountdown: sec => `🎮 ¡Emparejado! Empieza en ${sec}s...`,
+                roomClosingIn: sec => `⏳ La sala se cerrará en ${sec}s...`,
+                battleStatsText: (matches, wins) => `🏆 Récord: ${matches}P  |  🥇 1°: ${wins}V`,
+                playerRecordBadge: (matches, wins) => `${matches}P · 🥇1° ${wins}V`,
+                waitingHost: 'Esperando al anfitrión...',
+                rematchJoinStatus: (ready, total) => `Revancha ${ready}/${total}`,
+                rematchReady: 'Listo para revancha',
+                playGateTitle: 'SIGUIENTE JUEGO',
+                fireballUnlockTitle: '🔥 ¡Modo Bola de Fuego!',
+                fireballUnlockHtml: '🎉 ¡Felicidades! ¡Desbloqueaste el <b>desafío Bola #31</b>!<br><br>Ahora tienes <b>3 partidas gratis al día</b> en modo Solo; luego mira <b>1 anuncio</b> por partida.<br><br>¡O compra <b>Sin Anuncios ($4.99)</b> para jugar sin límites!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
+                playGateDescNeedAdSolo: 'Usaste tus 3 partidas gratis de Solo hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($4.99) para seguir!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
+                playGateDescNeedAdBattle: 'Usaste tus 3 batallas gratis de hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($4.99) para entrar!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
+                playGateResetLine: (h, m) => `⏰ Reinicio diario (UTC 00:00) en ${h}h ${m}m`,
+                playGateDescShop: (soloText, battleRem, max) => `Partidas gratis hoy<br>• Solo: <b>${soloText}</b><br>• Batalla: <b>${battleRem}/${max}</b><br><br>¡Compra Sin Anuncios ($4.99) y juega ilimitado para siempre!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>`,
+                soloUnlimitedLabel: 'Gratis ilimitado (antes de #31)',
+                playGateAdBtn: '🎬 Ver 1 anuncio y jugar',
+                playGateNoAdsBtn: '👑 Sin Anuncios + Ilimitado ($4.99)',
+                playGateRestoreBtn: 'Restaurar compra',
+                playGateCloseBtn: 'Cerrar',
+                rewardAdMsg: 'La siguiente partida iniciará tras el anuncio...',
+                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Ilimitado(pre-#31) · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $4.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Gratis Solo:${soloRem}/${max} · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $4.99`,
+                ticketPillVip: '👑 Pase Sin Anuncios Activo (Ilimitado)',
+                confirmBuyNoAds: '¿Comprar Pase Sin Anuncios + Ilimitado ($4.99)?\n(En modo prueba se activa al instante)',
+                alertNoAdsActivated: '👑 ¡Pase Sin Anuncios ($4.99) activado! Disfruta sin límites.',
+                alertRestoreNone: 'No se encontraron compras previas.',
+                loadingRanks: 'Cargando...',
+                emptyRanks: 'Sin récords aún',
+                initialProfileTitle: '⚾ Registra tu Nombre',
+                initialProfileWarning: '⚠️ ¡El nombre elegido es PERMANENTE y no se puede cambiar!\n• Se registrará en el servidor con tu mejor puntuación.',
+                initialNamePlaceholder: 'Tu nombre de jugador',
+                initialNameHint: 'Hasta 10 letras (no se puede cambiar)',
+                initialNameSubmitBtn: 'Empezar con este nombre',
+                initialAccountSyncLabel: '📱 ¿Reinstalaste la app o tienes cuenta?\nVincula tu Google / Apple ID para restaurar nombre, récords y compras.',
+                initialGoogleBtn: '🌐 Vincular/Restaurar Google',
+                initialAppleBtn: '🍎 Vincular/Restaurar Apple',
+                confirmPermanentName: name => `¿Registrar "${name}" permanentemente?\n⚠️ ¡No podrás cambiarlo después!`,
+                alertNameTaken: 'Ese nombre ya está en uso. Elige otro.',
+                alertNameAlreadyTaken: name => `"${name}" ya está ocupado. Ingresa otro nombre.`,
+                alertForbiddenName: '⚠️ Contiene palabras no permitidas. Elige otro nombre.',
+                forbiddenNameInlineHint: '🚫 Se bloquean palabras ofensivas o prohibidas',
+                introProfilePill: (name, best, synced) => `👤 ${name}  |  🏆 MEJOR: ${best} pts ${synced ? '☁️' : '(🔗 Vincular)'}`,
+                introProfilePillText: (name, synced) => `👤 ${name} ${synced ? '· ☁️ Sincronizado' : '· 🔗 Vincular cuenta'}`,
+                newRecordAutoSaved: '🎉 ¡Nuevo récord! Guardado en el ranking global',
+                bestRecordKept: best => `🏆 Tu mejor marca: ${best} pts`,
+                rankStatusNewBest: (name, score) => `🎉 ¡Nuevo récord (${score} pts)! Guardado en el ranking`,
+                rankStatusKeptBest: best => `🏆 Tu mejor marca: ${best} pts`,
+                alertAccountRestored: name => `✅ ¡Cuenta restaurada! Bienvenido de nuevo, "${name}".`,
+                accountRestoredAlert: (name, best) => `✅ ¡Cuenta restaurada! "${name}" (Mejor: ${best} pts) cargado.`,
+                alertAccountLinked: name => `☁️ ¡Cuenta vinculada! "${name}" está respaldado en Google/Apple ID.`,
+                accountLinkedNewAlert: name => `☁️ ¡Cuenta vinculada! "${name}" guardado de forma segura.`,
+                accountRestoreNotFoundAlert: 'No hay datos previos en esta cuenta. Registra un nombre para vincularlo.',
+                promptAccountEmailForSync: label => `Ingresa tu ${label} (correo o ID) para vincular/restaurar:`,
+                promptLinkAccount: '¿Vincular Google ID o Apple ID para respaldar tu progreso?\n\n[Aceptar] = Google ID / [Cancelar] = Apple ID',
+                settingsTitle: '⚙️ Ajustes',
+                settingsLang: 'Idioma',
+                settingsBgm: 'Música (BGM)',
+                settingsSfx: 'Efectos (SFX)',
+                settingsAccountLabel: '☁️ Cuenta / Sincronización',
+                settingsClose: 'Listo',
+                leagueStandard: 'Liga Estándar',
+                leagueMaster: 'Liga Maestra',
+                leagueStandardDesc: '1,200 PT o menos',
+                leagueMasterDesc: 'Más de 1,200 PT',
+                skinModalTitle: '🏆 Colección',
+                skinModalSubtitle: '¡Completa logros para desbloquear bolas y efectos especiales!',
+                skinEquipped: 'EN USO',
+                skinEquip: 'EQUIPAR',
+                skinLocked: 'BLOQUEADO',
+                streakText: n => `🔥 ¡Racha de ${n}!`,
+                streakEndText: 'Racha terminada',
                 ratingDeltaText: d => (d > 0 ? `+${d} PT` : (d < 0 ? `${d} PT` : '±0 PT')),
             }
         };
@@ -8372,20 +8634,20 @@
             if (l === 'master') {
                 return {
                     id: 'master',
-                    name: { ko: '마스터 리그', en: 'Master League', ja: 'マスターリーグ' },
+                    name: { ko: '마스터 리그', en: 'Master League', ja: 'マスターリーグ', 'zh-TW': '大師聯賽', es: 'Liga Maestra' },
                     badge: '👑',
                     color: '#ffb300',
                     queueKey: QUICK_MATCH_QUEUE_MASTER,
-                    desc: { ko: '1,200 PT 초과', en: 'Over 1,200 PT', ja: '1,200 PT超過' }
+                    desc: { ko: '1,200 PT 초과', en: 'Over 1,200 PT', ja: '1,200 PT超過', 'zh-TW': '超過 1,200 PT', es: 'Más de 1,200 PT' }
                 };
             }
             return {
                 id: 'standard',
-                name: { ko: '일반 리그', en: 'Standard League', ja: '一般リーグ' },
+                name: { ko: '일반 리그', en: 'Standard League', ja: '一般リーグ', 'zh-TW': '一般聯賽', es: 'Liga Estándar' },
                 badge: '🥈',
                 color: '#94a3b8',
                 queueKey: QUICK_MATCH_QUEUE_STANDARD,
-                desc: { ko: '1,200 PT 이하', en: '1,200 PT & Under', ja: '1,200 PT以下' }
+                desc: { ko: '1,200 PT 이하', en: '1,200 PT & Under', ja: '1,200 PT以下', 'zh-TW': '1,200 PT 以下', es: '1,200 PT o menos' }
             };
         }
 
@@ -8431,82 +8693,82 @@
         const SKINS_CATALOG = [
             {
                 id: 'classic',
-                name: { ko: '클래식 쇼와', ja: 'クラシック昭和', en: 'Classic Showa' },
+                name: { ko: '클래식 쇼와', ja: 'クラシック昭和', en: 'Classic Showa', 'zh-TW': '經典昭和', es: 'Showa Clásico' },
                 icon: '⚾',
-                desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher' },
-                condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked' },
+                desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher', 'zh-TW': '昭和復古經典棒球與投手', es: 'Pelota y lanzador retro Showa' },
+                condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked', 'zh-TW': '預設解鎖', es: 'Desbloqueado por defecto' },
                 checkUnlock: () => true
             },
             {
                 id: 'emerald',
-                name: { ko: '루키 에메랄드', ja: 'ルーキーエメラルド', en: 'Rookie Emerald' },
+                name: { ko: '루키 에메랄드', ja: 'ルーキーエメラルド', en: 'Rookie Emerald', 'zh-TW': '新秀翡翠', es: 'Esmeralda Novato' },
                 icon: '🌱',
-                desc: { ko: '산뜻한 에메랄드 그린 궤적 + 잔디 오라', ja: '爽やかなエメラルド軌跡＋芝生オーラ', en: 'Fresh emerald trail & turf aura' },
-                condition: { ko: '8인 배틀 첫 1승 달성', ja: '8人バトル初勝利達成', en: 'Win your first Battle match' },
+                desc: { ko: '산뜻한 에메랄드 그린 궤적 + 잔디 오라', ja: '爽やかなエメラルド軌跡＋芝生オーラ', en: 'Fresh emerald trail & turf aura', 'zh-TW': '清新翡翠軌跡＋草地光環', es: 'Estela esmeralda y aura de césped' },
+                condition: { ko: '8인 배틀 첫 1승 달성', ja: '8人バトル初勝利達成', en: 'Win your first Battle match', 'zh-TW': '8人對戰獲得首勝', es: 'Gana tu primera Batalla 8P' },
                 checkUnlock: (stats) => stats.wins >= 1
             },
             {
                 id: 'sunset',
-                name: { ko: '선셋 레트로', ja: 'サンセットレトロ', en: 'Sunset Retro' },
+                name: { ko: '선셋 레트로', ja: 'サンセットレトロ', en: 'Sunset Retro', 'zh-TW': '夕陽復古', es: 'Atardecer Retro' },
                 icon: '☀️',
-                desc: { ko: '노을빛 주황·자홍 궤적 + 황혼 구장 오라', ja: '夕焼けグラデ軌跡＋黄昏オーラ', en: 'Sunset orange-magenta trail & dusk aura' },
-                condition: { ko: '8인 배틀 10승 달성', ja: '8人バトル10勝達成', en: 'Win 10 Battle matches' },
+                desc: { ko: '노을빛 주황·자홍 궤적 + 황혼 구장 오라', ja: '夕焼けグラデ軌跡＋黄昏オーラ', en: 'Sunset orange-magenta trail & dusk aura', 'zh-TW': '晚霞橘紫漸層軌跡＋黃昏光環', es: 'Estela ocaso naranja y aura crepuscular' },
+                condition: { ko: '8인 배틀 10승 달성', ja: '8人バトル10勝達成', en: 'Win 10 Battle matches', 'zh-TW': '8人對戰累計 10 勝', es: 'Gana 10 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 10
             },
             {
                 id: 'flame',
-                name: { ko: '골든 프레임', ja: 'ゴールデンフレーム', en: 'Golden Flame' },
+                name: { ko: '골든 프레임', ja: 'ゴールデンフレーム', en: 'Golden Flame', 'zh-TW': '黃金烈焰', es: 'Llama Dorada' },
                 icon: '🔥',
-                desc: { ko: '타오르는 황금 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura' },
-                condition: { ko: '하루에 배틀 50판 플레이 달성', ja: '1日にバトル50回プレイ達成', en: 'Play 50 Battles in a single day' },
+                desc: { ko: '타오르는 황금 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura', 'zh-TW': '燃燒黃金火焰軌跡＋金色光環', es: 'Estela de fuego dorado y aura ardiente' },
+                condition: { ko: '하루에 배틀 50판 플레이 달성', ja: '1日にバトル50回プレイ達成', en: 'Play 50 Battles in a single day', 'zh-TW': '單日遊玩對戰達 50 場', es: 'Juega 50 Batallas en un día' },
                 checkUnlock: (stats, bestScore, maxStreak, rating, dailyMax) => (dailyMax || getDailyBattleMaxMatches()) >= 50
             },
             {
                 id: 'spark',
-                name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark' },
+                name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark', 'zh-TW': '藍色電光', es: 'Chispa Azul' },
                 icon: '⚡',
-                desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura' },
-                condition: { ko: '8인 배틀 100승 달성', ja: '8人バトル100勝達成', en: 'Win 100 Battle matches' },
+                desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura', 'zh-TW': '藍色雷電火花軌跡＋電撃光環', es: 'Estela de rayo azul y aura eléctrica' },
+                condition: { ko: '8인 배틀 100승 달성', ja: '8人バトル100勝達成', en: 'Win 100 Battle matches', 'zh-TW': '8人對戰累計 100 勝', es: 'Gana 100 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 100
             },
             {
                 id: 'sakura',
-                name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom' },
+                name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom', 'zh-TW': '櫻花綻放', es: 'Flor de Sakura' },
                 icon: '🌸',
-                desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura' },
-                condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode' },
+                desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura', 'zh-TW': '飄落櫻花瓣軌跡＋粉櫻光環', es: 'Estela de pétalos sakura y aura rosa' },
+                condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode', 'zh-TW': '單人特訓突破 200 分', es: 'Supera 200 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 200
             },
             {
                 id: 'emperor',
-                name: { ko: '황제 크라운', ja: 'エンペラークラウン', en: 'Emperor Crown' },
+                name: { ko: '황제 크라운', ja: 'エンペラークラウン', en: 'Emperor Crown', 'zh-TW': '皇帝皇冠', es: 'Corona Imperial' },
                 icon: '👑',
-                desc: { ko: '백금·황금 별빛 궤적 + 황제 크라운 오라', ja: '白金・黄金の星光軌跡＋皇帝オーラ', en: 'Royal gold starlight trail & crown aura' },
-                condition: { ko: '나홀로 특훈 500점 돌파', ja: 'ひとり特訓500点突破', en: 'Reach 500+ pts in Solo mode' },
+                desc: { ko: '백금·황금 별빛 궤적 + 황제 크라운 오라', ja: '白金・黄金の星光軌跡＋皇帝オーラ', en: 'Royal gold starlight trail & crown aura', 'zh-TW': '白金黃金星光軌跡＋皇帝光環', es: 'Estela estelar dorada y aura imperial' },
+                condition: { ko: '나홀로 특훈 500점 돌파', ja: 'ひとり特訓500点突破', en: 'Reach 500+ pts in Solo mode', 'zh-TW': '單人特訓突破 500 分', es: 'Supera 500 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 500
             },
             {
                 id: 'rainbow',
-                name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow' },
+                name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow', 'zh-TW': '昭和彩虹', es: 'Arcoíris Showa' },
                 icon: '🌈',
-                desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura' },
-                condition: { ko: '8인 배틀 5연승 달성', ja: '8人バトル5連勝達成', en: 'Achieve 5 Win Streak in Battle' },
+                desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura', 'zh-TW': '七彩霓虹殘影軌跡＋彩虹光環', es: 'Estela arcoíris de 7 colores y aura' },
+                condition: { ko: '8인 배틀 5연승 달성', ja: '8人バトル5連勝達成', en: 'Achieve 5 Win Streak in Battle', 'zh-TW': '8人對戰達成 5 連勝', es: 'Logra 5 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 5
             },
             {
                 id: 'double_rainbow',
-                name: { ko: '더블 레인보우', ja: 'ダブルレインボー', en: 'Double Rainbow' },
+                name: { ko: '더블 레인보우', ja: 'ダブルレインボー', en: 'Double Rainbow', 'zh-TW': '雙重彩虹', es: 'Doble Arcoíris' },
                 icon: '🌌',
-                desc: { ko: '찬란한 쌍무지개 빛 잔상 + 은하수 네온 오라', ja: '輝く二重虹の残像＋天の川ネオンオーラ', en: 'Double rainbow trail & galaxy aura' },
-                condition: { ko: '8인 배틀 10연승 달성', ja: '8人バトル10連勝達成', en: 'Achieve 10 Win Streak in Battle' },
+                desc: { ko: '찬란한 쌍무지개 빛 잔상 + 은하수 네온 오라', ja: '輝く二重虹の残像＋天の川ネオンオーラ', en: 'Double rainbow trail & galaxy aura', 'zh-TW': '璀璨雙彩虹殘影＋銀河霓虹光環', es: 'Estela doble arcoíris y aura galáctica' },
+                condition: { ko: '8인 배틀 10연승 달성', ja: '8人バトル10連勝達成', en: 'Achieve 10 Win Streak in Battle', 'zh-TW': '8人對戰達成 10 連勝', es: 'Logra 10 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 10
             },
             {
                 id: 'prism',
-                name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism' },
+                name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism', 'zh-TW': '鑽石稜鏡', es: 'Prisma Diamante' },
                 icon: '💎',
-                desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura' },
-                condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League' },
+                desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura', 'zh-TW': '閃耀鑽石光芒稜鏡特效', es: 'Destellos de prisma diamante y aura cristal' },
+                condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League', 'zh-TW': '大師聯賽達成 1,500 PT', es: 'Alcanza 1,500 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 1500
             }
         ];
@@ -10883,7 +11145,7 @@
                     const isChampion = rankNum === 1;
                     const stampText = rankNum > 0
                         ? (isChampion
-                            ? (currentLang === 'en' ? '🥇 1st WIN!' : (currentLang === 'ja' ? '🥇 1位 WIN!' : '🥇 1위 WIN!'))
+                            ? ({ en: '🥇 1st WIN!', ja: '🥇 1位 WIN!', 'zh-TW': '🥇 第1名 WIN!', es: '🥇 ¡1° WIN!' }[currentLang] || '🥇 1위 WIN!')
                             : (typeof textFor('rankText') === 'function' ? textFor('rankText')(rankNum) : `${rankNum}위`))
                         : 'OUT';
 
@@ -10975,11 +11237,11 @@
             const rank1Count = isEnded ? allPlayers.filter(p => Number(rankMap[p.id] || p.rank || 0) === 1).length : 0;
             let resultText, resultClass;
             if (!isEnded) {
-                resultText = currentLang === 'en' ? 'OUT (IN PROGRESS)' : (currentLang === 'ja' ? '脱落 (進行中)' : '탈락 (경기 진행 중)');
+                resultText = { en: 'OUT (IN PROGRESS)', ja: '脱落 (進行中)', 'zh-TW': '淘汰 (比賽進行中)', es: 'ELIMINADO (EN CURSO)' }[currentLang] || '탈락 (경기 진행 중)';
                 resultClass = 'lose';
             } else if (myRank === 1) {
                 resultText = rank1Count > 1
-                    ? (currentLang === 'en' ? 'TIE 1st WIN!' : (currentLang === 'ja' ? '1位タイ WIN!' : '공동 1위 WIN!'))
+                    ? ({ en: 'TIE 1st WIN!', ja: '1位タイ WIN!', 'zh-TW': '並列第1名 WIN!', es: '¡EMPATE 1° WIN!' }[currentLang] || '공동 1위 WIN!')
                     : textFor('resultWin');
                 resultClass = 'win';
             } else if (myRank > 1) {
