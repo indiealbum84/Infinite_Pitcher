@@ -10639,30 +10639,45 @@
                     score: finalScore,
                     done: true,
                     finishOrder,
-                    rank: total - finishOrder + 1,
+                    rank: 0,
                     finishedAt
                 };
 
                 const remainingIds = ids.filter(id => !players[id].done);
                 let finishCounter = finishOrder;
-                if (remainingIds.length === 1) {
-                    const winnerId = remainingIds[0];
-                    players[winnerId] = {
-                        ...players[winnerId],
-                        done: true,
-                        finishOrder: total,
-                        rank: 1,
-                        wins: Math.max(0, Number(players[winnerId].wins || 0)) + 1,
-                        finishedAt,
-                        score: Number(players[winnerId].score || 0)
-                    };
+                if (remainingIds.length <= 1) {
+                    const winnerId = remainingIds.length === 1 ? remainingIds[0] : targetPlayerId;
+                    if (remainingIds.length === 1) {
+                        players[winnerId] = {
+                            ...players[winnerId],
+                            done: true,
+                            finishOrder: total,
+                            finishedAt,
+                            score: Number(players[winnerId].score || 0)
+                        };
+                    }
+                    players[winnerId].rank = 1;
+                    players[winnerId].wins = Math.max(0, Number(players[winnerId].wins || 0)) + 1;
+
+                    // 2~8위는 최종 점수 내림차순 + 동점 시 올림픽식 공동 순위 (예: 공동 2위 2명 -> 다음은 4위)
+                    const others = ids.filter(id => id !== winnerId).sort((a, b) => {
+                        const scoreDiff = Number(players[b].score || 0) - Number(players[a].score || 0);
+                        if (scoreDiff !== 0) return scoreDiff;
+                        const orderDiff = Number(players[b].finishOrder || 0) - Number(players[a].finishOrder || 0);
+                        if (orderDiff !== 0) return orderDiff;
+                        return a.localeCompare(b);
+                    });
+                    let currentRank = 2;
+                    others.forEach((oid, idx) => {
+                        if (idx > 0 && Number(players[oid].score || 0) < Number(players[others[idx - 1]].score || 0)) {
+                            currentRank = idx + 2;
+                        }
+                        players[oid].rank = currentRank;
+                    });
+
                     room.status = 'ended';
                     room.endedAt = finishedAt;
                     finishCounter = total;
-                } else if (remainingIds.length === 0) {
-                    players[targetPlayerId].wins = Math.max(0, Number(players[targetPlayerId].wins || 0)) + 1;
-                    room.status = 'ended';
-                    room.endedAt = finishedAt;
                 }
 
                 room.players = players;
@@ -10758,18 +10773,20 @@
                         card.classList.add('done');
                     }
                     let stampEl = card.querySelector('.battle-stamp-badge');
-                    const rankNum = Number((rankMap && rankMap[player.id]) || player.rank || 0);
+                    const rankNum = isEnded ? Number((rankMap && rankMap[player.id]) || player.rank || 0) : 0;
                     const isChampion = rankNum === 1;
-                    const stampText = isChampion
-                        ? (currentLang === 'en' ? '🥇 1st WIN!' : (currentLang === 'ja' ? '🥇 1位 WIN!' : '🥇 1위 WIN!'))
-                        : (typeof textFor('rankText') === 'function' ? textFor('rankText')(rankNum) : `${rankNum}위`);
+                    const stampText = rankNum > 0
+                        ? (isChampion
+                            ? (currentLang === 'en' ? '🥇 1st WIN!' : (currentLang === 'ja' ? '🥇 1位 WIN!' : '🥇 1위 WIN!'))
+                            : (typeof textFor('rankText') === 'function' ? textFor('rankText')(rankNum) : `${rankNum}위`))
+                        : 'OUT';
 
-                    if (!stampEl && rankNum > 0) {
+                    if (!stampEl) {
                         stampEl = document.createElement('div');
                         stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
                         stampEl.textContent = stampText;
                         card.appendChild(stampEl);
-                    } else if (stampEl && stampEl.textContent !== stampText && rankNum > 0) {
+                    } else if (stampEl.textContent !== stampText) {
                         stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
                         stampEl.textContent = stampText;
                     }
@@ -10807,18 +10824,20 @@
                 }
             });
 
-            // 각 플레이어의 확정 표시 순위 맵
+            // 각 플레이어의 확정 표시 순위 맵 (경기 종료 시 1위=생존자, 2~8위=점수순 공동순위 확정)
             const rankMap = {};
-            rankedList.forEach((p, idx) => {
-                rankMap[p.id] = p.rank ? p.rank : (idx + 1);
-            });
+            if (isEnded) {
+                rankedList.forEach((p, idx) => {
+                    rankMap[p.id] = p.rank ? Number(p.rank) : (idx + 1);
+                });
+            }
 
             // 사용자의 요청: 입장 순서대로 1번부터 8번까지 고정 슬롯 배치 (절대 카드 위치가 이동하지 않음)
             const displayPlayers = allPlayers;
 
             const myPlayer = allPlayers.find(player => player.id === battlePlayerId) || { score: 0 };
             const myScore = Number(myPlayer.score || 0);
-            const myRank = Number(myPlayer.rank || rankMap[battlePlayerId] || 0);
+            const myRank = isEnded ? Number(myPlayer.rank || rankMap[battlePlayerId] || 0) : 0;
             const topScore = rankedList.length ? Number(rankedList[0].score || 0) : 0;
 
             const hudEl = document.getElementById('battle-hud');
@@ -10848,7 +10867,10 @@
             }
 
             let resultText, resultClass;
-            if (myRank === 1) {
+            if (!isEnded) {
+                resultText = currentLang === 'en' ? 'OUT (IN PROGRESS)' : (currentLang === 'ja' ? '脱落 (進行中)' : '탈락 (경기 진행 중)');
+                resultClass = 'lose';
+            } else if (myRank === 1) {
                 resultText = textFor('resultWin');
                 resultClass = 'win';
             } else if (myRank > 1) {
@@ -10869,13 +10891,13 @@
             }
 
             // 1위 달성 시 나의 대전 전적(1등 횟수) +1 기록
-            if (resultClass === 'win' && (myRank === 1 || room.status === 'ended')) {
+            if (isEnded && resultClass === 'win' && myRank === 1) {
                 recordBattleWin();
             }
             updateBattleStatsUI();
 
-            // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (판당 1회 처리)
-            if (!battleRatingProcessed && (myRank > 0 || isEnded)) {
+            // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (경기 완전 종료 후 최종 점수 기반 순위로 판당 1회 처리)
+            if (!battleRatingProcessed && isEnded && myRank > 0) {
                 battleRatingProcessed = true;
                 const prevRating = getBattleRating();
                 const delta = BATTLE_RANK_DELTAS[myRank] !== undefined ? BATTLE_RANK_DELTAS[myRank] : 0;
@@ -10939,7 +10961,11 @@
 
         function renderBattleResultRatingBadge(data) {
             const pill = document.getElementById('battle-result-rating-pill');
-            if (!pill || !data) return;
+            if (!pill) return;
+            if (!data) {
+                pill.style.display = 'none';
+                return;
+            }
             pill.style.display = 'inline-flex';
 
             const league = getLeagueByRating(data.newRating);
