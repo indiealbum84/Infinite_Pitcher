@@ -3171,12 +3171,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            width: 808px;
             min-height: 126px;
             padding: 18px 28px;
             background: linear-gradient(135deg, #0b1329 0%, #172554 50%, #0f172a 100%);
             color: #ffffff;
             border: 6px solid #000000;
             border-radius: 36px;
+            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
             cursor: pointer;
             touch-action: auto !important;
             font-family: inherit;
@@ -3184,26 +3186,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
 
-        .intro-profile-pill {
-            width: 808px;
-            margin-bottom: 20px;
-            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 5px #000000;
-        }
-
-        .intro-profile-pill:active {
+        .intro-profile-pill:active,
+        .battle-my-profile-card:active {
             transform: translateY(7px);
             box-shadow: 0 7px 0 var(--palette-blue), 0 7px 0 5px #000000;
         }
 
-        .battle-my-profile-card {
-            width: 980px;
-            margin: 6px 0 16px;
-            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 5px #000000;
+        .intro-profile-pill {
+            margin-bottom: 20px;
         }
 
-        .battle-my-profile-card:active {
-            transform: translateY(7px);
-            box-shadow: 0 7px 0 var(--palette-pink), 0 7px 0 5px #000000;
+        .battle-my-profile-card {
+            margin: 6px auto 16px;
         }
 
         .intro-profile-pill .ipp-left,
@@ -3231,12 +3225,12 @@
 
         .intro-profile-pill .ipp-player-name,
         .battle-my-profile-card .ipp-player-name {
-            font-size: 46px;
+            font-size: 44px;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 1px;
             text-shadow: 3px 3px 0 #000000;
-            max-width: 520px;
+            max-width: 430px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -3257,17 +3251,18 @@
         .battle-my-profile-card .ipp-sub-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .intro-profile-pill .ipp-league-tag,
         .battle-my-profile-card .ipp-league-tag {
-            font-size: 26px;
+            font-size: 25px;
             font-weight: 900;
             padding: 4px 14px;
             border-radius: 999px;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .intro-profile-pill .ipp-league-tag.standard,
@@ -3284,6 +3279,19 @@
             border: 2px solid #f59e0b;
         }
 
+        .intro-profile-pill .ipp-stats-tag,
+        .battle-my-profile-card .ipp-stats-tag {
+            font-size: 24px;
+            font-weight: 900;
+            background: rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            border: 2px solid #059669;
+            padding: 4px 14px;
+            border-radius: 999px;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
         .intro-profile-pill .ipp-streak-badge,
         .battle-my-profile-card .ipp-streak-badge {
             font-size: 24px;
@@ -3294,14 +3302,16 @@
             padding: 3px 12px;
             border-radius: 999px;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .intro-profile-pill .ipp-best-tag,
         .battle-my-profile-card .ipp-best-tag {
-            font-size: 24px;
+            font-size: 23px;
             font-weight: 800;
             color: #94a3b8;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .intro-profile-pill .ipp-right,
@@ -7004,6 +7014,11 @@
             const synced = isCloudAccountLinked();
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
             const safeName = typeof escapeBattleText === 'function' ? escapeBattleText(savedName) : savedName;
+            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const matches = Math.max(0, Number(stats.matches) || 0);
+            const wins = Math.max(0, Number(stats.wins) || 0);
+            const lang = currentLang || 'ko';
+            const statsLabel = lang === 'ko' ? `🏆 ${matches}전 ${wins}승` : (lang === 'ja' ? `🏆 ${matches}戦 ${wins}勝` : `🏆 ${matches}G ${wins}W`);
 
             const cardMarkup = `
                 <div class="ipp-left">
@@ -7015,6 +7030,7 @@
                     </div>
                     <div class="ipp-sub-row">
                         <span class="ipp-league-tag ${isMaster ? 'master' : 'standard'}">${leagueBadge} ${leagueName}</span>
+                        <span class="ipp-stats-tag">${statsLabel}</span>
                         ${streakBadge}
                         <span class="ipp-best-tag">나홀로 BEST: ${bestScore}점</span>
                     </div>
