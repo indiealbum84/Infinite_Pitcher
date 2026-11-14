@@ -9689,9 +9689,10 @@
 
             bots.forEach(bot => {
                 const targetScore = Number(bot.targetScore || Math.floor(25 + Math.random() * 60));
+                const resumedScore = Math.max(0, Number(bot.score || 0));
                 botStates[bot.id] = {
-                    score: 0,
-                    nextExpected: 1,
+                    score: resumedScore,
+                    nextExpected: resumedScore + 1,
                     destroyedNumbers: new Set(),
                     targetScore: targetScore,
                     isFireballCharging: false
@@ -9776,7 +9777,10 @@
                 };
 
                 // 카운트다운(3초) + 첫 공 투구 도달 시간(약 4200ms) 후 유저의 첫 타격 시점에 맞춰 봇도 첫 득점 시작!
-                const initialDelay = 4200 + Math.floor(Math.random() * 80);
+                // (단, 호스트 승계로 중간 재개되는 경우에는 대기 없이 즉시 다음 투구 간격으로 이어서 진행)
+                const initialDelay = resumedScore > 0
+                    ? Math.max(350, getPitchInterval(resumedScore + 1))
+                    : (4200 + Math.floor(Math.random() * 80));
                 botSimTimers[bot.id] = setTimeout(stepBot, initialDelay);
             });
         }
@@ -9830,13 +9834,30 @@
                 if (removeHostRoom || otherActiveHumans.length === 0) {
                     battleRef.child(roomId).remove();
                 } else if (playerId) {
-                    const myP = battlePlayers && battlePlayers[playerId];
-                    if (myP && myP.done) {
-                        battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
-                    } else if (battleMode) {
-                        battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
+                    if (role === 'host') {
+                        // 방장이 먼저 나가더라도 남은 실제 플레이어 중 1명에게 즉시 방장(봇 시뮬레이션) 권한을 승계!
+                        const nextHostId = otherActiveHumans.sort((a, b) => {
+                            const ja = Number((battlePlayers[a] && battlePlayers[a].joinedAt) || 0);
+                            const jb = Number((battlePlayers[b] && battlePlayers[b].joinedAt) || 0);
+                            return ja !== jb ? ja - jb : a.localeCompare(b);
+                        })[0];
+                        const updates = {
+                            hostId: nextHostId,
+                            hostDisconnected: false
+                        };
+                        updates['players/' + playerId + '/disconnected'] = true;
+                        updates['players/' + playerId + '/isHost'] = false;
+                        updates['players/' + nextHostId + '/isHost'] = true;
+                        battleRef.child(roomId).update(updates);
                     } else {
-                        battleRef.child(roomId + '/players/' + playerId).remove();
+                        const myP = battlePlayers && battlePlayers[playerId];
+                        if (myP && myP.done) {
+                            battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
+                        } else if (battleMode) {
+                            battleRef.child(roomId + '/players/' + playerId + '/disconnected').set(true);
+                        } else {
+                            battleRef.child(roomId + '/players/' + playerId).remove();
+                        }
                     }
                 }
             }
@@ -10181,6 +10202,38 @@
                     });
                 }
             } else if (room.status === 'playing') {
+                // 방장 갑작스러운 연결 끊김 시 남은 실제 유저에게 방장(봇 시뮬레이션) 자동 승계
+                const currentHostId = room.hostId;
+                const hostLost = Boolean(room.hostDisconnected) || (currentHostId && players[currentHostId] && players[currentHostId].disconnected);
+                if (hostLost && currentHostId !== battlePlayerId) {
+                    const activeHumans = Object.keys(players)
+                        .filter(pid => {
+                            const p = players[pid];
+                            return p && !p.isBot && !p.disconnected;
+                        })
+                        .sort((a, b) => {
+                            const ja = Number((players[a] && players[a].joinedAt) || 0);
+                            const jb = Number((players[b] && players[b].joinedAt) || 0);
+                            return ja !== jb ? ja - jb : a.localeCompare(b);
+                        });
+                    if (activeHumans.length > 0 && activeHumans[0] === battlePlayerId) {
+                        battleRef.child(roomId).transaction(curr => {
+                            if (!curr || curr.status !== 'playing' || !curr.players) return curr;
+                            const oldHostId = curr.hostId;
+                            if (oldHostId === battlePlayerId && !curr.hostDisconnected) return curr;
+                            curr.hostId = battlePlayerId;
+                            curr.hostDisconnected = false;
+                            if (oldHostId && curr.players[oldHostId]) {
+                                curr.players[oldHostId].isHost = false;
+                            }
+                            if (curr.players[battlePlayerId]) {
+                                curr.players[battlePlayerId].isHost = true;
+                            }
+                            return curr;
+                        });
+                    }
+                }
+
                 Object.keys(players).forEach(pid => {
                     const p = players[pid];
                     if (p && p.disconnected && !p.done) {
@@ -10208,6 +10261,12 @@
                         returnToIntroAfterBattle();
                     }
                     return;
+                }
+
+                // 방장 권한이 나에게 승계된 경우 즉시 host 역할로 전환 및 연결 끊김 핸들러 갱신
+                if (room.hostId === battlePlayerId && battleRole !== 'host') {
+                    battleRole = 'host';
+                    registerBattleDisconnectHandler(roomId, battlePlayerId, 'host');
                 }
 
                 handleDisconnectedPlayers(roomId, room);
