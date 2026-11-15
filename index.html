@@ -4403,17 +4403,16 @@
         }
 
         function ensureTitleBgmOnIntro() {
-            if (gameState !== 'INTRO' || !splashEnteredIntro) return;
-            const intro = document.getElementById('intro-screen');
-            if (!intro || intro.classList.contains('hidden')) return;
+            if (typeof splashDismissed === 'undefined' || !splashDismissed) return;
+            if (gameState !== 'INTRO') return;
             if (isTitleBgmPlaying()) return;
             playTitleBgm();
         }
 
         function playTitleBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
-            const intro = document.getElementById('intro-screen');
-            if (gameState !== 'INTRO' || (intro && intro.classList.contains('hidden'))) return;
+            if (typeof splashDismissed !== 'undefined' && !splashDismissed) return;
+            if (gameState !== 'INTRO') return;
             if (!sfxBuffers['bgm_title']) {
                 if (titleBgmEl) {
                     titleBgmEl.pause();
@@ -4432,8 +4431,7 @@
             }
             audioCtx.resume().then(() => {
                 if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
-                const introNow = document.getElementById('intro-screen');
-                if (gameState !== 'INTRO' || (introNow && introNow.classList.contains('hidden'))) return;
+                if (gameState !== 'INTRO') return;
                 if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
                 if (titleBgmEl) {
                     titleBgmEl.pause();
