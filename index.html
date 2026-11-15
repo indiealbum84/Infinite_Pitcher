@@ -9371,6 +9371,7 @@
 
         let currentBattleLeague = 'standard';
         let battleRatingProcessed = false;
+        let lastProvisionalBattleRank = 0;
         let lastBattleResultRatingData = null;
 
         function getBattleRating() {
@@ -9389,7 +9390,7 @@
             } catch (e) {}
             checkSkinUnlocks();
             updateIntroProfilePillUI();
-            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), clamped);
+            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), getBattleRating());
             if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
             return clamped;
         }
@@ -9414,7 +9415,7 @@
             } catch (e) {}
             checkSkinUnlocks();
             updateIntroProfilePillUI();
-            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), clamped);
+            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), getBattleRating());
             if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
             return s;
         }
@@ -12239,6 +12240,7 @@
             if (!isEnded) {
                 const aheadCount = allPlayers.filter(p => p.id !== battlePlayerId && (!p.done || Number(p.score || 0) > myScore)).length;
                 const provisionalRank = Math.max(2, Math.min(allPlayers.length, aheadCount + 1));
+                lastProvisionalBattleRank = provisionalRank;
                 resultText = textFor('rankText')(provisionalRank);
                 resultClass = 'lose';
                 const curRating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
@@ -12284,30 +12286,7 @@
 
             // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (경기 완전 종료 후 최종 점수 기반 순위로 판당 1회 처리)
             if (!battleRatingProcessed && isEnded && myRank > 0) {
-                battleRatingProcessed = true;
-                const prevRating = getBattleRating();
-                const delta = BATTLE_RANK_DELTAS[myRank] !== undefined ? BATTLE_RANK_DELTAS[myRank] : 0;
-                const newRating = saveBattleRating(prevRating + delta);
-                const actualDelta = newRating - prevRating;
-
-                const prevStreak = getBattleStreak();
-                let newStreak = 0;
-                if (myRank === 1) {
-                    newStreak = saveBattleStreak(prevStreak + 1);
-                } else {
-                    saveBattleStreak(0);
-                }
-
-                const newlyUnlocked = checkSkinUnlocks();
-                lastBattleResultRatingData = {
-                    prevRating,
-                    newRating,
-                    actualDelta,
-                    prevStreak,
-                    newStreak,
-                    myRank,
-                    newlyUnlocked
-                };
+                applyBattleResultRating(myRank);
             }
 
             renderBattleResultRatingBadge(lastBattleResultRatingData || provisionalRatingPreview);
@@ -12398,6 +12377,7 @@
             battleMode = false;
             battleStarted = false;
             battleRatingProcessed = false;
+            lastProvisionalBattleRank = 0;
             lastBattleResultRatingData = null;
             const resRatingPill = document.getElementById('battle-result-rating-pill');
             if (resRatingPill) resRatingPill.style.display = 'none';
@@ -12508,7 +12488,39 @@
             playTitleBgm();
         }
 
+        function applyBattleResultRating(rank) {
+            if (battleRatingProcessed || !rank || rank <= 0) return null;
+            battleRatingProcessed = true;
+            const prevRating = getBattleRating();
+            const delta = BATTLE_RANK_DELTAS[rank] !== undefined ? BATTLE_RANK_DELTAS[rank] : 0;
+            const newRating = saveBattleRating(prevRating + delta);
+            const actualDelta = newRating - prevRating;
+
+            const prevStreak = getBattleStreak();
+            let newStreak = 0;
+            if (rank === 1) {
+                newStreak = saveBattleStreak(prevStreak + 1);
+            } else {
+                saveBattleStreak(0);
+            }
+
+            const newlyUnlocked = checkSkinUnlocks();
+            lastBattleResultRatingData = {
+                prevRating,
+                newRating,
+                actualDelta,
+                prevStreak,
+                newStreak,
+                myRank: rank,
+                newlyUnlocked
+            };
+            return lastBattleResultRatingData;
+        }
+
         function exitBattle(forceRemoveRoom = false) {
+            if (battleResultShown && !battleRatingProcessed && lastProvisionalBattleRank > 0) {
+                applyBattleResultRating(lastProvisionalBattleRank);
+            }
             gameSessionId++;
             if (typeof activeCountdownCleanup === 'function') {
                 activeCountdownCleanup();
@@ -12542,6 +12554,7 @@
             document.getElementById('battle-hud').style.display = 'none';
             document.getElementById('ui-layer').classList.add('hidden');
             battleRatingProcessed = false;
+            lastProvisionalBattleRank = 0;
             lastBattleResultRatingData = null;
             const resRatingPill = document.getElementById('battle-result-rating-pill');
             if (resRatingPill) resRatingPill.style.display = 'none';
