@@ -1871,7 +1871,8 @@
             box-shadow: 0 2px 0 #000000;
         }
 
-        #ingame-back-btn {
+        #ingame-back-btn,
+        #battle-lobby-back-btn {
             position: absolute;
             top: calc(56px + var(--safe-top));
             left: 56px;
@@ -1890,6 +1891,11 @@
             align-items: center;
             justify-content: center;
             touch-action: manipulation;
+        }
+
+        #battle-lobby-back-btn {
+            top: calc(36px + var(--safe-top));
+            left: 36px;
         }
 
         #ingame-back-btn.friend-pos {
@@ -4015,6 +4021,7 @@
 
         <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
+            <button type="button" id="battle-lobby-back-btn" onclick="openExitConfirmModal(true)" aria-label="Back">←</button>
             <p class="battle-title" id="battle-screen-title">⚡ 세계 8인 배틀</p>
             <div class="battle-header-badges">
                 <div class="battle-league-pill" id="battle-league-pill">🥈 일반 리그 (1,200 PT 이하)</div>
@@ -6852,16 +6859,17 @@
             const btn = document.getElementById('ingame-back-btn');
             if (!btn) return;
             const isFriendBattle = battleMode && battleViewMode === 'friend';
-            const shouldShow = gameState === 'PLAYING' && (!battleMode || isFriendBattle);
+            const inActivePlay = gameState === 'PLAYING' || gameState === 'COUNTDOWN';
+            const shouldShow = inActivePlay && (!battleMode || isFriendBattle);
             btn.classList.toggle('friend-pos', isFriendBattle);
             btn.classList.toggle('hidden', !shouldShow);
         }
 
-        function openExitConfirmModal() {
-            if (gameState !== 'PLAYING') return;
+        function openExitConfirmModal(fromLobby = false) {
+            if (!fromLobby && gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             playSfx('click', 0.8);
             triggerHaptic('light');
-            if (!battleMode) exitConfirmPaused = true;
+            if (!fromLobby && !battleMode && gameState === 'PLAYING') exitConfirmPaused = true;
             const msgMap = {
                 ko: '로비로 나가시겠습니까?',
                 en: 'Return to lobby?',
@@ -6900,6 +6908,11 @@
             if (modal) modal.classList.add('hidden');
             const backBtn = document.getElementById('ingame-back-btn');
             if (backBtn) backBtn.classList.add('hidden');
+            const battleScreen = document.getElementById('battle-screen');
+            if (battleScreen && !battleScreen.classList.contains('hidden')) {
+                cancelBattle();
+                return;
+            }
             stopFlashball();
             stopAllBgm();
             gameState = 'INTRO';
