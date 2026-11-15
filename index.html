@@ -5599,7 +5599,7 @@
         let mirrorWaveStart       = 0;     // 웨이브 시작 타임스탬프 (0=비활성)
         const MIRRORBALL_TRIGGER_SCORE = 94;
         const MIRRORBALL_ANNOUNCE_DURATION = 1200;
-        const MIRRORBALL_POST_ANNOUNCE_DELAY = 1000;
+        const MIRRORBALL_POST_ANNOUNCE_DELAY = 2000;
         const MIRROR_WAVE_DURATION = 2000; // 웨이브 총 시간(ms)
         let stripeballActive      = false; // 10개 줄 단위 교차 표시 여부
         let stripeballCharging    = false; // 스트라이프볼 노티+웨이브 중 (투구 차단)
@@ -5609,7 +5609,7 @@
         const STRIPEBALL_TRIGGER_NUMBER = 201;
         const STRIPEBALL_BASE_ROW_INDEX = 20; // 201~210 줄부터 정상/미러 교차
         const STRIPEBALL_ANNOUNCE_DURATION = 1200;
-        const STRIPEBALL_POST_ANNOUNCE_DELAY = 1000;
+        const STRIPEBALL_POST_ANNOUNCE_DELAY = 2000;
         let flashballActive      = false; // 숫자 깜빡임 중 여부
         let flashballCharging    = false; // 플래시볼 노티 중 (투구 차단)
         let flashballShotPending = false; // 다음 일반 투구를 플래시볼로 처리
@@ -6648,10 +6648,10 @@
                 mirrorWaveStart  = 0;
                 mirrorballActive = true;
             }, MIRROR_WAVE_DURATION);
-            // 웨이브 2초 + 대기 2초 후 투구 차단 해제 + 즉시 투구
+            // 웨이브 2초 + 대기 2초 후 투구 차단 해제 + 자연스러운 1투구 간격 대기
             setTimeout(() => {
                 mirrorballCharging = false;
-                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                lastPitchTime = performance.now();
             }, MIRROR_WAVE_DURATION + 2000);
         }
 
@@ -6716,7 +6716,7 @@
             }, MIRROR_WAVE_DURATION);
             setTimeout(() => {
                 stripeballCharging = false;
-                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                lastPitchTime = performance.now();
             }, MIRROR_WAVE_DURATION + 2000);
         }
 
@@ -6754,7 +6754,7 @@
             setTimeout(() => {
                 if (gameState !== 'PLAYING') return;
                 flashballCharging = false;
-                lastPitchTime = performance.now() - getPitchInterval(nextExpectedNumber);
+                lastPitchTime = performance.now();
             }, MIRROR_WAVE_DURATION + 2000);
         }
 
