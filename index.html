@@ -1464,6 +1464,23 @@
             background: #f1f5f9;
         }
 
+        .skin-card.hidden-skin {
+            opacity: 0.85;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-color: #475569;
+        }
+        .skin-card.hidden-skin .skin-card-icon {
+            filter: drop-shadow(0 0 8px rgba(148, 163, 184, 0.55));
+        }
+        .skin-card.hidden-skin .skin-card-name {
+            color: #e2e8f0;
+            letter-spacing: 2px;
+        }
+        .skin-card.hidden-skin .skin-card-desc,
+        .skin-card.hidden-skin .skin-card-condition {
+            color: #94a3b8;
+        }
+
         .skin-card-icon {
             font-size: 32px;
             line-height: 1;
@@ -7039,6 +7056,29 @@
                             ctx.moveTo(b.x, trailY - glint); ctx.lineTo(b.x, trailY + glint);
                             ctx.stroke();
                         }
+                    } else if (equippedSkin === 'lucky333') {
+                        for (let i = 1; i <= 3; i++) {
+                            const trailY = b.y + scalePx(i * 10);
+                            const wobble = Math.sin(t * 0.015 + i * 1.4) * scalePx(3);
+                            const tr = b.radius * (0.88 - i * 0.18);
+                            ctx.fillStyle = i === 1 ? 'rgba(253, 224, 71, 0.9)' : 'rgba(245, 158, 11, 0.58)';
+                            ctx.beginPath();
+                            ctx.arc(b.x + wobble, trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                            ctx.lineWidth = scalePx(1);
+                            ctx.stroke();
+                        }
+                    } else if (equippedSkin === 'dragon') {
+                        for (let i = 1; i <= 4; i++) {
+                            const trailY = b.y + scalePx(i * 9);
+                            const waveX = Math.sin(t * 0.014 - i * 0.9) * scalePx(4.5);
+                            const tr = b.radius * (1.0 - i * 0.18);
+                            ctx.fillStyle = i % 2 === 1 ? 'rgba(52, 211, 153, 0.78)' : 'rgba(6, 182, 212, 0.55)';
+                            ctx.beginPath();
+                            ctx.arc(b.x + waveX, trailY, tr, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
                     }
                     ctx.restore();
                 }
@@ -7379,6 +7419,44 @@
                         ctx.fillStyle = 'rgba(254, 240, 138, 0.95)';
                         ctx.beginPath();
                         ctx.arc(sx, sy, scalePx(2.2), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (equippedSkin === 'lucky333') {
+                    const r = scalePx(36 + Math.sin(t * 0.006) * 4);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(254, 240, 138, 0.7)');
+                    auraGrad.addColorStop(0.55, 'rgba(245, 158, 11, 0.35)');
+                    auraGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let s = 0; s < 3; s++) {
+                        const a = t * 0.004 + s * (Math.PI * 2 / 3);
+                        const sx = px + Math.cos(a) * (r * 0.78);
+                        const sy = py - scalePx(10) + Math.sin(a) * (r * 0.78);
+                        ctx.fillStyle = 'rgba(253, 224, 71, 0.95)';
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, scalePx(2.6), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } else if (equippedSkin === 'dragon') {
+                    const r = scalePx(40 + Math.sin(t * 0.005) * 5);
+                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
+                    auraGrad.addColorStop(0, 'rgba(110, 231, 183, 0.68)');
+                    auraGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.38)');
+                    auraGrad.addColorStop(1, 'rgba(37, 99, 235, 0)');
+                    ctx.fillStyle = auraGrad;
+                    ctx.beginPath();
+                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
+                    ctx.fill();
+                    for (let s = 0; s < 2; s++) {
+                        const a = t * 0.0045 + s * Math.PI;
+                        const sx = px + Math.cos(a) * (r * 0.85);
+                        const sy = py - scalePx(10) + Math.sin(a) * (r * 0.85);
+                        ctx.fillStyle = 'rgba(167, 243, 208, 0.95)';
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, scalePx(3.0), 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
@@ -8534,6 +8612,9 @@
             if (isNewPersonalBest && normalizedScore > 0) {
                 setPersonalBestScore(normalizedScore);
             }
+            if (normalizedScore === 333 && typeof unlockSkin === 'function') {
+                unlockSkin('lucky333');
+            }
 
             lastHighlightName = playerName;
             lastHighlightScore = effectiveBestScore > 0 ? effectiveBestScore : null;
@@ -9020,6 +9101,24 @@
                 desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura', 'zh-TW': '閃耀鑽石光芒稜鏡特效', es: 'Destellos de prisma diamante y aura cristal' },
                 condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League', 'zh-TW': '大師聯賽達成 1,500 PT', es: 'Alcanza 1,500 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 1500
+            },
+            {
+                id: 'lucky333',
+                hidden: true,
+                name: { ko: '럭키 333', ja: 'ラッキー333', en: 'Lucky 333', 'zh-TW': '幸運 333', es: 'Suerte 333' },
+                icon: '🎰',
+                desc: { ko: '잭팟 골드 코인 궤적 + 황금 럭키 오라', ja: 'ジャックポットコイン軌跡＋黄金ラッキーオーラ', en: 'Jackpot gold coin trail & lucky aura', 'zh-TW': '大獎金幣軌跡＋幸運黃金光環', es: 'Estela de monedas jackpot y aura dorada' },
+                condition: { ko: '나홀로 특훈 정확히 333점 달성', ja: 'ひとり特訓ちょうど333点達成', en: 'Finish Solo mode with exact 333 pts', 'zh-TW': '單人特訓精準達成 333 分', es: 'Termina modo Solo con 333 pts exactos' },
+                checkUnlock: () => false
+            },
+            {
+                id: 'dragon',
+                hidden: true,
+                name: { ko: '레전드 드래곤', ja: 'レジェンドドラゴン', en: 'Legend Dragon', 'zh-TW': '傳說神龍', es: 'Dragón Legendario' },
+                icon: '🐲',
+                desc: { ko: '푸른 용염·비취빛 궤적 + 승천 용오라', ja: '蒼き龍炎・翡翠の軌跡＋昇龍オーラ', en: 'Azure dragonfire trail & rising dragon aura', 'zh-TW': '蒼藍龍炎軌跡＋騰龍光環', es: 'Estela de fuego dragón y aura mística' },
+                condition: { ko: '마스터 리그 2,000 PT 달성', ja: 'マスターリーグ2,000 PT達成', en: 'Reach 2,000+ PT in Master League', 'zh-TW': '大師聯賽達成 2,000 PT', es: 'Alcanza 2,000 PT en Liga Maestra' },
+                checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 2000
             }
         ];
 
@@ -9115,9 +9214,11 @@
             grid.innerHTML = SKINS_CATALOG.map(skin => {
                 const isUnlocked = unlocked.includes(skin.id);
                 const isEquipped = (equipped === skin.id);
-                const name = skin.name[lang] || skin.name.ko;
-                const desc = skin.desc[lang] || skin.desc.ko;
-                const condition = skin.condition[lang] || skin.condition.ko;
+                const isHiddenLocked = Boolean(skin.hidden && !isUnlocked);
+                const hiddenLabel = (lang === 'ko') ? '히든 컬렉션' : (lang === 'ja' ? 'ヒドゥン' : (lang === 'zh-TW' ? '隱藏收藏' : (lang === 'es' ? 'Oculto' : 'Hidden')));
+                const name = isHiddenLocked ? '???' : (skin.name[lang] || skin.name.ko);
+                const desc = isHiddenLocked ? hiddenLabel : (skin.desc[lang] || skin.desc.ko);
+                const condition = isHiddenLocked ? '???' : (skin.condition[lang] || skin.condition.ko);
 
                 let cardClass = 'skin-card';
                 let cardOnClick = '';
@@ -9136,7 +9237,7 @@
                     cardOnClick = `onclick="equipSkin('${skin.id}')"`;
                     btnOnClick = `onclick="event.stopPropagation(); equipSkin('${skin.id}')"`;
                 } else {
-                    cardClass += ' locked';
+                    cardClass += isHiddenLocked ? ' locked hidden-skin' : ' locked';
                 }
 
                 return `
