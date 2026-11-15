@@ -9322,9 +9322,20 @@
 
         function checkBattlePhaseTransition() {
             if (!battleMode || gameState !== 'PLAYING' || isCurrentBattlePlayerDone()) return;
+            const specialBusy = fireballCharging || fireballActive
+                || mirrorballCharging || mirrorballShotPending || (mirrorWaveStart > 0)
+                || stripeballCharging || stripeballShotPending || (stripeWaveStart > 0)
+                || flashballCharging || flashballShotPending
+                || balls.some(b => b && (b.isFireball || b.isMirrorBall || b.isStripeBall || b.isFlashBall));
+
+            if (specialBusy) {
+                // 현재 마구 연출/투구/웨이브가 완전히 끝난 시점부터 최소 공 2개 간격 계산
+                battlePhaseEnteredBall = Math.max(battlePhaseEnteredBall, nextExpectedNumber);
+            }
+
             const targetPhase = getBattlePhase();
             let nextPhase = battlePhase;
-            if (targetPhase > battlePhase) {
+            if (targetPhase > battlePhase && !specialBusy) {
                 if (battlePhase === 1) {
                     nextPhase = (targetPhase >= 3 && nextExpectedNumber < 11) ? 3 : 2;
                 } else if ((nextExpectedNumber - battlePhaseEnteredBall) >= 2) {
