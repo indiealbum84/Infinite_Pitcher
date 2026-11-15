@@ -4391,8 +4391,24 @@
             if (options.stopSfx) stopActiveSfx();
         }
 
+        function isTitleBgmPlaying() {
+            if (titleBgmSource) return true;
+            if (titleBgmEl && !titleBgmEl.paused) return true;
+            return false;
+        }
+
+        function ensureTitleBgmOnIntro() {
+            if (gameState !== 'INTRO' || !splashEnteredIntro) return;
+            const intro = document.getElementById('intro-screen');
+            if (!intro || intro.classList.contains('hidden')) return;
+            if (isTitleBgmPlaying()) return;
+            playTitleBgm();
+        }
+
         function playTitleBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
+            const intro = document.getElementById('intro-screen');
+            if (gameState !== 'INTRO' || (intro && intro.classList.contains('hidden'))) return;
             if (!sfxBuffers['bgm_title']) {
                 if (titleBgmEl) {
                     titleBgmEl.pause();
@@ -4403,11 +4419,16 @@
                 titleBgmEl = base.cloneNode(true);
                 titleBgmEl.loop = true;
                 titleBgmEl.volume = 0.6 * bgmVolume;
-                titleBgmEl.play().catch(e => console.warn('[BGM] title fallback play failed:', e));
+                titleBgmEl.play().catch(e => {
+                    titleBgmEl = null;
+                    console.warn('[BGM] title fallback play failed:', e);
+                });
                 return;
             }
             audioCtx.resume().then(() => {
                 if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
+                const introNow = document.getElementById('intro-screen');
+                if (gameState !== 'INTRO' || (introNow && introNow.classList.contains('hidden'))) return;
                 if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
                 if (titleBgmEl) {
                     titleBgmEl.pause();
@@ -5402,7 +5423,7 @@
                     silentSrc.buffer = silentBuf;
                     silentSrc.connect(audioCtx.destination);
                     silentSrc.start(0);
-                    playTitleBgm();
+                    ensureTitleBgmOnIntro();
                 }).catch(() => {});
             }
             try {
@@ -5417,6 +5438,7 @@
                 const intro = document.getElementById('intro-screen');
                 if (intro) intro.classList.remove('hidden');
             }
+            ensureTitleBgmOnIntro();
         }
 
         const splashScreen = document.getElementById('splash-screen');
@@ -5432,15 +5454,24 @@
             enterIntroFromSplash();
         }, SPLASH_DURATION_MS);
 
-        // 오디오 자동재생 정책 대비: 3초 자동 전환 후 첫 터치 시 오디오 언락
-        window.addEventListener('pointerdown', function unlockAudioOnFirstTap() {
-            window.removeEventListener('pointerdown', unlockAudioOnFirstTap);
+        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치 시 bgm_title 재생 보장
+        function unlockAudioOnTap() {
+            if (gameState !== 'INTRO') return;
+            if (isTitleBgmPlaying()) {
+                window.removeEventListener('pointerdown', unlockAudioOnTap);
+                window.removeEventListener('touchstart', unlockAudioOnTap);
+                return;
+            }
             if (audioCtx && audioCtx.state !== 'running') {
                 audioCtx.resume().then(() => {
-                    if (gameState === 'INTRO') playTitleBgm();
+                    ensureTitleBgmOnIntro();
                 }).catch(() => {});
+            } else {
+                ensureTitleBgmOnIntro();
             }
-        }, { once: true, passive: true });
+        }
+        window.addEventListener('pointerdown', unlockAudioOnTap, { passive: true });
+        window.addEventListener('touchstart', unlockAudioOnTap, { passive: true });
 
         function playGameBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
@@ -8483,6 +8514,7 @@
             document.getElementById('intro-screen').classList.remove('hidden');
             updateIntroProfilePillUI();
             updatePlayTicketStatusUI();
+            if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
         }
 
         function ensurePermanentPlayerProfileOnStart() {
@@ -8493,6 +8525,7 @@
                 document.getElementById('intro-screen').classList.remove('hidden');
                 updateIntroProfilePillUI();
                 syncProfileToCloud();
+                if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
                 return;
             }
 
@@ -8515,6 +8548,7 @@
                         applyCloudProfileDataToLocal(remoteProfile);
                         document.getElementById('initial-profile-screen').classList.add('hidden');
                         document.getElementById('intro-screen').classList.remove('hidden');
+                        if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
                         return;
                     }
                     openInitialProfileScreen();
@@ -8587,6 +8621,7 @@
                     document.getElementById('initial-profile-screen').classList.add('hidden');
                     if (gameState === 'INTRO') {
                         document.getElementById('intro-screen').classList.remove('hidden');
+                        if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
                     }
                     const alertFn = textFor('accountRestoredAlert');
                     if (typeof alertFn === 'function') {
