@@ -149,6 +149,37 @@
             -webkit-user-drag: none;
         }
 
+        .splash-press-start {
+            position: absolute;
+            left: 50%;
+            bottom: max(54px, calc(env(safe-area-inset-bottom, 0px) + 38px));
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow:
+                0 2px 0 #0b1628,
+                0 0 12px rgba(56, 189, 248, 0.85),
+                0 4px 16px rgba(0, 0, 0, 0.9);
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            z-index: 2;
+            animation: splashPressStartPulse 1.25s ease-in-out infinite;
+        }
+
+        @keyframes splashPressStartPulse {
+            0%, 100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 0.35;
+                transform: translateX(-50%) scale(0.96);
+            }
+        }
+
         .lang-switcher {
             position: absolute;
             top: 16px;
@@ -3805,6 +3836,7 @@
 
         <div id="splash-screen" class="screen">
             <img class="company-splash-img" src="./images/splash_108project.png" alt="108 Project" fetchpriority="high">
+            <div class="splash-press-start">PRESS START</div>
         </div>
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
@@ -5462,11 +5494,6 @@
                 enterIntroFromSplash();
             }, { passive: true });
         }
-
-        // 스플래시 화면 3초 후 게임 메인화면으로 자동 전환
-        splashAutoTimer = setTimeout(() => {
-            enterIntroFromSplash();
-        }, SPLASH_DURATION_MS);
 
         // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 동기 재생 보장
         function unlockAudioOnTap() {
