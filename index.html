@@ -2287,6 +2287,20 @@
             box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 3px #000000;
         }
 
+        #intro-ranking-modal .rank-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin: 0 0 22px;
+        }
+
+        #intro-ranking-modal .rank-tab-btn {
+            max-width: none;
+            font-size: 27px;
+            padding: 14px 10px;
+            line-height: 1.2;
+        }
+
         .rank-sub-announce {
             font-size: 34px;
             font-weight: 900;
@@ -3715,8 +3729,10 @@
                 <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
                 <h3 style="margin:0 0 10px;color:#111827;text-align:center;">TOP 1000</h3>
                 <div class="rank-tabs">
-                    <button type="button" class="rank-tab-btn active" id="intro-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL</button>
-                    <button type="button" class="rank-tab-btn" id="intro-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY</button>
+                    <button type="button" class="rank-tab-btn active" id="intro-tab-battle-global" onclick="switchIntroRankTab('battle_global')">⚡ 8인 세계</button>
+                    <button type="button" class="rank-tab-btn" id="intro-tab-battle-country" onclick="switchIntroRankTab('battle_country')">🏳️ 8인 국내</button>
+                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-global" onclick="switchIntroRankTab('solo_global')">🧢 개인 세계</button>
+                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-country" onclick="switchIntroRankTab('solo_country')">🏳️ 개인 국내</button>
                 </div>
                 <div id="intro-rank-list"></div>
             </div>
@@ -7411,6 +7427,8 @@
         const PERSONAL_BEST_SCORE_KEY = 'infinitePitcherBestScore_v1';
         const ranksRef = db.ref('ranks');
         const countryRanksRootRef = db.ref('ranks_country');
+        const battleRanksRef = db.ref('battle_ranks');
+        const countryBattleRanksRootRef = db.ref('battle_ranks_country');
         const usersRef = db.ref('users');
         let currentLeaderboardScope = 'global'; // 'global' | 'country'
         let lastHighlightName = null;
@@ -7541,23 +7559,67 @@
             );
         }
 
+        let currentIntroRankTab = 'battle_global';
+
+        function getIntroRankTabLabels() {
+            const flag = countryToFlag(userCountry);
+            const map = {
+                ko: {
+                    battleGlobal: '⚡ 8인 세계',
+                    battleCountry: `${flag} 8인 ${userCountry}`,
+                    soloGlobal: '🧢 개인 세계',
+                    soloCountry: `${flag} 개인 ${userCountry}`
+                },
+                en: {
+                    battleGlobal: '⚡ 8P Global',
+                    battleCountry: `${flag} 8P ${userCountry}`,
+                    soloGlobal: '🧢 Solo Global',
+                    soloCountry: `${flag} Solo ${userCountry}`
+                },
+                ja: {
+                    battleGlobal: '⚡ 8人 世界',
+                    battleCountry: `${flag} 8人 ${userCountry}`,
+                    soloGlobal: '🧢 個人 世界',
+                    soloCountry: `${flag} 個人 ${userCountry}`
+                },
+                'zh-TW': {
+                    battleGlobal: '⚡ 8人 世界',
+                    battleCountry: `${flag} 8人 ${userCountry}`,
+                    soloGlobal: '🧢 單人 世界',
+                    soloCountry: `${flag} 單人 ${userCountry}`
+                },
+                es: {
+                    battleGlobal: '⚡ 8P Mundial',
+                    battleCountry: `${flag} 8P ${userCountry}`,
+                    soloGlobal: '🧢 Solo Mundial',
+                    soloCountry: `${flag} Solo ${userCountry}`
+                }
+            };
+            return map[currentLang] || map.ko;
+        }
+
         function updateCountryTabLabels() {
             const flag = countryToFlag(userCountry);
             const label = `${flag} ${userCountry} TOP 1000`;
             const globalLabel = '🌍 GLOBAL';
-            const introGlobal = document.getElementById('intro-tab-global');
-            const introCountry = document.getElementById('intro-tab-country');
+            const introLabels = getIntroRankTabLabels();
+
+            const tabMap = {
+                'intro-tab-battle-global': { text: introLabels.battleGlobal, active: currentIntroRankTab === 'battle_global' },
+                'intro-tab-battle-country': { text: introLabels.battleCountry, active: currentIntroRankTab === 'battle_country' },
+                'intro-tab-solo-global': { text: introLabels.soloGlobal, active: currentIntroRankTab === 'solo_global' },
+                'intro-tab-solo-country': { text: introLabels.soloCountry, active: currentIntroRankTab === 'solo_country' }
+            };
+            Object.entries(tabMap).forEach(([id, cfg]) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerText = cfg.text;
+                    el.classList.toggle('active', cfg.active);
+                }
+            });
+
             const resGlobal = document.getElementById('result-tab-global');
             const resCountry = document.getElementById('result-tab-country');
-
-            if (introGlobal) {
-                introGlobal.innerText = globalLabel;
-                introGlobal.classList.toggle('active', currentLeaderboardScope === 'global');
-            }
-            if (introCountry) {
-                introCountry.innerText = label;
-                introCountry.classList.toggle('active', currentLeaderboardScope === 'country');
-            }
             if (resGlobal) {
                 resGlobal.innerText = globalLabel;
                 resGlobal.classList.toggle('active', currentLeaderboardScope === 'global');
@@ -7583,6 +7645,17 @@
                 })
                 .catch(() => {});
         })();
+
+        function switchIntroRankTab(tab) {
+            const validTabs = ['battle_global', 'battle_country', 'solo_global', 'solo_country'];
+            if (!validTabs.includes(tab)) return;
+            currentIntroRankTab = tab;
+            updateCountryTabLabels();
+            const introModal = document.getElementById('intro-ranking-modal');
+            if (introModal && !introModal.classList.contains('hidden')) {
+                loadIntroRankList();
+            }
+        }
 
         function switchLeaderboardScope(scope) {
             if (scope !== 'global' && scope !== 'country') return;
@@ -8318,6 +8391,79 @@
             fetchRanksByScope(currentLeaderboardScope, callback);
         }
 
+        function getCachedBattleRanks(scope = 'global') {
+            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_' + userCountry) : 'infinite_pitcher_battle_ranks_global';
+            try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+        }
+
+        function setCachedBattleRanks(ranks, scope = 'global') {
+            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_' + userCountry) : 'infinite_pitcher_battle_ranks_global';
+            try { localStorage.setItem(key, JSON.stringify(ranks)); } catch (e) {}
+        }
+
+        function fetchBattleRanksByScope(scope, callback) {
+            const cached = getCachedBattleRanks(scope);
+            const targetRef = scope === 'country'
+                ? countryBattleRanksRootRef.child(userCountry)
+                : battleRanksRef;
+
+            targetRef.orderByChild('rating').limitToLast(LEADERBOARD_LIMIT).once('value')
+                .then(snap => {
+                    const val = snap.val() || {};
+                    const bestByName = new Map();
+                    Object.values(val).forEach(entry => {
+                        if (!entry || !entry.name) return;
+                        const rating = Math.max(MIN_BATTLE_RATING, Math.round(Number(entry.rating) || 0));
+                        const row = {
+                            name: String(entry.name),
+                            score: rating,
+                            scoreLabel: `${rating.toLocaleString()} PT`,
+                            country: String(entry.country || ''),
+                            createdAt: Number(entry.updatedAt || 0)
+                        };
+                        const key = row.name.trim().toUpperCase();
+                        const prev = bestByName.get(key);
+                        if (!prev || row.score > prev.score) bestByName.set(key, row);
+                    });
+                    const rows = Array.from(bestByName.values())
+                        .sort((a, b) => b.score - a.score || (a.createdAt - b.createdAt))
+                        .slice(0, LEADERBOARD_LIMIT);
+                    setCachedBattleRanks(rows, scope);
+                    callback(rows, { ok: true });
+                })
+                .catch(err => {
+                    console.warn('[BattleLeaderboard] Firebase fetch fallback to cache:', err);
+                    callback(cached, { ok: false, reason: 'firebase-error' });
+                });
+        }
+
+        function saveBattleRatingToServer(playerName, ratingVal) {
+            const cleanName = clampBattleName(playerName || getSavedPlayerName() || '').trim();
+            if (!cleanName) return Promise.resolve(false);
+            const cleanRating = Math.max(MIN_BATTLE_RATING, Math.round(Number(ratingVal) || DEFAULT_BATTLE_RATING));
+            const accountKey = getAccountKey();
+            const payload = {
+                name: cleanName,
+                rating: cleanRating,
+                country: userCountry,
+                updatedAt: Date.now()
+            };
+            const updateEntry = ref => ref.transaction(current => {
+                if (!current) return payload;
+                return {
+                    ...current,
+                    name: current.name || payload.name,
+                    rating: payload.rating,
+                    country: payload.country,
+                    updatedAt: payload.updatedAt
+                };
+            });
+            return Promise.all([
+                updateEntry(battleRanksRef.child(accountKey)),
+                updateEntry(countryBattleRanksRootRef.child(userCountry).child(accountKey))
+            ]).then(() => true).catch(() => false);
+        }
+
         function calcProvisionalRank(ranks, newScore, playerName = '') {
             const normPlayer = String(playerName || '').trim().toUpperCase();
             let higherCount = 0;
@@ -8544,7 +8690,7 @@
                 return `<div class="rank-item${isMe ? ' is-me' : ''}">
                     <span class="rank-num">#${displayRanks[i]}</span>
                     <span class="rank-name">${flagPrefix}${safeName}</span>
-                    <span class="rank-score">${r.score} PTS</span>
+                    <span class="rank-score">${r.scoreLabel || (r.score + ' PTS')}</span>
                 </div>`;
             }).join('');
 
@@ -8681,6 +8827,7 @@
             } catch (e) {}
             checkSkinUnlocks();
             updateIntroProfilePillUI();
+            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), clamped);
             if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
             return clamped;
         }
@@ -8705,6 +8852,7 @@
             } catch (e) {}
             checkSkinUnlocks();
             updateIntroProfilePillUI();
+            if (typeof saveBattleRatingToServer === 'function') saveBattleRatingToServer(getSavedPlayerName(), clamped);
             if (typeof syncProfileToCloud === 'function') syncProfileToCloud();
             return s;
         }
@@ -11563,16 +11711,21 @@
         function loadIntroRankList() {
             const list = document.getElementById('intro-rank-list');
             updateCountryTabLabels();
-            const cached = getCachedRanks(currentLeaderboardScope);
-            if (cached.length > 0) renderRankRows(list, cached, null, null);
+            const myName = typeof getSavedPlayerName === 'function' ? getSavedPlayerName() : '';
+            const isBattleTab = currentIntroRankTab === 'battle_global' || currentIntroRankTab === 'battle_country';
+            const scope = (currentIntroRankTab === 'battle_country' || currentIntroRankTab === 'solo_country') ? 'country' : 'global';
+
+            const cached = isBattleTab ? getCachedBattleRanks(scope) : getCachedRanks(scope);
+            if (cached.length > 0) renderRankRows(list, cached, myName || null, null);
             else list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${textFor('loadingRanks')}</div>`;
 
-            fetchRanks((ranks) => {
+            const fetcher = isBattleTab ? fetchBattleRanksByScope : fetchRanksByScope;
+            fetcher(scope, (ranks) => {
                 if (ranks.length === 0) {
                     list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">${textFor('emptyRanks')}</div>`;
                     return;
                 }
-                renderRankRows(list, ranks, null, null);
+                renderRankRows(list, ranks, myName || null, null);
             });
         }
 

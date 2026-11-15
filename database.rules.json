@@ -31,6 +31,24 @@
         ".read": true,
         ".write": "$roomId.length === 4"
       }
+    },
+    "battle_ranks": {
+      ".read": true,
+      ".indexOn": ["rating", "name"],
+      "$entryId": {
+        ".write": "newData.exists() && (!data.exists() || newData.child('name').val() === data.child('name').val())",
+        ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 99999 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
+      }
+    },
+    "battle_ranks_country": {
+      "$countryCode": {
+        ".read": true,
+        ".indexOn": ["rating", "name"],
+        "$entryId": {
+          ".write": "newData.exists() && (!data.exists() || newData.child('name').val() === data.child('name').val()) && $countryCode.length === 2",
+          ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('country').val() === $countryCode && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 99999 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
+        }
+      }
     }
   }
 }
