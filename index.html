@@ -3015,13 +3015,25 @@
             white-space: nowrap;
         }
 
+        .battle-score-card.champion {
+            border-color: #f59e0b !important;
+            background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%) !important;
+            box-shadow: 0 11px 0 #d97706 !important;
+        }
+
         .battle-stamp-badge.champion {
-            border-color: #d97706;
-            color: #b45309;
-            background: rgba(254, 243, 199, 0.98);
-            box-shadow: 0 0 0 4px #ffffff, 0 6px 16px rgba(245, 158, 11, 0.35);
-            transform: translate(-50%, -50%) rotate(0deg) scale(1.04);
-            font-size: 38px;
+            top: 44px;
+            left: auto;
+            right: 10px;
+            border: 4px solid #dc2626;
+            color: #dc2626;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 4px 12px;
+            border-radius: 12px;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 4px 10px rgba(220, 38, 38, 0.28);
+            transform: rotate(12deg);
+            font-size: 28px;
+            letter-spacing: 1px;
         }
 
         .battle-score-card.me {
@@ -11561,10 +11573,13 @@
                         <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}</div>
                     </div>`;
                 }).join('');
-                return;
+                listEl.querySelectorAll('.battle-score-card').forEach(card => {
+                    const pid = card.getAttribute('data-player-id');
+                    if (pid) existingCards[pid] = card;
+                });
             }
 
-            // 실시간 점수 업데이트: 카드는 그 자리에 100% 멈춰 서서 숫자만 갱신, 끝난 사람은 순위 도장 쾅!
+            // 실시간 점수 업데이트: 카드는 그 자리에 100% 멈춰 서서 숫자만 갱신, 경기 종료 시 1등 카드에 1위 도장!
             players.forEach((player, index) => {
                 const card = existingCards[player.id];
                 if (!card) return;
@@ -11576,29 +11591,29 @@
                     scoreEl.textContent = scoreStr;
                 }
 
-                // 2. 이미 끝난(탈락 또는 1위 확정) 플레이어: 카드 위에 순위 도장 찍기!
-                if (player.done) {
-                    if (!card.classList.contains('done')) {
-                        card.classList.add('done');
-                    }
-                    let stampEl = card.querySelector('.battle-stamp-badge');
-                    const rankNum = isEnded ? Number((rankMap && rankMap[player.id]) || player.rank || 0) : 0;
-                    const isChampion = rankNum === 1;
-                    const stampText = rankNum > 0
-                        ? (isChampion
-                            ? ({ en: '🥇 1st WIN!', ja: '🥇 1位 WIN!', 'zh-TW': '🥇 第1名 WIN!', es: '🥇 ¡1° WIN!' }[currentLang] || '🥇 1위 WIN!')
-                            : (typeof textFor('rankText') === 'function' ? textFor('rankText')(rankNum) : `${rankNum}위`))
-                        : 'OUT';
+                if (player.done && !card.classList.contains('done')) {
+                    card.classList.add('done');
+                }
 
+                // 2. 경기 종료 시 1위 플레이어 카드에 1위 도장 찍기
+                const rankNum = isEnded ? Number((rankMap && rankMap[player.id]) || player.rank || 0) : 0;
+                const isChampion = isEnded && rankNum === 1;
+                card.classList.toggle('champion', isChampion);
+
+                let stampEl = card.querySelector('.battle-stamp-badge');
+                if (isChampion) {
+                    const stampText = { en: '🥇 1st', ja: '🥇 1位', 'zh-TW': '🥇 第1名', es: '🥇 1°' }[currentLang] || '🥇 1위';
                     if (!stampEl) {
                         stampEl = document.createElement('div');
-                        stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
+                        stampEl.className = 'battle-stamp-badge champion';
                         stampEl.textContent = stampText;
                         card.appendChild(stampEl);
-                    } else if (stampEl.textContent !== stampText) {
-                        stampEl.className = 'battle-stamp-badge' + (isChampion ? ' champion' : '');
+                    } else if (stampEl.textContent !== stampText || !stampEl.classList.contains('champion')) {
+                        stampEl.className = 'battle-stamp-badge champion';
                         stampEl.textContent = stampText;
                     }
+                } else if (stampEl) {
+                    stampEl.remove();
                 }
             });
         }
