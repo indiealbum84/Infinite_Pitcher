@@ -135,7 +135,6 @@
 
         #splash-screen.splash-fade-out {
             opacity: 0;
-            pointer-events: none;
         }
 
         .company-splash-img {
@@ -5487,12 +5486,18 @@
             ensureTitleBgmOnIntro();
         }
 
+        function handleSplashTap(e) {
+            if (e) {
+                if (e.cancelable && typeof e.preventDefault === 'function') e.preventDefault();
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+            }
+            enterIntroFromSplash();
+        }
+
         const splashScreen = document.getElementById('splash-screen');
         if (splashScreen) {
-            splashScreen.addEventListener('click', enterIntroFromSplash);
-            splashScreen.addEventListener('touchstart', (e) => {
-                enterIntroFromSplash();
-            }, { passive: true });
+            splashScreen.addEventListener('click', handleSplashTap);
+            splashScreen.addEventListener('touchstart', handleSplashTap, { passive: false });
         }
 
         // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 동기 재생 보장
