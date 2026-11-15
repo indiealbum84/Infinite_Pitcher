@@ -5305,9 +5305,13 @@
         let score = 0;
         let nextExpectedNumber = 1;
         let lastPitchTime = 0;
+        function isWorldBattleRules() {
+            return Boolean(battleMode && battleViewMode !== 'friend');
+        }
+
         function getPitchInterval(n) {
-            // 온라인 대전 모드: 일반 리그(1.2s 시작) vs 마스터 리그(1.0s 시작) 100ms 균일 감소
-            if (battleMode) {
+            // 세계 8인 배틀: 일반 리그(1.2s 시작) vs 마스터 리그(1.0s 시작) 100ms 균일 감소
+            if (isWorldBattleRules()) {
                 const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
                 if (isMaster) {
                     // 마스터 리그 (1,000ms 시작, 페이즈당 100ms씩 감소, 서든데스 400ms까지)
@@ -5329,13 +5333,14 @@
                     return 600;
                 }
             }
-            // 개인 기록 모드: 기존 룰 100% 보존
-            if (n < 31)  return 1000;
-            if (n < 131) return 900;
-            if (n < 231) return 800;
-            if (n < 331) return 700;
-            if (n < 431) return 600;
-            if (n < 531) return 500;
+            // 나홀로 특훈 & 친구와 특훈: 1~30번 1,200ms, 31번부터 1,000ms -> 100개마다 100ms 감소
+            if (n < 31)  return 1200;
+            if (n < 131) return 1000;
+            if (n < 231) return 900;
+            if (n < 331) return 800;
+            if (n < 431) return 700;
+            if (n < 531) return 600;
+            if (n < 631) return 500;
             return 400;
         }
 
@@ -5862,7 +5867,7 @@
             flashballTriggered  = false;
             setPitcherThrowing(false);
             stopFlashball();
-            if (battleMode) {
+            if (isWorldBattleRules()) {
                 battlePhase = 1;
                 battlePhaseEnteredBall = 1;
                 battleMirrorballTriggered = false;
@@ -5889,7 +5894,7 @@
                 canvasEl.style.visibility = 'visible';
                 canvasEl.style.opacity = '1';
             }
-            if (battleMode) {
+            if (isWorldBattleRules()) {
                 document.getElementById('ui-layer').classList.add('hidden');
                 document.getElementById('battle-hud').style.display = 'flex';
             } else {
@@ -5967,7 +5972,7 @@
             };
 
             // 대전 모드에서는 안내 문구 없이 바로 카운트다운 시작
-            if (battleMode) {
+            if (isWorldBattleRules()) {
                 startCountdownTick();
             } else {
                 countdownScreen.dataset.waiting = 'true';
@@ -6079,7 +6084,7 @@
             document.getElementById('play-gate-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
-            if (battleMode) {
+            if (isWorldBattleRules()) {
                 // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
                 battleGameOver();
             } else {
@@ -6363,8 +6368,8 @@
         }
 
         function scheduleMirrorballIfNeeded() {
-            // 온라인 대전 모드: Phase 3 (5명 이하 생존 OR 51번 도달)
-            if (battleMode) {
+            // 세계 8인 배틀: Phase 3 (5명 이하 생존 OR 51번 도달)
+            if (isWorldBattleRules()) {
                 if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = battlePhase >= 3;
                 if (!shouldTrigger || battleMirrorballTriggered || mirrorballDoneCount > 0 || mirrorballCharging || mirrorballShotPending) return;
@@ -6411,7 +6416,7 @@
 
         function isStripeNormalRow(num) {
             const rowIndex = Math.floor((num - 1) / 10);
-            if (battleMode) {
+            if (isWorldBattleRules()) {
                 if (rowIndex < battleStripeBaseRowIndex) return false;
                 return (rowIndex - battleStripeBaseRowIndex) % 2 === 0;
             }
@@ -6430,8 +6435,8 @@
         }
 
         function scheduleStripeballIfNeeded() {
-            // 온라인 대전 모드: Phase 4 (3명 이하 생존 OR 91번 도달)
-            if (battleMode) {
+            // 세계 8인 배틀: Phase 4 (3명 이하 생존 OR 91번 도달)
+            if (isWorldBattleRules()) {
                 if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = battlePhase >= 4;
                 if (!shouldTrigger || battleStripeballTriggered || stripeballCharging || stripeballShotPending) return;
@@ -6511,8 +6516,8 @@
         }
 
         function scheduleFlashballIfNeeded() {
-            // 온라인 대전 모드: Phase 5 (2명 이하 결승 OR 131번 도달)
-            if (battleMode) {
+            // 세계 8인 배틀: Phase 5 (2명 이하 결승 OR 131번 도달)
+            if (isWorldBattleRules()) {
                 if (isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = battlePhase >= 5;
                 if (!shouldTrigger || battleFlashballTriggered || flashballCharging || flashballShotPending) return;
@@ -6583,8 +6588,8 @@
             if (!fireballCharging && !fireballActive && !mirrorballCharging && !stripeballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
-                // 31, 131, 231... (개인 기록) / 11, 111, 211... (온라인 대전) → 파이어볼
-                const isFireballTurn = battleMode
+                // 31, 131, 231... (나홀로/친구와 특훈) / 11, 111, 211... (세계 8인 배틀) → 파이어볼
+                const isFireballTurn = isWorldBattleRules()
                     ? (nextExpectedNumber >= 11 && (nextExpectedNumber - 11) % 100 === 0)
                     : (nextExpectedNumber >= 31 && (nextExpectedNumber - 31) % 100 === 0);
 
@@ -6879,7 +6884,7 @@
                 if (drawY > height || drawY < -blk.height) return;
 
                 const isNext = blk.num === nextExpectedNumber;
-                const isFireballNext = battleMode
+                const isFireballNext = isWorldBattleRules()
                     ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
@@ -9321,7 +9326,7 @@
         }
 
         function checkBattlePhaseTransition() {
-            if (!battleMode || gameState !== 'PLAYING' || isCurrentBattlePlayerDone()) return;
+            if (!isWorldBattleRules() || gameState !== 'PLAYING' || isCurrentBattlePlayerDone()) return;
             const specialBusy = fireballCharging || fireballActive
                 || mirrorballCharging || mirrorballShotPending || (mirrorWaveStart > 0)
                 || stripeballCharging || stripeballShotPending || (stripeWaveStart > 0)
@@ -11003,7 +11008,7 @@
                         startBotSimulation(room);
                     }
                     if (isMyDone) {
-                        if (battleMode) {
+                        if (isWorldBattleRules()) {
                             battleMode = false;
                             gameState = 'GAMEOVER';
                             stopAllBgm();
@@ -11023,7 +11028,7 @@
                     if (!isMyDone) {
                         renderBattleHud(room);
                     }
-                    if (battleMode) {
+                    if (isWorldBattleRules()) {
                         battleMode = false;
                         gameState = 'GAMEOVER';
                         stopAllBgm();
