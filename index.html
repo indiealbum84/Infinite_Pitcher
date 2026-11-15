@@ -6516,9 +6516,9 @@
         }
 
         function scheduleFlashballIfNeeded() {
-            // 세계 8인 배틀: Phase 5 (2명 이하 결승 OR 131번 도달)
+            // 세계 8인 배틀: 마스터 리그 전용 Phase 5 (2명 이하 결승 OR 131번 도달). 일반 리그는 플래시볼 미출현
             if (isWorldBattleRules()) {
-                if (isCurrentBattlePlayerDone()) return;
+                if (!isMasterLeagueBattle() || isCurrentBattlePlayerDone()) return;
                 const shouldTrigger = battlePhase >= 5;
                 if (!shouldTrigger || battleFlashballTriggered || flashballCharging || flashballShotPending) return;
                 battleFlashballTriggered = true;
@@ -9215,9 +9215,10 @@
         function getBattlePhase() {
             if (!battleMode) return 1;
             const alive = getBattleAliveCount();
-            // Phase 5: 최후 2인 결승 1:1 OR 131번 도달
-            if (alive <= 2 || nextExpectedNumber >= 131) return 5;
-            // Phase 4: 생존자 3명 이하 OR 91번 도달
+            const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
+            // Phase 5 (마스터 리그 전용): 최후 2인 결승 1:1 OR 131번 도달
+            if (isMaster && (alive <= 2 || nextExpectedNumber >= 131)) return 5;
+            // Phase 4: 생존자 3명 이하 OR 91번 도달 (일반 리그는 Phase 4 스트라이프볼이 최종 단계)
             if (alive <= 3 || nextExpectedNumber >= 91) return 4;
             // Phase 3: 생존자 5명 이하 OR 51번 도달
             if (alive <= 5 || nextExpectedNumber >= 51) return 3;
