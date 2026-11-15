@@ -4196,7 +4196,12 @@
             xhr.onload = () => {
                 if (xhr.status === 200 || xhr.status === 0) {
                     audioCtx.decodeAudioData(xhr.response)
-                        .then(buf => { sfxBuffers[key] = buf; })
+                        .then(buf => {
+                            sfxBuffers[key] = buf;
+                            if (key === 'bgm_title' && typeof ensureTitleBgmOnIntro === 'function') {
+                                ensureTitleBgmOnIntro();
+                            }
+                        })
                         .catch(e => console.warn('[SFX] Web Audio decode failed, using HTMLAudio fallback:', key, e));
                 } else {
                     console.warn('[SFX] load failed, using HTMLAudio fallback:', key, xhr.status);
@@ -4421,14 +4426,11 @@
             if (typeof splashDismissed !== 'undefined' && !splashDismissed) return;
             if (gameState !== 'INTRO') return;
             if (!sfxBuffers['bgm_title']) {
-                if (titleBgmEl) {
-                    titleBgmEl.pause();
-                    titleBgmEl.currentTime = 0;
-                }
                 const base = sfxAudioEls['bgm_title'];
                 if (!base) return;
-                titleBgmEl = base.cloneNode(true);
+                titleBgmEl = base;
                 titleBgmEl.loop = true;
+                titleBgmEl.currentTime = 0;
                 titleBgmEl.volume = 0.6 * bgmVolume;
                 titleBgmEl.play().catch(e => {
                     titleBgmEl = null;
@@ -5464,20 +5466,19 @@
             enterIntroFromSplash();
         }, SPLASH_DURATION_MS);
 
-        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치 시 bgm_title 재생 보장
+        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 재생 보장
         function unlockAudioOnTap() {
             if (gameState !== 'INTRO') return;
-            if (isTitleBgmPlaying()) {
-                window.removeEventListener('pointerdown', unlockAudioOnTap);
-                window.removeEventListener('touchstart', unlockAudioOnTap);
-                return;
-            }
             if (audioCtx && audioCtx.state !== 'running') {
                 audioCtx.resume().then(() => {
                     ensureTitleBgmOnIntro();
                 }).catch(() => {});
             } else {
                 ensureTitleBgmOnIntro();
+            }
+            if (isTitleBgmPlaying() && (!audioCtx || audioCtx.state === 'running')) {
+                window.removeEventListener('pointerdown', unlockAudioOnTap);
+                window.removeEventListener('touchstart', unlockAudioOnTap);
             }
         }
         window.addEventListener('pointerdown', unlockAudioOnTap, { passive: true });
