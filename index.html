@@ -9405,38 +9405,38 @@
         // ── 리그별 1,000명 봇 풀 & 인간적 하방 편향 실수 공식 (서버 비용 0원 클라이언트 생성) ──
         const BOT_COUNTRY_FLAGS = ['🇯🇵', '🇰🇷', '🇺🇸', '🇹🇼', '🇨🇦', '🇦🇺', '🇬🇧', '🇩🇪', '🇫🇷', '🇲🇽', '🇧🇷', '🇪🇸', '🇮🇹', '🇻🇳', '🇵🇭', '🇳🇱', '🇦🇷', '🇨🇿', '🇸🇪', '🇫🇮'];
 
-        // 약 80% 확률로 사용하는 글로벌 영문 게이머 닉네임 풀 (자연스러운 실제 유저 스타일)
+        // 약 80% 확률로 사용하는 글로벌 영문 게이머 닉네임 풀 (실명 배제, 실제 온라인 랭킹 스타일)
         const BOT_GLOBAL_NAMES = [
-            'Kaze', 'Ace9', 'Jayden', 'Sora7', 'Ryder', 'LeoP', 'ChrisK', 'Max99', 'Noah7', 'Toby',
-            'LiamX', 'JakeB', 'Sammy', 'Owen24', 'Ethan', 'Mason', 'Lucas', 'Viper', 'Nova', 'Blaze',
-            'Echo', 'Kobe8', 'Sho17', 'Clutch', 'Rookie', 'Tiger9', 'Shadow', 'Titan', 'Pixel8', 'Luna7',
-            'AriaM', 'Chloe', 'MiaK', 'Dylan', 'Tyler', 'Cooper', 'Sven', 'Jakub', 'Niko', 'Milo7',
-            'Theo', 'Hugo', 'Felix', 'Oscar', 'Liam9', 'Kenji', 'Ren24', 'Haru', 'Yuto', 'Kento',
-            'Boba', 'Mint9', 'NeoX', 'Zero7', 'Spark', 'Sunny', 'Lucky7', 'Hunter', 'Daniel', 'AlexK'
+            'zKaze', 'xMav', 'Ace77', 'Sora_x', 'Ryder', 'Max99', 'Viper', 'NovaX', 'Blaze', 'Echo7',
+            'Kobe8', 'Sho17', 'Clutch', 'Pixel8', 'ZeroX', 'Mint9', 'Boba7', 'Neo99', 'Spark', 'LunaX',
+            'Ghost', 'Kuro7', 'Drift', 'Turbo', 'Nyx_x', 'Jinx9', 'Zed77', 'Rex_9', 'Pika9', 'Snipe',
+            'Frost', 'Blitz', 'Cobra', 'Apex7', 'Mochi', 'Yuzu7', 'Tofu9', 'NoriX', 'Kiwi7', 'Mango',
+            'Coco9', 'Oreo7', 'Latte', 'Waffl', 'Choco', 'Sushi', 'Ramen', 'Gyoza', 'Udon9', 'Shiba',
+            'Corgi', 'Panda', 'Doge9', 'Pepe7', 'Smurf', 'Carry', 'Ggez7', 'Noob9', 'Pro_x', 'TryHd'
         ];
 
-        // 약 20% 확률로 사용하는 국가별 현지 언어/문화권 닉네임 풀 (국적과 100% 일치)
+        // 약 20% 확률로 사용하는 국가별 현지 게임 닉네임 풀 (실명 배제, 랭킹판 유저 감성)
         const BOT_LOCAL_NAMES_BY_FLAG = {
-            '🇰🇷': ['민준', '서준', '지훈', '현우', '도윤', '수빈', '유진', '시우', '준호', '태오', '백호', '민지', '하은', '재민', '성민'],
-            '🇯🇵': ['たくみ', 'けんた', 'ゆうと', 'はるき', 'だいき', 'さくら', 'あおい', 'りく', 'れん', 'そら', 'かいと', 'ゆい', 'はな', 'かずや', 'しょう'],
-            '🇹🇼': ['冠宇', '承恩', '子軒', '宇辰', '柏翰', '品妍', '詠晴', '阿豪', '小傑', '大偉', '小宇', '家豪', '志明'],
-            '🇲🇽': ['Mateo', 'Diego', 'Carlos', 'Santi', 'Pablo', 'Sofi', 'Valen', 'Beto10', 'Lucho', 'Gabo'],
-            '🇪🇸': ['Mateo', 'Diego', 'Carlos', 'Pablo', 'Lucia', 'Alvaro', 'Javier', 'Elena', 'HugoES', 'Dani7'],
-            '🇦🇷': ['Mateo', 'Thiago', 'Santi', 'Lucho', 'Gabo', 'Valen', 'Franco', 'NicoAR', 'Tomi9'],
-            '🇧🇷': ['Gabriel', 'Matheus', 'Rafael', 'Thiago', 'Caio7', 'Vini7', 'Luan9', 'BiaBR', 'Lucas'],
-            '🇫🇷': ['Lucas', 'Enzo7', 'Mathis', 'Camille', 'Theo', 'Antoine', 'Manon', 'LeoFR', 'Chloe'],
-            '🇩🇪': ['Lukas', 'Jonas', 'Tim99', 'Tobias', 'Felix', 'JanM', 'Hannah', 'LeonDE', 'MaxDE'],
-            '🇮🇹': ['Lorenzo', 'Matteo', 'Giulia', 'Andrea', 'Davide', 'Simone', 'Chiara', 'Marco'],
-            '🇻🇳': ['Minh9', 'Hoang', 'Tuan', 'Linh', 'HuyPro', 'Khanh', 'Duc98', 'NamVN'],
-            '🇵🇭': ['Jayson', 'Marky', 'Carlo', 'Bea99', 'Miguel', 'Renz', 'Paolo', 'Lance'],
-            '🇺🇸': ['Brandon', 'Austin', 'Trevor', 'Connor', 'Olivia', 'EmmaW', 'Hunter', 'Logan', 'Caleb'],
-            '🇨🇦': ['Connor', 'LiamCA', 'NoahCA', 'Chloe', 'Ethan', 'Mason', 'Emma', 'OwenCA'],
-            '🇬🇧': ['Oliver', 'Harry', 'Charlie', 'Jack99', 'George', 'Amelia', 'Alfie', 'Oscar'],
-            '🇦🇺': ['Lachlan', 'Cooper', 'JackAU', 'Ruby', 'LiamAU', 'NoahAU', 'MiaAU', 'Flynn'],
-            '🇳🇱': ['Daan', 'Sem', 'Bram', 'Luuk', 'Milan', 'Sophie', 'Julia', 'FinnNL'],
-            '🇨🇿': ['Jakub', 'Tomas', 'Ondrej', 'Lukas', 'Filip', 'Tereza', 'Adela', 'Honza'],
-            '🇸🇪': ['Sven', 'Lucas', 'Elias', 'William', 'Freja', 'Astrid', 'Oscar', 'HugoSE'],
-            '🇫🇮': ['Eetu', 'Onni', 'LeoFI', 'Elias', 'Aino', 'Sofia', 'Mikko', 'Väinö']
+            '🇰🇷': ['치킨각', '야식왕', '퇴근각', '월급루팡', '아아한잔', '민초단', '감튀왕', '불닭면', '냥펀치', '댕댕이', '고인물', '뉴비임', '손풀기', '즐겜러', '빡겜중', '새벽반'],
+            '🇯🇵': ['ねこぱん', 'もちもち', 'ねむい', 'ひまじん', 'からあげ', 'おにぎり', 'たこやき', 'ラーメン', 'ぎょうざ', 'ぽてと', 'まっちゃ', 'やきそば', 'エンジョ', 'ガチ勢', '深夜勢', '無課金'],
+            '🇹🇼': ['珍奶控', '滷肉飯', '雞排俠', '鹽酥雞', '夜貓族', '想睡覺', '社畜君', '歐皇', '非洲人', '菜鳥', '佛系玩', '邊緣人', '摸魚中', '肝帝'],
+            '🇲🇽': ['ElCrack', 'Taco99', 'Churro', 'Fuego7', 'GatoX', 'Lobo99', 'Rey77', 'Pibe7', 'MagoX', 'Chile9'],
+            '🇪🇸': ['ElCrack', 'Fuego7', 'GatoX', 'Lobo99', 'Rey77', 'MagoX', 'Tapa9', 'Churr', 'Loco7', 'Jefe9'],
+            '🇦🇷': ['Asado9', 'Mate77', 'Che_99', 'Pibe7', 'ElCrack', 'Fuego7', 'GatoX', 'Lobo9', 'Rey77', 'Campe'],
+            '🇧🇷': ['Mito99', 'Brabo7', 'Zika9', 'Coxinh', 'GatoBR', 'Lenda', 'Fera9', 'TopBR', 'Bala7', 'Pão9'],
+            '🇫🇷': ['Crois7', 'Bagu9', 'Chaton', 'Loup7', 'Roi77', 'Nuit9', 'Zorro', 'Tigrou', 'Eclair', 'Chef9'],
+            '🇩🇪': ['Brot99', 'Bier77', 'Fuchs7', 'Wolf9', 'Keks9', 'Blitz', 'Nacht', 'Wurst', 'Adler', 'Jäger'],
+            '🇮🇹': ['Pizza7', 'Pasta9', 'Lupo9', 'Gatto', 'Re_IT', 'Fuoco', 'Bomba', 'Caffe', 'Tigre', 'Veloce'],
+            '🇻🇳': ['Pho99', 'BanhMi', 'CaPhe', 'ProVN', 'Ga_VN', 'Meo99', 'Rong7', 'Top1VN', 'BunBo', 'TraDa'],
+            '🇵🇭': ['Lodi99', 'Adobo7', 'Sisig9', 'Pogi77', 'Astig', 'GgwpPH', 'Idol9', 'Taho9', 'Kuya7', 'Bida9'],
+            '🇺🇸': ['Taco9', 'Donut', 'Bacon7', 'Burger', 'Fries9', 'Soda7', 'Nugget', 'Eagle', 'Hawk9', 'Ranch'],
+            '🇨🇦': ['Maple7', 'Moose9', 'Poutin', 'Hockey', 'Ice99', 'Snow7', 'Beaver', 'Puck9', 'North'],
+            '🇬🇧': ['Tea77', 'Bruv9', 'Scone', 'Chippy', 'Corgi', 'Crown7', 'Fog99', 'Ldn_x', 'Mate9'],
+            '🇦🇺': ['Koala7', 'Roo99', 'Kiwis', 'Syd_x', 'Dingo7', 'Surf9', 'Aussie', 'Mate7', 'Croc9'],
+            '🇳🇱': ['Stroop', 'Kaas9', 'Tulip7', 'Bike9', 'Oranje', 'Wind9', 'Lion7', 'Canal'],
+            '🇨🇿': ['Pivo9', 'Knedl', 'Praga7', 'Lev99', 'Vlk_7', 'Hokej', 'Kral9', 'Sokol'],
+            '🇸🇪': ['Fika9', 'Ikea7', 'Viking', 'Kanel', 'Moose', 'Nord7', 'Krona', 'Snö9'],
+            '🇫🇮': ['Sauna9', 'Sisu7', 'Lumi9', 'Karhu', 'Poron', 'Salmi', 'Hki_x', 'Tuli7']
         };
 
         function generateLeagueBot(index, league = 'standard') {
