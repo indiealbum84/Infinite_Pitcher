@@ -1618,15 +1618,45 @@
 
         .settings-lang-toggle {
             display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
+            flex-direction: column;
+            gap: 8px;
             width: 100%;
             margin-top: 2px;
         }
 
+        .settings-lang-current-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: #ffffff;
+            color: var(--palette-ink);
+            border: 2px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0 3px 0 #cbd5e1, 0 3px 0 1px #000000;
+            cursor: pointer;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 10px 14px;
+            touch-action: auto !important;
+            transition: all 0.1s ease;
+        }
+
+        .settings-lang-dropdown {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            padding-top: 2px;
+        }
+
+        .settings-lang-dropdown.hidden {
+            display: none !important;
+        }
+
         .settings-lang-btn {
-            flex: 1 1 30%;
-            min-width: 78px;
+            width: 100%;
             background: #ffffff;
             color: var(--palette-ink);
             border: 2px solid #000000;
@@ -1636,8 +1666,8 @@
             font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
             font-size: 13px;
             font-weight: 900;
-            padding: 8px 4px;
-            text-align: center;
+            padding: 9px 12px;
+            text-align: left;
             touch-action: auto !important;
             transition: all 0.1s ease;
         }
@@ -1645,7 +1675,48 @@
         .settings-lang-btn.active {
             background: var(--palette-yellow);
             box-shadow: 0 3px 0 var(--palette-pink), 0 3px 0 1px #000000;
-            transform: translateY(-1px);
+        }
+
+        .initial-lang-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 620px;
+        }
+
+        .initial-lang-btn {
+            width: 100%;
+            background: #ffffff;
+            color: #0f172a;
+            border: 5px solid #000000;
+            border-radius: 24px;
+            box-shadow: 0 8px 0 #cbd5e1, 0 8px 0 2px #000000;
+            font-family: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            padding: 18px 24px;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.1s ease;
+        }
+
+        .initial-lang-btn.active {
+            background: var(--palette-yellow);
+            box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 2px #000000;
+        }
+
+        .initial-lang-change-btn {
+            align-self: flex-end;
+            background: #ffffff;
+            color: #0f172a;
+            border: 4px solid #000000;
+            border-radius: 999px;
+            padding: 8px 20px;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #cbd5e1;
         }
 
         .settings-slider-wrap {
@@ -2186,11 +2257,19 @@
             padding: 4px 14px;
         }
 
+        .settings-lang-current-btn {
+            border-width: 4px;
+            border-radius: 20px;
+            font-size: 26px;
+            padding: 18px 22px;
+            box-shadow: 0 6px 0 #cbd5e1, 0 6px 0 2px #000000;
+        }
+
         .settings-lang-btn {
             border-width: 4px;
             border-radius: 20px;
             font-size: 26px;
-            padding: 16px 8px;
+            padding: 16px 20px;
             box-shadow: 0 6px 0 #cbd5e1, 0 6px 0 2px #000000;
         }
 
@@ -3619,14 +3698,18 @@
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
         <div id="initial-profile-screen" class="screen hidden">
-            <div class="lang-switcher" aria-label="Language">
-                <button class="lang-switch-btn" data-lang="ko" onclick="setLanguage('ko')">한국어</button>
-                <button class="lang-switch-btn" data-lang="en" onclick="setLanguage('en')">English</button>
-                <button class="lang-switch-btn" data-lang="ja" onclick="setLanguage('ja')">日本語</button>
-                <button class="lang-switch-btn" data-lang="zh-TW" onclick="setLanguage('zh-TW')">繁體中文</button>
-                <button class="lang-switch-btn" data-lang="es" onclick="setLanguage('es')">Español</button>
+            <div id="initial-lang-step" class="profile-setup-card hidden">
+                <h2 class="profile-setup-title" style="font-size:62px;">🌐 Select Language</h2>
+                <div class="initial-lang-list">
+                    <button type="button" class="initial-lang-btn" data-lang="en" onclick="chooseInitialLanguage('en')">🇺🇸 English</button>
+                    <button type="button" class="initial-lang-btn" data-lang="ko" onclick="chooseInitialLanguage('ko')">🇰🇷 한국어</button>
+                    <button type="button" class="initial-lang-btn" data-lang="ja" onclick="chooseInitialLanguage('ja')">🇯🇵 日本語</button>
+                    <button type="button" class="initial-lang-btn" data-lang="zh-TW" onclick="chooseInitialLanguage('zh-TW')">🇹🇼 繁體中文</button>
+                    <button type="button" class="initial-lang-btn" data-lang="es" onclick="chooseInitialLanguage('es')">🇪🇸 Español</button>
+                </div>
             </div>
-            <div class="profile-setup-card">
+            <div id="initial-nickname-step" class="profile-setup-card">
+                <button type="button" id="initial-lang-change-btn" class="initial-lang-change-btn" onclick="showInitialLanguageStep()">🌐 한국어 ▾</button>
                 <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
                 <div class="profile-permanent-warning" id="initial-profile-warning">⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!
 • 입력한 이름으로 서버에 등록되며 나의 최고 점수 1개만 올라갑니다.</div>
@@ -3691,15 +3774,21 @@
                 <button type="button" class="settings-close-x" onclick="closeSettingsModal()">✕</button>
                 <h3 id="settings-modal-title" class="settings-modal-title">⚙️ 설정</h3>
 
-                <!-- 1. 언어 설정 (토글 형태) -->
+                <!-- 1. 언어 설정 (현재 언어 + 토글 드롭다운) -->
                 <div class="settings-section">
                     <div class="settings-label" id="settings-lang-label">🌐 언어</div>
                     <div class="settings-lang-toggle">
-                        <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">한국어</button>
-                        <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">English</button>
-                        <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">日本語</button>
-                        <button type="button" class="settings-lang-btn" data-lang="zh-TW" onclick="selectSettingsLanguage('zh-TW')">繁體中文</button>
-                        <button type="button" class="settings-lang-btn" data-lang="es" onclick="selectSettingsLanguage('es')">Español</button>
+                        <button type="button" id="settings-lang-current-btn" class="settings-lang-current-btn" onclick="toggleSettingsLangDropdown()">
+                            <span id="settings-lang-current-text">🇰🇷 한국어</span>
+                            <span id="settings-lang-chevron">▼</span>
+                        </button>
+                        <div id="settings-lang-dropdown" class="settings-lang-dropdown hidden">
+                            <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">🇺🇸 English</button>
+                            <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">🇰🇷 한국어</button>
+                            <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">🇯🇵 日本語</button>
+                            <button type="button" class="settings-lang-btn" data-lang="zh-TW" onclick="selectSettingsLanguage('zh-TW')">🇹🇼 繁體中文</button>
+                            <button type="button" class="settings-lang-btn" data-lang="es" onclick="selectSettingsLanguage('es')">🇪🇸 Español</button>
+                        </div>
                     </div>
                 </div>
 
@@ -4997,7 +5086,20 @@
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             setBattleRematchButtonText();
-            document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+            const langLabels = {
+                en: '🇺🇸 English',
+                ko: '🇰🇷 한국어',
+                ja: '🇯🇵 日本語',
+                'zh-TW': '🇹🇼 繁體中文',
+                es: '🇪🇸 Español'
+            };
+            const curLangLabel = langLabels[lang] || '🇺🇸 English';
+            const curLangTextEl = document.getElementById('settings-lang-current-text');
+            if (curLangTextEl) curLangTextEl.innerText = curLangLabel;
+            const initialLangBtn = document.getElementById('initial-lang-change-btn');
+            if (initialLangBtn) initialLangBtn.innerText = `${curLangLabel} ▾`;
+
+            document.querySelectorAll('.lang-switch-btn, .initial-lang-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
             document.querySelectorAll('.settings-lang-btn').forEach(btn => {
@@ -5013,9 +5115,23 @@
             applyLang(lang);
         }
 
+        function toggleSettingsLangDropdown(forceClose = false) {
+            const dd = document.getElementById('settings-lang-dropdown');
+            const chev = document.getElementById('settings-lang-chevron');
+            if (!dd) return;
+            const willOpen = forceClose ? false : dd.classList.contains('hidden');
+            dd.classList.toggle('hidden', !willOpen);
+            if (chev) chev.innerText = willOpen ? '▲' : '▼';
+            if (!forceClose) {
+                playSfx('click', 0.7);
+                triggerHaptic('light');
+            }
+        }
+
         function openSettingsModal() {
             playSfx('click', 0.8);
             triggerHaptic('light');
+            toggleSettingsLangDropdown(true);
             updateSettingsUI();
             const modal = document.getElementById('settings-modal');
             if (modal) modal.classList.remove('hidden');
@@ -5024,6 +5140,7 @@
         function closeSettingsModal() {
             playSfx('click', 0.8);
             triggerHaptic('light');
+            toggleSettingsLangDropdown(true);
             const modal = document.getElementById('settings-modal');
             if (modal) modal.classList.add('hidden');
         }
@@ -5033,6 +5150,7 @@
             playSfx('click', 0.8);
             triggerHaptic('selection');
             setLanguage(lang);
+            toggleSettingsLangDropdown(true);
         }
 
         function handleBgmSliderChange(val) {
@@ -8246,14 +8364,45 @@
                 });
         }
 
+        function showInitialLanguageStep() {
+            const langStep = document.getElementById('initial-lang-step');
+            const nickStep = document.getElementById('initial-nickname-step');
+            if (langStep) langStep.classList.remove('hidden');
+            if (nickStep) nickStep.classList.add('hidden');
+            playSfx('click', 0.7);
+            triggerHaptic('light');
+        }
+
+        function chooseInitialLanguage(lang) {
+            playSfx('click', 0.8);
+            triggerHaptic('selection');
+            setLanguage(lang);
+            const langStep = document.getElementById('initial-lang-step');
+            const nickStep = document.getElementById('initial-nickname-step');
+            if (langStep) langStep.classList.add('hidden');
+            if (nickStep) nickStep.classList.remove('hidden');
+            const input = document.getElementById('initial-name-input');
+            if (input) setTimeout(() => input.focus(), 80);
+        }
+
         function openInitialProfileScreen() {
             document.getElementById('intro-screen').classList.add('hidden');
             const screen = document.getElementById('initial-profile-screen');
             if (screen) screen.classList.remove('hidden');
+            const hasSavedLang = Boolean(localStorage.getItem('infinite_pitcher_lang'));
+            const langStep = document.getElementById('initial-lang-step');
+            const nickStep = document.getElementById('initial-nickname-step');
+            if (!hasSavedLang) {
+                if (langStep) langStep.classList.remove('hidden');
+                if (nickStep) nickStep.classList.add('hidden');
+            } else {
+                if (langStep) langStep.classList.add('hidden');
+                if (nickStep) nickStep.classList.remove('hidden');
+            }
             const input = document.getElementById('initial-name-input');
             if (input) {
                 input.value = '';
-                setTimeout(() => input.focus(), 80);
+                if (hasSavedLang) setTimeout(() => input.focus(), 80);
             }
         }
 
