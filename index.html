@@ -6108,7 +6108,11 @@
             });
         }
 
+        let gameSessionId = 0;
+        let activeCountdownCleanup = null;
+
         function startCountdown(skipToNum) {
+            gameSessionId++;
             consumePlayTicket(battleMode ? 'battle' : 'solo');
             justUnlockedFireballThisRun = false;
             gameState = 'COUNTDOWN';
@@ -6194,18 +6198,29 @@
             countdownText.style.whiteSpace = 'pre';
 
             let count = 3;
+            const mySessionId = gameSessionId;
             fadeTitleBgm(5000);
 
+            const cleanupCountdownListeners = () => {
+                countdownScreen.removeEventListener('click', startCountdownTick);
+                countdownScreen.removeEventListener('touchstart', startCountdownTick);
+            };
+            activeCountdownCleanup = cleanupCountdownListeners;
+
             const startCountdownTick = () => {
+                if (gameSessionId !== mySessionId || gameState !== 'COUNTDOWN') {
+                    cleanupCountdownListeners();
+                    return;
+                }
                 countdownText.classList.remove('countdown-instruction');
                 countdownText.style.fontSize = '';
                 countdownText.style.whiteSpace = '';
-                countdownScreen.removeEventListener('click', startCountdownTick);
-                countdownScreen.removeEventListener('touchstart', startCountdownTick);
+                cleanupCountdownListeners();
                 countdownScreen.style.pointerEvents = 'none';
                 countdownScreen.dataset.waiting = 'false';
 
             const runTick = () => {
+                if (gameSessionId !== mySessionId || gameState !== 'COUNTDOWN') return;
                 if (count > 0) {
                     countdownText.innerText = count;
                     countdownText.style.color = 'var(--palette-blue)';
@@ -12278,6 +12293,17 @@
         }
 
         function goToMain() {
+            gameSessionId++;
+            if (typeof activeCountdownCleanup === 'function') {
+                activeCountdownCleanup();
+                activeCountdownCleanup = null;
+            }
+            const cdEl = document.getElementById('countdown-screen');
+            if (cdEl) {
+                cdEl.classList.add('hidden');
+                cdEl.dataset.waiting = 'false';
+                cdEl.style.pointerEvents = 'none';
+            }
             exitConfirmPaused = false;
             const exitModal = document.getElementById('exit-confirm-modal');
             if (exitModal) exitModal.classList.add('hidden');
@@ -12304,6 +12330,17 @@
         }
 
         function exitBattle(forceRemoveRoom = false) {
+            gameSessionId++;
+            if (typeof activeCountdownCleanup === 'function') {
+                activeCountdownCleanup();
+                activeCountdownCleanup = null;
+            }
+            const cdEl = document.getElementById('countdown-screen');
+            if (cdEl) {
+                cdEl.classList.add('hidden');
+                cdEl.dataset.waiting = 'false';
+                cdEl.style.pointerEvents = 'none';
+            }
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
             if (battleLobbyCountdownTimer) { clearInterval(battleLobbyCountdownTimer); battleLobbyCountdownTimer = null; }
