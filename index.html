@@ -4276,7 +4276,7 @@
                 battleQuickCancelBtn: '⏹ マッチング中止',
                 battleQuickIdle: '世界中のプレイヤーと8人マッチング (最大20秒で開始)',
                 battleWorldIdleWaiting: '[マッチング開始] を押すと対戦相手を探します (20秒以内に開始)。',
-                battleQuickSearching: sec => `🔍 実プレイヤー優先マッチング中... (${sec}秒)`,
+                battleQuickSearching: sec => `🔍 プレイヤーマッチング中... (${sec}秒)`,
                 battleQuickMatched: '✅ マッチング完了！まもなく開始します！',
                 rematchBtn: 'もう一度',
                 selfLabel: '自分',
@@ -4405,7 +4405,7 @@
                 battleQuickCancelBtn: '⏹ Cancel Matchmaking',
                 battleQuickIdle: '8-player global matchmaking (starts within 20s)',
                 battleWorldIdleWaiting: 'Press [Start Matchmaking] to find opponents (starts within 20s).',
-                battleQuickSearching: sec => `🔍 Searching for real players... (${sec}s)`,
+                battleQuickSearching: sec => `🔍 Matching players... (${sec}s)`,
                 battleQuickMatched: '✅ Match found! Starting game...',
                 rematchBtn: 'Rematch',
                 selfLabel: 'Me',
@@ -4534,7 +4534,7 @@
                 battleQuickCancelBtn: '⏹ 매칭 취소',
                 battleQuickIdle: '전 세계 플레이어와 8인 매칭 (최대 20초 내 시작)',
                 battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 상대를 찾습니다. (20초 내 경기 시작)',
-                battleQuickSearching: sec => `🔍 실제 플레이어 탐색 중... (${sec}초)`,
+                battleQuickSearching: sec => `🔍 플레이어 탐색 중... (${sec}초)`,
                 battleQuickMatched: '✅ 매칭 완료! 잠시 후 시작합니다!',
                 rematchBtn: '다시하기',
                 selfLabel: '나',
@@ -4663,7 +4663,7 @@
                 battleQuickCancelBtn: '⏹ 取消配對',
                 battleQuickIdle: '全球玩家 8 人即時配對 (20秒內開賽)',
                 battleWorldIdleWaiting: '點擊 [開始配對] 尋找對手 (最多20秒後開賽)。',
-                battleQuickSearching: sec => `🔍 正在搜尋真人玩家... (${sec}秒)`,
+                battleQuickSearching: sec => `🔍 正在配對玩家... (${sec}秒)`,
                 battleQuickMatched: '✅ 配對完成！即將開始！',
                 rematchBtn: '再戰一場',
                 selfLabel: '我',
@@ -4792,7 +4792,7 @@
                 battleQuickCancelBtn: '⏹ Cancelar',
                 battleQuickIdle: 'Emparejamiento global 8P (inicia en 20s)',
                 battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para buscar rivales (inicia en máx. 20s).',
-                battleQuickSearching: sec => `🔍 Buscando jugadores reales... (${sec}s)`,
+                battleQuickSearching: sec => `🔍 Buscando jugadores... (${sec}s)`,
                 battleQuickMatched: '✅ ¡Partida lista! Empezando...',
                 rematchBtn: 'Revancha',
                 selfLabel: 'Tú',
@@ -9703,9 +9703,9 @@
                         const humanCount = Object.values(battlePlayers || {}).filter(p => !p.isBot).length;
                         const sec = quickMatchSecondsLeft;
                         if (humanCount >= 2) {
-                            waitingEl.innerHTML = `🎮 <b>실제 플레이어 ${humanCount}명 참가!</b> (남은 탐색: ${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">20초 동안 실제 유저를 우선 매칭하며, 만료 시 부족한 인원만 봇으로 채웁니다.</span>`;
+                            waitingEl.innerHTML = `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`;
                         } else {
-                            waitingEl.innerHTML = `🔍 <b>실제 플레이어 우선 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">20초 동안 실제 유저가 8명 다 안 찼을 때만 봇이 추가됩니다.</span>`;
+                            waitingEl.innerHTML = `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`;
                         }
                     }
                 }
@@ -11086,9 +11086,9 @@
                     } else if (quickMatchActive) {
                         const sec = quickMatchSecondsLeft;
                         if (humanCount >= 2) {
-                            waitingEl.innerHTML = `🎮 <b>실제 플레이어 ${humanCount}명 참가!</b> (남은 탐색: ${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">20초 동안 실제 유저를 우선 매칭하며, 만료 시 부족한 인원만 봇으로 채웁니다.</span>`;
+                            waitingEl.innerHTML = `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`;
                         } else {
-                            waitingEl.innerHTML = `🔍 <b>실제 플레이어 우선 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">20초 동안 실제 유저가 8명 다 안 찼을 때만 봇이 추가됩니다.</span>`;
+                            waitingEl.innerHTML = `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`;
                         }
                     } else {
                         waitingEl.innerText = isHost
