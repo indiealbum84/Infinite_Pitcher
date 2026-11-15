@@ -2712,40 +2712,42 @@
         /* 결과 화면 랭킹 점수(PT) 및 연승 배지 */
         .battle-rating-pill {
             display: inline-flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 10px;
             background: rgba(15, 23, 42, 0.94);
             color: #ffffff;
             border: 5px solid #000000;
             border-radius: 999px;
-            padding: 12px 32px;
-            font-size: 28px;
+            padding: 10px 30px;
+            font-size: 42px;
             font-weight: 900;
+            line-height: 1.15;
             box-shadow: 0 7px 0 var(--palette-pink), 0 7px 0 4px #000000;
-            margin: 6px auto;
+            margin: -6px auto 6px;
         }
 
         .battle-rating-pill .brp-delta {
-            border-radius: 10px;
-            padding: 3px 10px;
-            font-size: 24px;
+            border-radius: 12px;
+            padding: 2px 12px;
+            font-size: 36px;
             font-weight: 900;
         }
 
         .battle-rating-pill .brp-delta.plus {
-            background: #10b981;
-            color: #ffffff;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
         }
 
         .battle-rating-pill .brp-delta.minus {
-            background: #ef4444;
-            color: #ffffff;
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
         }
 
         .battle-rating-pill .brp-delta.zero {
-            background: #64748b;
-            color: #ffffff;
+            background: rgba(100, 116, 139, 0.25);
+            color: #cbd5e1;
         }
 
         .battle-rating-pill .brp-streak {
@@ -12087,11 +12089,25 @@
 
             const rank1Count = isEnded ? allPlayers.filter(p => Number(rankMap[p.id] || p.rank || 0) === 1).length : 0;
             let resultText, resultClass;
+            let provisionalRatingPreview = null;
             if (!isEnded) {
                 const aheadCount = allPlayers.filter(p => p.id !== battlePlayerId && (!p.done || Number(p.score || 0) > myScore)).length;
                 const provisionalRank = Math.max(2, Math.min(allPlayers.length, aheadCount + 1));
                 resultText = textFor('rankText')(provisionalRank);
                 resultClass = 'lose';
+                const curRating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
+                const estDelta = (typeof BATTLE_RANK_DELTAS !== 'undefined' && BATTLE_RANK_DELTAS[provisionalRank] !== undefined)
+                    ? BATTLE_RANK_DELTAS[provisionalRank] : 0;
+                const estNew = Math.max(600, curRating + estDelta);
+                provisionalRatingPreview = {
+                    prevRating: curRating,
+                    newRating: estNew,
+                    actualDelta: estNew - curRating,
+                    prevStreak: 0,
+                    newStreak: 0,
+                    myRank: provisionalRank,
+                    newlyUnlocked: null
+                };
             } else if (myRank === 1) {
                 resultText = rank1Count > 1
                     ? ({ en: 'TIE 1st WIN!', ja: '1位タイ WIN!', 'zh-TW': '並列第1名 WIN!', es: '¡EMPATE 1° WIN!' }[currentLang] || '공동 1위 WIN!')
@@ -12148,7 +12164,7 @@
                 };
             }
 
-            renderBattleResultRatingBadge(lastBattleResultRatingData);
+            renderBattleResultRatingBadge(lastBattleResultRatingData || provisionalRatingPreview);
 
             if (firstResultRender) {
                 if (resultClass === 'win') playSfx('win', 1.0);
@@ -12197,7 +12213,7 @@
             const lang = currentLang || 'ko';
             const leagueBadge = leagueInfo.badge;
 
-            const deltaText = data.actualDelta > 0 ? `+${data.actualDelta} PT` : (data.actualDelta < 0 ? `${data.actualDelta} PT` : '±0 PT');
+            const deltaText = data.actualDelta > 0 ? `(+${data.actualDelta})` : (data.actualDelta < 0 ? `(${data.actualDelta})` : '(±0)');
             const deltaClass = data.actualDelta > 0 ? 'plus' : (data.actualDelta < 0 ? 'minus' : 'zero');
 
             let streakHtml = '';
@@ -12212,12 +12228,11 @@
             let unlockHtml = '';
             if (data.newlyUnlocked && data.newlyUnlocked.length > 0) {
                 const names = data.newlyUnlocked.map(s => s.name[lang] || s.name.ko).join(', ');
-                unlockHtml = `<div style="font-size:16px;color:#fbbf24;margin-top:4px;font-weight:900;">🎉 새 스킨 언락: ${names}!</div>`;
+                unlockHtml = `<div style="font-size:18px;color:#fbbf24;margin-top:4px;font-weight:900;">🎉 새 스킨 언락: ${names}!</div>`;
             }
 
             pill.innerHTML = `
-                <span class="brp-league-icon">${leagueBadge}</span>
-                <span class="brp-score">${data.newRating.toLocaleString()} PT</span>
+                <span class="brp-score">${data.newRating}</span>
                 <span class="brp-delta ${deltaClass}">${deltaText}</span>
                 ${streakHtml}
                 ${unlockHtml}
