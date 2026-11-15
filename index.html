@@ -1873,23 +1873,28 @@
 
         #ingame-back-btn {
             position: absolute;
-            top: calc(14px + var(--safe-top));
-            left: 14px;
-            z-index: 25;
-            height: 46px;
-            padding: 0 16px;
-            border-radius: 14px;
-            border: 3px solid #000000;
-            background: rgba(255, 255, 255, 0.94);
+            top: calc(56px + var(--safe-top));
+            left: 56px;
+            z-index: 40;
+            height: 88px;
+            padding: 0 30px;
+            border-radius: 26px;
+            border: 6px solid #000000;
+            background: rgba(255, 255, 255, 0.96);
             color: #0f172a;
-            font-size: 20px;
+            font-size: 42px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 4px 0 #000000;
+            box-shadow: 0 10px 0 #000000;
             display: flex;
             align-items: center;
             justify-content: center;
             touch-action: manipulation;
+        }
+
+        #ingame-back-btn.friend-pos {
+            top: calc(136px + var(--safe-top));
+            left: 36px;
         }
 
         #ingame-back-btn.hidden {
@@ -1899,12 +1904,12 @@
         #exit-confirm-modal {
             position: absolute;
             inset: 0;
-            z-index: 60;
+            z-index: 80;
             background: rgba(15, 23, 42, 0.72);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 40px;
         }
 
         #exit-confirm-modal.hidden {
@@ -1912,20 +1917,20 @@
         }
 
         .exit-confirm-box {
-            width: min(340px, 90%);
+            width: min(740px, 88%);
             background: var(--palette-cream);
-            border: 4px solid #000000;
-            border-radius: 22px;
-            padding: 26px 20px 20px;
-            box-shadow: 0 10px 0 var(--palette-blue), 0 10px 0 3px #000000;
+            border: 8px solid #000000;
+            border-radius: 40px;
+            padding: 52px 40px 40px;
+            box-shadow: 0 18px 0 var(--palette-blue), 0 18px 0 6px #000000;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 34px;
         }
 
         .exit-confirm-msg {
-            font-size: 20px;
+            font-size: 42px;
             font-weight: 900;
             color: #0f172a;
             line-height: 1.4;
@@ -1934,19 +1939,19 @@
 
         .exit-confirm-actions {
             display: flex;
-            gap: 12px;
+            gap: 24px;
             width: 100%;
         }
 
         .exit-confirm-btn {
             flex: 1;
-            padding: 12px 10px;
-            border-radius: 14px;
-            border: 3px solid #000000;
-            font-size: 17px;
+            padding: 24px 18px;
+            border-radius: 26px;
+            border: 6px solid #000000;
+            font-size: 36px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 4px 0 #000000;
+            box-shadow: 0 10px 0 #000000;
         }
 
         .exit-confirm-btn.yes {
@@ -6848,7 +6853,9 @@
         function updateIngameBackBtnVisibility() {
             const btn = document.getElementById('ingame-back-btn');
             if (!btn) return;
-            const shouldShow = gameState === 'PLAYING' && (!battleMode || battleViewMode === 'friend');
+            const isFriendBattle = battleMode && battleViewMode === 'friend';
+            const shouldShow = gameState === 'PLAYING' && (!battleMode || isFriendBattle);
+            btn.classList.toggle('friend-pos', isFriendBattle);
             btn.classList.toggle('hidden', !shouldShow);
         }
 
