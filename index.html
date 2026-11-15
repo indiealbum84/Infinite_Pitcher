@@ -5310,28 +5310,12 @@
         }
 
         function getPitchInterval(n) {
-            // 세계 8인 배틀: 일반 리그(1.2s 시작) vs 마스터 리그(1.0s 시작) 100ms 균일 감소
+            // 세계 8인 배틀: 특수볼이 출현할 때마다 100ms씩 가속 (일반 1,200->600ms, 마스터 1,000->400ms)
             if (isWorldBattleRules()) {
                 const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
-                if (isMaster) {
-                    // 마스터 리그 (1,000ms 시작, 페이즈당 100ms씩 감소, 서든데스 400ms까지)
-                    if (n < 11) return 1000;
-                    if (n < 21) return 900;
-                    if (n < 31) return 800;
-                    if (n < 41) return 700;
-                    if (n < 51) return 600;
-                    if (n < 91) return 500;
-                    return 400;
-                } else {
-                    // 일반 리그 (1,200ms 시작, 페이즈당 100ms씩 균일 감소, 서든데스 600ms까지)
-                    if (n < 11) return 1200;
-                    if (n < 21) return 1100;
-                    if (n < 31) return 1000;
-                    if (n < 41) return 900;
-                    if (n < 51) return 800;
-                    if (n < 91) return 700;
-                    return 600;
-                }
+                const baseInterval = isMaster ? 1000 : 1200;
+                const minInterval = isMaster ? 400 : 600;
+                return Math.max(minInterval, baseInterval - (battleSpecialBallCount * 100));
             }
             // 나홀로 특훈 & 친구와 특훈: 1~30번 1,200ms, 31번부터 1,000ms -> 100개마다 100ms 감소
             if (n < 31)  return 1200;
@@ -5870,6 +5854,7 @@
             if (isWorldBattleRules()) {
                 battlePhase = 1;
                 battlePhaseEnteredBall = 1;
+                battleSpecialBallCount = 0;
                 battleMirrorballTriggered = false;
                 battleStripeballTriggered = false;
                 battleFlashballTriggered = false;
@@ -6319,6 +6304,9 @@
             if (isFlashBall) {
                 flashballShotPending = false;
             }
+            if (isFireball && isWorldBattleRules()) {
+                battleSpecialBallCount += 1;
+            }
             balls.push({
                 x: player.x,
                 y: player.y - scalePx(20),
@@ -6401,6 +6389,7 @@
 
         // 미러볼 공이 블록에 맞는 순간 호출 — 웨이브 시작
         function startMirrorWave() {
+            if (isWorldBattleRules()) battleSpecialBallCount += 1;
             mirrorWaveStart = performance.now();
             // 웨이브 2초 완료 후 반전 확정
             setTimeout(() => {
@@ -6467,6 +6456,7 @@
         }
 
         function startStripeWave() {
+            if (isWorldBattleRules()) battleSpecialBallCount += 1;
             stripeWaveStart = performance.now();
             setTimeout(() => {
                 stripeWaveStart = 0;
@@ -6489,6 +6479,7 @@
         }
 
         function startFlashballBlink() {
+            if (isWorldBattleRules() && !flashballActive) battleSpecialBallCount += 1;
             if (flashballTimer) { clearTimeout(flashballTimer); flashballTimer = null; }
             flashballActive  = true;
             flashballVisible = true;
@@ -9196,6 +9187,7 @@
         let battleHostDisconnectRef = null;
         let battlePhase = 1;
         let battlePhaseEnteredBall = 1;
+        let battleSpecialBallCount = 0;
         let battleMirrorballTriggered = false;
         let battleStripeballTriggered = false;
         let battleFlashballTriggered = false;
@@ -10549,6 +10541,7 @@
             battleProfileReady = false;
             battlePhase = 1;
             battlePhaseEnteredBall = 1;
+            battleSpecialBallCount = 0;
             battleMirrorballTriggered = false;
             battleStripeballTriggered = false;
             battleFlashballTriggered = false;
@@ -11269,6 +11262,7 @@
             // 배틀 5단계 페이즈 초기화
             battlePhase = 1;
             battlePhaseEnteredBall = 1;
+            battleSpecialBallCount = 0;
             battleMirrorballTriggered = false;
             battleStripeballTriggered = false;
             battleFlashballTriggered = false;
