@@ -9797,7 +9797,13 @@
             if (quickMatchActive) {
                 btn.classList.add('matching');
                 btn.innerText = textFor('battleQuickCancelBtn');
-                statusEl.innerText = customStatusText || textFor('battleQuickSearching')(quickMatchSecondsLeft);
+                if (customStatusText) {
+                    statusEl.style.display = '';
+                    statusEl.innerText = customStatusText;
+                } else {
+                    statusEl.style.display = 'none';
+                    statusEl.innerText = '';
+                }
                 if (battleViewMode === 'world8' && !battleLobbyCountdownActive) {
                     const waitingEl = document.getElementById('battle-waiting-text');
                     if (waitingEl) {
@@ -9813,6 +9819,7 @@
             } else {
                 btn.classList.remove('matching');
                 btn.innerText = textFor('battleQuickBtn');
+                statusEl.style.display = '';
                 statusEl.innerText = customStatusText || textFor('battleQuickIdle');
             }
         }
