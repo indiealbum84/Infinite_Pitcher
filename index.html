@@ -5371,28 +5371,46 @@
                     let prov = 'Cloud';
                     try { prov = localStorage.getItem(ACCOUNT_PROVIDER_STORAGE) || 'Cloud'; } catch(e){}
                     const provLabel = prov === 'apple' ? 'Apple ID' : (prov === 'google' ? 'Google' : 'Cloud');
+                    const linkedBadgeMap = {
+                        ko: `☁️ ${provLabel} 연동됨`,
+                        ja: `☁️ ${provLabel} 連携済`,
+                        'zh-TW': `☁️ ${provLabel} 已連結`,
+                        es: `☁️ ${provLabel} Vinculado`,
+                        en: `☁️ ${provLabel} Linked`
+                    };
+                    const linkedDescMap = {
+                        ko: '현재 계정과 안전하게 연동되어 있습니다. (이름, 점수, 컬렉션, 구매 내역 자동 백업 중)',
+                        ja: '現在のアカウントと連携されています。（記録・コレクション・購入情報を自動バックアップ中）',
+                        'zh-TW': '已安全連結您的雲端帳號。（自動備份紀錄、收藏與購買項目）',
+                        es: 'Vinculado de forma segura con tu cuenta. (Respaldo automático activo)',
+                        en: 'Safely linked with your cloud account. (Auto-backup enabled for records, collections & purchases)'
+                    };
+                    const syncNowMap = { ko: '지금 동기화', ja: '今すぐ同期', 'zh-TW': '立即同步', es: 'Sincronizar', en: 'Sync Now' };
+                    const switchAccMap = { ko: '계정 변경/복원', ja: 'アカウント切替', 'zh-TW': '切換帳號', es: 'Cambiar cuenta', en: 'Switch Account' };
                     badgeEl.className = 'settings-account-badge linked';
-                    badgeEl.innerText = lang === 'ko' ? `☁️ ${provLabel} 연동됨` : (lang === 'ja' ? `☁️ ${provLabel} 連携済` : `☁️ ${provLabel} Linked`);
-                    descEl.innerText = lang === 'ko'
-                        ? '현재 계정과 안전하게 연동되어 있습니다. (이름, 점수, 컬렉션, 구매 내역 자동 백업 중)'
-                        : (lang === 'ja'
-                            ? '現在のアカウントと連携されています。（記録・コレクション・購入情報を自動バックアップ中）'
-                            : 'Safely linked with your cloud account. (Auto-backup enabled for records, collections & purchases)');
+                    badgeEl.innerText = linkedBadgeMap[lang] || linkedBadgeMap.en;
+                    descEl.innerText = linkedDescMap[lang] || linkedDescMap.en;
                     actionsEl.innerHTML = `
-                        <button type="button" class="settings-account-btn sync" onclick="handleSettingsCloudSyncNow()">☁️ ${lang === 'ko' ? '지금 동기화' : (lang === 'ja' ? '今すぐ同期' : 'Sync Now')}</button>
-                        <button type="button" class="settings-account-btn switch" onclick="handleSettingsSwitchAccount()">🔄 ${lang === 'ko' ? '계정 변경/복원' : (lang === 'ja' ? 'アカウント切替' : 'Switch Account')}</button>
+                        <button type="button" class="settings-account-btn sync" onclick="handleSettingsCloudSyncNow()">☁️ ${syncNowMap[lang] || syncNowMap.en}</button>
+                        <button type="button" class="settings-account-btn switch" onclick="handleSettingsSwitchAccount()">🔄 ${switchAccMap[lang] || switchAccMap.en}</button>
                     `;
                 } else {
+                    const unlinkedBadgeMap = { ko: '⚠️ 미연동', ja: '⚠️ 未連携', 'zh-TW': '⚠️ 未連結', es: '⚠️ Sin vincular', en: '⚠️ Unlinked' };
+                    const unlinkedDescMap = {
+                        ko: 'Google 또는 Apple ID로 로그인하면 기기를 변경하거나 앱을 재설치해도 데이터가 그대로 보존됩니다.',
+                        ja: 'Google または Apple IDで連携すると、機種変更や再インストール時もデータが復元されます。',
+                        'zh-TW': '連結 Google 或 Apple ID，更換裝置或重新安裝時可完整還原資料。',
+                        es: 'Vincula tu Google o Apple ID para restaurar tus datos en cualquier dispositivo.',
+                        en: 'Link your Google or Apple ID to safely restore your data when switching devices or reinstalling.'
+                    };
+                    const googleLoginMap = { ko: 'Google 로그인', ja: 'Googleでログイン', 'zh-TW': '使用 Google 登入', es: 'Iniciar con Google', en: 'Sign in with Google' };
+                    const appleLoginMap = { ko: 'Apple 로그인', ja: 'Appleでログイン', 'zh-TW': '使用 Apple 登入', es: 'Iniciar con Apple', en: 'Sign in with Apple' };
                     badgeEl.className = 'settings-account-badge';
-                    badgeEl.innerText = lang === 'ko' ? '⚠️ 미연동' : (lang === 'ja' ? '⚠️ 未連携' : '⚠️ Unlinked');
-                    descEl.innerText = lang === 'ko'
-                        ? 'Google 또는 Apple ID로 로그인하면 기기를 변경하거나 앱을 재설치해도 데이터가 그대로 보존됩니다.'
-                        : (lang === 'ja'
-                            ? 'Google または Apple IDで連携すると、機種変更や再インストール時もデータが復元されます。'
-                            : 'Link your Google or Apple ID to safely restore your data when switching devices or reinstalling.');
+                    badgeEl.innerText = unlinkedBadgeMap[lang] || unlinkedBadgeMap.en;
+                    descEl.innerText = unlinkedDescMap[lang] || unlinkedDescMap.en;
                     actionsEl.innerHTML = `
-                        <button type="button" class="settings-account-btn google" onclick="handleSettingsAccountSync('google')">🌐 ${lang === 'en' ? 'Sign in with Google' : 'Google 로그인'}</button>
-                        <button type="button" class="settings-account-btn apple" onclick="handleSettingsAccountSync('apple')">🍎 ${lang === 'en' ? 'Sign in with Apple' : 'Apple 로그인'}</button>
+                        <button type="button" class="settings-account-btn google" onclick="handleSettingsAccountSync('google')">🌐 ${googleLoginMap[lang] || googleLoginMap.en}</button>
+                        <button type="button" class="settings-account-btn apple" onclick="handleSettingsAccountSync('apple')">🍎 ${appleLoginMap[lang] || appleLoginMap.en}</button>
                     `;
                 }
             }
@@ -5417,8 +5435,15 @@
                 syncProfileToCloud().then(ok => {
                     const savedName = getSavedPlayerName();
                     const alertFn = textFor('accountLinkedNewAlert');
+                    const syncFallbackMap = {
+                        ko: '☁️ 클라우드 동기화가 완료되었습니다!',
+                        ja: '☁️ クラウド同期が完了しました！',
+                        'zh-TW': '☁️ 雲端同步完成！',
+                        es: '☁️ ¡Sincronización en la nube completada!',
+                        en: '☁️ Cloud sync completed!'
+                    };
                     if (typeof alertFn === 'function') alert(alertFn(savedName));
-                    else alert('☁️ 클라우드 동기화가 완료되었습니다!');
+                    else alert(syncFallbackMap[currentLang] || syncFallbackMap.en);
                     updateSettingsUI();
                     if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                 });
@@ -10249,6 +10274,28 @@
             updateQuickMatchUI();
         }
 
+        function getQuickMatchWaitingHtml(humanCount, sec) {
+            const lang = currentLang || 'ko';
+            if (humanCount >= 2) {
+                const map = {
+                    ko: `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`,
+                    en: `🎮 <b>${humanCount} Players Joined!</b> (${sec}s)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Matching more players... Match starts in ${sec}s.</span>`,
+                    ja: `🎮 <b>プレイヤー ${humanCount}人参加！</b> (${sec}秒)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">他のプレイヤーをマッチング中... ${sec}秒後に開始します。</span>`,
+                    'zh-TW': `🎮 <b>已有 ${humanCount} 位玩家加入！</b> (${sec}秒)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">正在配對其他玩家... ${sec}秒後開始比賽。</span>`,
+                    es: `🎮 <b>¡${humanCount} jugadores unidos!</b> (${sec}s)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Buscando más jugadores... Inicia en ${sec}s.</span>`
+                };
+                return map[lang] || map.en;
+            }
+            const map = {
+                ko: `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`,
+                en: `🔍 <b>Matching Players (${sec}s)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Searching for players worldwide. Match starts in ${sec}s.</span>`,
+                ja: `🔍 <b>プレイヤーマッチング中 (${sec}秒)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">世界中のプレイヤーを探しています。${sec}秒後に開始します。</span>`,
+                'zh-TW': `🔍 <b>玩家配對中 (${sec}秒)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">正在搜尋全球玩家，${sec}秒後開始比賽。</span>`,
+                es: `🔍 <b>Buscando jugadores (${sec}s)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Buscando jugadores globales. Inicia en ${sec}s.</span>`
+            };
+            return map[lang] || map.en;
+        }
+
         function updateQuickMatchUI(customStatusText = null) {
             const btn = document.getElementById('battle-quick-btn');
             const statusEl = document.getElementById('battle-quick-status');
@@ -10268,12 +10315,7 @@
                     const waitingEl = document.getElementById('battle-waiting-text');
                     if (waitingEl) {
                         const humanCount = Object.values(battlePlayers || {}).filter(p => !p.isBot).length;
-                        const sec = quickMatchSecondsLeft;
-                        if (humanCount >= 2) {
-                            waitingEl.innerHTML = `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`;
-                        } else {
-                            waitingEl.innerHTML = `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`;
-                        }
+                        waitingEl.innerHTML = getQuickMatchWaitingHtml(humanCount, quickMatchSecondsLeft);
                     }
                 }
             } else {
@@ -11651,28 +11693,59 @@
             const humanPlayers = players.filter(p => !p.isBot);
             const humanCount = humanPlayers.length;
 
+            const lang = currentLang || 'ko';
             if (!battleLobbyCountdownActive) {
                 if (battleViewMode === 'world8') {
                     if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
                         const fn = textFor('matchFoundCountdown');
-                        waitingEl.innerText = typeof fn === 'function' ? fn(5) : '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...';
+                        const fallbackFoundMap = {
+                            ko: '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...',
+                            en: '🎮 Match Found! Starting shortly...',
+                            ja: '🎮 マッチング完了！まもなく開始します...',
+                            'zh-TW': '🎮 配對完成！比賽即將開始...',
+                            es: '🎮 ¡Partida encontrada! Iniciando...'
+                        };
+                        waitingEl.innerText = typeof fn === 'function' ? fn(5) : (fallbackFoundMap[lang] || fallbackFoundMap.en);
                     } else if (quickMatchActive) {
-                        const sec = quickMatchSecondsLeft;
-                        if (humanCount >= 2) {
-                            waitingEl.innerHTML = `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`;
-                        } else {
-                            waitingEl.innerHTML = `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`;
-                        }
+                        waitingEl.innerHTML = getQuickMatchWaitingHtml(humanCount, quickMatchSecondsLeft);
                     } else {
+                        const hostIdleMap = {
+                            ko: '대결 상대를 찾는 중입니다...',
+                            en: 'Searching for opponents...',
+                            ja: '対戦相手を探しています...',
+                            'zh-TW': '正在尋找對手...',
+                            es: 'Buscando oponentes...'
+                        };
+                        const guestIdleMap = {
+                            ko: '매칭 대기 중...',
+                            en: 'Waiting for match...',
+                            ja: 'マッチング待機中...',
+                            'zh-TW': '等待配對中...',
+                            es: 'Esperando partida...'
+                        };
                         waitingEl.innerText = isHost
-                            ? '대결 상대를 찾는 중입니다...'
-                            : '매칭 대기 중...';
+                            ? (hostIdleMap[lang] || hostIdleMap.en)
+                            : (guestIdleMap[lang] || guestIdleMap.en);
                     }
                 } else {
                     if (players.length >= 2) {
+                        const friendHostMap = {
+                            ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`,
+                            en: `🎮 <b>Friends Joined (${players.length})!</b><br>Press [Start Game] to begin!`,
+                            ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>[ゲーム開始] を押すとスタートします！`,
+                            'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>按下 [開始遊戲] 即可開始！`,
+                            es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>¡Pulsa [Iniciar] para comenzar!`
+                        };
+                        const friendGuestMap = {
+                            ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`,
+                            en: `🎮 <b>Friends Joined (${players.length})!</b><br>Waiting for the host to start...`,
+                            ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>ホストがゲームを開始するのを待っています...`,
+                            'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>正在等待房主開始遊戲...`,
+                            es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>Esperando a que el anfitrión inicie...`
+                        };
                         waitingEl.innerHTML = isHost
-                            ? `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`
-                            : `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`;
+                            ? (friendHostMap[lang] || friendHostMap.en)
+                            : (friendGuestMap[lang] || friendGuestMap.en);
                     } else {
                         waitingEl.innerText = isHost
                             ? textFor('lobbyStartable')(players.length)
@@ -11708,6 +11781,15 @@
                 const skinId = (player && player.skin) ? player.skin : (isMe && typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
                 const skinIcon = (typeof getEquippedSkinIcon === 'function') ? getEquippedSkinIcon(skinId) : '⚾';
 
+                const collectionTitle = (TEXTS[lang] && TEXTS[lang].skinModalTitle) || 'Collection';
+                const streakMap = {
+                    ko: `${streak}연승`,
+                    en: `${streak} Streak`,
+                    ja: `${streak}連勝`,
+                    'zh-TW': `${streak}連勝`,
+                    es: `${streak} racha`
+                };
+
                 return `<div class="battle-player-pill${meClass}${leagueClass}">
                     <div class="bpp-header">
                         <div class="bpp-identity">
@@ -11715,7 +11797,7 @@
                             <span class="bpp-name" title="${label}">${label}</span>
                         </div>
                         <div class="bpp-badges">
-                            <span class="bpp-skin-icon" title="컬렉션">${skinIcon}</span>
+                            <span class="bpp-skin-icon" title="${collectionTitle}">${skinIcon}</span>
                             ${isMe ? `<span class="bpp-me-badge">ME</span>` : ''}
                         </div>
                     </div>
@@ -11726,17 +11808,25 @@
                     </div>
                     <div class="bpp-stats-row">
                         <span class="bpp-stat-tag">${matches}G 🥇${wins}W</span>
-                        ${streak >= 2 ? `<span class="bpp-streak-tag">🔥 ${streak}연승</span>` : ''}
+                        ${streak >= 2 ? `<span class="bpp-streak-tag">🔥 ${streakMap[lang] || streakMap.en}</span>` : ''}
                     </div>
                 </div>`;
             });
 
+            const emptyWaitMap = {
+                ko: '⏳ 매칭 대기 중...',
+                en: '⏳ Waiting...',
+                ja: '⏳ 待機中...',
+                'zh-TW': '⏳ 等待配對...',
+                es: '⏳ Esperando...'
+            };
+            const emptyWaitLabel = emptyWaitMap[lang] || emptyWaitMap.en;
             for (let i = players.length; i < MAX_BATTLE_PLAYERS; i++) {
                 renderedCards.push(`
                     <div class="battle-player-pill empty">
                         <div class="bpp-empty-inner">
                             <span class="bpp-empty-slot">${i + 1}P</span>
-                            <span class="bpp-empty-text">⏳ 매칭 대기 중...</span>
+                            <span class="bpp-empty-text">${emptyWaitLabel}</span>
                         </div>
                     </div>
                 `);
@@ -12284,7 +12374,14 @@
             let unlockHtml = '';
             if (data.newlyUnlocked && data.newlyUnlocked.length > 0) {
                 const names = data.newlyUnlocked.map(s => s.name[lang] || s.name.ko).join(', ');
-                unlockHtml = `<div style="font-size:18px;color:#fbbf24;margin-top:4px;font-weight:900;">🎉 새 스킨 언락: ${names}!</div>`;
+                const unlockMap = {
+                    ko: `🎉 새 스킨 언락: ${names}!`,
+                    en: `🎉 New Collection Unlocked: ${names}!`,
+                    ja: `🎉 新コレクション解放: ${names}！`,
+                    'zh-TW': `🎉 解鎖新收藏: ${names}！`,
+                    es: `🎉 Nueva colección desbloqueada: ${names}!`
+                };
+                unlockHtml = `<div style="font-size:18px;color:#fbbf24;margin-top:4px;font-weight:900;">${unlockMap[lang] || unlockMap.en}</div>`;
             }
 
             pill.innerHTML = `
