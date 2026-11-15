@@ -5894,7 +5894,7 @@
                 canvasEl.style.visibility = 'visible';
                 canvasEl.style.opacity = '1';
             }
-            if (isWorldBattleRules()) {
+            if (battleMode) {
                 document.getElementById('ui-layer').classList.add('hidden');
                 document.getElementById('battle-hud').style.display = 'flex';
             } else {
@@ -5972,7 +5972,7 @@
             };
 
             // 대전 모드에서는 안내 문구 없이 바로 카운트다운 시작
-            if (isWorldBattleRules()) {
+            if (battleMode) {
                 startCountdownTick();
             } else {
                 countdownScreen.dataset.waiting = 'true';
@@ -6084,7 +6084,7 @@
             document.getElementById('play-gate-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
-            if (isWorldBattleRules()) {
+            if (battleMode) {
                 // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
                 battleGameOver();
             } else {
@@ -11008,7 +11008,7 @@
                         startBotSimulation(room);
                     }
                     if (isMyDone) {
-                        if (isWorldBattleRules()) {
+                        if (battleMode) {
                             battleMode = false;
                             gameState = 'GAMEOVER';
                             stopAllBgm();
@@ -11028,7 +11028,7 @@
                     if (!isMyDone) {
                         renderBattleHud(room);
                     }
-                    if (isWorldBattleRules()) {
+                    if (battleMode) {
                         battleMode = false;
                         gameState = 'GAMEOVER';
                         stopAllBgm();
