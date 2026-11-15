@@ -7815,7 +7815,7 @@
                     battleRating: Math.max(600, Number(current.battleRating) || payload.battleRating),
                     battleMaxStreak: Math.max(Number(current.battleMaxStreak) || 0, payload.battleMaxStreak),
                     dailyBattleMaxMatches: Math.max(Number(current.dailyBattleMaxMatches) || 0, payload.dailyBattleMaxMatches),
-                    equippedSkin: current.equippedSkin || payload.equippedSkin,
+                    equippedSkin: payload.equippedSkin || current.equippedSkin || 'classic',
                     unlockedSkins: mergedUnlockedSkins,
                     country: payload.country || current.country || 'KR',
                     updatedAt: Date.now()
@@ -9100,6 +9100,7 @@
         function closeSkinModal() {
             const modal = document.getElementById('skin-modal');
             if (modal) modal.classList.add('hidden');
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             playSfx('click', 0.6);
             triggerHaptic('light');
         }
