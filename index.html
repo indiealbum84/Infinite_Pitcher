@@ -8196,12 +8196,21 @@
             }
             if (pill) pill.style.display = 'flex';
             if (battleCard) battleCard.style.display = 'flex';
+            const lang = currentLang || 'ko';
+            const t = (typeof TEXTS !== 'undefined' && TEXTS[lang]) ? TEXTS[lang] : (typeof TEXTS !== 'undefined' ? TEXTS.ko : null);
             const rating = typeof getBattleRating === 'function' ? getBattleRating() : DEFAULT_BATTLE_RATING;
             const isMaster = rating > MASTER_LEAGUE_THRESHOLD;
             const leagueBadge = isMaster ? '👑' : '🥈';
-            const leagueName = isMaster ? '마스터 리그' : '일반 리그';
+            const leagueName = isMaster ? (t?.leagueMaster || 'Master League') : (t?.leagueStandard || 'Standard League');
             const streak = typeof getBattleStreak === 'function' ? getBattleStreak() : 0;
-            const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streak}연승</span>` : '';
+            const streakLabelMap = {
+                ko: `${streak}연승`,
+                ja: `${streak}連勝`,
+                'zh-TW': `${streak}連勝`,
+                es: `${streak} racha`,
+                en: `${streak} Streak`
+            };
+            const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streakLabelMap[lang] || streakLabelMap.en}</span>` : '';
             const skinId = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
             const skinIcon = getEquippedSkinIcon(skinId);
             const synced = isCloudAccountLinked();
@@ -8210,13 +8219,28 @@
             const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
             const matches = Math.max(0, Number(stats.matches) || 0);
             const wins = Math.max(0, Number(stats.wins) || 0);
-            const lang = currentLang || 'ko';
-            const statsLabel = lang === 'ko' ? `🏆 ${matches}전 ${wins}승` : (lang === 'ja' ? `🏆 ${matches}戦 ${wins}勝` : `🏆 ${matches}G ${wins}W`);
+            const statsLabelMap = {
+                ko: `🏆 ${matches}전 ${wins}승`,
+                ja: `🏆 ${matches}戦 ${wins}勝`,
+                'zh-TW': `🏆 ${matches}場 ${wins}勝`,
+                es: `🏆 ${matches}P ${wins}V`,
+                en: `🏆 ${matches}G ${wins}W`
+            };
+            const statsLabel = statsLabelMap[lang] || statsLabelMap.en;
+            const bestLabelMap = {
+                ko: `나홀로 BEST: ${bestScore}점`,
+                ja: `ひとり BEST: ${bestScore}点`,
+                'zh-TW': `單人 BEST: ${bestScore}分`,
+                es: `Solo BEST: ${bestScore} pts`,
+                en: `Solo BEST: ${bestScore} pts`
+            };
+            const bestLabel = bestLabelMap[lang] || bestLabelMap.en;
+            const collectionTitle = t?.skinModalTitle || 'Collection';
 
             const cardMarkup = `
                 <div class="ipp-left">
                     <div class="ipp-name-row">
-                        <span class="ipp-user-icon" title="컬렉션">${skinIcon}</span>
+                        <span class="ipp-user-icon" title="${collectionTitle}">${skinIcon}</span>
                         <span class="ipp-player-name">${safeName}</span>
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
                     </div>
@@ -8224,7 +8248,7 @@
                         <span class="ipp-league-tag ${isMaster ? 'master' : 'standard'}">${leagueBadge} ${leagueName}</span>
                         <span class="ipp-stats-tag">${statsLabel}</span>
                         ${streakBadge}
-                        <span class="ipp-best-tag">나홀로 BEST: ${bestScore}점</span>
+                        <span class="ipp-best-tag">${bestLabel}</span>
                     </div>
                 </div>
                 <div class="ipp-right">
