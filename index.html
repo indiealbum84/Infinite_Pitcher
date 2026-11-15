@@ -4274,8 +4274,8 @@
                 battleDivider: '── または ──',
                 battleQuickBtn: '⚡ マッチング開始',
                 battleQuickCancelBtn: '⏹ マッチング中止',
-                battleQuickIdle: '全世界のプレイヤーと対戦 (実プレイヤー優先マッチング)',
-                battleWorldIdleWaiting: '[マッチング開始] を押すと20秒間実プレイヤーを優先してマッチングします。',
+                battleQuickIdle: '世界中のプレイヤーと8人マッチング (最大20秒で開始)',
+                battleWorldIdleWaiting: '[マッチング開始] を押すと対戦相手を探します (20秒以内に開始)。',
                 battleQuickSearching: sec => `🔍 実プレイヤー優先マッチング中... (${sec}秒)`,
                 battleQuickMatched: '✅ マッチング完了！まもなく開始します！',
                 rematchBtn: 'もう一度',
@@ -4403,8 +4403,8 @@
                 battleDivider: '── OR ──',
                 battleQuickBtn: '⚡ Start Matchmaking',
                 battleQuickCancelBtn: '⏹ Cancel Matchmaking',
-                battleQuickIdle: 'Instant match with real players worldwide',
-                battleWorldIdleWaiting: 'Press [Start Matchmaking] to search for real players for 20s.',
+                battleQuickIdle: '8-player global matchmaking (starts within 20s)',
+                battleWorldIdleWaiting: 'Press [Start Matchmaking] to find opponents (starts within 20s).',
                 battleQuickSearching: sec => `🔍 Searching for real players... (${sec}s)`,
                 battleQuickMatched: '✅ Match found! Starting game...',
                 rematchBtn: 'Rematch',
@@ -4532,8 +4532,8 @@
                 battleDivider: '── 또는 ──',
                 battleQuickBtn: '⚡ 매칭 시작',
                 battleQuickCancelBtn: '⏹ 매칭 취소',
-                battleQuickIdle: '실제 유저 우선 매칭 (20초 후 미충원 시 봇 추가)',
-                battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 20초 동안 실제 플레이어를 우선 매칭합니다.',
+                battleQuickIdle: '전 세계 플레이어와 8인 매칭 (최대 20초 내 시작)',
+                battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 상대를 찾습니다. (20초 내 경기 시작)',
                 battleQuickSearching: sec => `🔍 실제 플레이어 탐색 중... (${sec}초)`,
                 battleQuickMatched: '✅ 매칭 완료! 잠시 후 시작합니다!',
                 rematchBtn: '다시하기',
@@ -4661,8 +4661,8 @@
                 battleDivider: '── 或 ──',
                 battleQuickBtn: '⚡ 開始配對',
                 battleQuickCancelBtn: '⏹ 取消配對',
-                battleQuickIdle: '優先配對真人玩家 (20秒未滿將補入電腦)',
-                battleWorldIdleWaiting: '點擊 [開始配對] 後，將優先配對真人玩家20秒。',
+                battleQuickIdle: '全球玩家 8 人即時配對 (20秒內開賽)',
+                battleWorldIdleWaiting: '點擊 [開始配對] 尋找對手 (最多20秒後開賽)。',
                 battleQuickSearching: sec => `🔍 正在搜尋真人玩家... (${sec}秒)`,
                 battleQuickMatched: '✅ 配對完成！即將開始！',
                 rematchBtn: '再戰一場',
@@ -4790,8 +4790,8 @@
                 battleDivider: '── O ──',
                 battleQuickBtn: '⚡ Buscar Partida',
                 battleQuickCancelBtn: '⏹ Cancelar',
-                battleQuickIdle: 'Busca jugadores reales (bots tras 20s si falta gente)',
-                battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para emparejar jugadores reales por 20s.',
+                battleQuickIdle: 'Emparejamiento global 8P (inicia en 20s)',
+                battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para buscar rivales (inicia en máx. 20s).',
                 battleQuickSearching: sec => `🔍 Buscando jugadores reales... (${sec}s)`,
                 battleQuickMatched: '✅ ¡Partida lista! Empezando...',
                 rematchBtn: 'Revancha',
@@ -9405,34 +9405,49 @@
         // ── 리그별 1,000명 봇 풀 & 인간적 하방 편향 실수 공식 (서버 비용 0원 클라이언트 생성) ──
         const BOT_COUNTRY_FLAGS = ['🇯🇵', '🇰🇷', '🇺🇸', '🇹🇼', '🇨🇦', '🇦🇺', '🇬🇧', '🇩🇪', '🇫🇷', '🇲🇽', '🇧🇷', '🇪🇸', '🇮🇹', '🇻🇳', '🇵🇭', '🇳🇱', '🇦🇷', '🇨🇿', '🇸🇪', '🇫🇮'];
 
-        const BOT_NAME_PREFIXES = [
-            '불꽃', '마구', '번개', '제구', '강속구', '슬라이더', '포크', '커브', '체인지업', '에이스',
-            '폭풍', '질풍', '원더', '골든', '다이아', '터보', '하이퍼', '울트라', '슈퍼', '아이언',
-            '샤프', '스마트', '메가', '베테랑', '루키', '마스터', '캡틴', '타이거', '드래곤', '이글'
+        // 약 80% 확률로 사용하는 글로벌 영문 게이머 닉네임 풀 (자연스러운 실제 유저 스타일)
+        const BOT_GLOBAL_NAMES = [
+            'Kaze', 'Ace9', 'Jayden', 'Sora7', 'Ryder', 'LeoP', 'ChrisK', 'Max99', 'Noah7', 'Toby',
+            'LiamX', 'JakeB', 'Sammy', 'Owen24', 'Ethan', 'Mason', 'Lucas', 'Viper', 'Nova', 'Blaze',
+            'Echo', 'Kobe8', 'Sho17', 'Clutch', 'Rookie', 'Tiger9', 'Shadow', 'Titan', 'Pixel8', 'Luna7',
+            'AriaM', 'Chloe', 'MiaK', 'Dylan', 'Tyler', 'Cooper', 'Sven', 'Jakub', 'Niko', 'Milo7',
+            'Theo', 'Hugo', 'Felix', 'Oscar', 'Liam9', 'Kenji', 'Ren24', 'Haru', 'Yuto', 'Kento',
+            'Boba', 'Mint9', 'NeoX', 'Zero7', 'Spark', 'Sunny', 'Lucky7', 'Hunter', 'Daniel', 'AlexK'
         ];
 
-        const BOT_NAME_ROOTS = [
-            'REN', 'HARU', 'SOTA', 'YUTO', 'KENTO', 'DAIKI', 'KAZU', 'SHIN', 'TAKUMI', 'RYO',
-            'ALEX', 'CHRIS', 'MIKE', 'RYAN', 'SAM', 'JAKE', 'LUKE', 'MAX', 'NICK', 'LEO',
-            'MINH', 'CHEN', 'WEI', 'MATEO', 'LUCAS', 'DIEGO', 'MARCO', 'LIAM', 'NOAH', 'OLIVER',
-            'FELIX', 'LUKAS', 'FINN', 'ELIAS', 'HUGO', 'LEON', 'MILO', 'NICO', 'OSCAR', 'THEO',
-            '투수', '피처', '스트라이크', '클로저', '선발', '에이스', '홀드', '마운드', '글러브', '야구왕'
-        ];
+        // 약 20% 확률로 사용하는 국가별 현지 언어/문화권 닉네임 풀 (국적과 100% 일치)
+        const BOT_LOCAL_NAMES_BY_FLAG = {
+            '🇰🇷': ['민준', '서준', '지훈', '현우', '도윤', '수빈', '유진', '시우', '준호', '태오', '백호', '민지', '하은', '재민', '성민'],
+            '🇯🇵': ['たくみ', 'けんた', 'ゆうと', 'はるき', 'だいき', 'さくら', 'あおい', 'りく', 'れん', 'そら', 'かいと', 'ゆい', 'はな', 'かずや', 'しょう'],
+            '🇹🇼': ['冠宇', '承恩', '子軒', '宇辰', '柏翰', '品妍', '詠晴', '阿豪', '小傑', '大偉', '小宇', '家豪', '志明'],
+            '🇲🇽': ['Mateo', 'Diego', 'Carlos', 'Santi', 'Pablo', 'Sofi', 'Valen', 'Beto10', 'Lucho', 'Gabo'],
+            '🇪🇸': ['Mateo', 'Diego', 'Carlos', 'Pablo', 'Lucia', 'Alvaro', 'Javier', 'Elena', 'HugoES', 'Dani7'],
+            '🇦🇷': ['Mateo', 'Thiago', 'Santi', 'Lucho', 'Gabo', 'Valen', 'Franco', 'NicoAR', 'Tomi9'],
+            '🇧🇷': ['Gabriel', 'Matheus', 'Rafael', 'Thiago', 'Caio7', 'Vini7', 'Luan9', 'BiaBR', 'Lucas'],
+            '🇫🇷': ['Lucas', 'Enzo7', 'Mathis', 'Camille', 'Theo', 'Antoine', 'Manon', 'LeoFR', 'Chloe'],
+            '🇩🇪': ['Lukas', 'Jonas', 'Tim99', 'Tobias', 'Felix', 'JanM', 'Hannah', 'LeonDE', 'MaxDE'],
+            '🇮🇹': ['Lorenzo', 'Matteo', 'Giulia', 'Andrea', 'Davide', 'Simone', 'Chiara', 'Marco'],
+            '🇻🇳': ['Minh9', 'Hoang', 'Tuan', 'Linh', 'HuyPro', 'Khanh', 'Duc98', 'NamVN'],
+            '🇵🇭': ['Jayson', 'Marky', 'Carlo', 'Bea99', 'Miguel', 'Renz', 'Paolo', 'Lance'],
+            '🇺🇸': ['Brandon', 'Austin', 'Trevor', 'Connor', 'Olivia', 'EmmaW', 'Hunter', 'Logan', 'Caleb'],
+            '🇨🇦': ['Connor', 'LiamCA', 'NoahCA', 'Chloe', 'Ethan', 'Mason', 'Emma', 'OwenCA'],
+            '🇬🇧': ['Oliver', 'Harry', 'Charlie', 'Jack99', 'George', 'Amelia', 'Alfie', 'Oscar'],
+            '🇦🇺': ['Lachlan', 'Cooper', 'JackAU', 'Ruby', 'LiamAU', 'NoahAU', 'MiaAU', 'Flynn'],
+            '🇳🇱': ['Daan', 'Sem', 'Bram', 'Luuk', 'Milan', 'Sophie', 'Julia', 'FinnNL'],
+            '🇨🇿': ['Jakub', 'Tomas', 'Ondrej', 'Lukas', 'Filip', 'Tereza', 'Adela', 'Honza'],
+            '🇸🇪': ['Sven', 'Lucas', 'Elias', 'William', 'Freja', 'Astrid', 'Oscar', 'HugoSE'],
+            '🇫🇮': ['Eetu', 'Onni', 'LeoFI', 'Elias', 'Aino', 'Sofia', 'Mikko', 'Väinö']
+        };
 
         function generateLeagueBot(index, league = 'standard') {
             const isMaster = league === 'master';
             const flag = BOT_COUNTRY_FLAGS[(index * 7 + (isMaster ? 11 : 3)) % BOT_COUNTRY_FLAGS.length];
-            const prefix = BOT_NAME_PREFIXES[(index * 13 + (isMaster ? 17 : 5)) % BOT_NAME_PREFIXES.length];
-            const root = BOT_NAME_ROOTS[(index * 19 + (isMaster ? 23 : 7)) % BOT_NAME_ROOTS.length];
-
-            let displayName = '';
-            if (flag === '🇰🇷') {
-                displayName = `${flag} ${prefix}${root.length <= 3 ? root : ''}`;
-            } else {
-                const numTag = (index >= 100) ? String(index % 100) : '';
-                displayName = `${flag} ${root}${numTag ? ' ' + numTag : ''}`;
-            }
-            displayName = clampBattleName(displayName);
+            const useLocal = ((index * 17 + (isMaster ? 3 : 1)) % 10) < 2; // 약 20% 현지어, 80% 글로벌 영어
+            const localPool = BOT_LOCAL_NAMES_BY_FLAG[flag] || BOT_GLOBAL_NAMES;
+            const pool = useLocal ? localPool : BOT_GLOBAL_NAMES;
+            const baseName = pool[(index * 19 + (isMaster ? 23 : 7)) % pool.length];
+            const numTag = (index >= 250 && !/\d$/.test(baseName) && baseName.length <= 5) ? String((index % 89) + 10) : '';
+            const displayName = clampBattleName(`${flag} ${baseName}${numTag}`);
 
             // 1,000명의 봇을 3대 실력 티어(루키 30%, 중수 50%, 에이스 20%)로 분할
             const tierMod = index % 10;
