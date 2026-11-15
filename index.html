@@ -12079,7 +12079,9 @@
             const rank1Count = isEnded ? allPlayers.filter(p => Number(rankMap[p.id] || p.rank || 0) === 1).length : 0;
             let resultText, resultClass;
             if (!isEnded) {
-                resultText = { en: 'OUT (IN PROGRESS)', ja: '脱落 (進行中)', 'zh-TW': '淘汰 (比賽進行中)', es: 'ELIMINADO (EN CURSO)' }[currentLang] || '탈락 (경기 진행 중)';
+                const aheadCount = allPlayers.filter(p => p.id !== battlePlayerId && (!p.done || Number(p.score || 0) > myScore)).length;
+                const provisionalRank = Math.max(2, Math.min(allPlayers.length, aheadCount + 1));
+                resultText = textFor('rankText')(provisionalRank);
                 resultClass = 'lose';
             } else if (myRank === 1) {
                 resultText = rank1Count > 1
