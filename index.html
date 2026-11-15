@@ -4021,7 +4021,7 @@
             <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
             <div id="battle-quick-section">
                 <button class="start-btn" id="battle-quick-btn" onclick="toggleQuickMatch()">⚡ 빠른 매칭 (랜덤 대전)</button>
-                <p class="battle-quick-status" id="battle-quick-status">전 세계 플레이어와 즉시 매칭합니다</p>
+                <p class="battle-quick-status" id="battle-quick-status" style="display:none;"></p>
             </div>
 
             <!-- 방 만들기 섹션 -->
@@ -10143,8 +10143,13 @@
             } else {
                 btn.classList.remove('matching');
                 btn.innerText = textFor('battleQuickBtn');
-                statusEl.style.display = '';
-                statusEl.innerText = customStatusText || textFor('battleQuickIdle');
+                if (customStatusText) {
+                    statusEl.style.display = '';
+                    statusEl.innerText = customStatusText;
+                } else {
+                    statusEl.style.display = 'none';
+                    statusEl.innerText = '';
+                }
             }
         }
 
