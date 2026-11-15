@@ -5466,16 +5466,13 @@
             enterIntroFromSplash();
         }, SPLASH_DURATION_MS);
 
-        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 재생 보장
+        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 동기 재생 보장
         function unlockAudioOnTap() {
             if (gameState !== 'INTRO') return;
             if (audioCtx && audioCtx.state !== 'running') {
-                audioCtx.resume().then(() => {
-                    ensureTitleBgmOnIntro();
-                }).catch(() => {});
-            } else {
-                ensureTitleBgmOnIntro();
+                try { audioCtx.resume(); } catch (e) {}
             }
+            ensureTitleBgmOnIntro();
             if (isTitleBgmPlaying() && (!audioCtx || audioCtx.state === 'running')) {
                 window.removeEventListener('pointerdown', unlockAudioOnTap);
                 window.removeEventListener('touchstart', unlockAudioOnTap);
@@ -5483,6 +5480,18 @@
         }
         window.addEventListener('pointerdown', unlockAudioOnTap, { passive: true });
         window.addEventListener('touchstart', unlockAudioOnTap, { passive: true });
+
+        // #intro-screen(main_background.png)이 화면에 나타날 때마다 bgm_title 자동 재생 시도
+        (function observeIntroVisibilityForBgm() {
+            const introEl = document.getElementById('intro-screen');
+            if (!introEl || typeof MutationObserver === 'undefined') return;
+            const obs = new MutationObserver(() => {
+                if (!introEl.classList.contains('hidden') && gameState === 'INTRO') {
+                    ensureTitleBgmOnIntro();
+                }
+            });
+            obs.observe(introEl, { attributes: true, attributeFilter: ['class'] });
+        })();
 
         function playGameBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
