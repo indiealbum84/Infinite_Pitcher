@@ -1,16 +1,27 @@
-# 무한 피칭 리뉴얼 시안
+# 인피니티 피칭 리뉴얼 시안
 
 **방과 후 야구부**를 게임 전체의 얼굴로 잡는다. 예전 야구 만화의 검은 외곽선, 망점 인쇄, 종이색, 큰 공의 원근감을 활용한다. 주인공은 15–16세 정도의 야구부 선수로, 작은 체격과 둥근 얼굴선, 밝고 집중한 표정, 여유 있는 유니폼을 쓴다. 특정 성별로 강하게 읽히는 얼굴이나 체격을 피하고, 투구의 힘은 손과 공의 원근, 대각선 구도와 스피드라인으로 표현한다. 참고 사진의 캐릭터, 팀명, 모자 로고는 게임 고유의 디자인으로 새로 만든다.
 
-[메뉴 프로토타입](menu.html) · [오프닝으로 바로 시작](menu.html?preview=opening) · [오프닝 미리보기](assets/opening-preview.webp) · [메뉴 미리보기](assets/menu-preview.webp) · [홈 키 일러스트](assets/home-hero.webp) · [인게임 아트 보드](assets/field-studies.webp)
+[타이틀부터 체험](menu.html) · [오프닝 미리보기](assets/opening-preview.webp) · [투구 GIF](assets/title-pitch.gif) · [메뉴 미리보기](assets/menu-preview.webp) · [인게임 아트 보드](assets/field-studies.webp)
 
-![방과 후 야구부 홈 키 일러스트](assets/home-hero.webp)
+![투구가 끝난 뒤 인피니티 피칭 메인 메뉴](assets/menu-preview.webp)
+
+## 타이틀에서 메인 메뉴로
+
+1. 9:16 오프닝에 마운드에 선 투수의 전신과 일본어 타이틀 **インフィニティピッチング**을 보여준다.
+2. ‘スタート’를 누르면 같은 투수가 무릎을 들고, 발을 내딛고, 공을 던진다. 투구 GIF는 6컷, 1.48초이며 한 번 재생한다.
+3. 화면 앞까지 다가온 공과 투수의 마지막 자세를 고정한다. 좌상단에 **TOP 1000**, 우상단에 **컬렉션·설정**, 가운데에 기존 말풍선을 띄운다. 하단에는 선수 기록, 세 게임 모드와 플레이·구매 정보를 표시한다.
+
+> よしっ！世界一のピッチャーになるために、<br>
+> 今日も特訓だ！
+
+‘スキップ’을 누르거나 기기에 동작 줄이기가 설정되어 있으면 고정 컷과 메뉴를 바로 보여준다. 첫 접속에는 게스트 상태로 홈을 먼저 둘러볼 수 있고, 처음 게임 모드를 선택할 때 선수 이름 등록을 안내한다.
 
 ## 일러스트 방향
 
 | 시안 | 그림과 색 | 배치 |
 | --- | --- | --- |
-| **A. 방과 후 야구부 · 메인** | 아이보리 종이, 잉크 남색 유니폼, 머스터드 햇빛, 주홍 스피드라인. 오프닝은 마운드 위 투수의 전신과 주변 구장을 담고, 홈은 공을 내미는 투수의 클로즈업으로 잡는다. | 오프닝, 홈, 앱 대표 이미지 |
+| **A. 방과 후 야구부 · 메인** | 아이보리 종이, 잉크 남색 유니폼, 머스터드 햇빛, 주홍 스피드라인. 오프닝은 마운드 위 투수의 전신, 홈은 공이 카메라를 향해 날아드는 투구 직후의 원근 컷을 담는다. | 오프닝, 홈, 앱 대표 이미지 |
 | **B. 동네 연습장 · 솔로/친구** | 낮은 관중석, 흙빛 마운드, 잔디색. 좌우 가장자리에 배경 요소를 두고, 번호판 뒤는 낮은 대비의 큰 색면을 사용한다. | 나홀로 특훈, 친구와 특훈, 튜토리얼 |
 | **C. 야간 교류전 · 배틀** | 잉크 남색 하늘, 따뜻한 조명과 주홍 전광판. 관중은 작게 처리하고, 조명은 코트 가장자리에 둔다. | 세계 8인 배틀 로비, 경기 시작, 배틀 결과 |
 
@@ -22,8 +33,8 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 
 | 제작 묶음 | 다음 시안에서 필요한 리소스와 기준 |
 | --- | --- |
-| 타이틀·런처 | 회사 로고 스플래시와 오프닝을 분리한다. [오프닝 원화](assets/opening-fullshot.webp)는 9:16 세로 전신 컷으로, 모자부터 양쪽 스파이크까지 들어오게 그린다. 정식 일문 타이틀 `超特訓！無限ピッチング`과 현지화 이름은 별도 레이어로 둔다. 앱 아이콘은 공+모자 실루엣을 정사각형과 마스커블로 제작한다. |
-| 홈·로비 아트 | 홈 일러스트 3:2, 로비 야간 배경 9:16. 얼굴과 공은 별도로 크롭을 검토한다. 타이틀과 안내 문구는 이미지가 아닌 UI 텍스트로 렌더링한다. |
+| 타이틀·런처 | 회사 로고 스플래시와 오프닝을 분리한다. [오프닝 원화](assets/opening-fullshot.webp)는 9:16 세로 전신 컷으로, 모자부터 양쪽 스파이크까지 들어온다. 일본어 타이틀 `インフィニティピッチング`은 별도 텍스트 레이어에 둔다. 앱 아이콘은 공과 모자의 실루엣으로 제작한다. |
+| 홈·로비 아트 | [홈 고정 컷](assets/title-pitch-finish.webp)은 오프닝과 같은 9:16이다. 얼굴과 공이 말풍선에 가리지 않는지 확인한다. 야간 구장 로비 시안은 보드에서 확인할 수 있다. |
 | 투수·카트 | 동일 인물의 준비·릴리스 포즈와 카트. 투수 스프라이트는 투명 PNG, 같은 프레임 크기와 발 기준점으로 제공한다. 동작 교체 시 좌우 중심과 바닥 위치가 튀지 않아야 한다. |
 | 게임 필드·블록 | 1080×1920 논리 화면 기준으로 낮과 밤 배경을 분리한다. 10열 블록의 숫자는 Canvas 텍스트로 유지하고, 기본 블록과 목표 블록의 윤곽·명도 차이를 확보한다. |
 | 마구 | 파이어는 불꽃과 세로 궤적, 미러는 쌍을 이룬 반전 띠, 스트라이프는 교차 띠, 플래시는 별 모양과 짧은 펄스로 구분한다. 컬러와 실루엣을 함께 사용하고 숫자와 경기판을 오래 덮지 않는다. |
@@ -35,29 +46,37 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 
 | 상태 또는 화면 | 리뉴얼 정의 |
 | --- | --- |
-| 첫 실행 | 세로 전신 일러스트가 오프닝 화면 전체를 채운다. 제목은 상단, ‘시작하기’는 하단 안전 영역 위에 놓고, 머리와 발 사이에 UI를 겹치지 않는다. 시작 → 언어 선택 → 선수 이름 등록 → 홈. 이름 제한과 변경 불가 안내는 입력 아래에 표시하고 Google·Apple 복원은 같은 화면 아래에 둔다. |
+| 첫 실행 | 세로 전신 타이틀 → 투구 GIF → 메인 메뉴. 첫 모드 선택 시 선수 이름 등록 → 선택했던 모드로 이동한다. 이름 제한과 변경 불가 안내는 입력 아래에 두고, Google·Apple 복원은 같은 화면에서 접근한다. |
 | 홈 · 솔로 최고 31점 미만 | **나홀로 특훈**이 주 버튼이다. 세계 8인 배틀에 ‘솔로 최고 24 / 31점’처럼 진행을 표시한다. 잠긴 항목을 열면 해금 안내와 솔로로 가는 버튼을 보여준다. 친구와 특훈은 바로 접근할 수 있다. |
 | 홈 · 솔로 최고 31점 이상 | **세계 8인 배틀**이 주 버튼이 된다. 나홀로 특훈과 친구와 특훈은 같은 줄에 둔다. 홈 기록 카드는 선수명·솔로 최고·배틀 PT만 읽히게 하고, 리그와 누적 우승은 배틀 로비에서 보여준다. |
 | 세계 8인 배틀 | 로비에서 리그, 승점, 누적 우승을 본다. 일반은 1,200 PT 이하, 마스터는 1,200 PT 초과다. ‘빠른 매칭’ 후 카운트다운·실제 선수 수·8칸 슬롯·취소를 한 화면에 둔다. 최대 20초 대기와 빈자리 봇 충원 규칙을 따르고, 로비 진입만으로 매칭을 시작하지 않는다. |
 | 친구와 특훈 | **방 만들기**와 **4자리 코드로 참가**를 첫 화면에 놓는다. 현재 코드의 진입 즉시 생성 방식을 명시적 선택으로 바꾸는 제안이다. 방장은 코드와 참가 인원을 보고 2명부터 시작한다. 참가자는 방장 대기 상태를 본다. 없는 방·가득 찬 방·이미 시작한 방 오류는 코드 입력 아래에 표시한다. |
-| 기록 | 하단에서 랭킹에 직접 접근한다. 기존 4개 조회 조합을 ‘8인 배틀 / 나홀로 특훈’과 ‘세계 / 국가’ 두 축으로 바꾼다. 배틀은 PT, 솔로는 점수로 표시한다. 로딩·빈 목록·재시도를 같은 자리에서 처리한다. |
-| 컬렉션 | 하단에서 접근한다. 획득 조건과 ‘잠김 / 장착 / 장착 중’ 상태를 표시하고 기존 숨겨진 컬렉션은 조건을 충족한 뒤에 표시한다. |
+| 기록 | 좌상단 TOP 1000에서 접근한다. 기존 4개 조회 조합을 ‘8인 배틀 / 나홀로 특훈’과 ‘세계 / 국가’ 두 축으로 바꾼다. 배틀은 PT, 솔로는 점수로 표시한다. 로딩·빈 목록·재시도를 같은 자리에서 처리한다. |
+| 컬렉션 | 우상단에서 접근한다. 획득 조건과 ‘잠김 / 장착 / 장착 중’ 상태를 표시하고 기존 숨겨진 컬렉션은 조건을 충족한 뒤에 표시한다. |
 | 설정과 이용권 | 우상단 설정에서 언어 5종, BGM·SFX, 계정 연동을 찾을 수 있다. 웹은 기본 무제한 플레이이므로 홈에 일일 횟수를 내세우지 않는다. 앱에서 한도가 적용되는 경우 플레이 버튼을 눌렀을 때 남은 횟수와 필요한 광고, 광고 제거, 복원 옵션을 표시한다. 실제 스토어 가격을 사용한다. |
 | 결과 | 솔로는 이번 점수·최고 기록·다시 도전을 먼저 표시한다. 8인 배틀은 순위·PT 변화·참가자 기록 순으로 보여준다. 경기 진행 중 안내에서는 예상 순위에 ‘잠정’을 붙이고, 최종 기록과 구분한다. |
 
 ## UI 규격
 
-- 세로 390px을 기본으로 잡고 320px까지 줄바꿈을 허용한다. 홈은 **타이틀 일러스트 → 선수 기록 → 모드 버튼 → 홈·랭킹·컬렉션** 순서다. 게임 중에는 하단 메뉴를 숨기고 HUD와 뒤로 가기만 남긴다.
+- 세로 390px을 기본으로 잡고 320px까지 줄바꿈을 허용한다. 홈은 화면 전체에 투구 마지막 컷을 깔고 상단에는 빠른 메뉴와 타이틀, 가운데에는 말풍선, 하단에는 기록과 모드 버튼을 올린다.
 - 종이색 `#F9EDCF`, 잉크 `#192738`, 주 버튼 주홍 `#A6312C`, 배지 머스터드 `#EDBC57`, 진행 표시 잔디 `#286659`. 페이지 본문과 숫자가 있는 판에는 망점을 깔지 않는다.
 - 말투는 짧고 친근하게 유지한다. ‘솔로 최고 기록을 31점까지 올려요’, ‘선수를 찾는 중’, ‘친구를 기다리는 중’처럼 다음 행동이 보이는 표현을 사용한다. 타이틀과 버튼은 다국어 문구에 맞춰 줄바꿈할 수 있어야 한다.
 - 터치 영역은 최소 44px을 확보하고 포커스를 표시한다. 잠김, 장착, 내 순위, 다음 번호는 글자나 윤곽을 함께 쓰며, 강한 화면 점멸은 줄인다. 상하 안전 영역을 적용한다.
 - 배포용 홈 일러스트는 약 350 KiB 이내를 목표로 한다. 구장·마구는 필요한 화면에서 불러온다. 앱 대표 아이콘과 스프라이트는 실제 크기 축소와 반복 재생을 검토한다.
 
-프로토타입은 ‘첫 실행’, ‘해금 전’, ‘일반’, ‘마스터’를 바꿔 볼 수 있다. 선수 이름과 설정은 탭이 열린 동안만 유지된다. 화면 문구는 한국어이며 매칭, 랭킹과 초대방은 예시 데이터로 동작한다. 게임 플레이, 실제 로그인·결제·데이터 저장은 기존 게임의 기능이다.
+프로토타입은 ‘타이틀 다시 보기’, ‘해금 전’, ‘일반’, ‘마스터’를 바꿔 볼 수 있다. 게임 화면 문구는 일본어이며 매칭, 랭킹과 초대방은 예시 데이터로 동작한다. 선수 이름과 설정은 탭이 열린 동안 유지된다.
 
 ## 이미지 제작 기록
 
 내장 ImageGen을 사용했다. 아래는 시안에 적용한 프롬프트다.
+
+**투구 GIF 중간 자세**
+
+Use case: illustration-story. Create one production-friendly FOUR-KEYFRAME storyboard grid for a quick hand-inked baseball pitching animation. Content is artwork ONLY, no writing, no titles, no badges, no labels, no numbering, no interface. Overall 9:16 portrait aspect; exact edge-to-edge 2 by 2 grid with an invisible straight cut at x=50% and y=50%. Each equal quadrant is a COMPLETE independent upright portrait illustration with no margins, no drawn gutters and no object crossing a quadrant edge. The input image is the exact character and stadium reference. All quadrants depict the SAME original softly androgynous, slender, young high-school pitcher with short loose dark hair, round cheeks, bright eyes, ink navy cap and old uniform with mustard piping, ivory pants, navy stirrups, dark cleats. All use same field, day lighting, pale cream sky, same centered camera, horizon at about 64% down, terracotta mound low in frame and pale gold/vermillion speed accents. Anchor pitcher at center; entire player in frame, from head to cleats. Show four DISTINCT sequential accurate right-handed overhand pitching POSES, each drawn deliberately as an animation key: upper left = brings glove and throwing hand together at chest, left knee rising just above waist while balanced on right foot, body turned slightly; upper right = long stride, left foot about to plant in front, glove hand points forward and right throwing arm holds the visible ball high and behind player, torso coiled; lower left = extreme energy at release, left foot planted, right arm whipping overhand high and forward, visible bright baseball has just separated from fingers, torso leans forward, right rear leg starts rising; lower right = follow-through, torso lands forward and right arm crosses downward toward opposite hip, right leg kicks high behind, ball rushes toward camera in left foreground about one quarter of frame width. Same scale and horizon across panels. Readable, simple transition silhouettes. Old Showa sports manga flat screen-print inks, Ben-Day dots, warm paper, strong contours, optimistic club-sports feeling. No photo-style lighting, no excessive muscle, no angry expressions, no diagram, no different costumes or people, no weapons. Hard cuts exactly at quadrant boundaries only.
+
+**투구 원근 고정 컷**
+
+Use case: illustration-story. Produce one original full-bleed 9:16 portrait artwork, inked Showa sports manga. The first reference is the currently approved young high-school pitcher, outfit colors and neighborhood field. The second reference is the kind of dynamic perspective and graphic printing for the finished pitch. Keep the same identity from reference 1, approximately 15–16, softly androgynous, loose dark hair and rounded youthful cheeks, bright optimistic expression, ink navy cap and jersey mustard piping, cream pants. Capture the exact spectacular instant just AFTER the right hand has let go of the ball. Dramatic wide-angle from the batter's point of view: a dramatically large, round, stitched baseball flies directly at camera in the LEFT foreground, around x 30%, y 46%, its diameter about 38% of the entire image width, with a readable white leather surface and red stitches. The pitcher leans forward from the center-right behind it, their smile and facial identity clearly seen well separated to the upper right of the ball, around x 63%, y 35%; glove in the other hand, coordinated real pitching anatomy, no fingers gripping the airborne ball. Place the key action between y=25% and y=60%. Leave the upper quarter mostly open pale warm cream paper sky. Keep the lower third quiet light clay and green baseball-field color fields without extra objects. Skewed ink speed rays in red and soft yellow point toward the close ball. Flanking low bleachers and grass match reference 1 with a concentrated warm daylight palette. Tight athletic movement through perspective and speed, not muscular bulk, cheerful energy. Screen printed spot colors, authentic Ben-Day dots in shadow, bold indigo contours, clean-looking edges. Full image is one seamless 9:16 sports illustration. Absolutely zero typography, text, letters, lettering, symbols, title art, banners, labels, badges, borders, empty boxes, interface elements, or signage anywhere.
 
 **세로 오프닝**
 

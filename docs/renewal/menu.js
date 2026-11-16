@@ -2,22 +2,22 @@
 
 const scenarios = {
   new: { name: '', best: 0, rating: 1000, wins: 0 },
-  rookie: { name: '유나', best: 24, rating: 1000, wins: 0 },
-  standard: { name: '유나', best: 128, rating: 1140, wins: 5 },
-  master: { name: '유나', best: 268, rating: 1260, wins: 12 }
+  rookie: { name: 'ユナ', best: 24, rating: 1000, wins: 0 },
+  standard: { name: 'ユナ', best: 128, rating: 1140, wins: 5 },
+  master: { name: 'ユナ', best: 268, rating: 1260, wins: 12 }
 };
 
 const skins = [
-  ['⚾', '클래식 쇼와', '기본 지급', () => true],
-  ['🌱', '루키 에메랄드', '8인 배틀 첫 승', player => player.wins >= 1],
-  ['☀', '선셋 레트로', '8인 배틀 10승', player => player.wins >= 10],
-  ['🔥', '골든 프레임', '하루 배틀 50판', () => false],
-  ['⚡', '블루 스파크', '8인 배틀 100승', player => player.wins >= 100],
-  ['🌸', '사쿠라 블룸', '나홀로 특훈 200점', player => player.best >= 200],
-  ['♕', '황제 크라운', '나홀로 특훈 500점', player => player.best >= 500],
-  ['🌈', '쇼와 레인보우', '8인 배틀 5연승', () => false],
-  ['🌌', '더블 레인보우', '8인 배틀 10연승', () => false],
-  ['◇', '다이아 프리즘', '마스터 리그 1,500 PT', player => player.rating >= 1500]
+  ['⚾', 'クラシック昭和', '初期装備', () => true],
+  ['🌱', 'ルーキーエメラルド', '8人バトルで初勝利', player => player.wins >= 1],
+  ['☀', 'サンセットレトロ', '8人バトルで10勝', player => player.wins >= 10],
+  ['🔥', 'ゴールデンフレーム', '1日でバトル50回', () => false],
+  ['⚡', 'ブルースパーク', '8人バトルで100勝', player => player.wins >= 100],
+  ['🌸', 'サクラブルーム', 'ひとり特訓で200点', player => player.best >= 200],
+  ['♕', 'エンペラークラウン', 'ひとり特訓で500点', player => player.best >= 500],
+  ['🌈', '昭和レインボー', '8人バトルで5連勝', () => false],
+  ['🌌', 'ダブルレインボー', '8人バトルで10連勝', () => false],
+  ['◇', 'ダイヤプリズム', 'マスターリーグ 1,500 PT', player => player.rating >= 1500]
 ];
 
 const languages = [
@@ -29,26 +29,29 @@ const languages = [
 ];
 
 const display = document.getElementById('screen');
-const device = document.querySelector('.device');
-const dock = document.querySelector('.dock');
-const format = new Intl.NumberFormat('ko-KR');
+const masthead = document.querySelector('.masthead');
+const format = new Intl.NumberFormat('ja-JP');
 const WORLD_UNLOCK_SCORE = 31;
 const MATCH_SECONDS = 20;
-let player = { ...scenarios.standard };
-let activeScenario = 'standard';
-let page = 'home';
+const PITCH_DURATION_MS = 1480; // Total frame duration of title-pitch.gif.
+const title = '<span>インフィニティ</span><span>ピッチング</span>';
+let player = { ...scenarios.new };
+let page;
 let matchTimer;
+let pitchTimer;
+let pitchRun = 0;
+let requestedMode = 'home';
 let rankMode = 'world';
 let rankScope = 'global';
 let equippedIndex = 0;
-let language = 'ko';
+let language = 'ja';
 const volume = { bgm: 80, sfx: 80 };
 
-const league = () => player.rating > 1200 ? '마스터 리그' : '일반 리그';
+const league = () => player.rating > 1200 ? 'マスターリーグ' : '一般リーグ';
 const canEnterWorld = () => player.best >= WORLD_UNLOCK_SCORE;
 
 function panel(title, body, back = 'home', subtitle = '') {
-  const backButton = back ? `<button class="back" type="button" data-go="${back}">← 이전</button>` : '';
+  const backButton = back ? `<button class="back" type="button" data-go="${back}">← 戻る</button>` : '';
   const heading = subtitle ? `<p class="hint">${subtitle}</p>` : '';
   return `<section class="screen-panel">${backButton}<h2 tabindex="-1">${title}</h2>${heading}${body}</section>`;
 }
@@ -70,57 +73,69 @@ function buttons(items, group, current) {
 }
 
 function home() {
-  const world = mode('세계 8인 배틀', league(), 'world', 'primary');
-  const solo = mode('나홀로 특훈', '개인 최고 기록에 도전', 'solo', canEnterWorld() ? '' : 'primary');
-  const friends = mode('친구와 특훈', '4자리 초대 코드', 'friend');
-  const locked = mode('세계 8인 배틀 · 잠김', `솔로 최고 ${player.best} / ${WORLD_UNLOCK_SCORE}점`, 'unlock', 'locked');
-  const actions = canEnterWorld() ? `${world}<div class="duo">${solo}${friends}</div>` : `${solo}${locked}${friends}`;
-  const rating = canEnterWorld() ? format.format(player.rating) : '—';
+  const unlocked = canEnterWorld();
+  const world = mode('世界8人バトル', league(), 'world', 'primary');
+  const solo = mode('ひとり特訓', '自己ベストに挑戦', 'solo', unlocked ? '' : 'primary');
+  const friends = mode('フレンド特訓', '4桁の招待コード', 'friend');
+  const locked = mode('世界8人バトル', `未解放 · ${player.best} / ${WORLD_UNLOCK_SCORE}点`, 'unlock', 'locked');
+  const actions = unlocked
+    ? `${world}<div class="duo">${solo}${friends}</div>`
+    : `${solo}<div class="duo">${locked}${friends}</div>`;
+  const rating = unlocked ? format.format(player.rating) : '—';
 
-  return `<section aria-label="홈">
-    <div class="cover">
-      <img src="assets/home-hero.webp" alt="방과 후 야구부 투수가 야구공을 들어 투구를 준비하는 모습" fetchpriority="high">
-      <h2 tabindex="-1"><small>超特訓！無限ピッチング</small>무한 피칭</h2>
+  return `<section class="portrait-scene lobby" aria-label="メインメニュー">
+    <img class="scene-art" src="assets/title-pitch-finish.webp" alt="ピッチャーが投げたボールが手前に迫る場面" fetchpriority="high">
+    <nav class="corner-menu" aria-label="サブメニュー">
+      ${action('TOP 1000', 'ranking', 'corner-button rank-button')}
+      <div class="corner-group">
+        <button class="corner-button" type="button" data-go="collection" aria-label="コレクション" title="コレクション"><span aria-hidden="true">✦</span></button>
+        <button class="corner-button" type="button" data-go="settings" aria-label="設定" title="設定"><span aria-hidden="true">⚙</span></button>
+      </div>
+    </nav>
+    <h2 class="game-title" tabindex="-1">${title}</h2>
+    <div class="lobby-middle">
+      <p class="speech-bubble">よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！</p>
     </div>
-    <div class="home-content">
+    <div class="home-content" aria-label="プレイメニュー">
       <div class="profile">
-        <div><small>선수</small><strong data-player-name></strong></div>
-        <div><small>솔로 최고</small><strong class="number">${format.format(player.best)}</strong></div>
-        <div><small>배틀 PT</small><strong class="number">${rating}</strong></div>
+        <div><small>選手</small><strong data-player-name></strong></div>
+        <div><small>自己ベスト</small><strong class="number">${format.format(player.best)}</strong></div>
+        <div><small>バトルPT</small><strong class="number">${rating}</strong></div>
       </div>
       <div class="actions">${actions}</div>
+      ${action('プレイ・購入情報', 'play-info', 'play-info-button')}
     </div>
   </section>`;
 }
 
 function seats(filled = false) {
   const entries = Array.from({ length: 8 }, (_, i) => {
-    if (i === 0) return '<li class="occupied">나</li>';
-    if (filled) return `<li class="occupied">봇 ${i}</li>`;
-    return '<li>빈 자리</li>';
+    if (i === 0) return '<li class="occupied">自分</li>';
+    if (filled) return `<li class="occupied">ボット ${i}</li>`;
+    return '<li>空き</li>';
   });
-  return `<ol class="seats" aria-label="참가 슬롯">${entries.join('')}</ol>`;
+  return `<ol class="seats" aria-label="参加枠">${entries.join('')}</ol>`;
 }
 
 function rankings() {
   const isWorld = rankMode === 'world';
   const isGlobal = rankScope === 'global';
-  const pool = isGlobal ? ['미오', '샘', '루이'] : ['서진', '하린', '이안'];
+  const pool = isGlobal ? ['ミオ', 'サム', 'ルイ'] : ['ソジン', 'ハリン', 'イアン'];
   const scores = isWorld ? [1620, 1495, 1310] : [302, 284, 271];
-  const unit = isWorld ? ' PT' : '점';
+  const unit = isWorld ? ' PT' : '点';
   const rows = pool.map((name, index) =>
     `<li><span>${index + 1}</span><strong>${name}</strong><span class="number">${format.format(scores[index])}${unit}</span></li>`
   ).join('');
   const showOwn = isWorld ? canEnterWorld() : player.best > 0;
   const ownStat = isWorld ? player.rating : player.best;
   const own = showOwn
-    ? `<p class="status">내 기록 · ${format.format(ownStat)}${unit}</p>`
-    : '<p class="hint">아직 등록된 내 기록이 없습니다.</p>';
+    ? `<p class="status">自分の記録 · ${format.format(ownStat)}${unit}</p>`
+    : '<p class="hint">まだ記録がありません。</p>';
 
   return panel('TOP 1000', `
-    <div class="tabs" role="group" aria-label="랭킹 종류">${buttons([['world', '8인 배틀'], ['solo', '나홀로 특훈']], 'rank-mode', rankMode)}</div>
-    <div class="tabs" role="group" aria-label="랭킹 범위">${buttons([['global', '세계'], ['country', '국가']], 'rank-scope', rankScope)}</div>
-    <ol class="rank-list">${rows}</ol>${own}`, null);
+    <div class="tabs" role="group" aria-label="ランキング種別">${buttons([['world', '8人バトル'], ['solo', 'ひとり特訓']], 'rank-mode', rankMode)}</div>
+    <div class="tabs" role="group" aria-label="ランキング範囲">${buttons([['global', '世界'], ['country', '国内']], 'rank-scope', rankScope)}</div>
+    <ol class="rank-list">${rows}</ol>${own}`);
 }
 
 function collection() {
@@ -129,93 +144,102 @@ function collection() {
     const equipped = equippedIndex === index;
     return `<div class="paper-card"><h3><span class="swatch" aria-hidden="true">${icon}</span>${name}</h3>
       <p class="hint">${rule}</p>
-      <button class="plain" type="button" data-equip="${index}" ${!unlocked || equipped ? 'disabled' : ''}>${equipped ? '장착 중' : unlocked ? '장착' : '잠김'}</button></div>`;
+      <button class="plain" type="button" data-equip="${index}" ${!unlocked || equipped ? 'disabled' : ''}>${equipped ? '装備中' : unlocked ? '装備する' : '未解放'}</button></div>`;
   }).join('');
-  return panel('컬렉션', cards, null, '업적으로 볼 궤적과 투수 효과를 모아요.');
+  return panel('コレクション', cards, 'home', '実績を達成してボールの軌跡や投球エフェクトを集めよう。');
 }
 
 function settings() {
   const options = languages.map(([key, name]) =>
     `<option value="${key}" ${language === key ? 'selected' : ''}>${name}</option>`
   ).join('');
-  return panel('설정', `
-    <label class="field">언어<select id="language">${options}</select></label>
-    <p class="hint">선택은 이 탭에서 유지됩니다. 시안 문구는 한국어로 표시됩니다.</p>
-    <label class="field">배경음악 <output id="bgm-value">${volume.bgm}%</output><input type="range" id="bgm" min="0" max="100" value="${volume.bgm}"></label>
-    <label class="field">효과음 <output id="sfx-value">${volume.sfx}%</output><input type="range" id="sfx" min="0" max="100" value="${volume.sfx}"></label>
-    <div class="paper-card"><h3>계정 연동</h3><p class="hint">미연동 · 실제 로그인은 게임에서 진행합니다.</p>
-      <button class="plain" type="button" data-account>Google 로그인</button>
-      <button class="plain" type="button" data-account>Apple 로그인</button>
+  return panel('設定', `
+    <label class="field">言語<select id="language">${options}</select></label>
+    <p class="hint">この試作画面は日本語で表示されます。言語の選択はこのタブ内で保持されます。</p>
+    <label class="field">BGM <output id="bgm-value">${volume.bgm}%</output><input type="range" id="bgm" min="0" max="100" value="${volume.bgm}"></label>
+    <label class="field">効果音 <output id="sfx-value">${volume.sfx}%</output><input type="range" id="sfx" min="0" max="100" value="${volume.sfx}"></label>
+    <div class="paper-card"><h3>アカウント連携</h3><p class="hint">未連携。ログインは実際のゲーム内で行えます。</p>
+      <button class="plain" type="button" data-account>Googleでログイン</button>
+      <button class="plain" type="button" data-account>Appleでログイン</button>
     </div>
     <p class="status" id="notice" role="status"></p>`);
 }
 
 const renderers = {
   splash: () => `
-    <section class="opening" aria-labelledby="opening-title">
-      <img class="opening-art" src="assets/opening-fullshot.webp" alt="방과 후 야구장 마운드에 선 어린 투수의 전신" fetchpriority="high">
-      <h2 id="opening-title" tabindex="-1"><small>超特訓！無限ピッチング</small>무한 피칭</h2>
-      ${action('시작하기', 'language')}
+    <section class="portrait-scene opening" aria-labelledby="opening-title">
+      <img class="scene-art" src="assets/opening-fullshot.webp" alt="放課後のグラウンドでマウンドに立つピッチャー" fetchpriority="high">
+      <h2 id="opening-title" class="game-title" tabindex="-1">${title}</h2>
+      ${action('スタート', 'pitch')}
     </section>`,
-  language: () => panel('언어 선택', `<div class="language-list">${languages.map(([key, label]) => `<button class="plain" type="button" data-language="${key}">${label}</button>`).join('')}</div>`, 'splash'),
-  name: () => panel('선수 이름 등록', `
+  pitch: () => `
+    <section class="portrait-scene pitch-scene" aria-label="投球アニメーション">
+      <img class="scene-art" src="assets/opening-fullshot.webp" alt="">
+      ${action('スキップ', 'home', 'skip-pitch')}
+    </section>`,
+  name: () => panel('選手名を登録', `
     <form class="form" id="name-form">
-      <label class="field">선수 이름<input name="playerName" maxlength="10" autocomplete="off" required></label>
-      <p class="hint">한글·일본어 5자 또는 영문 10자까지. 등록하면 바꿀 수 없어요.</p>
-      <p class="error" role="alert"></p><button class="cta" type="submit">이 이름으로 시작</button>
+      <label class="field">選手名<input name="playerName" maxlength="10" autocomplete="off" required></label>
+      <p class="hint">日本語・韓国語は5文字、半角英字は10文字まで。登録後は変更できません。</p>
+      <p class="error" role="alert"></p><button class="cta" type="submit">この名前で始める</button>
     </form>
-    <div class="paper-card"><h3>기존 기록 복원</h3>
-      <button class="plain" type="button" data-account>Google로 복원</button>
-      <button class="plain" type="button" data-account>Apple로 복원</button>
-    </div><p class="status" id="notice" role="status"></p>`, 'language'),
+    <div class="paper-card"><h3>プレイ記録を復元</h3>
+      <button class="plain" type="button" data-account>Googleで復元</button>
+      <button class="plain" type="button" data-account>Appleで復元</button>
+    </div><p class="status" id="notice" role="status"></p>`),
   home,
-  unlock: () => panel('세계 8인 배틀 해금', `
+  'play-info': () => panel('プレイ・購入情報', `
+    <p>Web版は回数制限なしで遊べます。</p>
+    <div class="paper-card"><h3>広告削除パス</h3><p class="hint">アプリ版で購入や復元ができます。</p>
+      <button class="plain" type="button" data-account>購入を復元</button>
+    </div><p class="status" id="notice" role="status"></p>`),
+  unlock: () => panel('世界8人バトルの解放', `
     <div class="paper-card ticket"><strong class="number">${player.best} / ${WORLD_UNLOCK_SCORE}</strong>
-      <progress class="progress" value="${player.best}" max="${WORLD_UNLOCK_SCORE}" aria-label="세계 배틀 해금 진행률"></progress>
-      <p>솔로 최고 기록이 31점에 도달하면 열려요.</p>
-    </div>${action('나홀로 특훈', 'solo')}`),
-  solo: () => panel('나홀로 특훈', `
-    <div class="paper-card ticket"><span>개인 최고</span><strong class="number">${format.format(player.best)}점</strong></div>
-    <p>투수를 좌우로 움직여 자동으로 던지는 공을 숫자 순서대로 맞혀요.</p>
-    ${action('훈련 화면 보기', 'training')}`),
-  training: () => panel('훈련 화면', `
-    <div class="paper-card"><p class="status">점수 0 · 다음 목표 1</p>
-      <div class="score-board" aria-label="숫자 블록 예시">${[8, 4, 6, 1, 9, 7, 3, 2, 10, 5].map(n => `<span ${n === 1 ? 'class="target"' : ''}>${n}</span>`).join('')}</div>
-      <div class="venue day" role="img" aria-label="낮 훈련장 일러스트"></div>
-      <p class="hint">목표 블록은 색과 굵은 윤곽선으로 표시해요.</p>
-    </div>${action('솔로 결과 시안 보기', 'solo-result')}`, 'solo'),
-  'solo-result': () => panel('훈련 종료', `
-    <div class="paper-card ticket"><span>이번 기록</span><strong class="number">24점</strong><span>개인 최고 ${Math.max(24, player.best)}점</span></div>
-    ${action('다시 도전', 'solo')}${action('랭킹 보기', 'ranking', 'plain')}`),
-  world: () => panel('세계 8인 배틀', `
-    <div class="venue night" role="img" aria-label="조명이 켜진 야간 경기장 일러스트"></div>
-    <div class="paper-card ticket"><span>${league()}</span><strong class="number">${format.format(player.rating)} PT</strong><span>누적 우승 ${player.wins}회</span></div>
-    <p class="hint">최대 20초 동안 선수를 찾아요. 자리가 남으면 봇이 합류합니다.</p>
-    ${action('빠른 매칭', 'matching')}`),
-  matching: () => panel('선수를 찾는 중', `
-    <div class="paper-card"><strong class="number" id="timer">${MATCH_SECONDS}초</strong>
-      <p class="status" id="match-status" role="status">실제 선수 1 / 8명</p>
+      <progress class="progress" value="${player.best}" max="${WORLD_UNLOCK_SCORE}" aria-label="世界8人バトルの解放進捗"></progress>
+      <p>ひとり特訓で31点に達すると解放されます。</p>
+    </div>${action('ひとり特訓', 'solo')}`),
+  solo: () => panel('ひとり特訓', `
+    <div class="paper-card ticket"><span>自己ベスト</span><strong class="number">${format.format(player.best)}点</strong></div>
+    <p>ピッチャーを左右に動かし、自動で投げるボールを数字の順番に当てよう。</p>
+    ${action('特訓画面を見る', 'training')}`),
+  training: () => panel('特訓画面', `
+    <div class="paper-card"><p class="status">スコア 0 · 次は 1</p>
+      <div class="score-board" aria-label="数字ブロックの例">${[8, 4, 6, 1, 9, 7, 3, 2, 10, 5].map(n => `<span ${n === 1 ? 'class="target"' : ''}>${n}</span>`).join('')}</div>
+      <div class="venue day" role="img" aria-label="昼の練習場"></div>
+      <p class="hint">次のブロックは色と太い枠線で表示します。</p>
+    </div>${action('リザルトを見る', 'solo-result')}`, 'solo'),
+  'solo-result': () => panel('特訓終了', `
+    <div class="paper-card ticket"><span>今回のスコア</span><strong class="number">24点</strong><span>自己ベスト ${Math.max(24, player.best)}点</span></div>
+    ${action('リトライ', 'solo')}${action('ランキングを見る', 'ranking', 'plain')}`),
+  world: () => panel('世界8人バトル', `
+    <div class="venue night" role="img" aria-label="照明が灯る夜の球場"></div>
+    <div class="paper-card ticket"><span>${league()}</span><strong class="number">${format.format(player.rating)} PT</strong><span>通算優勝 ${player.wins}回</span></div>
+    <p class="hint">最大20秒間プレイヤーを探します。空き枠にはボットが参加します。</p>
+    ${action('クイックマッチ', 'matching')}`),
+  matching: () => panel('対戦相手を検索中', `
+    <div class="paper-card"><strong class="number" id="timer">${MATCH_SECONDS}秒</strong>
+      <p class="status" id="match-status" role="status">プレイヤー 1 / 8人</p>
       ${seats()}
-    </div>${action('매칭 취소', 'world', 'plain')}`, null),
-  'match-ready': () => panel('8명 준비 완료', `
-    <div class="paper-card"><p class="status">실제 선수 1명 · 봇 7명</p>${seats(true)}</div>
-    ${action('배틀 결과 시안 보기', 'battle-result')}`, 'world'),
-  'battle-result': () => panel('배틀 결과', `
-    <div class="paper-card ticket"><span>최종 순위</span><strong class="number">2위 · +10 PT</strong><span>${format.format(player.rating)} → ${format.format(player.rating + 10)} PT</span></div>
-    <ol class="rank-list"><li><span>1</span><strong>봇 3</strong><span>82점</span></li><li class="own"><span>2</span><strong data-player-name></strong><span>79점</span></li><li><span>3</span><strong>봇 1</strong><span>63점</span></li></ol>
-    ${action('다시 매칭', 'matching')}${action('홈으로', 'home', 'plain')}`),
-  friend: () => panel('친구와 특훈', `
-    ${action('방 만들기', 'friend-host')}
+    </div>${action('キャンセル', 'world', 'plain')}`, null),
+  'match-ready': () => panel('8人がスタンバイ', `
+    <div class="paper-card"><p class="status">プレイヤー1人 · ボット7体</p>${seats(true)}</div>
+    ${action('対戦リザルトを見る', 'battle-result')}`, 'world'),
+  'battle-result': () => panel('対戦リザルト', `
+    <div class="paper-card ticket"><span>最終順位</span><strong class="number">2位 · +10 PT</strong><span>${format.format(player.rating)} → ${format.format(player.rating + 10)} PT</span></div>
+    <ol class="rank-list"><li><span>1</span><strong>ボット 3</strong><span>82点</span></li><li class="own"><span>2</span><strong data-player-name></strong><span>79点</span></li><li><span>3</span><strong>ボット 1</strong><span>63点</span></li></ol>
+    ${action('もう一度対戦する', 'matching')}${action('ホームへ', 'home', 'plain')}`),
+  friend: () => panel('フレンド特訓', `
+    ${action('ルームを作る', 'friend-host')}
     <form class="form" id="friend-form">
-      <label class="field">초대 코드<input name="roomCode" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="0000" required></label>
-      <p class="error" role="alert"></p><button class="plain" type="submit">코드로 참가</button>
-    </form><p class="hint">시안용 참가 코드는 2741입니다.</p>`),
-  'friend-host': () => panel('친구 초대', `
-    <div class="paper-card ticket"><span>내 방 코드</span><strong class="number">2741</strong><span>친구를 기다리는 중 · 1 / 8명</span></div>
-    ${action('경기 시작', 'friend-joined', 'cta', true)}${action('방 나가기', 'friend', 'plain')}`, 'friend'),
-  'friend-joined': () => panel('초대방 대기실', `
-    <div class="paper-card"><p class="status">코드 2741 · 2 / 8명</p><p>방장이 경기를 시작하면 자동으로 입장해요.</p></div>
-    ${action('방 나가기', 'friend', 'plain')}`, 'friend'),
+      <label class="field">招待コード<input name="roomCode" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="0000" required></label>
+      <p class="error" role="alert"></p><button class="plain" type="submit">コードで参加</button>
+    </form><p class="hint">試作用の招待コードは 2741 です。</p>`),
+  'friend-host': () => panel('フレンド招待', `
+    <div class="paper-card ticket"><span>ルームコード</span><strong class="number">2741</strong><span>フレンドを待っています · 1 / 8人</span></div>
+    ${action('ゲーム開始', 'friend-joined', 'cta', true)}${action('ルームを退出', 'friend', 'plain')}`, 'friend'),
+  'friend-joined': () => panel('ルーム待機中', `
+    <div class="paper-card"><p class="status">コード 2741 · 2 / 8人</p><p>ホストがゲームを始めると自動で参加します。</p></div>
+    ${action('ルームを退出', 'friend', 'plain')}`, 'friend'),
   ranking: rankings,
   collection,
   settings
@@ -229,32 +253,56 @@ function startMatching() {
       navigate('match-ready');
       return;
     }
-    display.querySelector('#timer').textContent = `${remaining}초`;
+    display.querySelector('#timer').textContent = `${remaining}秒`;
   }, 250);
 }
 
 function navigate(next, focus = true) {
   clearInterval(matchTimer);
+  clearTimeout(pitchTimer);
   page = next === 'world' && !canEnterWorld() ? 'unlock' : next;
   display.innerHTML = renderers[page]();
-  display.querySelectorAll('[data-player-name]').forEach(element => { element.textContent = player.name; });
-  const onboarding = ['splash', 'language', 'name'].includes(page);
-  dock.hidden = onboarding;
-  device.querySelector('.masthead').hidden = onboarding;
-  dock.querySelectorAll('[data-go]').forEach(button => {
-    if (button.dataset.go === page) button.setAttribute('aria-current', 'page');
-    else button.removeAttribute('aria-current');
-  });
+  const playerLabel = player.name || 'ゲスト';
+  display.querySelectorAll('[data-player-name]').forEach(element => { element.textContent = playerLabel; });
+  masthead.hidden = ['splash', 'pitch', 'home', 'name'].includes(page);
   if (page === 'matching') startMatching();
-  if (focus) display.querySelector('h2').focus();
+  if (focus) display.querySelector('h2, .skip-pitch')?.focus();
+}
+
+function playPitch() {
+  if (page !== 'splash') return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    navigate('home');
+    return;
+  }
+
+  navigate('pitch');
+  const scene = display.querySelector('.pitch-scene');
+  const still = scene.querySelector('.scene-art');
+  const animation = new Image();
+  animation.className = 'scene-art';
+  animation.alt = '';
+  const finish = () => {
+    if (scene.isConnected) navigate('home');
+  };
+  pitchTimer = setTimeout(finish, 4000);
+  animation.onload = () => {
+    if (!still.isConnected) return;
+    still.replaceWith(animation);
+    clearTimeout(pitchTimer);
+    pitchTimer = setTimeout(finish, PITCH_DURATION_MS);
+  };
+  animation.onerror = finish;
+  const run = pitchRun++;
+  animation.src = run === 0 ? 'assets/title-pitch.gif' : `assets/title-pitch.gif?replay=${run}`;
 }
 
 function chooseScenario(key) {
-  activeScenario = key;
-  player = { ...scenarios[activeScenario] };
+  player = { ...scenarios[key] };
   equippedIndex = 0;
+  requestedMode = 'home';
   document.querySelectorAll('[data-scenario]').forEach(button => {
-    button.setAttribute('aria-pressed', String(button.dataset.scenario === activeScenario));
+    button.setAttribute('aria-pressed', String(button.dataset.scenario === key));
   });
   navigate(key === 'new' ? 'splash' : 'home');
 }
@@ -270,19 +318,20 @@ function updateRankFilter(key, value) {
 document.addEventListener('click', event => {
   const button = event.target.closest('button');
   if (!button) return;
-  const { scenario, go, language: selectedLanguage, rankMode: modeFilter, rankScope: scopeFilter, equip } = button.dataset;
+  const { scenario, go, rankMode: modeFilter, rankScope: scopeFilter, equip } = button.dataset;
   if (scenario) chooseScenario(scenario);
-  else if (go) navigate(go);
-  else if (selectedLanguage) {
-    language = selectedLanguage;
+  else if (go === 'pitch') playPitch();
+  else if (['solo', 'world', 'friend'].includes(go) && !player.name) {
+    requestedMode = go;
     navigate('name');
-  } else if (modeFilter) updateRankFilter('rankMode', modeFilter);
+  } else if (go) navigate(go);
+  else if (modeFilter) updateRankFilter('rankMode', modeFilter);
   else if (scopeFilter) updateRankFilter('rankScope', scopeFilter);
   else if (equip !== undefined) {
     equippedIndex = Number(equip);
     navigate('collection');
   } else if (button.hasAttribute('data-account')) {
-    display.querySelector('#notice').textContent = '이 시안에서는 계정에 연결하지 않습니다.';
+    display.querySelector('#notice').textContent = 'この試作画面ではアカウントへの接続や購入はできません。';
   }
 });
 
@@ -294,15 +343,15 @@ display.addEventListener('submit', event => {
     const name = String(data.get('playerName')).trim();
     const weight = [...name].reduce((sum, letter) => sum + (/^[\x20-\x7E]$/.test(letter) ? 1 : 2), 0);
     if (!name || weight > 10) {
-      form.querySelector('.error').textContent = '이름을 확인해 주세요. 한글·일본어는 5자, 영문은 10자까지 가능해요.';
+      form.querySelector('.error').textContent = '名前を確認してください。日本語・韓国語は5文字、半角英字は10文字までです。';
       return;
     }
     player.name = name;
-    navigate('home');
+    navigate(requestedMode);
   } else if (data.get('roomCode') === '2741') {
     navigate('friend-joined');
   } else {
-    form.querySelector('.error').textContent = '방을 찾지 못했어요. 코드를 다시 확인해 주세요.';
+    form.querySelector('.error').textContent = 'ルームが見つかりません。コードを確認してください。';
   }
 });
 
@@ -318,8 +367,8 @@ display.addEventListener('input', event => {
   }
 });
 
-if (new URLSearchParams(location.search).get('preview') === 'opening') {
-  chooseScenario('new');
+if (new URLSearchParams(location.search).get('preview') === 'home') {
+  chooseScenario('standard');
 } else {
-  navigate('home', false);
+  navigate('splash', false);
 }
