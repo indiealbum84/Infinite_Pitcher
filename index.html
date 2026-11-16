@@ -7225,51 +7225,67 @@
             }
         }
 
-        const blockTileCache = new Map();
-        function getBlockTileCanvas(blockSize, blockHeight, isGuide) {
-            const key = `${blockSize}:${blockHeight}:${isGuide}`;
-            if (blockTileCache.has(key)) return blockTileCache.get(key);
-
-            const tileCanvas = document.createElement('canvas');
-            tileCanvas.width = blockSize;
-            tileCanvas.height = Math.ceil(blockHeight);
-            const tileCtx = tileCanvas.getContext('2d');
-            const inset = scalePx(2.5);
-            const tileW = blockSize - 2 * inset;
-            const tileH = blockHeight - 2 * inset;
-            tileCtx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
-            tileCtx.strokeStyle = isGuide ? '#a6312c' : '#192738';
-            tileCtx.lineWidth = scalePx(isGuide ? 2.5 : 1.5);
-            tileCtx.beginPath();
-            tileCtx.roundRect(inset, inset, tileW, tileH, scalePx(3));
-            tileCtx.fill();
-            tileCtx.stroke();
-            tileCtx.fillStyle = isGuide ? '#a6312c' : '#19273826';
-            tileCtx.fillRect(inset, blockHeight - inset - scalePx(2.8), tileW, scalePx(2.8));
-
-            blockTileCache.set(key, tileCanvas);
-            return tileCanvas;
-        }
-
         /**
          * RENDERING
          */
-        // Project the existing lane coordinates at render time, keeping the board and hit tests in the same logical grid.
+        function getBoardScreenTop() {
+            // Only Solo has a clear opening between the back button and score.
+            return battleMode ? PLAY_HUD_HEIGHT : 36;
+        }
+
+        // Render the perspective in screen space while keeping hit tests in the logical grid.
         function projectBoardY(y) {
-            const boardDepth = 10 * getBlockHeight();
+            const logicalDepth = 10 * getBlockHeight();
             const distance = y - PLAY_HUD_HEIGHT;
-            const depth = Math.min(1, Math.max(0, distance / boardDepth));
-            return y - distance * 0.32 * (1 - depth) ** 2;
+            const progress = Math.min(1, Math.max(0, distance / logicalDepth));
+            const topLift = PLAY_HUD_HEIGHT - getBoardScreenTop();
+            const topCompression = battleMode ? 0.32 : 0.44;
+            return y - (topLift + distance * topCompression) * (1 - progress) ** 2;
         }
 
         function getFieldScale(screenY) {
             const releaseY = player.y - scalePx(20);
-            const depth = Math.min(1, Math.max(0, (releaseY - screenY) / (releaseY - PLAY_HUD_HEIGHT)));
-            return 1 - 0.32 * depth ** 2.5;
+            const screenTop = getBoardScreenTop();
+            const depth = Math.min(1, Math.max(0, (releaseY - screenY) / (releaseY - screenTop)));
+            return battleMode ? 1 - 0.32 * depth ** 2.5 : 1 - 0.61 * depth ** 3;
         }
 
         function projectFieldX(x, fieldScale) {
             return width / 2 + (x - width / 2) * fieldScale;
+        }
+
+        function drawProjectedTile(block, logicalY, isGuide) {
+            const inset = scalePx(2.5);
+            const left = block.x + inset;
+            const right = block.x + block.size - inset;
+            const top = projectBoardY(logicalY + inset);
+            const bottom = projectBoardY(logicalY + block.height - inset);
+            const topScale = getFieldScale(top);
+            const bottomScale = getFieldScale(bottom);
+            const topLeft = projectFieldX(left, topScale);
+            const topRight = projectFieldX(right, topScale);
+            const bottomLeft = projectFieldX(left, bottomScale);
+            const bottomRight = projectFieldX(right, bottomScale);
+            const radius = scalePx(3) * topScale;
+
+            ctx.beginPath();
+            ctx.moveTo((topLeft + topRight) / 2, top);
+            ctx.arcTo(topRight, top, bottomRight, bottom, radius);
+            ctx.arcTo(bottomRight, bottom, bottomLeft, bottom, radius);
+            ctx.arcTo(bottomLeft, bottom, topLeft, top, radius);
+            ctx.arcTo(topLeft, top, topRight, top, radius);
+            ctx.closePath();
+            ctx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
+            ctx.fill();
+            ctx.strokeStyle = isGuide ? '#a6312c' : '#192738';
+            ctx.lineWidth = scalePx(isGuide ? 2.5 : 1.5) * bottomScale;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(bottomLeft + radius, bottom - ctx.lineWidth);
+            ctx.lineTo(bottomRight - radius, bottom - ctx.lineWidth);
+            ctx.strokeStyle = isGuide ? '#a6312c' : '#19273833';
+            ctx.stroke();
         }
 
         function tracePitchLane(x, fromY, toY) {
@@ -7299,11 +7315,12 @@
 
             ctx.save();
             ctx.beginPath();
-            ctx.rect(0, PLAY_HUD_HEIGHT, width, height - PLAY_HUD_HEIGHT);
+            const boardScreenTop = getBoardScreenTop();
+            ctx.rect(0, boardScreenTop, width, height - boardScreenTop);
             ctx.clip();
 
             const releaseY = player.y - scalePx(20);
-            const farScale = getFieldScale(PLAY_HUD_HEIGHT);
+            const farScale = getFieldScale(boardScreenTop);
             if (fireballCharging && fireballColumn >= 0) {
                 const laneWidth = getBlockSize();
                 const left = fireballColumn * laneWidth;
@@ -7311,9 +7328,9 @@
                 ctx.fillStyle = 'rgba(194, 119, 37, 0.28)';
                 ctx.beginPath();
                 ctx.moveTo(left, releaseY);
-                tracePitchLane(left, releaseY, PLAY_HUD_HEIGHT);
-                ctx.lineTo(projectFieldX(right, farScale), PLAY_HUD_HEIGHT);
-                tracePitchLane(right, PLAY_HUD_HEIGHT, releaseY);
+                tracePitchLane(left, releaseY, boardScreenTop);
+                ctx.lineTo(projectFieldX(right, farScale), boardScreenTop);
+                tracePitchLane(right, boardScreenTop, releaseY);
                 ctx.closePath();
                 ctx.fill();
             }
@@ -7325,7 +7342,7 @@
             ctx.lineWidth = scalePx(1.5);
             ctx.beginPath();
             ctx.moveTo(player.x, releaseY);
-            tracePitchLane(player.x, releaseY, PLAY_HUD_HEIGHT);
+            tracePitchLane(player.x, releaseY, boardScreenTop);
             ctx.stroke();
             ctx.restore();
 
@@ -7365,19 +7382,7 @@
                     ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
-                const top = projectBoardY(drawY);
-                const bottom = projectBoardY(drawY + blk.height);
-                const tileHeight = bottom - top;
-                const centerY = projectBoardY(drawY + blk.height / 2);
-                const fieldScale = getFieldScale(centerY);
-                ctx.drawImage(
-                    getBlockTileCanvas(blk.size, blk.height, isGuide),
-                    projectFieldX(blk.x, fieldScale), top, blk.size * fieldScale, tileHeight
-                );
-
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                const centerX = projectFieldX(blk.x + blk.size / 2, fieldScale);
+                drawProjectedTile(blk, drawY, isGuide);
 
                 // 웨이브 중: 아래 행부터 위로 순차 적용
                 let mirrorWaveFlipped = false;
@@ -7400,11 +7405,24 @@
 
                 const showLabel = !flashballActive || flashballVisible || isGuide;
                 if (showLabel) {
+                    const top = projectBoardY(drawY);
+                    const bottom = projectBoardY(drawY + blk.height);
+                    const tileHeight = bottom - top;
+                    const centerY = projectBoardY(drawY + blk.height / 2);
+                    const fieldScale = getFieldScale(centerY);
+                    const laneX = blk.x + blk.size / 2;
+                    const centerX = projectFieldX(laneX, fieldScale);
+                    const slant = (laneX - width / 2) * (getFieldScale(bottom) - getFieldScale(top)) / tileHeight;
                     const fontScale = Math.max(0.8, Math.min(1, tileHeight / blk.height));
                     const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale);
+                    ctx.save();
+                    ctx.transform(1, 0, slant * 0.5, 1, centerX, centerY);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.font = `900 ${numberFontSize}px "Darumadrop One", "Kosugi Maru", "Noto Sans JP", Arial`;
                     ctx.fillStyle = isGuide ? '#852c27' : '#192738';
-                    ctx.fillText(label, centerX, centerY);
+                    ctx.fillText(label, 0, 0, (blk.size - scalePx(9)) * fieldScale);
+                    ctx.restore();
                 }
             });
 

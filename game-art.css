@@ -842,6 +842,9 @@
 #play-hud[data-mode] {
     display: flex;
 }
+#play-hud[data-mode="solo"] {
+    border-bottom-color: transparent;
+}
 #play-hud #ingame-back-btn {
     position: static;
     display: none;
