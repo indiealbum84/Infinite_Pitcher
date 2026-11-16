@@ -3779,7 +3779,7 @@
                 <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
                 <div class="profile-permanent-warning" id="initial-profile-warning">⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!
 • 입력한 이름으로 서버에 등록되며 나의 최고 점수 1개만 올라갑니다.</div>
-                <input id="initial-name-input" class="initial-name-input" type="text" maxlength="10" placeholder="게임 이름 입력" oninput="handleInitialNameInput()" onkeydown="if(event.key==='Enter') submitInitialPermanentName()" />
+                <input id="initial-name-input" class="initial-name-input" type="text" maxlength="10" placeholder="게임 이름 입력" oninput="handleInitialNameInput()" onkeydown="if(event.key==='Enter' && !event.isComposing) { event.preventDefault(); submitInitialPermanentName(); }" />
                 <p class="initial-name-hint" id="initial-name-hint">한글/일본어 5자 · 영문 10자까지 (변경 불가)</p>
                 <button id="initial-name-submit-btn" class="start-btn" style="width:100%;max-width:660px;" onclick="submitInitialPermanentName()">이 이름으로 게임 시작</button>
                 <div class="account-sync-box">
@@ -4063,6 +4063,24 @@
         <div id="fireball-announce">
             <img src="./images/showa-fireball.webp" id="fireball-announce-img" alt="">
         </div>
+
+        <dialog id="game-dialog" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
+            <form method="dialog">
+                <header class="game-dialog-header">
+                    <img src="./images/showa-badges/classic.webp" alt="" width="32" height="32">
+                    <h2 id="game-dialog-title"></h2>
+                </header>
+                <div class="game-dialog-body">
+                    <p id="game-dialog-message"></p>
+                    <input id="game-dialog-input" type="text" inputmode="email" autocomplete="off"
+                        autocapitalize="none" spellcheck="false" aria-labelledby="game-dialog-title" hidden>
+                    <div class="game-dialog-actions">
+                        <button type="button" id="game-dialog-cancel" hidden></button>
+                        <button type="submit" id="game-dialog-accept"></button>
+                    </div>
+                </div>
+            </form>
+        </dialog>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -5108,6 +5126,64 @@
             return TEXTS[currentLang][key];
         }
 
+        const gameDialog = document.getElementById('game-dialog');
+        const gameDialogTitle = document.getElementById('game-dialog-title');
+        const gameDialogMessage = document.getElementById('game-dialog-message');
+        const gameDialogInput = document.getElementById('game-dialog-input');
+        const gameDialogAccept = document.getElementById('game-dialog-accept');
+        const gameDialogCancel = document.getElementById('game-dialog-cancel');
+        const GAME_DIALOG_LABELS = {
+            ja: { notice: 'お知らせ', confirm: '確認', accept: 'OK', cancel: 'キャンセル' },
+            ko: { notice: '알림', confirm: '확인', accept: '확인', cancel: '취소' },
+            en: { notice: 'Notice', confirm: 'Confirm', accept: 'OK', cancel: 'Cancel' },
+            'zh-TW': { notice: '通知', confirm: '確認', accept: '確定', cancel: '取消' },
+            es: { notice: 'Aviso', confirm: 'Confirmación', accept: 'Aceptar', cancel: 'Cancelar' }
+        };
+
+        let lastGameDialog = Promise.resolve();
+        let finishGameDialog;
+        gameDialogCancel.addEventListener('click', () => finishGameDialog?.(false));
+        gameDialog.addEventListener('cancel', event => {
+            event.preventDefault();
+            finishGameDialog?.(false);
+        });
+        gameDialog.querySelector('form').addEventListener('submit', event => {
+            event.preventDefault();
+            finishGameDialog?.(true);
+        });
+
+        function showGameDialog(kind, message, { title, initialValue = '' } = {}) {
+            const request = lastGameDialog.then(() => new Promise(resolve => {
+                const labels = GAME_DIALOG_LABELS[currentLang] || GAME_DIALOG_LABELS.ja;
+                const asksForInput = kind === 'prompt';
+                gameDialogTitle.textContent = title || (kind === 'notice' ? labels.notice : labels.confirm);
+                gameDialogMessage.textContent = message;
+                gameDialogInput.hidden = !asksForInput;
+                gameDialogInput.value = initialValue;
+                gameDialogAccept.textContent = labels.accept;
+                gameDialogCancel.textContent = labels.cancel;
+                gameDialogCancel.hidden = kind === 'notice';
+                finishGameDialog = accepted => {
+                    finishGameDialog = null;
+                    const result = asksForInput ? (accepted ? gameDialogInput.value : null) : accepted;
+                    gameDialogInput.value = '';
+                    gameDialog.close();
+                    resolve(result);
+                };
+                gameDialog.showModal();
+
+                const focusTarget = asksForInput ? gameDialogInput : (kind === 'confirm' ? gameDialogCancel : gameDialogAccept);
+                focusTarget.focus();
+                if (asksForInput) gameDialogInput.select();
+            }));
+            lastGameDialog = request.catch(() => {});
+            return request;
+        }
+
+        function showGameNotice(message) {
+            return showGameDialog('notice', message);
+        }
+
         function setBattleRematchButtonText(seconds = null) {
             const btn = document.getElementById('battle-rematch-btn');
             if (!btn) return;
@@ -5479,8 +5555,8 @@
                         es: '☁️ ¡Sincronización en la nube completada!',
                         en: '☁️ Cloud sync completed!'
                     };
-                    if (typeof alertFn === 'function') alert(alertFn(savedName));
-                    else alert(syncFallbackMap[currentLang] || syncFallbackMap.en);
+                    if (typeof alertFn === 'function') showGameNotice(alertFn(savedName));
+                    else showGameNotice(syncFallbackMap[currentLang] || syncFallbackMap.en);
                     updateSettingsUI();
                     if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                 });
@@ -6570,27 +6646,24 @@
             }, 1000);
         }
 
-        function purchaseRemoveAds() {
-            const activateAndProceed = () => {
-                setNoAdsPurchased(true);
-                alert(textFor('alertNoAdsActivated'));
-                const cb = pendingPlayGateCallback;
-                closePlayGateModal();
-                if (typeof cb === 'function') cb();
-            };
+        async function completeRemoveAdsPurchase() {
+            setNoAdsPurchased(true);
+            const cb = pendingPlayGateCallback;
+            await showGameNotice(textFor('alertNoAdsActivated'));
+            closePlayGateModal();
+            if (typeof cb === 'function') cb();
+        }
 
+        async function purchaseRemoveAds() {
             // Capacitor 인앱결제(IAP) 연동 시 window.purchaseInfinitePitcherRemoveAds 훅 호출
             if (typeof window.purchaseInfinitePitcherRemoveAds === 'function') {
-                window.purchaseInfinitePitcherRemoveAds(
-                    () => activateAndProceed(),
-                    () => {}
-                );
+                window.purchaseInfinitePitcherRemoveAds(completeRemoveAdsPurchase, () => {});
                 return;
             }
 
-            // 웹/프리뷰 테스트용 확인창
-            if (confirm(textFor('confirmBuyNoAds'))) {
-                activateAndProceed();
+            // 웹/프리뷰에서 사용하는 구매 확인
+            if (await showGameDialog('confirm', textFor('confirmBuyNoAds'))) {
+                await completeRemoveAdsPurchase();
             }
         }
 
@@ -6602,22 +6675,18 @@
                             restoreCloudProfileByRawId('store', storeAccountId, true);
                         }
                         if (restored) {
-                            setNoAdsPurchased(true);
-                            alert(textFor('alertNoAdsActivated'));
-                            const cb = pendingPlayGateCallback;
-                            closePlayGateModal();
-                            if (typeof cb === 'function') cb();
+                            completeRemoveAdsPurchase();
                         } else if (typeof restoreFromCurrentCloudAccount === 'function') {
                             restoreFromCurrentCloudAccount();
                         } else {
-                            alert(textFor('alertRestoreNone'));
+                            showGameNotice(textFor('alertRestoreNone'));
                         }
                     },
                     () => {
                         if (typeof restoreFromCurrentCloudAccount === 'function') {
                             restoreFromCurrentCloudAccount();
                         } else {
-                            alert(textFor('alertRestoreNone'));
+                            showGameNotice(textFor('alertRestoreNone'));
                         }
                     }
                 );
@@ -6628,10 +6697,9 @@
                 return;
             }
             if (isNoAdsPurchased()) {
-                alert(textFor('alertNoAdsActivated'));
-                closePlayGateModal();
+                showGameNotice(textFor('alertNoAdsActivated')).then(closePlayGateModal);
             } else {
-                alert(textFor('alertRestoreNone'));
+                showGameNotice(textFor('alertRestoreNone'));
             }
         }
 
@@ -8548,19 +8616,22 @@
             lastSafeInitialName = clamped;
         }
 
-        function submitInitialPermanentName() {
+        let initialNameSubmitting = false;
+
+        async function submitInitialPermanentName() {
+            if (initialNameSubmitting) return;
             const input = document.getElementById('initial-name-input');
             const rawVal = input ? sanitizeAllowedNameChars(input.value) : '';
             const candidateName = clampBattleName(rawVal).trim();
             if (!candidateName) {
-                alert(textFor('alertNickname'));
-                if (input) input.focus();
+                await showGameNotice(textFor('alertNickname'));
+                input?.focus();
                 return;
             }
 
             if (isForbiddenPlayerName(candidateName)) {
                 showForbiddenNameInlineFeedback();
-                alert(textFor('alertForbiddenName'));
+                await showGameNotice(textFor('alertForbiddenName'));
                 if (input) {
                     input.value = '';
                     lastSafeInitialName = '';
@@ -8569,29 +8640,27 @@
                 return;
             }
 
-            const confirmFn = textFor('confirmPermanentName');
-            const confirmMsg = typeof confirmFn === 'function' ? confirmFn(candidateName) : candidateName;
-            if (!confirm(confirmMsg)) {
-                return;
-            }
+            initialNameSubmitting = true;
+            try {
+                const confirmMsg = textFor('confirmPermanentName')(candidateName);
+                if (!await showGameDialog('confirm', confirmMsg)) {
+                    input?.focus();
+                    return;
+                }
 
-            const accountKey = getAccountKey();
-            // 서버에서 다른 유저가 이미 동일한 이름을 쓰고 있는지 확인
-            ranksRef.orderByChild('name').equalTo(candidateName).limitToFirst(5).once('value')
-                .then(snap => {
-                    const existingMap = snap.val() || {};
-                    const takenByOther = Object.keys(existingMap).some(key => key !== accountKey);
-                    if (takenByOther) {
-                        const takenFn = textFor('alertNameAlreadyTaken');
-                        alert(typeof takenFn === 'function' ? takenFn(candidateName) : 'Name already taken');
-                        if (input) input.focus();
-                        return;
-                    }
-                    finalizePermanentNameRegistration(candidateName);
-                })
-                .catch(() => {
-                    finalizePermanentNameRegistration(candidateName);
-                });
+                const accountKey = getAccountKey();
+                const snap = await ranksRef.orderByChild('name').equalTo(candidateName).limitToFirst(5).once('value')
+                    .catch(() => null);
+                const existingMap = snap?.val() || {};
+                if (Object.keys(existingMap).some(key => key !== accountKey)) {
+                    await showGameNotice(textFor('alertNameAlreadyTaken')(candidateName));
+                    input?.focus();
+                    return;
+                }
+                finalizePermanentNameRegistration(candidateName);
+            } finally {
+                initialNameSubmitting = false;
+            }
         }
 
         function finalizePermanentNameRegistration(permanentName) {
@@ -8701,7 +8770,7 @@
             if (!trimmedId) return Promise.resolve(false);
             const cloudKey = deriveCloudAccountKey(providerType, trimmedId);
 
-            return usersRef.child(cloudKey).once('value').then(snap => {
+            return usersRef.child(cloudKey).once('value').then(async snap => {
                 const remoteProfile = snap.val();
                 if (remoteProfile && remoteProfile.name) {
                     // 서버에 기존 계정 프로필이 존재함 -> 이름, 최고기록, $4.99 광고제거, 파이어볼 언락, 대전 전적 모두 복원!
@@ -8718,7 +8787,7 @@
                     }
                     const alertFn = textFor('accountRestoredAlert');
                     if (typeof alertFn === 'function') {
-                        alert(alertFn(remoteProfile.name, restoredBest));
+                        await showGameNotice(alertFn(remoteProfile.name, restoredBest));
                     }
                     if (typeof updateSettingsUI === 'function') updateSettingsUI();
                     if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
@@ -8739,7 +8808,7 @@
                         });
                         const linkedFn = textFor('accountLinkedNewAlert');
                         if (typeof linkedFn === 'function') {
-                            alert(linkedFn(localName));
+                            showGameNotice(linkedFn(localName));
                         }
                         if (typeof updateSettingsUI === 'function') updateSettingsUI();
                         if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
@@ -8750,14 +8819,14 @@
                         if (typeof updateSettingsUI === 'function') updateSettingsUI();
                         if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                         if (!silentIfNone) {
-                            alert(textFor('accountRestoreNotFoundAlert'));
+                            showGameNotice(textFor('accountRestoreNotFoundAlert'));
                         }
                         return false;
                     }
                 }
             }).catch(err => {
                 console.warn('[CloudProfile] restore error:', err);
-                if (!silentIfNone) alert(textFor('accountRestoreNotFoundAlert'));
+                if (!silentIfNone) showGameNotice(textFor('accountRestoreNotFoundAlert'));
                 return false;
             });
         }
@@ -8807,12 +8876,12 @@
             promptAccountIdFallback(normProvider);
         }
 
-        function promptAccountIdFallback(providerType) {
+        async function promptAccountIdFallback(providerType) {
             const promptFn = textFor('promptAccountEmailForSync');
             const label = providerType === 'apple' ? 'Apple ID' : 'Google ID';
             let savedRaw = '';
             try { savedRaw = localStorage.getItem(ACCOUNT_RAW_ID_STORAGE) || ''; } catch (e) {}
-            const entered = prompt(typeof promptFn === 'function' ? promptFn(label) : label, savedRaw);
+            const entered = await showGameDialog('prompt', promptFn(label), { title: label, initialValue: savedRaw });
             if (!entered || !entered.trim()) return;
             restoreCloudProfileByRawId(providerType, entered.trim(), false);
         }
@@ -8826,7 +8895,7 @@
             if (synced) {
                 syncProfileToCloud();
                 const linkedFn = textFor('accountLinkedNewAlert');
-                if (typeof linkedFn === 'function') alert(linkedFn(savedName));
+                if (typeof linkedFn === 'function') showGameNotice(linkedFn(savedName));
                 return;
             }
             signInAndSyncAccount(defaultProvider);
@@ -8835,18 +8904,18 @@
         function restoreFromCurrentCloudAccount() {
             if (isCloudAccountLinked()) {
                 const accountKey = getAccountKey();
-                usersRef.child(accountKey).once('value').then(snap => {
+                usersRef.child(accountKey).once('value').then(async snap => {
                     const remoteProfile = snap.val();
                     if (remoteProfile) {
                         applyCloudProfileDataToLocal(remoteProfile);
                         if (remoteProfile.noAds || isNoAdsPurchased()) {
-                            alert(textFor('alertNoAdsActivated'));
+                            await showGameNotice(textFor('alertNoAdsActivated'));
                             closePlayGateModal();
                             return;
                         }
                     }
-                    alert(textFor('alertRestoreNone'));
-                }).catch(() => alert(textFor('alertRestoreNone')));
+                    showGameNotice(textFor('alertRestoreNone'));
+                }).catch(() => showGameNotice(textFor('alertRestoreNone')));
                 return;
             }
             const isIOS = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent || '');
@@ -10325,7 +10394,7 @@
             }
             const nickname = getSavedPlayerName() || getBattleNickname() || getSavedBattleNickname();
             if (!nickname) {
-                alert(textFor('alertNickname'));
+                showGameNotice(textFor('alertNickname'));
                 showBattleProfileStep();
                 return;
             }
@@ -11252,12 +11321,12 @@
 
         function startWorld8Battle() {
             if (testMode) {
-                alert(textFor('alertTestBattle'));
+                showGameNotice(textFor('alertTestBattle'));
                 return;
             }
             if (!isWorld8BattleUnlocked()) {
                 const best = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
-                alert(textFor('alertWorld8Locked')(best));
+                showGameNotice(textFor('alertWorld8Locked')(best));
                 return;
             }
             if (!canPlayWithoutAd('battle')) {
@@ -11305,7 +11374,7 @@
 
         function openFriendBattleScreen() {
             if (testMode) {
-                alert(textFor('alertTestBattle'));
+                showGameNotice(textFor('alertTestBattle'));
                 return;
             }
             if (!canPlayWithoutAd('battle')) {
@@ -11404,10 +11473,10 @@
             const joinedAt = getEstimatedServerTimeMs();
             const nickname = getSavedPlayerName() || getBattleNickname() || getSavedBattleNickname();
             if (!nickname) {
-                alert(textFor('alertNickname'));
-                showBattleProfileStep();
-                const input = document.getElementById('battle-name-input');
-                if (input) input.focus();
+                showGameNotice(textFor('alertNickname')).then(() => {
+                    showBattleProfileStep();
+                    document.getElementById('battle-name-input')?.focus();
+                });
                 return;
             }
             const myStats = getBattleStats();
@@ -11415,7 +11484,7 @@
             battleRef.child(code).once('value').then(snap => {
                 const room = snap.val();
                 if (!room || room.status !== 'waiting' || room.joinLocked) {
-                    alert(textFor('alertRoomFull'));
+                    showGameNotice(textFor('alertRoomFull'));
                     return;
                 }
 
@@ -11440,7 +11509,7 @@
                     return players;
                 }, (error, committed) => {
                     if (error || !committed) {
-                        alert(textFor('alertRoomFull'));
+                        showGameNotice(textFor('alertRoomFull'));
                         return;
                     }
 
@@ -11459,7 +11528,7 @@
                     listenBattleRoom(code);
                 });
             }).catch(() => {
-                alert(textFor('alertRoomFull'));
+                showGameNotice(textFor('alertRoomFull'));
             });
         }
 
@@ -11474,7 +11543,7 @@
                 const room = snap.val();
                 let players = getBattlePlayerList(room);
                 if (!room || room.status !== 'waiting' || players.length < 1) {
-                    alert(textFor('alertNeedPlayers'));
+                    showGameNotice(textFor('alertNeedPlayers'));
                     return;
                 }
 
