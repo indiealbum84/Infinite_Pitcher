@@ -317,148 +317,6 @@
             z-index: 2;
         }
 
-        .intro-main-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .intro-sub-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-
-        #intro-screen .intro-main-actions .start-btn {
-            margin-top: 0;
-            line-height: 1.1;
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-            box-sizing: border-box;
-            overflow: hidden;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        html[lang="en"] #intro-screen .intro-main-actions .start-btn,
-        html[lang="es"] #intro-screen .intro-main-actions .start-btn,
-        html[lang="ja"] #intro-screen .intro-main-actions .start-btn {
-            letter-spacing: 0;
-        }
-
-        #intro-screen #battle-quick-main-btn {
-            width: 294px;
-            min-height: 52px;
-            padding: 8px 12px;
-            font-size: 24px;
-            background-color: var(--palette-blue);
-            color: #ffffff;
-            border-color: #000000;
-            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
-        }
-
-        #intro-screen #battle-quick-main-btn.locked {
-            background-color: #475569;
-            box-shadow: 0 6px 0 #1e293b, 0 6px 0 2px #000000;
-            font-size: 20px;
-            line-height: 1.2;
-            opacity: 1;
-        }
-
-        #intro-screen #battle-quick-main-btn.locked .w8-lock-sub {
-            display: block;
-            font-size: 0.65em;
-            color: #fef08a;
-            margin-top: 3px;
-            letter-spacing: -0.02em;
-        }
-
-        .intro-guide-pulse {
-            animation: introGuidePulse 1.35s ease-in-out infinite;
-        }
-
-        @keyframes introGuidePulse {
-            0%, 100% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 0 rgba(250, 204, 21, 0));
-            }
-            50% {
-                transform: scale(1.04);
-                filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.85));
-            }
-        }
-
-        #intro-screen #battle-quick-main-btn.w8-unlocking {
-            animation: w8UnlockPop 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        @keyframes w8UnlockPop {
-            0% {
-                background-color: #475569;
-                transform: scale(1) rotate(0deg);
-                filter: brightness(1);
-            }
-            18% {
-                background-color: #475569;
-                transform: scale(0.97) rotate(-2deg);
-            }
-            34% {
-                background-color: #475569;
-                transform: scale(0.99) rotate(2deg);
-            }
-            52% {
-                background-color: #facc15;
-                color: #0f172a;
-                transform: scale(1.1) rotate(0deg);
-                filter: brightness(1.25) drop-shadow(0 0 22px rgba(250, 204, 21, 0.95));
-            }
-            76% {
-                background-color: var(--palette-blue);
-                color: #ffffff;
-                transform: scale(0.97);
-                filter: brightness(1.08);
-            }
-            100% {
-                background-color: var(--palette-blue);
-                color: #ffffff;
-                transform: scale(1);
-                filter: brightness(1);
-            }
-        }
-
-        #intro-screen #start-btn-id {
-            width: 142px;
-            min-height: 48px;
-            padding: 8px 10px;
-            font-size: 19px;
-            background-color: var(--palette-mint);
-            color: #ffffff;
-            border-color: #000000;
-            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
-        }
-
-        #intro-screen #battle-friend-btn {
-            width: 142px;
-            min-height: 48px;
-            padding: 8px 10px;
-            font-size: 19px;
-            background-color: var(--palette-yellow);
-            color: #000000;
-            border-color: #000000;
-            box-shadow: 0 6px 0 var(--palette-pink), 0 6px 0 2px #000000;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
-        }
-
         html[lang="ja"] body,
         html[lang="ja"] .start-btn,
         html[lang="ja"] #rank-suffix,
@@ -2249,39 +2107,6 @@
             bottom: 90px;
         }
 
-        .intro-main-actions {
-            gap: 20px;
-        }
-
-        .intro-sub-actions {
-            gap: 20px;
-        }
-
-        #intro-screen #battle-quick-main-btn {
-            width: 808px;
-            min-height: 126px;
-            padding: 18px 24px;
-            font-size: 58px;
-            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
-            text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
-        }
-
-        #intro-screen #battle-quick-main-btn.locked {
-            font-size: 46px;
-            padding: 14px 20px;
-            box-shadow: 0 17px 0 #1e293b, 0 17px 0 6px #000000;
-        }
-
-        #intro-screen #start-btn-id,
-        #intro-screen #battle-friend-btn {
-            width: 394px;
-            min-height: 116px;
-            padding: 16px 20px;
-            font-size: 46px;
-            box-shadow: 0 17px 0 var(--palette-pink), 0 17px 0 6px #000000;
-            text-shadow: 6px 6px 0 rgba(0,0,0,0.18);
-        }
-
         #battle-screen .start-btn,
         #battle-result-screen .start-btn,
         #game-over-screen .start-btn {
@@ -3946,6 +3771,7 @@
             outline: none;
         }
     </style>
+    <link rel="stylesheet" href="./game-art.css">
 </head>
 
 <body>
@@ -4014,24 +3840,23 @@
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
             </button>
-            <button id="intro-skin-btn" class="intro-skin-btn" onclick="openSkinModal()" aria-label="Skins">
-                🎨
+            <button type="button" id="intro-skin-btn" class="intro-skin-btn" onclick="openSkinModal()" aria-label="Skins">
+                <span aria-hidden="true">✦</span>
             </button>
 
             <h2 id="intro-title" class="game-title" lang="ja" tabindex="-1"><span>インフィニティ</span><span>ピッチング</span></h2>
+            <div class="speech-bubble" id="intro-bubble">
+                <span id="intro-bubble-quote">よしっ！世界一のピッチャーに<br>なるために、今日も特訓だ！</span>
+                <span id="intro-bubble-guide" hidden></span>
+            </div>
             <div class="intro-menu">
-                <div class="speech-bubble" id="intro-bubble">
-                    よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
-                </div>
                 <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
-                <div class="intro-main-actions">
-                    <button id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">⚡ 세계 8인 배틀</button>
-                    <div class="intro-sub-actions">
-                        <button id="start-btn-id" class="start-btn" onclick="startSoloPractice()">🧢 나홀로 특훈</button>
-                        <button id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">🤝 친구와 특훈</button>
-                    </div>
+                <div class="intro-main-actions" id="intro-main-actions">
+                    <button type="button" id="start-btn-id" class="start-btn" onclick="startSoloPractice()">ひとり特訓</button>
+                    <button type="button" id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">世界8人バトル</button>
+                    <button type="button" id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">フレンド特訓</button>
                 </div>
-                <button type="button" id="intro-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">🎁 本日1回無料  |  🚫 広告削除 $4.99</button>
+                <button type="button" id="intro-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">プレイ・購入情報</button>
                 <div id="test-start-row">
                     <button class="test-sel-btn" id="test-btn" onclick="selectTestMode()">TEST</button>
                     <div id="test-num-row" style="display:none;gap:6px;align-items:center;">
@@ -4257,20 +4082,20 @@
 
         <!-- 미러볼 알림 오버레이 -->
         <div id="flashball-announce">
-            <img src="./images/flashball.png" id="flashball-announce-img">
+            <img src="./images/showa-flashball.webp" id="flashball-announce-img" alt="">
         </div>
 
         <div id="stripeball-announce">
-            <img src="./images/stripeball.png" id="stripeball-announce-img">
+            <img src="./images/showa-stripeball.webp" id="stripeball-announce-img" alt="">
         </div>
 
         <div id="mirrorball-announce">
-            <img src="./images/mirrorball.png" id="mirrorball-announce-img">
+            <img src="./images/showa-mirrorball.webp" id="mirrorball-announce-img" alt="">
         </div>
 
         <!-- 파이어볼 알림 오버레이 -->
         <div id="fireball-announce">
-            <img src="./images/fireball.png" id="fireball-announce-img">
+            <img src="./images/showa-fireball.webp" id="fireball-announce-img" alt="">
         </div>
     </div>
 
@@ -4282,37 +4107,25 @@
         /**
          * IMAGES
          */
-        const cartImg = new Image();
-        cartImg.src = './images/cart.png';
-
-        const pitcherImg = new Image();
-        pitcherImg.src = './images/pitcher.png';
-
-        const pitcherThrowImg = new Image();
-        pitcherThrowImg.src = './images/pitcher_throw.png';
-
-        function loadOptionalSprite(src, onLoadCallback) {
+        function loadGameArt(name) {
             const img = new Image();
-            if (onLoadCallback) img.onload = onLoadCallback;
-            img.src = src;
+            img.src = `./images/showa-${name}.webp`;
             return img;
         }
+
         function isSpriteReady(img) {
             return Boolean(img && img.complete && img.naturalWidth > 0);
         }
 
-        const ingameFieldBgImg = loadOptionalSprite('./images/ingame_field_bg.png');
-        const blockNormalImg = loadOptionalSprite('./images/block_normal.png', () => {
-            if (typeof blockTileCache !== 'undefined') blockTileCache.clear();
-        });
-        const blockHighlightImg = loadOptionalSprite('./images/block_highlight.png', () => {
-            if (typeof blockTileCache !== 'undefined') blockTileCache.clear();
-        });
-        const ballNormalImg = loadOptionalSprite('./images/ball_normal.png');
-        const ballFireImg = loadOptionalSprite('./images/ball_fire.png');
-        const ballMirrorImg = loadOptionalSprite('./images/ball_mirror.png');
-        const ballStripeImg = loadOptionalSprite('./images/ball_stripe.png');
-        const ballFlashImg = loadOptionalSprite('./images/ball_flash.png');
+        const cartImg = loadGameArt('cart');
+        const pitcherImg = loadGameArt('pitcher-ready');
+        const pitcherThrowImg = loadGameArt('pitcher-throw');
+        const ingameFieldBgImg = loadGameArt('field');
+        const ingameStadiumBgImg = loadGameArt('stadium');
+        const ballFireImg = loadGameArt('fireball');
+        const ballMirrorImg = loadGameArt('mirrorball');
+        const ballStripeImg = loadGameArt('stripeball');
+        const ballFlashImg = loadGameArt('flashball');
 
         let pitcherThrowing = false;
 
@@ -4658,7 +4471,7 @@
 
         const TEXTS = {
             ja: {
-                introBubble: '<span class="bubble-nowrap">よしっ！世界一のピッチャーになるために、</span><br>今日も特訓だ！',
+                introBubble: 'よしっ！世界一のピッチャーに<br>なるために、今日も特訓だ！',
                 startBtn:            '🧢 ひとり特訓',
                 battleQuickMainBtn:  '⚡ 世界8人バトル',
                 battleFriendBtn:     '🤝 フレンド特訓',
@@ -5421,12 +5234,12 @@
                 if (el && html !== undefined) el.innerHTML = html;
             };
 
-            setHtml('intro-bubble', t.introBubble);
-            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
-            setTxt('start-btn-id', t.startBtn);
+            setHtml('intro-bubble-quote', t.introBubble);
+            updateIntroGuideUI();
+            setTxt('start-btn-id', menuModeLabel(t.startBtn));
             setTxt('start-btn', t.startBtn);
             setTxt('battle-quick-main-btn', t.battleQuickMainBtn);
-            setTxt('battle-friend-btn', t.battleFriendBtn);
+            setTxt('battle-friend-btn', menuModeLabel(t.battleFriendBtn));
             setTxt('battle-btn', t.battleBtn);
             setTxt('rank-suffix', t.rankSuffix);
             setTxt('retry-btn', t.retryBtn);
@@ -6390,12 +6203,19 @@
                 pillText = typeof fn === 'function' ? fn(soloRem, battleRem, DAILY_FREE_PLAY_LIMIT) : String(fn);
             }
 
-            ['intro-ticket-pill', 'gameover-ticket-pill'].forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                el.innerText = pillText;
-                el.classList.toggle('is-vip', vip);
-            });
+            const infoLabels = {
+                ja: 'プレイ・購入情報',
+                en: 'Play & purchase info',
+                ko: '플레이 · 구매 정보',
+                'zh-TW': '遊玩與購買資訊',
+                es: 'Juego y compras'
+            };
+            const introTicket = document.getElementById('intro-ticket-pill');
+            introTicket.textContent = vip ? pillText : infoLabels[currentLang] || infoLabels.ja;
+            introTicket.classList.toggle('is-vip', vip);
+            const resultTicket = document.getElementById('gameover-ticket-pill');
+            resultTicket.textContent = pillText;
+            resultTicket.classList.toggle('is-vip', vip);
         }
 
         let gameSessionId = 0;
@@ -7423,30 +7243,25 @@
 
         const blockTileCache = new Map();
         function getBlockTileCanvas(blockSize, blockHeight, isGuide) {
-            const customImg = isGuide ? blockHighlightImg : blockNormalImg;
-            const hasCustom = isSpriteReady(customImg);
-            const key = `${Math.round(blockSize * 10)}:${Math.round(blockHeight * 10)}:${isGuide ? 'guide' : 'normal'}:${hasCustom ? 'img' : 'canvas'}`;
+            const key = `${blockSize}:${blockHeight}:${isGuide}`;
             if (blockTileCache.has(key)) return blockTileCache.get(key);
 
             const tileCanvas = document.createElement('canvas');
             tileCanvas.width = blockSize;
-            tileCanvas.height = blockHeight;
-
+            tileCanvas.height = Math.ceil(blockHeight);
             const tileCtx = tileCanvas.getContext('2d');
-            if (hasCustom) {
-                tileCtx.drawImage(customImg, 0, 0, blockSize, blockHeight);
-            } else {
-                const tileInset = scalePx(2.5);
-                const tileW = blockSize - tileInset * 2;
-                const tileH = blockHeight - tileInset * 2;
-                tileCtx.fillStyle = isGuide ? varColor('--palette-yellow') : '#fffaf0';
-                tileCtx.strokeStyle = isGuide ? '#ff5a91' : 'rgba(53, 201, 143, 0.95)';
-                tileCtx.lineWidth = isGuide ? scalePx(2.6) : scalePx(2);
-                tileCtx.beginPath();
-                tileCtx.roundRect(tileInset, tileInset, tileW, tileH, scalePx(5));
-                tileCtx.fill();
-                tileCtx.stroke();
-            }
+            const inset = scalePx(2.5);
+            const tileW = blockSize - 2 * inset;
+            const tileH = blockHeight - 2 * inset;
+            tileCtx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
+            tileCtx.strokeStyle = isGuide ? '#a6312c' : '#192738';
+            tileCtx.lineWidth = scalePx(isGuide ? 2.5 : 1.5);
+            tileCtx.beginPath();
+            tileCtx.roundRect(inset, inset, tileW, tileH, scalePx(3));
+            tileCtx.fill();
+            tileCtx.stroke();
+            tileCtx.fillStyle = isGuide ? '#a6312c' : '#19273826';
+            tileCtx.fillRect(inset, blockHeight - inset - scalePx(2.8), tileW, scalePx(2.8));
 
             blockTileCache.set(key, tileCanvas);
             return tileCanvas;
@@ -7455,15 +7270,22 @@
         /**
          * RENDERING
          */
+        function drawSpecialBallArt(img, x, y, size, anchorX, anchorY) {
+            const artHeight = size * img.naturalHeight / img.naturalWidth;
+            ctx.drawImage(img, x - size * anchorX, y - artHeight * anchorY, size, artHeight);
+        }
+
         function draw() {
             ctx.clearRect(0, 0, width, height);
 
             const stripeW = getBlockSize();
-            if (isSpriteReady(ingameFieldBgImg)) {
-                ctx.drawImage(ingameFieldBgImg, 0, 0, width, height);
+            const fieldArt = isWorldBattleRules() && isSpriteReady(ingameStadiumBgImg)
+                ? ingameStadiumBgImg : ingameFieldBgImg;
+            if (isSpriteReady(fieldArt)) {
+                ctx.drawImage(fieldArt, 0, 0, width, height);
             } else {
                 // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
-                const stripeColors = ['#a8de8f', '#82c864'];
+                const stripeColors = ['#426c51', '#325d48'];
                 for (let i = 0; i < 10; i++) {
                     ctx.fillStyle = stripeColors[i % 2];
                     ctx.fillRect(i * stripeW, 0, stripeW, height);
@@ -7574,7 +7396,7 @@
                 if (showLabel) {
                     const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16));
                     ctx.font = `900 ${numberFontSize}px "Darumadrop One", "Kosugi Maru", "Noto Sans JP", Arial`;
-                    ctx.fillStyle = isGuide ? '#ff4f8f' : '#000000';
+                    ctx.fillStyle = isGuide ? '#852c27' : '#192738';
                     ctx.fillText(label, tx, ty);
                 }
             });
@@ -7732,8 +7554,7 @@
                 }
 
                 if (b.isFireball && isSpriteReady(ballFireImg)) {
-                    const size = b.radius * 3.8;
-                    ctx.drawImage(ballFireImg, b.x - size / 2, b.y - size / 2, size, size);
+                    drawSpecialBallArt(ballFireImg, b.x, b.y, b.radius * 3.8, 0.33, 0.65);
                 } else if (b.isFireball) {
                     // 불꽃 외곽 글로우
                     const glowGrad = ctx.createRadialGradient(b.x, b.y, b.radius * 0.5, b.x, b.y, b.radius * 3.5);
@@ -7772,7 +7593,7 @@
                     ctx.save();
                     ctx.translate(b.x, b.y);
                     ctx.rotate(performance.now() * 0.008);
-                    ctx.drawImage(ballStripeImg, -size / 2, -size / 2, size, size);
+                    drawSpecialBallArt(ballStripeImg, 0, 0, size, 0.48, 0.50);
                     ctx.restore();
                 } else if (b.isStripeBall) {
                     // 스트라이프볼 — 줄무늬 야구공
@@ -7807,8 +7628,7 @@
                     ctx.lineWidth = scalePx(1.5);
                     ctx.stroke();
                 } else if (b.isFlashBall && isSpriteReady(ballFlashImg)) {
-                    const size = b.radius * 3.4;
-                    ctx.drawImage(ballFlashImg, b.x - size / 2, b.y - size / 2, size, size);
+                    drawSpecialBallArt(ballFlashImg, b.x, b.y, b.radius * 3.4, 0.49, 0.51);
                 } else if (b.isFlashBall) {
                     // 301번 공 — 번쩍이는 플래시볼
                     const r = b.radius;
@@ -7836,8 +7656,7 @@
                     ctx.lineWidth = scalePx(1.5);
                     ctx.stroke();
                 } else if (b.isMirrorBall && isSpriteReady(ballMirrorImg)) {
-                    const size = b.radius * 3.0;
-                    ctx.drawImage(ballMirrorImg, b.x - size / 2, b.y - size / 2, size, size);
+                    drawSpecialBallArt(ballMirrorImg, b.x, b.y, b.radius * 3.0, 0.36, 0.59);
                 } else if (b.isMirrorBall) {
                     // 101번 공 — 손거울 모양
                     const r = b.radius;
@@ -7869,17 +7688,14 @@
                     ctx.lineWidth = scalePx(1.2);
                     ctx.stroke();
                     ctx.restore();
-                } else if (isSpriteReady(ballNormalImg)) {
-                    const size = b.radius * 2.5;
-                    ctx.drawImage(ballNormalImg, b.x - size / 2, b.y - size / 2, size, size);
                 } else {
                     // 일반 야구공
                     const r = b.radius;
                     ctx.beginPath();
                     ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = '#fff2cf';
                     ctx.fill();
-                    ctx.strokeStyle = '#000000';
+                    ctx.strokeStyle = '#192738';
                     ctx.lineWidth = scalePx(1.8);
                     ctx.stroke();
 
@@ -7887,7 +7703,7 @@
                     ctx.beginPath();
                     ctx.arc(b.x, b.y, r * 0.92, 0, Math.PI * 2);
                     ctx.clip();
-                    ctx.strokeStyle = '#ff3b30';
+                    ctx.strokeStyle = '#a6312c';
                     ctx.lineWidth = scalePx(1.2);
                     ctx.lineCap = 'round';
                     const seamEdgeX = r * 0.54;
@@ -7905,7 +7721,7 @@
 
                     ctx.beginPath();
                     ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
-                    ctx.strokeStyle = '#000000';
+                    ctx.strokeStyle = '#192738';
                     ctx.lineWidth = scalePx(1.8);
                     ctx.stroke();
                 }
@@ -8111,16 +7927,19 @@
                 ctx.restore();
             }
 
-            // cart.png — 아래쪽 (크기 축소)
-            const cartW = Math.min(width * 0.13, scalePx(65));
-            const cartH = cartImg.naturalHeight ? (cartW * cartImg.naturalHeight / cartImg.naturalWidth) : scalePx(40);
-            ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(40), cartW, cartH);
+            if (isSpriteReady(cartImg)) {
+                const cartW = scalePx(47);
+                const cartH = cartW * cartImg.naturalHeight / cartImg.naturalWidth;
+                ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(37), cartW, cartH);
+            }
 
-            // pitcher.png / pitcher_throw.png — 투구 상태에 따라 교체
-            const activePitcherImg = pitcherThrowing && pitcherThrowImg.naturalWidth ? pitcherThrowImg : pitcherImg;
-            const pitcherW = Math.min(width * 0.16, scalePx(80));
-            const pitcherH = activePitcherImg.naturalHeight ? (pitcherW * activePitcherImg.naturalHeight / activePitcherImg.naturalWidth) : scalePx(100);
-            ctx.drawImage(activePitcherImg, px - pitcherW / 2, py - pitcherH - cartH + scalePx(120), pitcherW, pitcherH);
+            // Keep both poses on the same baseline so the player's feet do not jump.
+            const activePitcherImg = pitcherThrowing && isSpriteReady(pitcherThrowImg) ? pitcherThrowImg : pitcherImg;
+            if (isSpriteReady(activePitcherImg)) {
+                const pitcherH = scalePx(83);
+                const pitcherW = pitcherH * activePitcherImg.naturalWidth / activePitcherImg.naturalHeight;
+                ctx.drawImage(activePitcherImg, px - pitcherW / 2, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
+            }
         }
 
         function varColor(name) {
@@ -9560,8 +9379,6 @@
                 else pauseAudioForPageInactive();
             });
         }
-
-        draw();
 
         /**
          * BATTLE (온라인 빠른 매칭 + AI 챌린저 폴백 + 친구 방 코드 대전 + 5초 자동 방 종료 + 내 대전 기록)
@@ -11429,54 +11246,53 @@
             return (typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0) >= 31;
         }
 
+        function menuModeLabel(label) {
+            return label.replace(/^[🧢⚡🤝]\uFE0F?\s*/u, '');
+        }
+
         function updateIntroGuideUI() {
-            const bubbleEl = document.getElementById('intro-bubble');
-            const soloBtn = document.getElementById('start-btn-id');
-            const battleBtn = document.getElementById('battle-quick-main-btn');
-            const t = (typeof TEXTS !== 'undefined' && TEXTS[currentLang]) ? TEXTS[currentLang] : (typeof TEXTS !== 'undefined' ? TEXTS.ko : null);
-            if (!t) return;
-
+            const t = TEXTS[currentLang];
             const unlocked = isWorld8BattleUnlocked();
-            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
-            const hasPlayedBattle = (Number(stats.matches) || 0) > 0;
+            const hasPlayedBattle = getBattleStats().matches > 0;
             let guideDone = false;
-            try { guideDone = localStorage.getItem(W8_BATTLE_GUIDE_DONE_KEY) === '1'; } catch (e) {}
-
-            if (unlocked && hasPlayedBattle && !guideDone) {
-                try {
+            try {
+                guideDone = localStorage.getItem(W8_BATTLE_GUIDE_DONE_KEY) === '1';
+                if (unlocked && hasPlayedBattle && !guideDone) {
                     localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
                     localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
-                } catch (e) {}
-                guideDone = true;
-            }
-
-            if (soloBtn) soloBtn.classList.toggle('intro-guide-pulse', !unlocked);
-            if (battleBtn) battleBtn.classList.toggle('intro-guide-pulse', unlocked && !guideDone && !w8UnlockAnimRunning);
-
-            if (bubbleEl) {
-                if (!unlocked && t.introBubbleGuideSolo) {
-                    bubbleEl.innerHTML = t.introBubbleGuideSolo;
-                } else if (unlocked && !guideDone && t.introBubbleGuideBattle) {
-                    bubbleEl.innerHTML = t.introBubbleGuideBattle;
-                } else if (t.introBubble) {
-                    bubbleEl.innerHTML = t.introBubble;
                 }
+            } catch (e) {}
+            guideDone ||= unlocked && hasPlayedBattle;
+
+            document.getElementById('start-btn-id').classList.toggle('intro-guide-pulse', !unlocked);
+            document.getElementById('battle-quick-main-btn').classList.toggle('intro-guide-pulse', unlocked && !guideDone && !w8UnlockAnimRunning);
+            const guide = document.getElementById('intro-bubble-guide');
+            const message = !unlocked ? t.introBubbleGuideSolo : (!guideDone ? t.introBubbleGuideBattle : '');
+            if (guide.innerHTML !== message) guide.innerHTML = message;
+            guide.hidden = !message;
+        }
+
+        function renderWorld8BattleButton(unlocked) {
+            const worldButton = document.getElementById('battle-quick-main-btn');
+            const actions = document.getElementById('intro-main-actions');
+            const primary = unlocked ? worldButton : document.getElementById('start-btn-id');
+            if (actions.firstElementChild !== primary) actions.prepend(primary);
+
+            worldButton.classList.toggle('locked', !unlocked);
+            worldButton.textContent = menuModeLabel(textFor('battleQuickMainBtn'));
+            if (!unlocked) {
+                const hint = document.createElement('span');
+                hint.className = 'w8-lock-sub';
+                hint.textContent = textFor('world8UnlockShort');
+                worldButton.append(hint);
             }
         }
 
         function updateWorld8BattleLockUI() {
-            const btn = document.getElementById('battle-quick-main-btn');
-            if (!btn) return;
             if (w8UnlockAnimRunning) return;
-
             const unlocked = isWorld8BattleUnlocked();
-            const label = TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn ? TEXTS[currentLang].battleQuickMainBtn : '⚡ 세계 8인 배틀';
-            const shortHint = TEXTS[currentLang] && TEXTS[currentLang].world8UnlockShort ? TEXTS[currentLang].world8UnlockShort : '솔로 31점 해금';
-
             if (!unlocked) {
-                btn.classList.add('locked');
-                btn.classList.remove('w8-unlocking');
-                btn.innerHTML = `🔒 ${label}<span class="w8-lock-sub">${shortHint}</span>`;
+                renderWorld8BattleButton(false);
                 updateIntroGuideUI();
                 return;
             }
@@ -11498,17 +11314,16 @@
 
             if (!animSeen && introVisible) {
                 w8UnlockAnimRunning = true;
-                btn.classList.add('locked');
-                btn.innerHTML = `🔒 ${label}<span class="w8-lock-sub">${shortHint}</span>`;
+                renderWorld8BattleButton(false);
                 updateIntroGuideUI();
                 setTimeout(() => {
                     try { localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1'); } catch (e) {}
-                    btn.classList.remove('locked');
-                    btn.innerText = label;
-                    btn.classList.add('w8-unlocking');
-                    if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes();
+                    renderWorld8BattleButton(true);
+                    const button = document.getElementById('battle-quick-main-btn');
+                    button.classList.add('w8-unlocking');
+                    fitLocalizedBoxes();
                     setTimeout(() => {
-                        btn.classList.remove('w8-unlocking');
+                        button.classList.remove('w8-unlocking');
                         w8UnlockAnimRunning = false;
                         updateIntroGuideUI();
                     }, 980);
@@ -11516,8 +11331,7 @@
                 return;
             }
 
-            btn.classList.remove('locked');
-            btn.innerText = label;
+            renderWorld8BattleButton(true);
             updateIntroGuideUI();
         }
 
@@ -12211,7 +12025,7 @@
             };
             setTxt('battle-btn', TEXTS[currentLang] && TEXTS[currentLang].battleBtn);
             if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
-            setTxt('battle-friend-btn', TEXTS[currentLang] && TEXTS[currentLang].battleFriendBtn);
+            setTxt('battle-friend-btn', menuModeLabel(textFor('battleFriendBtn')));
             setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
             if (battleViewMode === 'world8' && !quickMatchActive) {
                 setTxt('battle-waiting-text', textFor('battleWorldIdleWaiting'));
@@ -12889,6 +12703,7 @@
             updateIntroProfilePillUI();
         }
 
+        draw();
     </script>
 
 </body>

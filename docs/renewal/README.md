@@ -18,6 +18,8 @@
 
 [실제 게임](../../index.html)에도 이 흐름을 적용했다. 새 방문에서는 일본어가 기본이며, 기존 선수는 저장한 UI 언어로 진입한다. 타이틀은 두 화면 모두 일본어로 표시한다.
 
+실제 게임의 말풍선은 타이틀 아래 위쪽에 고정하고 하단에는 모드 버튼과 구매 정보만 모았다. 솔로 최고 31점 전에는 특훈을, 해금 후에는 세계 8인 배틀을 주홍색 주 버튼으로 표시한다. 특훈·친구전에는 낮 훈련장, 세계 배틀에는 야간 구장을 사용한다. 인게임에는 같은 투수의 준비·릴리스 자세, 공 바구니, 크림색 숫자판과 특수구 일러스트를 적용했다. [실제 게임 스타일](../../game-art.css) · [게임 이미지](../../images/)
+
 ## 일러스트 방향
 
 | 시안 | 그림과 색 | 배치 |
@@ -70,6 +72,26 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 ## 이미지 제작 기록
 
 내장 ImageGen을 사용했다. 아래는 시안에 적용한 프롬프트다.
+
+**낮 훈련장**
+
+One 9:16 upright 2D gameplay background plate for the attached Showa sports manga baseball game. Use reference 1 as visual palette and reference 2 for the local ballpark. Empty ballpark seen elevated from behind the pitcher's mound looking up-screen toward home plate. Cream vintage print stock and slightly desaturated afternoon sunlight, forest-green turf, terracotta clay, warm cream chalk, ink-navy fine contours. In the top half, the UI overlays bright number tiles: keep the field quiet, dark-green neutral desaturated large grass shapes there, low contrast and no tiny lines. Put simple vintage stands and trees at top edges only, perspective toward the upper center. Bottom fifth shows spacious dark terracotta mound foreground for separate player sprite, no drawn players. Deliberate Ben-Day halftone only in edge shadows, paper grain, subtle long shadows. Print-production quality, no crowd details in central field, no text, no logos, no UI or baseball characters.
+
+**야간 경기장**
+
+One 9:16 upright gameplay background plate for the attached Showa sports manga baseball game. Use image 1 for cream paper and inked retro printing and the top-right panel of image 2 for the floodlit night baseball stadium. Elevated behind the mound looking up-screen, symmetrical, no people or objects on field. Ink navy night sky, lamps and old scoreboard toward top edge; large muted deep pine-green turf with discreet vertical mowing lanes covering most of the image, subdued and quiet to leave crisp numbers overlay. Broad terracotta foreground mound in bottom fifth, deep umber and cream highlights. Small warm stadium glimmers only around top perimeter, no lettering or signs, no UI. Bold Japanese baseball manga print with restrained Ben-Day texture in edge shadows, detailed but uncluttered, warm clay and paper versus ink-navy, no characters.
+
+**투수와 공 바구니 스프라이트**
+
+Create a transparent 2x2 game sprite atlas for a Showa sports manga mobile pitching arcade game. First reference defines character identity and line palette: same cheerful slender young pitcher, navy baseball cap and jersey with mustard piping, ivory pants, blue socks, dark cleats, warm peach skin, hand-inked thick navy outlines with slight controlled halftone, athletic. Second reference is the legacy game pitcher sprite: match its viewing angle from high behind the pitcher, looking up-screen at home plate. Exactly four quadrants, no grids/borders/text, each tightly composed but safe separated, no shared shadows or objects crossing divider. TOP LEFT: back of the head and back of the torso visible, standing pitcher ready stance with both feet on ground, throwing right hand holding ball, brown left glove. TOP RIGHT: a matching back-view throwing follow-through sprite, right arm extended up-screen, planted left foot, right trailing foot; use the same scale, camera and size as top left. BOTTOM LEFT: separate warm cream metal pitching ball basket filled with several stitched baseballs in matching elevated top-down perspective. BOTTOM RIGHT: leave blank fully transparent. Fully transparent alpha background, no painted ground, no lettering. Precise dark outlines usable at 170px high.
+
+**투구 자세의 공 제거**
+
+Make one exact edit to this transparent sprite atlas. Remove only the small floating airborne baseball and its short trail above the fingertips in the TOP-RIGHT throwing pose, filling the removed area with genuine transparency. Keep the pitcher's right fingers and wrist anatomy, left glove, both legs, pose, all outlines, relative position and scale exactly as shown. Keep the top-left standing pose and lower-left ball cart unchanged pixel-for-pixel in appearance, including the ball held by the standing pitcher and the balls inside the cart. Maintain 2×2 layout, same full canvas, transparent background and fully transparent bottom-right quadrant. No lettering or new elements.
+
+**특수구 연출**
+
+Create a transparent 2×2 game effects sprite atlas, matching the attached warm Showa sports manga art. Four isolated high-impact baseball special-move illustrations with thick dark navy brush ink, creamy baseball leather, crimson stitching, mustard and rich spot ink, fine halftone and speed rays. Every quadrant separate, equal, no motif crosses the centre lines; all corners fully transparent and no background plates. Top left: FIREBALL, large baseball trailing red-orange flames; top right: MIRRORBALL, one baseball with two offset silver-blue reflections and a fine indigo mirror-shard glint; bottom left: STRIPEBALL, baseball with alternating green/ink diagonal bands and parallel race stripes; bottom right: FLASHBALL, one baseball with starburst and yellow lightning arcs. Each ball clearly different silhouette and still readable as baseball. Rounded brush edges, no lettering, text, digits, labels, grid, watermarks. Transparent alpha suitable for game cut-ins.
 
 **오른손 투구의 왼무릎 들기**
 

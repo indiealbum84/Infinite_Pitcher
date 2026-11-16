@@ -1,0 +1,265 @@
+:root {
+    --showa-ink: #192738;
+    --showa-paper: #fff2cf;
+    --showa-cream: #f9e7ba;
+    --showa-red: #a6312c;
+    --showa-gold: #edbc57;
+    --showa-green: #28594e;
+    --showa-print: radial-gradient(circle, #19273833 1.5px, transparent 1.8px);
+    --palette-ink: var(--showa-ink);
+    --palette-cream: var(--showa-paper);
+    --palette-yellow: var(--showa-gold);
+    --palette-mint: #78ad84;
+    --palette-blue: #769d9d;
+    --palette-pink: #ca7563;
+    --palette-purple: #766084;
+    --palette-soft-mint: #d6e0bd;
+    --palette-soft-blue: #ccd8d1;
+    --palette-soft-pink: #efd1b2;
+}
+
+#intro-screen .speech-bubble {
+    position: absolute;
+    inset: 365px auto auto 38px;
+    width: max-content;
+    max-width: 580px;
+    margin: 0;
+    padding: 15px 24px;
+    text-align: left;
+    font-size: 31px;
+    line-height: 1.38;
+    border-radius: 22px;
+    border-width: 6px;
+    transform: none;
+    background: var(--showa-paper);
+    box-shadow: 5px 6px 0 var(--showa-ink);
+    pointer-events: none;
+}
+
+#intro-screen .speech-bubble::before,
+#intro-screen .speech-bubble::after {
+    left: auto;
+    top: 45%;
+    bottom: auto;
+    transform: none;
+}
+
+#intro-screen .speech-bubble::before {
+    right: -25px;
+    border-width: 15px 0 15px 25px;
+    border-color: transparent transparent transparent var(--showa-ink);
+}
+
+#intro-screen .speech-bubble::after {
+    right: -15px;
+    margin-top: 4px;
+    border-width: 11px 0 11px 18px;
+    border-color: transparent transparent transparent var(--showa-paper);
+}
+
+#intro-screen .intro-menu {
+    width: min(890px, calc(100% - 64px));
+    bottom: 35px;
+    gap: 14px;
+}
+#intro-screen .intro-main-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+#intro-screen .intro-main-actions > button:first-child { grid-column: 1 / -1; }
+
+#title-start-btn,
+#intro-screen .intro-main-actions .start-btn,
+#intro-ranking-btn,
+#intro-screen .intro-settings-btn,
+#intro-screen .intro-skin-btn,
+#intro-ticket-pill {
+    border: 6px solid var(--showa-ink);
+    border-radius: 12px;
+    box-shadow: 7px 9px 0 var(--showa-ink);
+    font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+    font-weight: 900;
+    -webkit-text-stroke: 0;
+}
+
+#title-start-btn,
+#intro-screen .intro-main-actions .start-btn {
+    background-color: var(--showa-gold);
+    background-image: linear-gradient(113deg, transparent 83%, #19273822 83%, #19273822 86%, transparent 86%, transparent 89%, #19273822 89%), var(--showa-print);
+    background-size: auto, 9px 9px;
+    color: var(--showa-ink);
+    text-shadow: 2px 2px 0 #fff2cf80;
+}
+#intro-screen .intro-main-actions .start-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 120px;
+    margin: 0;
+    padding: 13px 15px;
+    font-size: 35px;
+    line-height: 1.15;
+    letter-spacing: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+#title-start-btn,
+#intro-screen .intro-main-actions > .start-btn:first-child {
+    background-color: var(--showa-red);
+    color: var(--showa-paper);
+    text-shadow: 3px 3px 0 #5d2221;
+}
+#intro-screen .intro-main-actions > .start-btn:first-child {
+    min-height: 137px;
+    font-size: 51px;
+    letter-spacing: .025em;
+}
+#intro-screen #battle-friend-btn {
+    background-color: var(--showa-paper);
+}
+#intro-screen #battle-quick-main-btn.locked {
+    background: #eee0ba;
+    color: var(--showa-ink);
+    text-shadow: none;
+}
+#intro-screen #battle-quick-main-btn.locked .w8-lock-sub {
+    display: block;
+    color: #70332a;
+    font-size: 24px;
+    margin-top: 4px;
+}
+#intro-screen .intro-main-actions .start-btn:active,
+#intro-screen :is(.intro-settings-btn, .intro-skin-btn, #intro-ranking-btn, #intro-ticket-pill):active {
+    transform: translate(3px, 5px);
+    box-shadow: 3px 4px 0 var(--showa-ink);
+}
+#intro-screen :is(.intro-settings-btn, .intro-skin-btn) {
+    width: 112px;
+    height: 108px;
+    background: var(--showa-paper);
+    color: var(--showa-ink);
+}
+#intro-screen .intro-skin-btn {
+    right: 169px;
+    color: var(--showa-paper);
+    background: var(--showa-green);
+    font-size: 57px;
+}
+#intro-ranking-btn {
+    background: var(--showa-ink);
+    color: var(--showa-gold);
+    border-color: var(--showa-paper);
+    font-style: oblique;
+    letter-spacing: .055em;
+}
+#intro-screen .intro-profile-pill {
+    width: 100%;
+    min-height: 105px;
+    margin: 0;
+    padding: 13px 21px;
+    border-radius: 13px;
+    background: var(--showa-ink);
+    border-color: var(--showa-paper);
+    box-shadow: 4px 5px 0 var(--showa-ink);
+}
+#intro-ticket-pill {
+    min-height: 96px;
+    align-self: center;
+    background: var(--showa-paper);
+    color: var(--showa-ink);
+    padding: 8px 26px;
+    font-size: 28px;
+}
+#intro-ticket-pill.is-vip { background: var(--showa-gold); }
+
+/* The stadium and paper panels carry the same print palette into play. */
+#battle-screen,
+#battle-result-screen {
+    background: linear-gradient(#fff2cfd9, #f9e7baf5), url('./images/showa-stadium.webp') center / cover no-repeat;
+}
+#game-over-screen {
+    background: linear-gradient(#f9e7bacc, #fff2cfee), url('./images/showa-field.webp') center / cover no-repeat;
+}
+#countdown-screen {
+    background: #19273873;
+}
+#countdown-text.countdown-instruction {
+    background: var(--showa-paper);
+    border-color: var(--showa-ink);
+    color: var(--showa-ink);
+    box-shadow: 7px 9px 0 var(--showa-ink);
+}
+#intro-ranking-modal .modal-inner,
+:is(.settings-modal-inner, .skin-modal-inner, .modal-inner, .continue-card, .profile-setup-card, .exit-confirm-box) {
+    background: var(--showa-paper);
+    border-color: var(--showa-ink);
+    box-shadow: 9px 12px 0 var(--showa-ink);
+}
+:is(.settings-section, .skin-card, .rank-item, .battle-player-pill, .battle-score-card, .battle-code-box) {
+    background-color: var(--showa-cream);
+    border-color: var(--showa-ink);
+}
+:is(.settings-modal-title, .profile-setup-title, .battle-title, .game-over-title, .continue-title) {
+    color: var(--showa-red);
+    text-shadow: 4px 4px 0 var(--showa-gold);
+}
+:is(#battle-screen, #battle-result-screen, #game-over-screen, #play-gate-screen, #initial-profile-screen, #settings-modal) .start-btn:not(.hidden) {
+    border-color: var(--showa-ink);
+    border-radius: 13px;
+    box-shadow: 7px 9px 0 var(--showa-ink);
+}
+#battle-screen :is(#battle-quick-btn, #battle-start-btn),
+#game-over-screen #retry-btn,
+:is(#initial-name-submit-btn, #settings-close-btn) {
+    background-color: var(--showa-red);
+    color: var(--showa-paper);
+    text-shadow: 2px 2px 0 #5d2221;
+}
+#battle-screen #battle-quick-btn {
+    background: var(--showa-red) !important;
+    box-shadow: 7px 9px 0 var(--showa-ink) !important;
+}
+#battle-screen #battle-quick-btn.matching {
+    background: var(--showa-gold) !important;
+    color: var(--showa-ink) !important;
+}
+:is(.rank-tab-btn.active, .skin-card.equipped, .rank-item.is-me, .battle-score-card.me) {
+    background-color: var(--showa-gold);
+    color: var(--showa-ink);
+}
+/* Place status below the 864px-high number board in the logical frame. */
+#ui-layer,
+#battle-hud-wrap,
+#ingame-back-btn {
+    top: 890px;
+}
+#ingame-back-btn.friend-pos { top: 1020px; }
+.stat-box {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 25px;
+    background: var(--showa-paper);
+    border: 6px solid var(--showa-ink);
+    border-radius: 12px;
+    box-shadow: 5px 6px 0 var(--showa-ink);
+}
+.stat-value {
+    color: var(--showa-red);
+    text-shadow: none;
+    font-size: 49px;
+    line-height: 1;
+}
+:is(#ingame-back-btn, #battle-lobby-back-btn, .battle-hud-box) {
+    background: var(--showa-paper);
+    color: var(--showa-ink);
+    border-color: var(--showa-ink);
+}
+:is(#battle-hud, #battle-phase-pill) {
+    border-color: var(--showa-ink);
+    color: var(--showa-paper);
+}
+:is(#fireball-announce-img, #mirrorball-announce-img, #stripeball-announce-img, #flashball-announce-img) {
+    width: 84%;
+    height: 68%;
+}
