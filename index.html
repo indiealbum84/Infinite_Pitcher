@@ -4069,8 +4069,6 @@
         const cartImg = loadGameArt('cart');
         const pitcherImg = loadGameArt('pitcher-ready');
         const pitcherThrowImg = loadGameArt('pitcher-throw');
-        const ingameFieldBgImg = loadGameArt('field');
-        const ingameStadiumBgImg = loadGameArt('stadium');
         const ballFireImg = loadGameArt('fireball');
         const ballMirrorImg = loadGameArt('mirrorball');
         const ballStripeImg = loadGameArt('stripeball');
@@ -7255,45 +7253,12 @@
         }
 
         function draw() {
-            ctx.clearRect(0, 0, width, height);
-
-            const stripeW = getBlockSize();
-            const fieldArt = isWorldBattleRules() && isSpriteReady(ingameStadiumBgImg)
-                ? ingameStadiumBgImg : ingameFieldBgImg;
-            if (isSpriteReady(fieldArt)) {
-                ctx.drawImage(fieldArt, 0, 0, width, height);
-            } else {
-                // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
-                const stripeColors = ['#426c51', '#325d48'];
-                for (let i = 0; i < 10; i++) {
-                    ctx.fillStyle = stripeColors[i % 2];
-                    ctx.fillRect(i * stripeW, 0, stripeW, height);
-                }
-
-                // 잔디 질감 — 세로 방향 미세 하이라이트
-                for (let i = 0; i < 10; i++) {
-                    const gx = i * stripeW;
-                    const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
-                    grad.addColorStop(0,   'rgba(255,255,255,0.04)');
-                    grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
-                    grad.addColorStop(1,   'rgba(255,255,255,0.04)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(gx, 0, stripeW, height);
-                }
-
-                // 흰색 세로 라인
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-                ctx.lineWidth = scalePx(1);
-                for (let i = 1; i < 10; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(i * stripeW, 0);
-                    ctx.lineTo(i * stripeW, height);
-                    ctx.stroke();
-                }
-            }
+            ctx.fillStyle = '#325d48';
+            ctx.fillRect(0, 0, width, height);
 
             // 파이어볼 차징 중: 해당 열 강조
             if (fireballCharging && fireballColumn >= 0) {
+                const stripeW = getBlockSize();
                 ctx.fillStyle = 'rgba(194, 119, 37, 0.28)';
                 ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
             }
