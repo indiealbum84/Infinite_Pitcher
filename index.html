@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="./images/pitcher.png">
-    <link rel="preload" as="image" href="./images/splash_108project.png">
-    <title>無限投手: 世界一への道</title>
+    <link rel="preload" as="image" href="./images/title-pitch-finish.webp" fetchpriority="high">
+    <title>インフィニティピッチング</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -118,66 +118,38 @@
             opacity: 0;
         }
 
-        /* Splash Screen (108 Project Company Logo) */
+        /* Title and menu share one frame and one crop. */
+        #splash-screen,
+        #intro-screen {
+            background: #f9edcf url('./images/title-pitch-finish.webp') center / cover no-repeat;
+        }
+
         #splash-screen {
-            background-color: #020c1c;
             z-index: 20;
-            padding: 0 !important;
-            gap: 0;
-            cursor: pointer;
-            touch-action: auto !important;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 0;
         }
 
-        #splash-screen.splash-fade-out {
-            opacity: 0;
-        }
-
-        .company-splash-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            display: block;
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        .splash-press-start {
+        #title-start-btn {
             position: absolute;
+            bottom: 56px;
             left: 50%;
-            bottom: 14%;
+            width: min(570px, 80%);
+            min-height: 140px;
+            margin: 0;
+            padding: 14px 28px;
             transform: translateX(-50%);
-            font-size: 56px;
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: #ffffff;
-            text-shadow:
-                0 4px 0 #0b1628,
-                0 0 24px rgba(56, 189, 248, 0.9),
-                0 8px 28px rgba(0, 0, 0, 0.95);
-            white-space: nowrap;
-            pointer-events: none;
-            user-select: none;
-            z-index: 2;
-            animation: splashPressStartPulse 1.25s ease-in-out infinite;
+            background: #a6312c;
+            border: 6px solid #192738;
+            border-radius: 18px;
+            box-shadow: 9px 10px 0 #192738;
+            font: 900 54px 'Noto Sans JP', sans-serif;
         }
 
-        @keyframes splashPressStartPulse {
-            0%, 100% {
-                opacity: 1;
-                transform: translateX(-50%) scale(1);
-            }
-            50% {
-                opacity: 0.35;
-                transform: translateX(-50%) scale(0.96);
-            }
+        #title-start-btn:active {
+            transform: translate(-50%, 5px);
+            box-shadow: 4px 5px 0 #192738;
         }
+
 
         .lang-switcher {
             position: absolute;
@@ -235,7 +207,6 @@
 
         /* Intro Screen */
         #intro-screen {
-            background: #b9ecff url('./images/main_background.png') center -40px / cover no-repeat;
             justify-content: flex-start;
             align-items: center;
             overflow: hidden;
@@ -243,17 +214,26 @@
             touch-action: auto !important;
         }
 
-        .title-art {
+        .game-title {
             position: absolute;
-            top: 58px;
+            top: 92px;
             left: 50%;
-            width: min(760px, 116%);
-            height: auto;
-            display: block;
+            width: 94%;
             margin: 0;
             transform: translateX(-50%);
-            pointer-events: none;
-            z-index: 1;
+            color: #192738;
+            font: 900 119px/1.04 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+            letter-spacing: -.075em;
+            text-shadow: 5px 5px 0 #fff0ce, 8px 10px 0 #e9a444;
+        }
+
+        .game-title span {
+            display: block;
+        }
+
+        #intro-title {
+            top: 152px;
+            font-size: 93px;
         }
 
         /* Speech Bubble */
@@ -2226,12 +2206,6 @@
             box-shadow: 0 8px 0 var(--palette-pink), 0 8px 0 3px #000000;
         }
 
-        .title-art {
-            top: 160px;
-            width: min(1250px, 116%);
-            transform: translateX(calc(-50% - 10px));
-        }
-
         .speech-bubble {
             top: 670px;
             background: var(--palette-yellow);
@@ -3914,6 +3888,63 @@
             color: #fde047;
             text-shadow: 2px 2px 0 #000000;
         }
+
+        #intro-screen .intro-menu {
+            width: calc(100% - 64px);
+            bottom: 45px;
+        }
+
+        #intro-screen .speech-bubble {
+            position: relative;
+            inset: auto;
+            max-width: 100%;
+            margin-bottom: 32px;
+            transform: none;
+            background: #fff7e4;
+            border-color: #192738;
+            border-radius: 34px;
+            padding: 17px 30px;
+        }
+
+        #intro-screen .speech-bubble .bubble-nowrap {
+            white-space: normal;
+        }
+
+        #intro-screen .speech-bubble::before,
+        #intro-screen .speech-bubble::after {
+            left: 70%;
+            top: auto;
+        }
+
+        #intro-screen .speech-bubble::before {
+            top: -29px;
+            bottom: auto;
+            border-width: 0 24px 26px;
+            border-color: #192738 transparent;
+        }
+
+        #intro-screen .speech-bubble::after {
+            top: -17px;
+            bottom: auto;
+            border-width: 0 16px 18px;
+            border-color: #fff7e4 transparent;
+        }
+
+        #intro-ranking-btn {
+            left: 36px;
+            width: auto;
+            min-height: 108px;
+            padding: 0 29px;
+            background: #192738;
+            color: #edbc57;
+            border: 6px solid #192738;
+            border-radius: 18px;
+            font: 900 37px 'Noto Sans JP', sans-serif;
+        }
+
+        #intro-title:focus {
+            outline: none;
+        }
     </style>
 </head>
 
@@ -3940,8 +3971,8 @@
         </div>
 
         <div id="splash-screen" class="screen">
-            <img class="company-splash-img" src="./images/splash_108project.png" alt="108 Project" fetchpriority="high">
-            <div class="splash-press-start">PRESS START</div>
+            <h1 class="game-title" lang="ja"><span>インフィニティ</span><span>ピッチング</span></h1>
+            <button id="title-start-btn" type="button" class="start-btn" lang="ja">スタート</button>
         </div>
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
@@ -3976,9 +4007,7 @@
         </div>
 
         <div id="intro-screen" class="screen hidden">
-            <button id="intro-ranking-btn" onclick="toggleIntroRanking()" aria-label="TOP 1000">
-                <img class="intro-ranking-img" src="./images/top100.png" alt="TOP 1000">
-            </button>
+            <button type="button" id="intro-ranking-btn" onclick="toggleIntroRanking()">TOP 1000</button>
             <button id="intro-settings-btn" class="intro-settings-btn" onclick="openSettingsModal()" aria-label="Settings">
                 <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.3" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
@@ -3989,11 +4018,11 @@
                 🎨
             </button>
 
-            <img class="title-art" src="./images/title.png" alt="無限ピッチング">
-            <div class="speech-bubble" id="intro-bubble">
-                よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
-            </div>
+            <h2 id="intro-title" class="game-title" lang="ja" tabindex="-1"><span>インフィニティ</span><span>ピッチング</span></h2>
             <div class="intro-menu">
+                <div class="speech-bubble" id="intro-bubble">
+                    よしっ！世界一のピッチャーになるために、<br>今日も特訓だ！
+                </div>
                 <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
                 <div class="intro-main-actions">
                     <button id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">⚡ 세계 8인 배틀</button>
@@ -4624,8 +4653,8 @@
             }, interval);
         }
 
-        // ── 언어 시스템 (기본값: 한국어 'ko') ────────────────────────────
-        let currentLang = localStorage.getItem('infinite_pitcher_lang') || 'ko';
+        // ── 언어 시스템 (기본값: 일본어 'ja') ────────────────────────────
+        let currentLang = localStorage.getItem('infinite_pitcher_lang') || 'ja';
 
         const TEXTS = {
             ja: {
@@ -5693,66 +5722,24 @@
         }
 
         let splashDismissed = false;
-        let splashAutoTimer = null;
-        const SPLASH_DURATION_MS = 3000;
 
         function enterIntroFromSplash() {
             if (splashDismissed) return;
             splashDismissed = true;
-            if (splashAutoTimer) {
-                clearTimeout(splashAutoTimer);
-                splashAutoTimer = null;
-            }
-            try {
-                applyLang(currentLang);
-            } catch (e) {
-                console.error('applyLang error:', e);
-            }
-            const splashEl = document.getElementById('splash-screen');
-            if (splashEl) {
-                splashEl.classList.add('splash-fade-out');
-                setTimeout(() => {
-                    splashEl.classList.add('hidden');
-                }, 400);
-            }
-            if (audioCtx) {
-                try {
-                    if (audioCtx.state !== 'running') audioCtx.resume();
-                    const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
-                    const silentSrc = audioCtx.createBufferSource();
-                    silentSrc.buffer = silentBuf;
-                    silentSrc.connect(audioCtx.destination);
-                    silentSrc.start(0);
-                } catch (e) {}
-            }
-            try {
-                if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
-                    ensurePermanentPlayerProfileOnStart();
-                } else {
-                    const intro = document.getElementById('intro-screen');
-                    if (intro) intro.classList.remove('hidden');
-                }
-            } catch (e) {
-                console.error('profile error:', e);
-                const intro = document.getElementById('intro-screen');
-                if (intro) intro.classList.remove('hidden');
-            }
-            ensureTitleBgmOnIntro();
+            applyLang(currentLang);
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            document.getElementById('intro-title').focus();
+            unlockAudioOnTap();
+            loadInitialPlayerProfile();
         }
 
-        function handleSplashTap(e) {
-            if (e) {
-                if (e.cancelable && typeof e.preventDefault === 'function') e.preventDefault();
-                if (typeof e.stopPropagation === 'function') e.stopPropagation();
-            }
+        const titleStartButton = document.getElementById('title-start-btn');
+        titleStartButton.addEventListener('click', enterIntroFromSplash);
+        titleStartButton.addEventListener('touchend', event => {
+            if (event.cancelable) event.preventDefault();
             enterIntroFromSplash();
-        }
-
-        const splashScreen = document.getElementById('splash-screen');
-        if (splashScreen) {
-            splashScreen.addEventListener('click', handleSplashTap);
-            splashScreen.addEventListener('touchend', handleSplashTap, { passive: false });
-        }
+        }, { passive: false });
 
         // 오디오 자동재생 정책 대비: AudioContext 상태 전환 및 메인화면 탭 시 bgm_title 보장
         if (audioCtx && typeof audioCtx.addEventListener === 'function') {
@@ -5778,7 +5765,7 @@
         window.addEventListener('touchend', unlockAudioOnTap, { passive: true });
         window.addEventListener('click', unlockAudioOnTap, { passive: true });
 
-        // #intro-screen(main_background.png)이 화면에 나타날 때마다 bgm_title 자동 재생 시도
+        // #intro-screen이 화면에 나타날 때마다 bgm_title 자동 재생 시도
         (function observeIntroVisibilityForBgm() {
             const introEl = document.getElementById('intro-screen');
             if (!introEl || typeof MutationObserver === 'undefined') return;
@@ -5833,7 +5820,6 @@
         const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score');
         const finalScoreEl = document.getElementById('final-score-val');
-        const startBtn = document.getElementById('start-btn-id');
 
         // 테스트 모드는 코드만 보관하고 기본적으로 비활성화한다.
         // 나중에 복구할 때 이 값을 true로 바꾸면 메뉴와 실행 경로가 다시 열린다.
@@ -5875,6 +5861,7 @@
         applyTestModeAvailability();
 
         function startSoloPractice() {
+            if (!requireInitialPlayerProfile(startSoloPractice)) return;
             leaveBattleRoom(true);
             stopQuickMatchTimer(false);
             battleMode = false;
@@ -5889,10 +5876,6 @@
             if (pillEl) pillEl.classList.add('hidden');
             startGame();
         }
-
-        startBtn.addEventListener('click', () => {
-            if (gameState === 'INTRO') startSoloPractice();
-        });
 
         let width, height;
         let gameState = 'INTRO'; // INTRO, PLAYING, GAMEOVER
@@ -8879,51 +8862,57 @@
             document.getElementById('intro-screen').classList.remove('hidden');
             updateIntroProfilePillUI();
             updatePlayTicketStatusUI();
-            if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
+            ensureTitleBgmOnIntro();
+            resumePendingIntroMode();
         }
 
-        function ensurePermanentPlayerProfileOnStart() {
-            const existingName = getSavedPlayerName();
-            if (existingName) {
-                setSavedPlayerName(existingName);
-                document.getElementById('initial-profile-screen').classList.add('hidden');
-                document.getElementById('intro-screen').classList.remove('hidden');
-                updateIntroProfilePillUI();
-                syncProfileToCloud();
-                if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
-                return;
+        let initialPlayerProfileLookup;
+        let pendingIntroMode = null;
+
+        function loadInitialPlayerProfile() {
+            if (initialPlayerProfileLookup) return initialPlayerProfileLookup;
+            if (getSavedPlayerName()) {
+                initialPlayerProfileLookup = syncProfileToCloud();
+                return initialPlayerProfileLookup;
             }
 
-            // 네이티브 스토어 계정 ID 또는 Firebase Auth 세션이 있으면 자동 복원 시도
-            const currentKey = getAccountKey();
-            let resolved = false;
-            const fallbackTimer = setTimeout(() => {
-                if (resolved) return;
-                resolved = true;
-                openInitialProfileScreen();
-            }, 1000);
+            const accountKey = getAccountKey();
+            let timeout;
+            const readProfile = usersRef.child(accountKey).once('value');
+            const deadline = new Promise(resolve => {
+                timeout = setTimeout(resolve, 1000);
+            });
+            initialPlayerProfileLookup = Promise.race([readProfile, deadline]).then(snap => {
+                const profile = snap?.val();
+                if (profile?.name && !getSavedPlayerName() && getAccountKey() === accountKey) {
+                    applyCloudProfileDataToLocal(profile);
+                }
+            }).catch(err => {
+                console.warn('[CloudProfile] startup restore warning:', err);
+            }).finally(() => clearTimeout(timeout));
+            return initialPlayerProfileLookup;
+        }
 
-            usersRef.child(currentKey).once('value')
-                .then(snap => {
-                    if (resolved) return;
-                    resolved = true;
-                    clearTimeout(fallbackTimer);
-                    const remoteProfile = snap.val();
-                    if (remoteProfile && remoteProfile.name) {
-                        applyCloudProfileDataToLocal(remoteProfile);
-                        document.getElementById('initial-profile-screen').classList.add('hidden');
-                        document.getElementById('intro-screen').classList.remove('hidden');
-                        if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
-                        return;
-                    }
+        function requireInitialPlayerProfile(mode) {
+            if (getSavedPlayerName()) return true;
+            if (pendingIntroMode) return false;
+
+            pendingIntroMode = mode;
+            loadInitialPlayerProfile().then(() => {
+                if (pendingIntroMode !== mode) return;
+                if (getSavedPlayerName()) {
+                    resumePendingIntroMode();
+                } else {
                     openInitialProfileScreen();
-                })
-                .catch(() => {
-                    if (resolved) return;
-                    resolved = true;
-                    clearTimeout(fallbackTimer);
-                    openInitialProfileScreen();
-                });
+                }
+            });
+            return false;
+        }
+
+        function resumePendingIntroMode() {
+            const mode = pendingIntroMode;
+            pendingIntroMode = null;
+            if (mode) mode();
         }
 
         function showInitialLanguageStep() {
@@ -8994,6 +8983,7 @@
                     }
                     if (typeof updateSettingsUI === 'function') updateSettingsUI();
                     if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+                    resumePendingIntroMode();
                     return true;
                 } else {
                     // 서버에 아직 기록이 없는 계정:
@@ -11546,11 +11536,8 @@
                 return;
             }
 
-            const permanentName = getSavedPlayerName() || getSavedBattleNickname();
-            if (!permanentName) {
-                ensurePermanentPlayerProfileOnStart();
-                return;
-            }
+            if (!requireInitialPlayerProfile(startWorld8Battle)) return;
+            const permanentName = getSavedPlayerName();
 
             battleViewMode = 'world8';
             try {
@@ -11601,11 +11588,8 @@
                 return;
             }
 
-            const permanentName = getSavedPlayerName() || getSavedBattleNickname();
-            if (!permanentName) {
-                ensurePermanentPlayerProfileOnStart();
-                return;
-            }
+            if (!requireInitialPlayerProfile(openFriendBattleScreen)) return;
+            const permanentName = getSavedPlayerName();
 
             battleViewMode = 'friend';
             leaveBattleRoom(true);

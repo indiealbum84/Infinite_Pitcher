@@ -34,7 +34,7 @@ const format = new Intl.NumberFormat('ja-JP');
 const WORLD_UNLOCK_SCORE = 31;
 const MATCH_SECONDS = 20;
 const title = '<span>インフィニティ</span><span>ピッチング</span>';
-const titleArt = '<img class="scene-art" src="assets/title-pitch-finish.webp" alt="ピッチャーが投げたボールが手前に迫る場面" fetchpriority="high">';
+const titleArt = '<img class="scene-art" src="../../images/title-pitch-finish.webp" alt="ピッチャーが投げたボールが手前に迫る場面" fetchpriority="high">';
 let player = { ...scenarios.new };
 let page;
 let matchTimer;
