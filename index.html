@@ -402,6 +402,59 @@
             letter-spacing: -0.02em;
         }
 
+        .intro-guide-pulse {
+            animation: introGuidePulse 1.35s ease-in-out infinite;
+        }
+
+        @keyframes introGuidePulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 0 rgba(250, 204, 21, 0));
+            }
+            50% {
+                transform: scale(1.04);
+                filter: drop-shadow(0 0 14px rgba(250, 204, 21, 0.85));
+            }
+        }
+
+        #intro-screen #battle-quick-main-btn.w8-unlocking {
+            animation: w8UnlockPop 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes w8UnlockPop {
+            0% {
+                background-color: #475569;
+                transform: scale(1) rotate(0deg);
+                filter: brightness(1);
+            }
+            18% {
+                background-color: #475569;
+                transform: scale(0.97) rotate(-2deg);
+            }
+            34% {
+                background-color: #475569;
+                transform: scale(0.99) rotate(2deg);
+            }
+            52% {
+                background-color: #facc15;
+                color: #0f172a;
+                transform: scale(1.1) rotate(0deg);
+                filter: brightness(1.25) drop-shadow(0 0 22px rgba(250, 204, 21, 0.95));
+            }
+            76% {
+                background-color: var(--palette-blue);
+                color: #ffffff;
+                transform: scale(0.97);
+                filter: brightness(1.08);
+            }
+            100% {
+                background-color: var(--palette-blue);
+                color: #ffffff;
+                transform: scale(1);
+                filter: brightness(1);
+            }
+        }
+
         #intro-screen #start-btn-id {
             width: 142px;
             min-height: 48px;
@@ -4655,6 +4708,8 @@
                 settingsSfx: '効果音 (SFX)',
                 settingsAccountLabel: '☁️ ログイン・アカウント連携',
                 settingsClose: '閉じる',
+                introBubbleGuideSolo: 'まずはひとり特訓で練習しよう！<br>31球目に到達すると対戦が解放されるよ！',
+                introBubbleGuideBattle: '1000PTからスタートして結果次第で上下するよ。<br>世界一を目指そう！',
                 leagueStandard: '一般リーグ',
                 leagueMaster: 'マスターリーグ',
                 leagueStandardDesc: '1,200 PT以下',
@@ -4784,6 +4839,8 @@
                 settingsSfx: 'SFX Volume',
                 settingsAccountLabel: '☁️ Login & Account Link',
                 settingsClose: 'Close',
+                introBubbleGuideSolo: 'Practice in Solo Training first!<br>Reach ball #31 to unlock World Battle!',
+                introBubbleGuideBattle: 'Start at 1,000 PT—win to climb, lose to drop.<br>Aim to become the world’s best!',
                 leagueStandard: 'Standard League',
                 leagueMaster: 'Master League',
                 leagueStandardDesc: '1,200 PT & Under',
@@ -4913,6 +4970,8 @@
                 settingsSfx: '효과음 (SFX)',
                 settingsAccountLabel: '☁️ 로그인 / 계정 연동',
                 settingsClose: '확인',
+                introBubbleGuideSolo: '나홀로 특훈에서 먼저 연습하자!<br>31번 공까지 가면 대전이 열릴거야!',
+                introBubbleGuideBattle: '1000점부터 시작하고 결과에 따라 점수가 오르고 내려.<br>세계 최고가 되보자!',
                 leagueStandard: '일반 리그',
                 leagueMaster: '마스터 리그',
                 leagueStandardDesc: '1,200 PT 이하',
@@ -5042,6 +5101,8 @@
                 settingsSfx: '音效 (SFX)',
                 settingsAccountLabel: '☁️ 登入 / 帳號綁定',
                 settingsClose: '確認',
+                introBubbleGuideSolo: '先在單人特訓練習吧！<br>打到第31球就會解鎖世界對戰！',
+                introBubbleGuideBattle: '從1000分開始，依比賽結果升降分數。<br>朝世界第一邁進吧！',
                 leagueStandard: '一般聯賽',
                 leagueMaster: '大師聯賽',
                 leagueStandardDesc: '1,200 PT 以下',
@@ -5171,6 +5232,8 @@
                 settingsSfx: 'Efectos (SFX)',
                 settingsAccountLabel: '☁️ Cuenta / Sincronización',
                 settingsClose: 'Listo',
+                introBubbleGuideSolo: '¡Practica primero en Entrenar Solo!<br>¡Llega a la bola 31 para abrir la Batalla!',
+                introBubbleGuideBattle: 'Empiezas con 1000 pts y subes o bajas según tu resultado.<br>¡Sé el mejor del mundo!',
                 leagueStandard: 'Liga Estándar',
                 leagueMaster: 'Liga Maestra',
                 leagueStandardDesc: '1,200 PT o menos',
@@ -5285,6 +5348,7 @@
             };
 
             setHtml('intro-bubble', t.introBubble);
+            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
             setTxt('start-btn-id', t.startBtn);
             setTxt('start-btn', t.startBtn);
             setTxt('battle-quick-main-btn', t.battleQuickMainBtn);
@@ -5640,6 +5704,7 @@
             const obs = new MutationObserver(() => {
                 if (!introEl.classList.contains('hidden') && gameState === 'INTRO') {
                     ensureTitleBgmOnIntro();
+                    if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
                 }
             });
             obs.observe(introEl, { attributes: true, attributeFilter: ['class'] });
@@ -10613,6 +10678,11 @@
                     joinedAt
                 }).then(() => {
                     battleViewMode = 'world8';
+            try {
+                localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+            } catch (e) {}
+            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
                     battleRoomId = targetCode;
                     battleRole = 'guest';
                     battlePlayerId = newPlayerId;
@@ -10694,6 +10764,11 @@
             clearRematchListener(battleRoomId);
 
             battleViewMode = 'world8';
+            try {
+                localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+            } catch (e) {}
+            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
             battleRoomId = code;
             battleRole = 'host';
             battlePlayerId = playerId;
@@ -11275,23 +11350,104 @@
             playTitleBgm();
         }
 
+        const W8_UNLOCK_ANIM_SEEN_KEY = 'infinitePitcherW8UnlockAnimSeen_v1';
+        const W8_BATTLE_GUIDE_DONE_KEY = 'infinitePitcherW8BattleGuideDone_v1';
+        let w8UnlockAnimRunning = false;
+
         function isWorld8BattleUnlocked() {
             return (typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0) >= 31;
+        }
+
+        function updateIntroGuideUI() {
+            const bubbleEl = document.getElementById('intro-bubble');
+            const soloBtn = document.getElementById('start-btn-id');
+            const battleBtn = document.getElementById('battle-quick-main-btn');
+            const t = (typeof TEXTS !== 'undefined' && TEXTS[currentLang]) ? TEXTS[currentLang] : (typeof TEXTS !== 'undefined' ? TEXTS.ko : null);
+            if (!t) return;
+
+            const unlocked = isWorld8BattleUnlocked();
+            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const hasPlayedBattle = (Number(stats.matches) || 0) > 0;
+            let guideDone = false;
+            try { guideDone = localStorage.getItem(W8_BATTLE_GUIDE_DONE_KEY) === '1'; } catch (e) {}
+
+            if (unlocked && hasPlayedBattle && !guideDone) {
+                try {
+                    localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                    localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+                } catch (e) {}
+                guideDone = true;
+            }
+
+            if (soloBtn) soloBtn.classList.toggle('intro-guide-pulse', !unlocked);
+            if (battleBtn) battleBtn.classList.toggle('intro-guide-pulse', unlocked && !guideDone && !w8UnlockAnimRunning);
+
+            if (bubbleEl) {
+                if (!unlocked && t.introBubbleGuideSolo) {
+                    bubbleEl.innerHTML = t.introBubbleGuideSolo;
+                } else if (unlocked && !guideDone && t.introBubbleGuideBattle) {
+                    bubbleEl.innerHTML = t.introBubbleGuideBattle;
+                } else if (t.introBubble) {
+                    bubbleEl.innerHTML = t.introBubble;
+                }
+            }
         }
 
         function updateWorld8BattleLockUI() {
             const btn = document.getElementById('battle-quick-main-btn');
             if (!btn) return;
+            if (w8UnlockAnimRunning) return;
+
             const unlocked = isWorld8BattleUnlocked();
             const label = TEXTS[currentLang] && TEXTS[currentLang].battleQuickMainBtn ? TEXTS[currentLang].battleQuickMainBtn : '⚡ 세계 8인 배틀';
-            if (unlocked) {
-                btn.classList.remove('locked');
-                btn.innerText = label;
-            } else {
+            const shortHint = TEXTS[currentLang] && TEXTS[currentLang].world8UnlockShort ? TEXTS[currentLang].world8UnlockShort : '솔로 31점 해금';
+
+            if (!unlocked) {
                 btn.classList.add('locked');
-                const shortHint = TEXTS[currentLang] && TEXTS[currentLang].world8UnlockShort ? TEXTS[currentLang].world8UnlockShort : '솔로 31점 해금';
+                btn.classList.remove('w8-unlocking');
                 btn.innerHTML = `🔒 ${label}<span class="w8-lock-sub">${shortHint}</span>`;
+                updateIntroGuideUI();
+                return;
             }
+
+            const stats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const hasPlayedBattle = (Number(stats.matches) || 0) > 0;
+            let animSeen = false;
+            try { animSeen = localStorage.getItem(W8_UNLOCK_ANIM_SEEN_KEY) === '1'; } catch (e) {}
+            const introEl = document.getElementById('intro-screen');
+            const introVisible = introEl && !introEl.classList.contains('hidden');
+
+            if (hasPlayedBattle && !animSeen) {
+                try {
+                    localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                    localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+                } catch (e) {}
+                animSeen = true;
+            }
+
+            if (!animSeen && introVisible) {
+                w8UnlockAnimRunning = true;
+                btn.classList.add('locked');
+                btn.innerHTML = `🔒 ${label}<span class="w8-lock-sub">${shortHint}</span>`;
+                updateIntroGuideUI();
+                setTimeout(() => {
+                    try { localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1'); } catch (e) {}
+                    btn.classList.remove('locked');
+                    btn.innerText = label;
+                    btn.classList.add('w8-unlocking');
+                    if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes();
+                    setTimeout(() => {
+                        btn.classList.remove('w8-unlocking');
+                        w8UnlockAnimRunning = false;
+                        updateIntroGuideUI();
+                    }, 980);
+                }, 360);
+                return;
+            }
+
+            btn.classList.remove('locked');
+            btn.innerText = label;
+            updateIntroGuideUI();
         }
 
         function startWorld8Battle() {
@@ -11316,6 +11472,11 @@
             }
 
             battleViewMode = 'world8';
+            try {
+                localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+            } catch (e) {}
+            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
             leaveBattleRoom(true);
             stopQuickMatchTimer(false);
             saveBattleNickname(permanentName);
