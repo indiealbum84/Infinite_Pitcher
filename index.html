@@ -380,17 +380,6 @@
         }
 
         /* Game UI */
-        #ui-layer {
-            position: absolute;
-            top: 56px;
-            left: 56px;
-            right: 56px;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 5;
-            pointer-events: none;
-        }
-
         .stat-box {
             background: linear-gradient(180deg, #fffdf2 0%, var(--palette-cream) 100%);
             padding: 17px 44px;
@@ -985,17 +974,6 @@
         }
 
         /* Battle Phase HUD & Banner & Vignette */
-        #battle-hud-wrap {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 25;
-            pointer-events: none;
-            width: 100%;
-        }
-
         /* 게임 중 8인 점수 HUD (상단 1줄 가로 전원 배치) */
         #battle-hud {
             position: relative;
@@ -1839,15 +1817,6 @@
         #battle-lobby-back-btn {
             top: calc(36px + var(--safe-top));
             left: 36px;
-        }
-
-        #ingame-back-btn.friend-pos {
-            top: calc(136px + var(--safe-top));
-            left: 36px;
-        }
-
-        #ingame-back-btn.hidden {
-            display: none !important;
         }
 
         #exit-confirm-modal {
@@ -3740,13 +3709,18 @@
 
     <div id="game-wrapper">
         <canvas id="canvas"></canvas>
-        <div id="ui-layer" class="hidden">
-            <div class="stat-box">
+        <div id="play-hud">
+            <button type="button" id="ingame-back-btn" ontouchstart="event.stopPropagation()" onmousedown="event.stopPropagation()" onclick="openExitConfirmModal()" aria-label="Back">←</button>
+            <div id="ui-layer" class="stat-box">
                 <span class="stat-label">SCORE</span>
                 <span id="score" class="stat-value">0</span>
             </div>
+            <div id="battle-hud"></div>
+            <div id="battle-phase-pill" class="battle-phase-pill hidden">
+                <img class="battle-phase-icon" id="battle-phase-pill-art" alt="" hidden>
+                <span id="battle-phase-pill-label">PHASE 1</span>
+            </div>
         </div>
-        <button type="button" id="ingame-back-btn" class="hidden" ontouchstart="event.stopPropagation()" onmousedown="event.stopPropagation()" onclick="openExitConfirmModal()" aria-label="Back">←</button>
         <div id="exit-confirm-modal" class="hidden" onclick="if(event.target===this) closeExitConfirmModal()">
             <div class="exit-confirm-box" ontouchstart="event.stopPropagation()" onmousedown="event.stopPropagation()">
                 <p id="exit-confirm-msg" class="exit-confirm-msg">로비로 나가시겠습니까?</p>
@@ -4011,15 +3985,6 @@
             </div>
 
             <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;color:#1e293b;border-color:#1e293b;" id="battle-cancel-btn">メインへ</button>
-        </div>
-
-        <!-- 대전 중 상단 HUD 및 페이즈 배지 -->
-        <div id="battle-hud-wrap">
-            <div id="battle-hud"></div>
-            <div id="battle-phase-pill" class="battle-phase-pill hidden">
-                <img class="battle-phase-icon" id="battle-phase-pill-art" alt="" hidden>
-                <span id="battle-phase-pill-label">PHASE 1</span>
-            </div>
         </div>
 
         <!-- 대전 페이즈 전환 알림 배너 -->
@@ -5727,8 +5692,6 @@
             battleRoomId = null;
             battlePlayerId = null;
             battlePlayers = {};
-            const hudEl = document.getElementById('battle-hud');
-            if (hudEl) hudEl.style.display = 'none';
             const pillEl = document.getElementById('battle-phase-pill');
             if (pillEl) pillEl.classList.add('hidden');
             startGame();
@@ -5826,6 +5789,7 @@
          */
         const BASE_W = 1080;
         const BASE_H = 1920;
+        const PLAY_HUD_HEIGHT = 132;
         const LEGACY_BASE_W = 390;
         const FRAME_SCALE = BASE_W / LEGACY_BASE_W;
 
@@ -5841,6 +5805,10 @@
 
         function getBlockHeight() {
             return getBlockSize() * BLOCK_Y_RATIO;
+        }
+
+        function getBoardRowY(rowIndex) {
+            return PLAY_HUD_HEIGHT + (9 - rowIndex) * getBlockHeight();
         }
 
         let viewportResizeRaf = 0;
@@ -5890,6 +5858,7 @@
             const scaleY = availH / BASE_H;
             const scale = Math.min(scaleX, scaleY);
             const wrapper = document.getElementById('game-wrapper');
+            wrapper.style.setProperty('--play-hud-height', `${PLAY_HUD_HEIGHT}px`);
             wrapper.style.left = `${viewport.offsetLeft + safe.left + availW / 2}px`;
             wrapper.style.top = `${viewport.offsetTop + safe.top + availH / 2}px`;
             wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
@@ -5966,7 +5935,7 @@
             blocks = [];
             for (let r = 0; r < 10; r++) {
                 let row = createRow(r * 10 + 1);
-                row.forEach(b => b.y = (9 - r) * getBlockHeight()); // 역순 배치
+                row.forEach(b => b.y = getBoardRowY(r)); // 역순 배치
                 blocks.push(...row);
             }
         }
@@ -6317,19 +6286,8 @@
                 canvasEl.style.visibility = 'visible';
                 canvasEl.style.opacity = '1';
             }
-            if (battleMode) {
-                document.getElementById('ui-layer').classList.add('hidden');
-                document.getElementById('battle-hud').style.display = 'flex';
-            } else {
-                document.getElementById('ui-layer').classList.remove('hidden');
-                document.getElementById('battle-hud').style.display = 'none';
-                const pill = document.getElementById('battle-phase-pill');
-                if (pill) pill.classList.add('hidden');
-                const vignette = document.getElementById('battle-final-vignette');
-                if (vignette) vignette.classList.remove('active');
-            }
+            setPlayHudMode(isWorldBattleRules() ? 'world' : battleMode ? 'friend' : 'solo');
             exitConfirmPaused = false;
-            updateIngameBackBtnVisibility();
             updateUI();
             draw();
 
@@ -6394,7 +6352,6 @@
                 } else {
                     countdownScreen.classList.add('hidden');
                     gameState = 'PLAYING';
-                    updateIngameBackBtnVisibility();
                     sessionPlayStartedAt = performance.now();
                     lastPitchTime = performance.now();
                     if (TEST_MODE_ENABLED && skipToNum && skipToNum > 1) testSkipTo(skipToNum);
@@ -6479,7 +6436,7 @@
                 const logicalRow = rowsCleared + r;
                 const row = createRow(firstVisibleRowStart + r * 10);
                 row.forEach(b => {
-                    b.y = (9 - logicalRow) * blockHeight;
+                    b.y = getBoardRowY(logicalRow);
                     b.active = b.num > targetNumber;
                 });
                 blocks.push(...row);
@@ -6514,7 +6471,7 @@
             exitConfirmPaused = false;
             const exitModal = document.getElementById('exit-confirm-modal');
             if (exitModal) exitModal.classList.add('hidden');
-            updateIngameBackBtnVisibility();
+            setPlayHudMode();
             setPitcherThrowing(false);
             stopAllBgm();
             const canvasEl = document.getElementById('canvas');
@@ -7009,14 +6966,10 @@
 
         let exitConfirmPaused = false;
 
-        function updateIngameBackBtnVisibility() {
-            const btn = document.getElementById('ingame-back-btn');
-            if (!btn) return;
-            const isFriendBattle = battleMode && battleViewMode === 'friend';
-            const inActivePlay = gameState === 'PLAYING' || gameState === 'COUNTDOWN';
-            const shouldShow = inActivePlay && (!battleMode || isFriendBattle);
-            btn.classList.toggle('friend-pos', isFriendBattle);
-            btn.classList.toggle('hidden', !shouldShow);
+        function setPlayHudMode(mode) {
+            const hud = document.getElementById('play-hud');
+            if (mode) hud.dataset.mode = mode;
+            else delete hud.dataset.mode;
         }
 
         function openExitConfirmModal(fromLobby = false) {
@@ -7060,8 +7013,6 @@
             exitConfirmPaused = false;
             const modal = document.getElementById('exit-confirm-modal');
             if (modal) modal.classList.add('hidden');
-            const backBtn = document.getElementById('ingame-back-btn');
-            if (backBtn) backBtn.classList.add('hidden');
             const battleScreen = document.getElementById('battle-screen');
             if (battleScreen && !battleScreen.classList.contains('hidden')) {
                 cancelBattle();
@@ -11215,7 +11166,7 @@
             leaveBattleRoom(removeHostRoom);
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
-            document.getElementById('battle-hud').style.display = 'none';
+            setPlayHudMode();
             stopAllBgm();
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
@@ -11706,7 +11657,7 @@
                     battleResultShown = false;
                     battleRematchStarted = false;
                     document.getElementById('battle-result-screen').classList.add('hidden');
-                    document.getElementById('battle-hud').style.display = 'none';
+                    setPlayHudMode();
                     document.getElementById('battle-screen').classList.remove('hidden');
                     document.getElementById('intro-screen').classList.add('hidden');
                     showBattleRoomStep();
@@ -12029,7 +11980,6 @@
             if (vignette) vignette.classList.remove('active');
             updateBattlePhasePill(1);
 
-            document.getElementById('battle-hud').style.display = 'flex';
             renderBattleHud({ players: battlePlayers });
 
             document.getElementById('battle-screen').classList.add('hidden');
@@ -12315,18 +12265,13 @@
             const myRank = isEnded ? Number(myPlayer.rank || rankMap[battlePlayerId] || 0) : 0;
             const topScore = rankedList.length ? Number(rankedList[0].score || 0) : 0;
 
-            const hudEl = document.getElementById('battle-hud');
-            if (hudEl && hudEl.style.display !== 'none') {
-                hudEl.style.display = 'none';
-            }
+            setPlayHudMode();
             const goScreen = document.getElementById('game-over-screen');
             if (goScreen && !goScreen.classList.contains('hidden')) {
                 goScreen.classList.add('hidden');
             }
             const canvasEl = document.getElementById('canvas');
             if (firstResultRender) {
-                const uiLayerEl = document.getElementById('ui-layer');
-                if (uiLayerEl) uiLayerEl.classList.add('hidden');
                 const vigEl = document.getElementById('battle-final-vignette');
                 if (vigEl) vigEl.classList.remove('active');
                 const bannerEl = document.getElementById('battle-phase-banner');
@@ -12495,7 +12440,7 @@
                 canvasEl.style.opacity = '1';
             }
             document.getElementById('battle-screen').classList.add('hidden');
-            document.getElementById('battle-hud').style.display = 'none';
+            setPlayHudMode();
             document.getElementById('intro-screen').classList.remove('hidden');
             updateIntroProfilePillUI();
         }
@@ -12573,8 +12518,6 @@
             exitConfirmPaused = false;
             const exitModal = document.getElementById('exit-confirm-modal');
             if (exitModal) exitModal.classList.add('hidden');
-            const backBtn = document.getElementById('ingame-back-btn');
-            if (backBtn) backBtn.classList.add('hidden');
             leaveBattleRoom(true);
             stopQuickMatchTimer(false);
             battleMode = false;
@@ -12587,8 +12530,7 @@
             }
             document.getElementById('game-over-screen').classList.add('hidden');
             document.getElementById('leaderboard-modal').classList.add('hidden');
-            document.getElementById('battle-hud').style.display = 'none';
-            document.getElementById('ui-layer').classList.add('hidden');
+            setPlayHudMode();
             stopAllBgm();
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
@@ -12658,8 +12600,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
             document.getElementById('battle-result-screen').classList.add('hidden');
-            document.getElementById('battle-hud').style.display = 'none';
-            document.getElementById('ui-layer').classList.add('hidden');
+            setPlayHudMode();
             battleRatingProcessed = false;
             lastProvisionalBattleRank = 0;
             lastBattleResultRatingData = null;

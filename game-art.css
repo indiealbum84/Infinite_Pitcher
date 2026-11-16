@@ -825,3 +825,65 @@
     cursor: pointer;
     touch-action: manipulation;
 }
+
+/* This strip shares the canvas board's top offset. */
+#play-hud {
+    position: absolute;
+    inset: 0 0 auto;
+    display: none;
+    height: var(--play-hud-height);
+    padding: 8px 16px;
+    border-bottom: 4px solid var(--showa-ink);
+    background: var(--showa-print) 0 0 / 8px 8px, var(--showa-cream);
+    align-items: center;
+    gap: 12px;
+    z-index: 25;
+    pointer-events: none;
+}
+#play-hud[data-mode] {
+    display: flex;
+}
+#play-hud #ingame-back-btn {
+    position: static;
+    display: none;
+    flex: 0 0 100px;
+    height: 88px;
+    padding: 0;
+    pointer-events: auto;
+}
+#play-hud:is([data-mode="solo"], [data-mode="friend"]) #ingame-back-btn,
+#play-hud[data-mode="solo"] #ui-layer,
+#play-hud:is([data-mode="world"], [data-mode="friend"]) #battle-hud {
+    display: flex;
+}
+#play-hud #ui-layer {
+    display: none;
+    margin-inline-start: auto;
+}
+#play-hud #battle-hud {
+    flex: 1;
+    min-width: 0;
+    height: 70px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    backdrop-filter: none;
+}
+#play-hud .battle-hud-box {
+    padding: 3px 4px;
+}
+#play-hud[data-mode="world"] {
+    flex-direction: column;
+    gap: 6px;
+}
+#play-hud[data-mode="world"] #battle-phase-pill:not(.hidden) {
+    flex: 0 0 40px;
+    margin: 0;
+    padding: 0 20px;
+    border-width: 3px;
+    font-size: 24px;
+    box-shadow: 0 4px 0 var(--showa-ink);
+}
+#play-hud #battle-phase-pill .battle-phase-icon {
+    height: 26px;
+}
