@@ -861,6 +861,16 @@
 #play-hud #ui-layer {
     display: none;
     margin-inline-start: auto;
+    gap: 10px;
+    padding-inline: 10px;
+}
+#play-hud .stat-label {
+    font-size: 24px;
+    letter-spacing: 2px;
+}
+#play-hud .stat-value {
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
 }
 #play-hud #battle-hud {
     flex: 1;
