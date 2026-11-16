@@ -1525,7 +1525,8 @@
 
         .skin-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-items: stretch;
             gap: 10px;
             width: 100%;
         }
@@ -1540,6 +1541,10 @@
             align-items: center;
             text-align: center;
             gap: 6px;
+            min-width: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
             box-shadow: 0 4px 0 #cbd5e1, 0 4px 0 1px #000000;
             transition: transform 0.08s ease;
             position: relative;
@@ -1587,6 +1592,13 @@
             font-size: 15px;
             font-weight: 900;
             color: #0f172a;
+            width: 100%;
+            height: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .skin-card-desc {
@@ -1594,22 +1606,34 @@
             font-weight: 700;
             color: #334155;
             line-height: 1.25;
-            min-height: 25px;
+            width: 100%;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            word-break: keep-all;
+            overflow-wrap: break-word;
         }
 
         .skin-card-condition {
             font-size: 11px;
             font-weight: 700;
             color: #64748b;
-            min-height: 28px;
+            width: 100%;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            word-break: keep-all;
+            overflow-wrap: break-word;
         }
 
         .skin-card-btn {
             width: 100%;
-            padding: 6px 0;
+            margin-top: auto;
+            padding: 6px 4px;
             border: 2px solid #000000;
             border-radius: 10px;
             font-size: 13px;
@@ -1618,6 +1642,9 @@
             box-shadow: 0 2px 0 #000000;
             touch-action: auto !important;
             font-family: inherit;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .skin-card-btn.equip-btn {
@@ -2389,7 +2416,7 @@
         }
 
         .skin-grid {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 18px;
         }
 
@@ -2412,18 +2439,21 @@
         .skin-card-name {
             font-size: 32px;
             line-height: 1.15;
+            height: 38px;
         }
 
         .skin-card-desc {
             font-size: 22px;
             line-height: 1.25;
-            min-height: 56px;
+            height: 58px;
+            min-height: 58px;
         }
 
         .skin-card-condition {
             font-size: 22px;
             line-height: 1.25;
-            min-height: 58px;
+            height: 60px;
+            min-height: 60px;
         }
 
         .skin-card-btn {
@@ -5322,6 +5352,16 @@
                 if (el) fitBoxText(el, minPx, true);
             });
             document.querySelectorAll('.settings-account-btn').forEach(btn => fitBoxText(btn, 10, true));
+            document.querySelectorAll('#skin-grid .skin-card-name, #skin-grid .skin-card-btn').forEach(el => fitBoxText(el, 12, false));
+            document.querySelectorAll('#skin-grid .skin-card-desc, #skin-grid .skin-card-condition').forEach(el => {
+                el.style.removeProperty('font-size');
+                if (el.clientWidth <= 0 || el.clientHeight <= 0) return;
+                let size = parseFloat(window.getComputedStyle(el).fontSize) || 22;
+                while ((el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) && size > 12) {
+                    size = Math.max(12, size - 1);
+                    el.style.fontSize = size + 'px';
+                }
+            });
         }
 
         (function observeScreenOpenForFit() {
