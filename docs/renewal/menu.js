@@ -33,13 +33,11 @@ const masthead = document.querySelector('.masthead');
 const format = new Intl.NumberFormat('ja-JP');
 const WORLD_UNLOCK_SCORE = 31;
 const MATCH_SECONDS = 20;
-const PITCH_DURATION_MS = 3040; // Total frame duration of title-pitch.gif.
 const title = '<span>インフィニティ</span><span>ピッチング</span>';
+const titleArt = '<img class="scene-art" src="assets/title-pitch-finish.webp" alt="ピッチャーが投げたボールが手前に迫る場面" fetchpriority="high">';
 let player = { ...scenarios.new };
 let page;
 let matchTimer;
-let pitchTimer;
-let pitchRun = 0;
 let requestedMode = 'home';
 let rankMode = 'world';
 let rankScope = 'global';
@@ -84,7 +82,7 @@ function home() {
   const rating = unlocked ? format.format(player.rating) : '—';
 
   return `<section class="portrait-scene lobby" aria-label="メインメニュー">
-    <img class="scene-art" src="assets/title-pitch-finish.webp" alt="ピッチャーが投げたボールが手前に迫る場面" fetchpriority="high">
+    ${titleArt}
     <nav class="corner-menu" aria-label="サブメニュー">
       ${action('TOP 1000', 'ranking', 'corner-button rank-button')}
       <div class="corner-group">
@@ -168,14 +166,9 @@ function settings() {
 const renderers = {
   splash: () => `
     <section class="portrait-scene opening" aria-labelledby="opening-title">
-      <img class="scene-art" src="assets/opening-fullshot.webp" alt="放課後のグラウンドでマウンドに立つピッチャー" fetchpriority="high">
+      ${titleArt}
       <h2 id="opening-title" class="game-title" tabindex="-1">${title}</h2>
-      ${action('スタート', 'pitch')}
-    </section>`,
-  pitch: () => `
-    <section class="portrait-scene pitch-scene" aria-label="投球アニメーション">
-      <img class="scene-art" src="assets/opening-fullshot.webp" alt="">
-      ${action('スキップ', 'home', 'skip-pitch')}
+      ${action('スタート', 'home')}
     </section>`,
   name: () => panel('選手名を登録', `
     <form class="form" id="name-form">
@@ -259,43 +252,13 @@ function startMatching() {
 
 function navigate(next, focus = true) {
   clearInterval(matchTimer);
-  clearTimeout(pitchTimer);
   page = next === 'world' && !canEnterWorld() ? 'unlock' : next;
   display.innerHTML = renderers[page]();
   const playerLabel = player.name || 'ゲスト';
   display.querySelectorAll('[data-player-name]').forEach(element => { element.textContent = playerLabel; });
-  masthead.hidden = ['splash', 'pitch', 'home', 'name'].includes(page);
+  masthead.hidden = ['splash', 'home', 'name'].includes(page);
   if (page === 'matching') startMatching();
-  if (focus) display.querySelector('h2, .skip-pitch')?.focus();
-}
-
-function playPitch() {
-  if (page !== 'splash') return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    navigate('home');
-    return;
-  }
-
-  navigate('pitch');
-  const scene = display.querySelector('.pitch-scene');
-  const still = scene.querySelector('.scene-art');
-  const animation = new Image();
-  animation.className = 'scene-art';
-  animation.alt = '';
-  animation.fetchPriority = 'high';
-  const finish = () => {
-    if (scene.isConnected) navigate('home');
-  };
-  pitchTimer = setTimeout(finish, 4000);
-  animation.onload = () => {
-    if (!still.isConnected) return;
-    still.replaceWith(animation);
-    clearTimeout(pitchTimer);
-    pitchTimer = setTimeout(finish, PITCH_DURATION_MS);
-  };
-  animation.onerror = finish;
-  const run = pitchRun++;
-  animation.src = run === 0 ? 'assets/title-pitch.gif' : `assets/title-pitch.gif?replay=${run}`;
+  if (focus) display.querySelector('h2')?.focus();
 }
 
 function chooseScenario(key) {
@@ -321,7 +284,6 @@ document.addEventListener('click', event => {
   if (!button) return;
   const { scenario, go, rankMode: modeFilter, rankScope: scopeFilter, equip } = button.dataset;
   if (scenario) chooseScenario(scenario);
-  else if (go === 'pitch') playPitch();
   else if (['solo', 'world', 'friend'].includes(go) && !player.name) {
     requestedMode = go;
     navigate('name');
