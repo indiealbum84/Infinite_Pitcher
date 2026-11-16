@@ -358,6 +358,20 @@
             margin-top: 0;
             line-height: 1.1;
             white-space: nowrap;
+            letter-spacing: 0.5px;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        html[lang="en"] #intro-screen .intro-main-actions .start-btn,
+        html[lang="es"] #intro-screen .intro-main-actions .start-btn,
+        html[lang="ja"] #intro-screen .intro-main-actions .start-btn {
+            letter-spacing: 0;
         }
 
         #intro-screen #battle-quick-main-btn {
@@ -2737,6 +2751,10 @@
             box-shadow: 0 7px 0 var(--palette-yellow), 0 7px 0 4px #000000;
             text-align: center;
             margin-bottom: 2px;
+            max-width: calc(100% - 32px);
+            box-sizing: border-box;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         /* 결과 화면 랭킹 점수(PT) 및 연승 배지 */
@@ -3398,7 +3416,8 @@
             color: var(--palette-ink) !important;
             width: 100%;
             padding: 26px 32px !important;
-            font-size: 44px !important;
+            font-size: 44px;
+            letter-spacing: 0.5px !important;
             border-radius: 34px !important;
             margin-top: 4px !important;
             box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000 !important;
@@ -3410,7 +3429,8 @@
             color: #ffffff !important;
             width: 100%;
             padding: 26px 32px !important;
-            font-size: 42px !important;
+            font-size: 42px;
+            letter-spacing: 0.5px !important;
             border-radius: 34px !important;
             box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 6px #000000 !important;
             text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25) !important;
@@ -5190,6 +5210,65 @@
             btn.innerHTML = `${textFor('rematchBtn')} (<span id="rematch-countdown">${currentSeconds}</span>)`;
         }
 
+        function fitBoxText(el, minPx = 12, allowWrapFallback = true) {
+            if (!el) return;
+            el.style.removeProperty('font-size');
+            el.style.removeProperty('white-space');
+            if (el.clientWidth <= 0) return;
+            const cs = window.getComputedStyle(el);
+            let size = parseFloat(cs.fontSize) || 24;
+            while (el.scrollWidth > el.clientWidth + 1 && size > minPx) {
+                size = Math.max(minPx, size - 1.5);
+                el.style.fontSize = size + 'px';
+            }
+            if (allowWrapFallback && el.scrollWidth > el.clientWidth + 1) {
+                el.style.whiteSpace = 'normal';
+                el.style.wordBreak = 'keep-all';
+                el.style.overflowWrap = 'break-word';
+            }
+        }
+
+        function fitLocalizedBoxes() {
+            const targets = [
+                ['start-btn-id', 20],
+                ['battle-friend-btn', 20],
+                ['battle-quick-main-btn', 24],
+                ['play-gate-ad-btn', 22],
+                ['play-gate-noads-btn', 20],
+                ['play-gate-restore-btn', 18],
+                ['play-gate-close-btn', 18],
+                ['initial-name-submit-btn', 22],
+                ['initial-google-btn', 18],
+                ['initial-apple-btn', 18],
+                ['battle-quick-btn', 20],
+                ['battle-join-btn', 18],
+                ['battle-start-btn', 18],
+                ['battle-exit-btn', 18],
+                ['retry-btn', 22],
+                ['home-btn', 18],
+                ['battle-league-pill', 18],
+                ['intro-tab-battle-global', 16],
+                ['intro-tab-battle-country', 16],
+                ['intro-tab-solo-global', 16],
+                ['intro-tab-solo-country', 16],
+                ['settings-close-btn', 18]
+            ];
+            targets.forEach(([id, minPx]) => {
+                const el = document.getElementById(id);
+                if (el) fitBoxText(el, minPx, true);
+            });
+            document.querySelectorAll('.settings-account-btn').forEach(btn => fitBoxText(btn, 10, true));
+        }
+
+        (function observeScreenOpenForFit() {
+            const root = document.getElementById('game-container') || document.body;
+            if (!root || typeof MutationObserver === 'undefined') return;
+            const obs = new MutationObserver(() => {
+                requestAnimationFrame(() => fitLocalizedBoxes());
+            });
+            obs.observe(root, { subtree: true, attributes: true, attributeFilter: ['class'] });
+        })();
+
         function applyLang(lang) {
             currentLang = lang;
             document.documentElement.lang = lang;
@@ -5271,6 +5350,10 @@
             });
             updateSettingsUI();
             applyBattleLang();
+            fitLocalizedBoxes();
+            if (typeof requestAnimationFrame === 'function') {
+                requestAnimationFrame(() => fitLocalizedBoxes());
+            }
         }
 
         function setLanguage(lang) {
@@ -5299,6 +5382,7 @@
             updateSettingsUI();
             const modal = document.getElementById('settings-modal');
             if (modal) modal.classList.remove('hidden');
+            if (typeof fitLocalizedBoxes === 'function') requestAnimationFrame(() => fitLocalizedBoxes());
         }
 
         function closeSettingsModal() {
