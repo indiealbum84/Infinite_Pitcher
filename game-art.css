@@ -227,13 +227,6 @@
     background-color: var(--showa-gold);
     color: var(--showa-ink);
 }
-/* Place status below the 864px-high number board in the logical frame. */
-#ui-layer,
-#battle-hud-wrap,
-#ingame-back-btn {
-    top: 890px;
-}
-#ingame-back-btn.friend-pos { top: 1020px; }
 .stat-box {
     display: flex;
     align-items: center;
