@@ -8579,7 +8579,7 @@
                         matches: Math.max(Number(current.battleStats?.matches) || 0, payload.battleStats.matches),
                         wins: Math.max(Number(current.battleStats?.wins) || 0, payload.battleStats.wins)
                     },
-                    battleRating: Math.max(600, Number(current.battleRating) || payload.battleRating),
+                    battleRating: Math.max(600, Number(payload.battleRating) || Number(current.battleRating) || 1000),
                     battleMaxStreak: Math.max(Number(current.battleMaxStreak) || 0, payload.battleMaxStreak),
                     dailyBattleMaxMatches: Math.max(Number(current.dailyBattleMaxMatches) || 0, payload.dailyBattleMaxMatches),
                     equippedSkin: payload.equippedSkin || current.equippedSkin || 'classic',
@@ -12336,41 +12336,46 @@
                 };
 
                 const remainingIds = ids.filter(id => !players[id].done);
+                const maxDoneScore = ids
+                    .filter(id => players[id].done)
+                    .reduce((m, id) => Math.max(m, Number(players[id].score || 0)), -1);
+                const shouldEndRoom = remainingIds.length === 0 || (
+                    remainingIds.length === 1 &&
+                    Number(players[remainingIds[0]].score || 0) > maxDoneScore
+                );
                 let finishCounter = finishOrder;
-                if (remainingIds.length <= 1) {
-                    const winnerId = remainingIds.length === 1 ? remainingIds[0] : targetPlayerId;
+                if (shouldEndRoom) {
                     if (remainingIds.length === 1) {
-                        players[winnerId] = {
-                            ...players[winnerId],
+                        const lastId = remainingIds[0];
+                        players[lastId] = {
+                            ...players[lastId],
                             done: true,
                             finishOrder: total,
                             finishedAt,
-                            score: Number(players[winnerId].score || 0)
+                            score: Number(players[lastId].score || 0)
                         };
                     }
-                    players[winnerId].rank = 1;
-                    players[winnerId].wins = Math.max(0, Number(players[winnerId].wins || 0)) + 1;
 
-                    // 1위(최후 생존자)와 동점인 경우 공동 1위, 그 외 2~8위는 최종 점수 내림차순 + 올림픽식 공동 순위
-                    const others = ids.filter(id => id !== winnerId).sort((a, b) => {
+                    // 모든 플레이어(봇 포함)를 최종 점수 내림차순 + 올림픽식 공동 순위로 확정
+                    const rankedAll = [...ids].sort((a, b) => {
                         const scoreDiff = Number(players[b].score || 0) - Number(players[a].score || 0);
                         if (scoreDiff !== 0) return scoreDiff;
                         const orderDiff = Number(players[b].finishOrder || 0) - Number(players[a].finishOrder || 0);
                         if (orderDiff !== 0) return orderDiff;
                         return a.localeCompare(b);
                     });
-                    let prevScore = Number(players[winnerId].score || 0);
+                    let prevScore = null;
                     let currentRank = 1;
-                    others.forEach((oid, idx) => {
-                        const sc = Number(players[oid].score || 0);
-                        if (idx === 0 && sc > prevScore) {
-                            currentRank = 2;
+                    rankedAll.forEach((pid, idx) => {
+                        const sc = Number(players[pid].score || 0);
+                        if (idx === 0) {
+                            currentRank = 1;
                         } else if (sc < prevScore) {
-                            currentRank = idx + 2;
+                            currentRank = idx + 1;
                         }
-                        players[oid].rank = currentRank;
+                        players[pid].rank = currentRank;
                         if (currentRank === 1) {
-                            players[oid].wins = Math.max(0, Number(players[oid].wins || 0)) + 1;
+                            players[pid].wins = Math.max(0, Number(players[pid].wins || 0)) + 1;
                         }
                         prevScore = sc;
                     });
