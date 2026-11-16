@@ -33,7 +33,7 @@ const masthead = document.querySelector('.masthead');
 const format = new Intl.NumberFormat('ja-JP');
 const WORLD_UNLOCK_SCORE = 31;
 const MATCH_SECONDS = 20;
-const PITCH_DURATION_MS = 1480; // Total frame duration of title-pitch.gif.
+const PITCH_DURATION_MS = 1620; // Total frame duration of title-pitch.gif.
 const title = '<span>インフィニティ</span><span>ピッチング</span>';
 let player = { ...scenarios.new };
 let page;
@@ -282,6 +282,7 @@ function playPitch() {
   const animation = new Image();
   animation.className = 'scene-art';
   animation.alt = '';
+  animation.fetchPriority = 'high';
   const finish = () => {
     if (scene.isConnected) navigate('home');
   };
