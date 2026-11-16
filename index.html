@@ -4069,8 +4069,8 @@
         const cartImg = loadGameArt('cart');
         const pitcherImg = loadGameArt('pitcher-ready');
         const pitcherThrowImg = loadGameArt('pitcher-throw');
-        const ingameFieldBgImg = loadGameArt('field');
-        const ingameStadiumBgImg = loadGameArt('stadium');
+        const ingameFieldBgImg = loadGameArt('field-perspective');
+        const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
         const ballMirrorImg = loadGameArt('mirrorball');
         const ballStripeImg = loadGameArt('stripeball');
@@ -5944,11 +5944,15 @@
          * INPUT HANDLING
          */
         let isDragging = false;
+        let dragFieldScale = 1;
 
-        function handleStart(clientX) {
+        function handleStart(clientX, clientY) {
             if (testMode) return;
             if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             isDragging = true;
+            const rect = canvas.getBoundingClientRect();
+            const canvasY = (clientY - rect.top) / rect.height * height;
+            dragFieldScale = getFieldScale(canvasY);
             updatePlayerPosition(clientX);
         }
 
@@ -5966,12 +5970,13 @@
         function updatePlayerPosition(clientX) {
             const rect = canvas.getBoundingClientRect();
             const canvasX = ((clientX - rect.left) / rect.width) * width;
-            player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), canvasX));
+            const laneX = width / 2 + (canvasX - width / 2) / dragFieldScale;
+            player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), laneX));
         }
 
         // Mouse Events
         canvas.addEventListener('mousedown', (e) => {
-            handleStart(e.clientX);
+            handleStart(e.clientX, e.clientY);
         });
 
         window.addEventListener('mousemove', (e) => {
@@ -5986,7 +5991,7 @@
         canvas.addEventListener('touchstart', (e) => {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             if (e.touches.length > 0) {
-                handleStart(e.touches[0].clientX);
+                handleStart(e.touches[0].clientX, e.touches[0].clientY);
             }
         }, { passive: true });
 
@@ -7249,6 +7254,32 @@
         /**
          * RENDERING
          */
+        // Project the existing lane coordinates at render time, keeping the board and hit tests in the same logical grid.
+        function projectBoardY(y) {
+            const boardDepth = 10 * getBlockHeight();
+            const distance = y - PLAY_HUD_HEIGHT;
+            const depth = Math.min(1, Math.max(0, distance / boardDepth));
+            return y - distance * 0.32 * (1 - depth) ** 2;
+        }
+
+        function getFieldScale(screenY) {
+            const releaseY = player.y - scalePx(20);
+            const depth = Math.min(1, Math.max(0, (releaseY - screenY) / (releaseY - PLAY_HUD_HEIGHT)));
+            return 1 - 0.32 * depth ** 2.5;
+        }
+
+        function projectFieldX(x, fieldScale) {
+            return width / 2 + (x - width / 2) * fieldScale;
+        }
+
+        function tracePitchLane(x, fromY, toY) {
+            const segments = 16;
+            for (let step = 1; step <= segments; step++) {
+                const y = fromY + (toY - fromY) * step / segments;
+                ctx.lineTo(projectFieldX(x, getFieldScale(y)), y);
+            }
+        }
+
         function drawSpecialBallArt(img, x, y, size, anchorX, anchorY) {
             const artHeight = size * img.naturalHeight / img.naturalWidth;
             ctx.drawImage(img, x - size * anchorX, y - artHeight * anchorY, size, artHeight);
@@ -7257,55 +7288,44 @@
         function draw() {
             ctx.clearRect(0, 0, width, height);
 
-            const stripeW = getBlockSize();
             const fieldArt = isWorldBattleRules() && isSpriteReady(ingameStadiumBgImg)
                 ? ingameStadiumBgImg : ingameFieldBgImg;
             if (isSpriteReady(fieldArt)) {
                 ctx.drawImage(fieldArt, 0, 0, width, height);
             } else {
-                // 잔디 배경 — 짝수/홀수 줄을 교차해 자연스러운 잔디 줄무늬 연출
-                const stripeColors = ['#426c51', '#325d48'];
-                for (let i = 0; i < 10; i++) {
-                    ctx.fillStyle = stripeColors[i % 2];
-                    ctx.fillRect(i * stripeW, 0, stripeW, height);
-                }
-
-                // 잔디 질감 — 세로 방향 미세 하이라이트
-                for (let i = 0; i < 10; i++) {
-                    const gx = i * stripeW;
-                    const grad = ctx.createLinearGradient(gx, 0, gx + stripeW, 0);
-                    grad.addColorStop(0,   'rgba(255,255,255,0.04)');
-                    grad.addColorStop(0.5, 'rgba(255,255,255,0.10)');
-                    grad.addColorStop(1,   'rgba(255,255,255,0.04)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(gx, 0, stripeW, height);
-                }
-
-                // 흰색 세로 라인
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-                ctx.lineWidth = scalePx(1);
-                for (let i = 1; i < 10; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(i * stripeW, 0);
-                    ctx.lineTo(i * stripeW, height);
-                    ctx.stroke();
-                }
+                ctx.fillStyle = '#325d48';
+                ctx.fillRect(0, 0, width, height);
             }
 
-            // 파이어볼 차징 중: 해당 열 강조
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, PLAY_HUD_HEIGHT, width, height - PLAY_HUD_HEIGHT);
+            ctx.clip();
+
+            const releaseY = player.y - scalePx(20);
+            const farScale = getFieldScale(PLAY_HUD_HEIGHT);
             if (fireballCharging && fireballColumn >= 0) {
+                const laneWidth = getBlockSize();
+                const left = fireballColumn * laneWidth;
+                const right = left + laneWidth;
                 ctx.fillStyle = 'rgba(194, 119, 37, 0.28)';
-                ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
+                ctx.beginPath();
+                ctx.moveTo(left, releaseY);
+                tracePitchLane(left, releaseY, PLAY_HUD_HEIGHT);
+                ctx.lineTo(projectFieldX(right, farScale), PLAY_HUD_HEIGHT);
+                tracePitchLane(right, PLAY_HUD_HEIGHT, releaseY);
+                ctx.closePath();
+                ctx.fill();
             }
 
-            // Draw pitch guide line
+            // Follow the same projected lane as the ball.
             ctx.save();
             ctx.setLineDash([scalePx(6), scalePx(8)]);
             ctx.strokeStyle = 'rgba(255, 242, 207, 0.9)';
             ctx.lineWidth = scalePx(1.5);
             ctx.beginPath();
-            ctx.moveTo(player.x, player.y - scalePx(20));
-            ctx.lineTo(player.x, 0);
+            ctx.moveTo(player.x, releaseY);
+            tracePitchLane(player.x, releaseY, PLAY_HUD_HEIGHT);
             ctx.stroke();
             ctx.restore();
 
@@ -7337,20 +7357,27 @@
             // Draw Blocks
             blocks.forEach(blk => {
                 if (!blk.active) return;
-                let drawY = blk.y + scrollY;
-                if (drawY > height || drawY < -blk.height) return;
+                const drawY = blk.y + scrollY;
+                if (drawY > height || drawY + blk.height <= PLAY_HUD_HEIGHT) return;
 
                 const isNext = blk.num === nextExpectedNumber;
                 const isFireballNext = isWorldBattleRules()
                     ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
-                ctx.drawImage(getBlockTileCanvas(blk.size, blk.height, isGuide), blk.x, drawY, blk.size, blk.height);
+                const top = projectBoardY(drawY);
+                const bottom = projectBoardY(drawY + blk.height);
+                const tileHeight = bottom - top;
+                const centerY = projectBoardY(drawY + blk.height / 2);
+                const fieldScale = getFieldScale(centerY);
+                ctx.drawImage(
+                    getBlockTileCanvas(blk.size, blk.height, isGuide),
+                    projectFieldX(blk.x, fieldScale), top, blk.size * fieldScale, tileHeight
+                );
 
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                const tx = blk.x + blk.size / 2;
-                const ty = drawY + blk.height / 2;
+                const centerX = projectFieldX(blk.x + blk.size / 2, fieldScale);
 
                 // 웨이브 중: 아래 행부터 위로 순차 적용
                 let mirrorWaveFlipped = false;
@@ -7373,15 +7400,23 @@
 
                 const showLabel = !flashballActive || flashballVisible || isGuide;
                 if (showLabel) {
-                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16));
+                    const fontScale = Math.max(0.8, Math.min(1, tileHeight / blk.height));
+                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale);
                     ctx.font = `900 ${numberFontSize}px "Darumadrop One", "Kosugi Maru", "Noto Sans JP", Arial`;
                     ctx.fillStyle = isGuide ? '#852c27' : '#192738';
-                    ctx.fillText(label, tx, ty);
+                    ctx.fillText(label, centerX, centerY);
                 }
             });
 
             // Draw Balls
             balls.forEach(b => {
+                const screenY = projectBoardY(b.y);
+                const fieldScale = getFieldScale(screenY);
+                ctx.save();
+                ctx.translate(projectFieldX(b.x, fieldScale), screenY);
+                ctx.scale(fieldScale, fieldScale);
+                ctx.translate(-b.x, -b.y);
+
                 // 스킨 볼 궤적 (Ball Trail) 렌더링
                 const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
                 if (equippedSkin !== 'classic' && !b.isFireball && !b.isStripeBall && !b.isFlashBall && !b.isMirrorBall) {
@@ -7704,10 +7739,12 @@
                     ctx.lineWidth = scalePx(1.8);
                     ctx.stroke();
                 }
+                ctx.restore();
             });
 
             // Draw Player & Cart
             drawPlayer();
+            ctx.restore();
         }
 
         const SHOWA_RAINBOW_INKS = ['#b13a2c', '#c36937', '#dda33d', '#528259', '#4f8989', '#456d92', '#766084'];
