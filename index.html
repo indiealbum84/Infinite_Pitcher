@@ -4442,7 +4442,7 @@
         }
 
         function isTitleBgmPlaying() {
-            if (titleBgmSource) return true;
+            if (titleBgmSource && audioCtx && audioCtx.state === 'running') return true;
             if (titleBgmEl && !titleBgmEl.paused) return true;
             return false;
         }
@@ -4458,6 +4458,7 @@
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
             if (typeof splashDismissed !== 'undefined' && !splashDismissed) return;
             if (gameState !== 'INTRO') return;
+            if (isTitleBgmPlaying()) return;
             if (!sfxBuffers['bgm_title']) {
                 const base = sfxAudioEls['bgm_title'];
                 if (!base) return;
@@ -4471,23 +4472,22 @@
                 });
                 return;
             }
-            audioCtx.resume().then(() => {
-                if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
-                if (gameState !== 'INTRO') return;
-                if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} }
-                if (titleBgmEl) {
-                    titleBgmEl.pause();
-                    titleBgmEl.currentTime = 0;
-                    titleBgmEl = null;
-                }
-                titleGain.gain.value = 0.6 * bgmVolume;
-                const src = audioCtx.createBufferSource();
-                src.buffer = sfxBuffers['bgm_title'];
-                src.loop = true;
-                src.connect(titleGain);
-                src.start(0);
-                titleBgmSource = src;
-            });
+            if (audioCtx.state !== 'running') {
+                try { audioCtx.resume(); } catch (e) {}
+            }
+            if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
+            if (titleBgmEl) {
+                titleBgmEl.pause();
+                titleBgmEl.currentTime = 0;
+                titleBgmEl = null;
+            }
+            titleGain.gain.value = 0.6 * bgmVolume;
+            const src = audioCtx.createBufferSource();
+            src.buffer = sfxBuffers['bgm_title'];
+            src.loop = true;
+            src.connect(titleGain);
+            src.start(0);
+            titleBgmSource = src;
         }
 
         function fadeTitleBgm(duration) {
@@ -5487,14 +5487,14 @@
                 }, 400);
             }
             if (audioCtx) {
-                audioCtx.resume().then(() => {
+                try {
+                    if (audioCtx.state !== 'running') audioCtx.resume();
                     const silentBuf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
                     const silentSrc = audioCtx.createBufferSource();
                     silentSrc.buffer = silentBuf;
                     silentSrc.connect(audioCtx.destination);
                     silentSrc.start(0);
-                    ensureTitleBgmOnIntro();
-                }).catch(() => {});
+                } catch (e) {}
             }
             try {
                 if (typeof ensurePermanentPlayerProfileOnStart === 'function') {
@@ -5522,10 +5522,17 @@
         const splashScreen = document.getElementById('splash-screen');
         if (splashScreen) {
             splashScreen.addEventListener('click', handleSplashTap);
-            splashScreen.addEventListener('touchstart', handleSplashTap, { passive: false });
+            splashScreen.addEventListener('touchend', handleSplashTap, { passive: false });
         }
 
-        // 오디오 자동재생 정책 대비: 메인화면 진입 후 첫 터치/클릭 시 bgm_title 동기 재생 보장
+        // 오디오 자동재생 정책 대비: AudioContext 상태 전환 및 메인화면 탭 시 bgm_title 보장
+        if (audioCtx && typeof audioCtx.addEventListener === 'function') {
+            audioCtx.addEventListener('statechange', () => {
+                if (audioCtx.state === 'running' && typeof splashDismissed !== 'undefined' && splashDismissed && gameState === 'INTRO') {
+                    ensureTitleBgmOnIntro();
+                }
+            });
+        }
         function unlockAudioOnTap() {
             if (gameState !== 'INTRO') return;
             if (audioCtx && audioCtx.state !== 'running') {
@@ -5534,11 +5541,13 @@
             ensureTitleBgmOnIntro();
             if (isTitleBgmPlaying() && (!audioCtx || audioCtx.state === 'running')) {
                 window.removeEventListener('pointerdown', unlockAudioOnTap);
-                window.removeEventListener('touchstart', unlockAudioOnTap);
+                window.removeEventListener('touchend', unlockAudioOnTap);
+                window.removeEventListener('click', unlockAudioOnTap);
             }
         }
         window.addEventListener('pointerdown', unlockAudioOnTap, { passive: true });
-        window.addEventListener('touchstart', unlockAudioOnTap, { passive: true });
+        window.addEventListener('touchend', unlockAudioOnTap, { passive: true });
+        window.addEventListener('click', unlockAudioOnTap, { passive: true });
 
         // #intro-screen(main_background.png)이 화면에 나타날 때마다 bgm_title 자동 재생 시도
         (function observeIntroVisibilityForBgm() {
