@@ -256,3 +256,113 @@
     width: 84%;
     height: 68%;
 }
+
+.skin-art-badge {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+.skin-card-icon .skin-art-badge {
+    width: 92px;
+    height: 92px;
+}
+.bpp-skin-icon .skin-art-badge {
+    width: 32px;
+    height: 32px;
+}
+.bsc-record .skin-art-badge {
+    width: 24px;
+    height: 24px;
+    margin-inline-start: 5px;
+}
+#skin-modal {
+    background: #192738a6;
+}
+.skin-card {
+    border-color: var(--showa-ink);
+    box-shadow: 0 6px 0 var(--showa-ink);
+}
+.skin-card.locked {
+    opacity: 1;
+    background: #f4e6c7;
+}
+.skin-card.equipped {
+    background: var(--showa-gold);
+    box-shadow: 0 6px 0 var(--showa-ink);
+}
+.skin-card-btn {
+    border-color: var(--showa-ink);
+}
+.skin-card-btn.equip-btn {
+    background: var(--showa-red);
+    color: var(--showa-paper);
+}
+.skin-card-btn.equipped-btn {
+    background: var(--showa-green);
+    color: var(--showa-paper);
+}
+.skin-card-btn.locked-btn {
+    background: #d7c49e;
+    color: var(--showa-ink);
+}
+.skin-card.hidden-skin {
+    background: var(--showa-print) 0 0 / 8px 8px, #293747;
+    border-color: var(--showa-ink);
+}
+.skin-card.hidden-skin :is(.skin-card-name, .skin-card-desc, .skin-card-condition) {
+    color: var(--showa-paper);
+}
+
+:is(#battle-phase-pill, #battle-phase-banner) {
+    --phase-ink: var(--showa-green);
+    border-color: var(--showa-ink);
+    background: var(--showa-print) 0 0 / 8px 8px, var(--showa-paper);
+    color: var(--showa-ink);
+}
+:is(#battle-phase-pill, #battle-phase-banner)[data-phase="2"] { --phase-ink: #9c4528; }
+:is(#battle-phase-pill, #battle-phase-banner)[data-phase="3"] { --phase-ink: #365f78; }
+:is(#battle-phase-pill, #battle-phase-banner)[data-phase="4"] { --phase-ink: #65485f; }
+:is(#battle-phase-pill, #battle-phase-banner)[data-phase="5"] { --phase-ink: var(--showa-red); }
+
+#battle-phase-pill:not(.hidden) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: var(--phase-ink);
+    color: var(--showa-paper);
+    box-shadow: 0 8px 0 var(--showa-ink);
+}
+#battle-phase-banner {
+    width: max-content;
+    max-width: 90%;
+    border-top-width: 18px;
+    border-top-color: var(--phase-ink);
+    box-shadow: 0 14px 0 var(--showa-ink);
+}
+#battle-phase-banner .bpb-sub {
+    color: var(--phase-ink);
+}
+#battle-phase-banner .bpb-title {
+    color: var(--showa-ink);
+    text-shadow: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.battle-phase-icon {
+    object-fit: contain;
+    vertical-align: middle;
+}
+#battle-phase-pill .battle-phase-icon {
+    width: 48px;
+    height: 32px;
+}
+#battle-phase-banner .battle-phase-icon {
+    width: 210px;
+    height: 114px;
+}
+#battle-final-vignette {
+    box-shadow: inset 0 0 65px #852c27ad, inset 0 0 110px #a6312c66;
+}

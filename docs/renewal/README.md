@@ -20,6 +20,8 @@
 
 실제 게임의 말풍선은 타이틀 아래 위쪽에 고정하고 하단에는 모드 버튼과 구매 정보만 모았다. 솔로 최고 31점 전에는 특훈을, 해금 후에는 세계 8인 배틀을 주홍색 주 버튼으로 표시한다. 특훈·친구전에는 낮 훈련장, 세계 배틀에는 야간 구장을 사용한다. 인게임에는 같은 투수의 준비·릴리스 자세, 공 바구니, 크림색 숫자판과 특수구 일러스트를 적용했다. [실제 게임 스타일](../../game-art.css) · [게임 이미지](../../images/)
 
+컬렉션에는 인쇄 스티커풍 배지 12종을 사용한다. 장착 배지는 선수 프로필, 배틀 대기실과 결과 카드에도 표시된다. 투구 잔상과 오라에는 스킨마다 다른 인쇄색을 쓰고, 배틀 단계 알림에는 실제 마구 일러스트를 재사용한다. 홈 화면 설치 아이콘은 남색 야구모자와 야구공으로 구성했다. [컬렉션 배지](../../images/showa-badges/) · [설치 아이콘](../../images/showa-app-icon-512.png)
+
 ## 일러스트 방향
 
 | 시안 | 그림과 색 | 배치 |
@@ -70,6 +72,18 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 프로토타입은 ‘타이틀 다시 보기’, ‘해금 전’, ‘일반’, ‘마스터’를 바꿔 볼 수 있다. 게임 화면 문구는 일본어이며 매칭, 랭킹과 초대방은 예시 데이터로 동작한다. 선수 이름과 설정은 탭이 열린 동안 유지된다.
 
 ## 이미지 제작 기록
+
+**설치 아이콘과 컬렉션 배지**
+
+내장 ImageGen에서 확정 투구 일러스트를 참조했다. 설치 아이콘은 192px와 512px PNG, 배지는 각각 투명 WebP로 내보냈다.
+
+**설치 아이콘 프롬프트**
+
+Square mobile game app icon, full bleed background and no rounded outer corners, original Showa sports manga print. Reference is the approved game illustration. Center one close prominent warm ivory baseball with bright vermilion stitches in front of a deep ink navy vintage baseball cap with thin mustard brim. Crisp hand-inked dark outlines, controlled coarse halftone, mustard rays behind the ball, top cream and bottom warm vermilion flat print field. Single readable composition at tiny app-icon size, bold shapes, main ball and cap entirely inside a centered circle 74% of width for Android maskable crop. No words, no numbers, no text, no monograms, no symbols on the cap, no watermarks.
+
+**배지 프롬프트**
+
+One clean 4-column by 3-row game achievement icon atlas. Uniform cells (wide 4:3 overall); a single centered graphic in each cell with generous alpha gutters and a generous safe area. Exactly twelve tiny flat paper-and-ink Showa manga vintage team pin emblems, no text, no titles, no grid lines, visually distinct, simple at 24 pixels. Match the attached Japanese baseball illustration’s midnight navy ink, warm cream paper, rich muted spot inks and rough thick contours. Every icon is centered at its respective grid cell center and occupies only about 70% of that cell, no crossing. Row 1 left to right: stitched ivory baseball; green two-leaf sprout; vermilion and gold setting sun; bold crimson and gold flame. Row 2 left to right: gold lightning bolt; five salmon-pink cherry blossom petals; gold baseball champion crown; classic three-band red gold teal rainbow. Row 3 left to right: two concentric mauve and navy rainbow arcs with a gold star; blue-green faceted diamond; small gold lucky ticket with one red star; curling jade baseball-dragon with strong simple silhouette. Each emblem uses an ivory outer sticker edge and ink keyline. Truly transparent empty background, no objects crossing tile borders, no typography or watermark.
 
 내장 ImageGen을 사용했다. 아래는 시안에 적용한 프롬프트다.
 

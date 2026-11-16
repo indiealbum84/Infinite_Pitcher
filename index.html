@@ -9,7 +9,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="./images/pitcher.png">
+    <link rel="icon" type="image/png" href="./images/showa-app-icon-192.png">
+    <link rel="apple-touch-icon" href="./images/showa-app-icon-192.png">
     <link rel="preload" as="image" href="./images/title-pitch-finish.webp" fetchpriority="high">
     <title>インフィニティピッチング</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
@@ -425,7 +426,7 @@
 
         /* Game Over Screen */
         #game-over-screen {
-            background: linear-gradient(rgba(185, 236, 255, 0.88), rgba(255, 247, 216, 0.92)), url('./images/main_background.png') center top / cover no-repeat;
+            background: #f9e7ba;
             justify-content: flex-start;
             overflow-y: auto;
             padding-top: 30px;
@@ -820,7 +821,7 @@
 
         /* ── 다인 대전 ── */
         #battle-screen {
-            background: linear-gradient(rgba(185, 236, 255, 0.88), rgba(255, 247, 216, 0.93)), url('./images/main_background.png') center top / cover no-repeat;
+            background: #f9e7ba;
             z-index: 18;
             gap: 12px;
             overflow-y: auto;
@@ -1088,8 +1089,6 @@
 
         .battle-phase-pill {
             margin-top: 6px;
-            background: linear-gradient(135deg, #ff3b30, #ff9500);
-            color: #ffffff;
             font-size: 13px;
             font-weight: 900;
             padding: 3px 12px;
@@ -1112,15 +1111,13 @@
             top: 38%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.6);
-            background: rgba(10, 15, 29, 0.92);
-            border: 4px solid var(--palette-yellow);
+            border: 4px solid;
             border-radius: 20px;
             padding: 16px 28px;
             text-align: center;
             z-index: 60;
             pointer-events: none;
             opacity: 0;
-            box-shadow: 0 10px 0 #000000, 0 0 35px rgba(255, 215, 0, 0.65);
             transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.28s ease;
         }
 
@@ -1154,16 +1151,10 @@
             z-index: 4;
             opacity: 0;
             transition: opacity 0.6s ease;
-            animation: finalVignettePulse 1.2s infinite alternate ease-in-out;
         }
 
         #battle-final-vignette.active {
             opacity: 1;
-        }
-
-        @keyframes finalVignettePulse {
-            0% { box-shadow: inset 0 0 50px rgba(255, 30, 0, 0.4), inset 0 0 90px rgba(255, 180, 0, 0.25); }
-            100% { box-shadow: inset 0 0 85px rgba(255, 30, 0, 0.7), inset 0 0 140px rgba(255, 180, 0, 0.5); }
         }
 
         /* 대전 결과 화면 */
@@ -1187,9 +1178,9 @@
             text-shadow: 4px 4px 0 #ffffff, 7px 7px 0 #000000;
         }
 
-        .battle-result-title.win  { color: var(--palette-mint); }
-        .battle-result-title.lose { color: #ff5a91; }
-        .battle-result-title.draw { color: var(--palette-blue); }
+        .battle-result-title.win  { color: #28594e; }
+        .battle-result-title.lose { color: #a6312c; }
+        .battle-result-title.draw { color: #365f78; }
 
         .battle-scores {
             display: flex;
@@ -1413,7 +1404,7 @@
             border-color: #475569;
         }
         .skin-card.hidden-skin .skin-card-icon {
-            filter: drop-shadow(0 0 8px rgba(148, 163, 184, 0.55));
+            filter: saturate(0.6);
         }
         .skin-card.hidden-skin .skin-card-name {
             color: #e2e8f0;
@@ -1422,11 +1413,6 @@
         .skin-card.hidden-skin .skin-card-desc,
         .skin-card.hidden-skin .skin-card-condition {
             color: #94a3b8;
-        }
-
-        .skin-card-icon {
-            font-size: 32px;
-            line-height: 1;
         }
 
         .skin-card-name {
@@ -2234,10 +2220,6 @@
             box-shadow: 0 8px 0 #d97706, 0 8px 0 3px #000000;
         }
 
-        .skin-card-icon {
-            font-size: 64px;
-        }
-
         .skin-card-name {
             font-size: 32px;
             line-height: 1.15;
@@ -2904,12 +2886,6 @@
             flex-shrink: 0;
         }
 
-        .battle-player-pill .bpp-skin-icon {
-            font-size: 32px;
-            line-height: 1;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
-        }
-
         .battle-player-pill .bpp-me-badge {
             background: #ef4444;
             color: #ffffff;
@@ -3060,7 +3036,6 @@
             border-width: 8px;
             border-radius: 44px;
             padding: 38px 65px;
-            box-shadow: 0 20px 0 #000000, 0 0 70px rgba(255, 215, 0, 0.7);
         }
 
         .bpb-sub {
@@ -3573,12 +3548,6 @@
             gap: 10px;
         }
 
-        .intro-profile-pill .ipp-user-icon,
-        .battle-my-profile-card .ipp-user-icon {
-            font-size: 38px;
-            line-height: 1;
-        }
-
         .intro-profile-pill .ipp-player-name,
         .battle-my-profile-card .ipp-player-name {
             font-size: 44px;
@@ -4054,13 +4023,17 @@
         <!-- 대전 중 상단 HUD 및 페이즈 배지 -->
         <div id="battle-hud-wrap">
             <div id="battle-hud"></div>
-            <div id="battle-phase-pill" class="battle-phase-pill hidden">PHASE 1</div>
+            <div id="battle-phase-pill" class="battle-phase-pill hidden">
+                <img class="battle-phase-icon" id="battle-phase-pill-art" alt="" hidden>
+                <span id="battle-phase-pill-label">PHASE 1</span>
+            </div>
         </div>
 
         <!-- 대전 페이즈 전환 알림 배너 -->
         <div id="battle-phase-banner" class="battle-phase-banner">
             <div class="bpb-sub" id="bpb-sub">PHASE 2</div>
-            <div class="bpb-title" id="bpb-title">🔥 11번 파이어볼 개막!</div>
+            <img class="battle-phase-icon" id="battle-phase-banner-art" alt="" hidden>
+            <div class="bpb-title" id="bpb-title">11번 파이어볼 개막!</div>
         </div>
 
         <!-- 1 vs 1 결승 서든데스 화면 비네트 -->
@@ -7315,14 +7288,14 @@
 
             // 파이어볼 차징 중: 해당 열 강조
             if (fireballCharging && fireballColumn >= 0) {
-                ctx.fillStyle = 'rgba(255, 120, 0, 0.25)';
+                ctx.fillStyle = 'rgba(194, 119, 37, 0.28)';
                 ctx.fillRect(fireballColumn * stripeW, 0, stripeW, height);
             }
 
             // Draw pitch guide line
             ctx.save();
             ctx.setLineDash([scalePx(6), scalePx(8)]);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.strokeStyle = 'rgba(255, 242, 207, 0.9)';
             ctx.lineWidth = scalePx(1.5);
             ctx.beginPath();
             ctx.moveTo(player.x, player.y - scalePx(20));
@@ -7412,7 +7385,7 @@
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 9);
                             const tr = b.radius * (1 - i * 0.25);
-                            ctx.fillStyle = i === 1 ? 'rgba(245, 158, 11, 0.65)' : (i === 2 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(220, 38, 38, 0.2)');
+                            ctx.fillStyle = i === 1 ? 'rgba(194, 119, 37, 0.65)' : (i === 2 ? 'rgba(177, 58, 44, 0.45)' : 'rgba(149, 45, 43, 0.2)');
                             ctx.beginPath();
                             ctx.arc(b.x + Math.sin(t * 0.01 + i) * scalePx(2), trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
@@ -7421,7 +7394,7 @@
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 8);
                             const tr = b.radius * (1 - i * 0.25);
-                            ctx.fillStyle = i === 1 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(37, 99, 235, 0.35)';
+                            ctx.fillStyle = i === 1 ? 'rgba(115, 172, 179, 0.7)' : 'rgba(56, 97, 125, 0.35)';
                             ctx.beginPath();
                             ctx.arc(b.x + (i % 2 === 0 ? scalePx(3) : scalePx(-3)), trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
@@ -7429,19 +7402,19 @@
                     } else if (equippedSkin === 'sakura') {
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 10);
-                            ctx.fillStyle = `rgba(244, 114, 182, ${0.6 - i * 0.15})`;
+                            ctx.fillStyle = `rgba(198, 108, 114, ${0.6 - i * 0.15})`;
                             ctx.beginPath();
                             ctx.ellipse(b.x + Math.sin(t * 0.008 + i) * scalePx(4), trailY, scalePx(3), scalePx(5), 0.5 * i, 0, Math.PI * 2);
                             ctx.fill();
                         }
                     } else if (equippedSkin === 'rainbow') {
                         const grad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + scalePx(28));
-                        grad.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
-                        grad.addColorStop(0.2, 'rgba(249, 115, 22, 0.6)');
-                        grad.addColorStop(0.4, 'rgba(234, 179, 8, 0.6)');
-                        grad.addColorStop(0.6, 'rgba(34, 197, 94, 0.6)');
-                        grad.addColorStop(0.8, 'rgba(59, 130, 246, 0.5)');
-                        grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        grad.addColorStop(0, 'rgba(177, 58, 44, 0.7)');
+                        grad.addColorStop(0.2, 'rgba(195, 105, 55, 0.6)');
+                        grad.addColorStop(0.4, 'rgba(221, 163, 61, 0.6)');
+                        grad.addColorStop(0.6, 'rgba(82, 130, 89, 0.6)');
+                        grad.addColorStop(0.8, 'rgba(69, 109, 146, 0.5)');
+                        grad.addColorStop(1, 'rgba(118, 96, 132, 0)');
                         ctx.fillStyle = grad;
                         ctx.beginPath();
                         ctx.rect(b.x - scalePx(3), b.y, scalePx(6), scalePx(28));
@@ -7449,24 +7422,24 @@
                     } else if (equippedSkin === 'double_rainbow') {
                         // 찬란한 이중 쌍무지개 빔 + 반짝이는 별가루
                         const grad1 = ctx.createLinearGradient(b.x - scalePx(4), b.y, b.x - scalePx(4), b.y + scalePx(32));
-                        grad1.addColorStop(0, 'rgba(239, 68, 68, 0.85)');
-                        grad1.addColorStop(0.2, 'rgba(249, 115, 22, 0.75)');
-                        grad1.addColorStop(0.4, 'rgba(234, 179, 8, 0.75)');
-                        grad1.addColorStop(0.6, 'rgba(34, 197, 94, 0.75)');
-                        grad1.addColorStop(0.8, 'rgba(59, 130, 246, 0.65)');
-                        grad1.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        grad1.addColorStop(0, 'rgba(177, 58, 44, 0.85)');
+                        grad1.addColorStop(0.2, 'rgba(195, 105, 55, 0.75)');
+                        grad1.addColorStop(0.4, 'rgba(221, 163, 61, 0.75)');
+                        grad1.addColorStop(0.6, 'rgba(82, 130, 89, 0.75)');
+                        grad1.addColorStop(0.8, 'rgba(69, 109, 146, 0.65)');
+                        grad1.addColorStop(1, 'rgba(118, 96, 132, 0)');
                         ctx.fillStyle = grad1;
                         ctx.beginPath();
                         ctx.rect(b.x - scalePx(5), b.y, scalePx(4), scalePx(32));
                         ctx.fill();
 
                         const grad2 = ctx.createLinearGradient(b.x + scalePx(4), b.y, b.x + scalePx(4), b.y + scalePx(32));
-                        grad2.addColorStop(0, 'rgba(168, 85, 247, 0.85)');
-                        grad2.addColorStop(0.2, 'rgba(59, 130, 246, 0.75)');
-                        grad2.addColorStop(0.4, 'rgba(34, 197, 94, 0.75)');
-                        grad2.addColorStop(0.6, 'rgba(234, 179, 8, 0.75)');
-                        grad2.addColorStop(0.8, 'rgba(249, 115, 22, 0.65)');
-                        grad2.addColorStop(1, 'rgba(239, 68, 68, 0)');
+                        grad2.addColorStop(0, 'rgba(118, 96, 132, 0.85)');
+                        grad2.addColorStop(0.2, 'rgba(69, 109, 146, 0.75)');
+                        grad2.addColorStop(0.4, 'rgba(82, 130, 89, 0.75)');
+                        grad2.addColorStop(0.6, 'rgba(221, 163, 61, 0.75)');
+                        grad2.addColorStop(0.8, 'rgba(195, 105, 55, 0.65)');
+                        grad2.addColorStop(1, 'rgba(177, 58, 44, 0)');
                         ctx.fillStyle = grad2;
                         ctx.beginPath();
                         ctx.rect(b.x + scalePx(1), b.y, scalePx(4), scalePx(32));
@@ -7475,7 +7448,7 @@
                         for (let s = 0; s < 2; s++) {
                             const starY = b.y + scalePx(8 + s * 12);
                             const starX = b.x + Math.sin(t * 0.015 + s * 3) * scalePx(7);
-                            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                            ctx.fillStyle = 'rgba(255, 242, 207, 0.9)';
                             ctx.beginPath();
                             ctx.arc(starX, starY, scalePx(1.5), 0, Math.PI * 2);
                             ctx.fill();
@@ -7483,7 +7456,7 @@
                     } else if (equippedSkin === 'prism') {
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 9);
-                            ctx.strokeStyle = `rgba(255, 255, 255, ${0.8 - i * 0.2})`;
+                            ctx.strokeStyle = `rgba(255, 242, 207, ${0.8 - i * 0.2})`;
                             ctx.lineWidth = scalePx(1.5);
                             const glint = scalePx(5 - i);
                             ctx.beginPath();
@@ -7495,17 +7468,17 @@
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 9);
                             const tr = b.radius * (1 - i * 0.24);
-                            ctx.fillStyle = i === 1 ? 'rgba(52, 211, 153, 0.7)' : (i === 2 ? 'rgba(16, 185, 129, 0.45)' : 'rgba(5, 150, 105, 0.22)');
+                            ctx.fillStyle = i === 1 ? 'rgba(97, 153, 103, 0.7)' : (i === 2 ? 'rgba(51, 110, 86, 0.45)' : 'rgba(40, 89, 78, 0.22)');
                             ctx.beginPath();
                             ctx.arc(b.x + Math.cos(t * 0.01 + i) * scalePx(2), trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
                         }
                     } else if (equippedSkin === 'sunset') {
                         const grad = ctx.createLinearGradient(b.x, b.y, b.x, b.y + scalePx(30));
-                        grad.addColorStop(0, 'rgba(251, 146, 60, 0.85)');
-                        grad.addColorStop(0.45, 'rgba(244, 63, 94, 0.65)');
-                        grad.addColorStop(0.8, 'rgba(168, 85, 247, 0.4)');
-                        grad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+                        grad.addColorStop(0, 'rgba(218, 125, 67, 0.85)');
+                        grad.addColorStop(0.45, 'rgba(184, 75, 82, 0.65)');
+                        grad.addColorStop(0.8, 'rgba(118, 96, 132, 0.4)');
+                        grad.addColorStop(1, 'rgba(118, 96, 132, 0)');
                         ctx.fillStyle = grad;
                         ctx.beginPath();
                         ctx.rect(b.x - scalePx(3.5), b.y, scalePx(7), scalePx(30));
@@ -7514,11 +7487,11 @@
                         for (let i = 1; i <= 3; i++) {
                             const trailY = b.y + scalePx(i * 10);
                             const tr = b.radius * (0.95 - i * 0.2);
-                            ctx.fillStyle = i === 1 ? 'rgba(254, 240, 138, 0.85)' : 'rgba(250, 204, 21, 0.5)';
+                            ctx.fillStyle = i === 1 ? 'rgba(245, 217, 153, 0.85)' : 'rgba(222, 176, 77, 0.5)';
                             ctx.beginPath();
                             ctx.arc(b.x, trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
-                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                            ctx.strokeStyle = 'rgba(255, 242, 207, 0.85)';
                             ctx.lineWidth = scalePx(1.2);
                             const glint = scalePx(5 - i);
                             ctx.beginPath();
@@ -7531,11 +7504,11 @@
                             const trailY = b.y + scalePx(i * 10);
                             const wobble = Math.sin(t * 0.015 + i * 1.4) * scalePx(3);
                             const tr = b.radius * (0.88 - i * 0.18);
-                            ctx.fillStyle = i === 1 ? 'rgba(253, 224, 71, 0.9)' : 'rgba(245, 158, 11, 0.58)';
+                            ctx.fillStyle = i === 1 ? 'rgba(237, 188, 87, 0.9)' : 'rgba(194, 119, 37, 0.58)';
                             ctx.beginPath();
                             ctx.arc(b.x + wobble, trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
-                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                            ctx.strokeStyle = 'rgba(255, 242, 207, 0.85)';
                             ctx.lineWidth = scalePx(1);
                             ctx.stroke();
                         }
@@ -7544,7 +7517,7 @@
                             const trailY = b.y + scalePx(i * 9);
                             const waveX = Math.sin(t * 0.014 - i * 0.9) * scalePx(4.5);
                             const tr = b.radius * (1.0 - i * 0.18);
-                            ctx.fillStyle = i % 2 === 1 ? 'rgba(52, 211, 153, 0.78)' : 'rgba(6, 182, 212, 0.55)';
+                            ctx.fillStyle = i % 2 === 1 ? 'rgba(97, 153, 103, 0.78)' : 'rgba(79, 137, 137, 0.55)';
                             ctx.beginPath();
                             ctx.arc(b.x + waveX, trailY, tr, 0, Math.PI * 2);
                             ctx.fill();
@@ -7731,6 +7704,30 @@
             drawPlayer();
         }
 
+        const SHOWA_RAINBOW_INKS = ['#b13a2c', '#c36937', '#dda33d', '#528259', '#4f8989', '#456d92', '#766084'];
+
+        function drawPrintAura(x, y, radius, time, highlight, ink) {
+            ctx.save();
+            ctx.strokeStyle = '#192738';
+            ctx.lineWidth = scalePx(6);
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeStyle = highlight;
+            ctx.lineWidth = scalePx(3.5);
+            ctx.stroke();
+
+            ctx.strokeStyle = ink;
+            ctx.lineWidth = scalePx(2);
+            ctx.setLineDash([scalePx(5), scalePx(4)]);
+            ctx.lineDashOffset = -scalePx((time * 0.02) % 9);
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 0.86, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
+
         function drawPlayer() {
             const px = player.x;
             const py = player.y;
@@ -7742,28 +7739,14 @@
                 const t = performance.now();
                 if (equippedSkin === 'flame') {
                     const r = scalePx(35 + Math.sin(t * 0.005) * 5);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(255, 215, 0, 0.45)');
-                    auraGrad.addColorStop(0.6, 'rgba(245, 158, 11, 0.25)');
-                    auraGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#edbc57', '#a6312c');
                 } else if (equippedSkin === 'spark') {
                     const r = scalePx(34 + Math.sin(t * 0.008) * 4);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
-                    auraGrad.addColorStop(0.7, 'rgba(37, 99, 235, 0.2)');
-                    auraGrad.addColorStop(1, 'rgba(29, 78, 216, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#9fc5c4', '#365f78');
                     for (let i = 0; i < 3; i++) {
                         const angle = (t * 0.006 + i * 2.1) % (Math.PI * 2);
                         const sparkR = r * 0.85;
-                        ctx.strokeStyle = 'rgba(186, 230, 253, 0.8)';
+                        ctx.strokeStyle = 'rgba(201, 224, 214, 0.8)';
                         ctx.lineWidth = scalePx(1.5);
                         ctx.beginPath();
                         ctx.moveTo(px + Math.cos(angle) * (sparkR * 0.5), py - scalePx(10) + Math.sin(angle) * (sparkR * 0.5));
@@ -7772,26 +7755,19 @@
                     }
                 } else if (equippedSkin === 'sakura') {
                     const r = scalePx(35 + Math.sin(t * 0.004) * 4);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(251, 207, 232, 0.45)');
-                    auraGrad.addColorStop(0.7, 'rgba(244, 114, 182, 0.2)');
-                    auraGrad.addColorStop(1, 'rgba(219, 39, 119, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#e4a396', '#a95762');
                     for (let i = 0; i < 3; i++) {
                         const angle = (t * 0.002 + i * 2.09) % (Math.PI * 2);
                         const petX = px + Math.cos(angle) * (r * 0.8);
                         const petY = py - scalePx(10) + Math.sin(angle) * (r * 0.8);
-                        ctx.fillStyle = 'rgba(244, 114, 182, 0.75)';
+                        ctx.fillStyle = 'rgba(198, 108, 114, 0.75)';
                         ctx.beginPath();
                         ctx.ellipse(petX, petY, scalePx(3), scalePx(5), angle, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else if (equippedSkin === 'rainbow') {
                     const r = scalePx(36 + Math.sin(t * 0.005) * 4);
-                    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'];
+                    const colors = SHOWA_RAINBOW_INKS;
                     const stepAngle = (Math.PI * 2) / colors.length;
                     const rot = t * 0.003;
                     ctx.lineWidth = scalePx(3);
@@ -7804,7 +7780,7 @@
                 } else if (equippedSkin === 'double_rainbow') {
                     const rInner = scalePx(34 + Math.sin(t * 0.005) * 3);
                     const rOuter = scalePx(42 + Math.cos(t * 0.005) * 4);
-                    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'];
+                    const colors = SHOWA_RAINBOW_INKS;
                     const stepAngle = (Math.PI * 2) / colors.length;
                     const rot1 = t * 0.003;
                     const rot2 = -t * 0.003;
@@ -7824,23 +7800,16 @@
                         const a = t * 0.004 + s * (Math.PI / 2);
                         const sx = px + Math.cos(a) * (rOuter + scalePx(4));
                         const sy = py - scalePx(10) + Math.sin(a) * (rOuter + scalePx(4));
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                        ctx.fillStyle = 'rgba(255, 242, 207, 0.9)';
                         ctx.beginPath();
                         ctx.arc(sx, sy, scalePx(2), 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else if (equippedSkin === 'prism') {
                     const r = scalePx(36 + Math.sin(t * 0.006) * 5);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(2), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
-                    auraGrad.addColorStop(0.5, 'rgba(34, 211, 238, 0.3)');
-                    auraGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#b7d4ce', '#376d7b');
                     const glintLen = scalePx(16 + Math.sin(t * 0.01) * 6);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.strokeStyle = 'rgba(255, 242, 207, 0.9)';
                     ctx.lineWidth = scalePx(2);
                     ctx.beginPath();
                     ctx.moveTo(px - glintLen, py - scalePx(10)); ctx.lineTo(px + glintLen, py - scalePx(10));
@@ -7848,77 +7817,42 @@
                     ctx.stroke();
                 } else if (equippedSkin === 'emerald') {
                     const r = scalePx(34 + Math.sin(t * 0.005) * 4);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(110, 231, 183, 0.5)');
-                    auraGrad.addColorStop(0.65, 'rgba(16, 185, 129, 0.25)');
-                    auraGrad.addColorStop(1, 'rgba(5, 150, 105, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#a5b884', '#28594e');
                 } else if (equippedSkin === 'sunset') {
                     const r = scalePx(36 + Math.sin(t * 0.004) * 4);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(5), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(253, 186, 116, 0.5)');
-                    auraGrad.addColorStop(0.55, 'rgba(244, 63, 94, 0.28)');
-                    auraGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#e8a15e', '#ac4b45');
                 } else if (equippedSkin === 'emperor') {
                     const r = scalePx(38 + Math.sin(t * 0.005) * 5);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
-                    auraGrad.addColorStop(0.45, 'rgba(250, 204, 21, 0.45)');
-                    auraGrad.addColorStop(1, 'rgba(234, 179, 8, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#f9dfab', '#a87739');
                     for (let s = 0; s < 4; s++) {
                         const a = t * 0.0035 + s * (Math.PI / 2);
                         const sx = px + Math.cos(a) * (r * 0.82);
                         const sy = py - scalePx(10) + Math.sin(a) * (r * 0.82);
-                        ctx.fillStyle = 'rgba(254, 240, 138, 0.95)';
+                        ctx.fillStyle = 'rgba(245, 217, 153, 0.95)';
                         ctx.beginPath();
                         ctx.arc(sx, sy, scalePx(2.2), 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else if (equippedSkin === 'lucky333') {
                     const r = scalePx(36 + Math.sin(t * 0.006) * 4);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(254, 240, 138, 0.7)');
-                    auraGrad.addColorStop(0.55, 'rgba(245, 158, 11, 0.35)');
-                    auraGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#edbc57', '#aa682d');
                     for (let s = 0; s < 3; s++) {
                         const a = t * 0.004 + s * (Math.PI * 2 / 3);
                         const sx = px + Math.cos(a) * (r * 0.78);
                         const sy = py - scalePx(10) + Math.sin(a) * (r * 0.78);
-                        ctx.fillStyle = 'rgba(253, 224, 71, 0.95)';
+                        ctx.fillStyle = 'rgba(237, 188, 87, 0.95)';
                         ctx.beginPath();
                         ctx.arc(sx, sy, scalePx(2.6), 0, Math.PI * 2);
                         ctx.fill();
                     }
                 } else if (equippedSkin === 'dragon') {
                     const r = scalePx(40 + Math.sin(t * 0.005) * 5);
-                    const auraGrad = ctx.createRadialGradient(px, py - scalePx(10), scalePx(4), px, py - scalePx(10), r);
-                    auraGrad.addColorStop(0, 'rgba(110, 231, 183, 0.68)');
-                    auraGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.38)');
-                    auraGrad.addColorStop(1, 'rgba(37, 99, 235, 0)');
-                    ctx.fillStyle = auraGrad;
-                    ctx.beginPath();
-                    ctx.arc(px, py - scalePx(10), r, 0, Math.PI * 2);
-                    ctx.fill();
+                    drawPrintAura(px, py - scalePx(10), r, t, '#a1bc79', '#39787b');
                     for (let s = 0; s < 2; s++) {
                         const a = t * 0.0045 + s * Math.PI;
                         const sx = px + Math.cos(a) * (r * 0.85);
                         const sy = py - scalePx(10) + Math.sin(a) * (r * 0.85);
-                        ctx.fillStyle = 'rgba(167, 243, 208, 0.95)';
+                        ctx.fillStyle = 'rgba(188, 211, 160, 0.95)';
                         ctx.beginPath();
                         ctx.arc(sx, sy, scalePx(3.0), 0, Math.PI * 2);
                         ctx.fill();
@@ -8246,13 +8180,13 @@
             updateIntroProfilePillUI();
         }
 
-        function getEquippedSkinIcon(skinId) {
-            const id = skinId || (typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
-            if (typeof SKINS_CATALOG !== 'undefined') {
-                const s = SKINS_CATALOG.find(x => x.id === id);
-                if (s && s.icon) return s.icon;
-            }
-            return '⚾';
+        function renderSkinBadge(skinId, { showClassic = true, decorative = false } = {}) {
+            const skin = typeof SKINS_CATALOG === 'undefined' ? null : SKINS_CATALOG.find(item => item.id === skinId);
+            if (!showClassic && (!skin || skin.id === 'classic')) return '';
+            const id = skin ? skin.id : 'classic';
+            const name = !decorative && skin && (skin.name[currentLang] || skin.name.en);
+            const alt = name ? escapeBattleText(name) : '';
+            return `<img class="skin-art-badge" src="./images/showa-badges/${id}.webp" alt="${alt}" draggable="false">`;
         }
 
         function updateIntroProfilePillUI() {
@@ -8283,7 +8217,6 @@
             };
             const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streakLabelMap[lang] || streakLabelMap.en}</span>` : '';
             const skinId = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
-            const skinIcon = getEquippedSkinIcon(skinId);
             const synced = isCloudAccountLinked();
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
             const safeName = typeof escapeBattleText === 'function' ? escapeBattleText(savedName) : savedName;
@@ -8311,7 +8244,7 @@
             const cardMarkup = `
                 <div class="ipp-left">
                     <div class="ipp-name-row">
-                        <span class="ipp-user-icon" title="${collectionTitle}">${skinIcon}</span>
+                        <span class="ipp-user-icon" title="${collectionTitle}">${renderSkinBadge(skinId)}</span>
                         <span class="ipp-player-name">${safeName}</span>
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
                     </div>
@@ -9557,7 +9490,6 @@
             {
                 id: 'classic',
                 name: { ko: '클래식 쇼와', ja: 'クラシック昭和', en: 'Classic Showa', 'zh-TW': '經典昭和', es: 'Showa Clásico' },
-                icon: '⚾',
                 desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher', 'zh-TW': '昭和復古經典棒球與投手', es: 'Pelota y lanzador retro Showa' },
                 condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked', 'zh-TW': '預設解鎖', es: 'Desbloqueado por defecto' },
                 checkUnlock: () => true
@@ -9565,7 +9497,6 @@
             {
                 id: 'emerald',
                 name: { ko: '루키 에메랄드', ja: 'ルーキーエメラルド', en: 'Rookie Emerald', 'zh-TW': '新秀翡翠', es: 'Esmeralda Novato' },
-                icon: '🌱',
                 desc: { ko: '산뜻한 에메랄드 그린 궤적 + 잔디 오라', ja: '爽やかなエメラルド軌跡＋芝生オーラ', en: 'Fresh emerald trail & turf aura', 'zh-TW': '清新翡翠軌跡＋草地光環', es: 'Estela esmeralda y aura de césped' },
                 condition: { ko: '8인 배틀 첫 1승 달성', ja: '8人バトル初勝利達成', en: 'Win your first Battle match', 'zh-TW': '8人對戰獲得首勝', es: 'Gana tu primera Batalla 8P' },
                 checkUnlock: (stats) => stats.wins >= 1
@@ -9573,7 +9504,6 @@
             {
                 id: 'sunset',
                 name: { ko: '선셋 레트로', ja: 'サンセットレトロ', en: 'Sunset Retro', 'zh-TW': '夕陽復古', es: 'Atardecer Retro' },
-                icon: '☀️',
                 desc: { ko: '노을빛 주황·자홍 궤적 + 황혼 구장 오라', ja: '夕焼けグラデ軌跡＋黄昏オーラ', en: 'Sunset orange-magenta trail & dusk aura', 'zh-TW': '晚霞橘紫漸層軌跡＋黃昏光環', es: 'Estela ocaso naranja y aura crepuscular' },
                 condition: { ko: '8인 배틀 10승 달성', ja: '8人バトル10勝達成', en: 'Win 10 Battle matches', 'zh-TW': '8人對戰累計 10 勝', es: 'Gana 10 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 10
@@ -9581,7 +9511,6 @@
             {
                 id: 'flame',
                 name: { ko: '골든 프레임', ja: 'ゴールデンフレーム', en: 'Golden Flame', 'zh-TW': '黃金烈焰', es: 'Llama Dorada' },
-                icon: '🔥',
                 desc: { ko: '타오르는 황금 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura', 'zh-TW': '燃燒黃金火焰軌跡＋金色光環', es: 'Estela de fuego dorado y aura ardiente' },
                 condition: { ko: '하루에 배틀 50판 플레이 달성', ja: '1日にバトル50回プレイ達成', en: 'Play 50 Battles in a single day', 'zh-TW': '單日遊玩對戰達 50 場', es: 'Juega 50 Batallas en un día' },
                 checkUnlock: (stats, bestScore, maxStreak, rating, dailyMax) => (dailyMax || getDailyBattleMaxMatches()) >= 50
@@ -9589,7 +9518,6 @@
             {
                 id: 'spark',
                 name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark', 'zh-TW': '藍色電光', es: 'Chispa Azul' },
-                icon: '⚡',
                 desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura', 'zh-TW': '藍色雷電火花軌跡＋電撃光環', es: 'Estela de rayo azul y aura eléctrica' },
                 condition: { ko: '8인 배틀 100승 달성', ja: '8人バトル100勝達成', en: 'Win 100 Battle matches', 'zh-TW': '8人對戰累計 100 勝', es: 'Gana 100 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 100
@@ -9597,7 +9525,6 @@
             {
                 id: 'sakura',
                 name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom', 'zh-TW': '櫻花綻放', es: 'Flor de Sakura' },
-                icon: '🌸',
                 desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura', 'zh-TW': '飄落櫻花瓣軌跡＋粉櫻光環', es: 'Estela de pétalos sakura y aura rosa' },
                 condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode', 'zh-TW': '單人特訓突破 200 分', es: 'Supera 200 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 200
@@ -9605,7 +9532,6 @@
             {
                 id: 'emperor',
                 name: { ko: '황제 크라운', ja: 'エンペラークラウン', en: 'Emperor Crown', 'zh-TW': '皇帝皇冠', es: 'Corona Imperial' },
-                icon: '👑',
                 desc: { ko: '백금·황금 별빛 궤적 + 황제 크라운 오라', ja: '白金・黄金の星光軌跡＋皇帝オーラ', en: 'Royal gold starlight trail & crown aura', 'zh-TW': '白金黃金星光軌跡＋皇帝光環', es: 'Estela estelar dorada y aura imperial' },
                 condition: { ko: '나홀로 특훈 500점 돌파', ja: 'ひとり特訓500点突破', en: 'Reach 500+ pts in Solo mode', 'zh-TW': '單人特訓突破 500 分', es: 'Supera 500 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 500
@@ -9613,7 +9539,6 @@
             {
                 id: 'rainbow',
                 name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow', 'zh-TW': '昭和彩虹', es: 'Arcoíris Showa' },
-                icon: '🌈',
                 desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura', 'zh-TW': '七彩霓虹殘影軌跡＋彩虹光環', es: 'Estela arcoíris de 7 colores y aura' },
                 condition: { ko: '8인 배틀 5연승 달성', ja: '8人バトル5連勝達成', en: 'Achieve 5 Win Streak in Battle', 'zh-TW': '8人對戰達成 5 連勝', es: 'Logra 5 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 5
@@ -9621,7 +9546,6 @@
             {
                 id: 'double_rainbow',
                 name: { ko: '더블 레인보우', ja: 'ダブルレインボー', en: 'Double Rainbow', 'zh-TW': '雙重彩虹', es: 'Doble Arcoíris' },
-                icon: '🌌',
                 desc: { ko: '찬란한 쌍무지개 빛 잔상 + 은하수 네온 오라', ja: '輝く二重虹の残像＋天の川ネオンオーラ', en: 'Double rainbow trail & galaxy aura', 'zh-TW': '璀璨雙彩虹殘影＋銀河霓虹光環', es: 'Estela doble arcoíris y aura galáctica' },
                 condition: { ko: '8인 배틀 10연승 달성', ja: '8人バトル10連勝達成', en: 'Achieve 10 Win Streak in Battle', 'zh-TW': '8人對戰達成 10 連勝', es: 'Logra 10 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 10
@@ -9629,7 +9553,6 @@
             {
                 id: 'prism',
                 name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism', 'zh-TW': '鑽石稜鏡', es: 'Prisma Diamante' },
-                icon: '💎',
                 desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura', 'zh-TW': '閃耀鑽石光芒稜鏡特效', es: 'Destellos de prisma diamante y aura cristal' },
                 condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League', 'zh-TW': '大師聯賽達成 1,500 PT', es: 'Alcanza 1,500 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 1500
@@ -9638,7 +9561,6 @@
                 id: 'lucky333',
                 hidden: true,
                 name: { ko: '럭키 333', ja: 'ラッキー333', en: 'Lucky 333', 'zh-TW': '幸運 333', es: 'Suerte 333' },
-                icon: '🎰',
                 desc: { ko: '잭팟 골드 코인 궤적 + 황금 럭키 오라', ja: 'ジャックポットコイン軌跡＋黄金ラッキーオーラ', en: 'Jackpot gold coin trail & lucky aura', 'zh-TW': '大獎金幣軌跡＋幸運黃金光環', es: 'Estela de monedas jackpot y aura dorada' },
                 condition: { ko: '나홀로 특훈 정확히 333점 달성', ja: 'ひとり特訓ちょうど333点達成', en: 'Finish Solo mode with exact 333 pts', 'zh-TW': '單人特訓精準達成 333 分', es: 'Termina modo Solo con 333 pts exactos' },
                 checkUnlock: () => false
@@ -9647,7 +9569,6 @@
                 id: 'dragon',
                 hidden: true,
                 name: { ko: '레전드 드래곤', ja: 'レジェンドドラゴン', en: 'Legend Dragon', 'zh-TW': '傳說神龍', es: 'Dragón Legendario' },
-                icon: '🐲',
                 desc: { ko: '푸른 용염·비취빛 궤적 + 승천 용오라', ja: '蒼き龍炎・翡翠の軌跡＋昇龍オーラ', en: 'Azure dragonfire trail & rising dragon aura', 'zh-TW': '蒼藍龍炎軌跡＋騰龍光環', es: 'Estela de fuego dragón y aura mística' },
                 condition: { ko: '마스터 리그 2,000 PT 달성', ja: 'マスターリーグ2,000 PT達成', en: 'Reach 2,000+ PT in Master League', 'zh-TW': '大師聯賽達成 2,000 PT', es: 'Alcanza 2,000 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 2000
@@ -9774,7 +9695,7 @@
 
                 return `
                     <div class="${cardClass}" ${cardOnClick}>
-                        <div class="skin-card-icon">${skin.icon}</div>
+                        <div class="skin-card-icon">${renderSkinBadge(skin.id, { decorative: true })}</div>
                         <div class="skin-card-name">${name}</div>
                         <div class="skin-card-desc">${desc}</div>
                         <div class="skin-card-condition">${isUnlocked ? '🔓 ' + condition : '🔒 ' + condition}</div>
@@ -9854,43 +9775,51 @@
             return 1;
         }
 
+        const BATTLE_PHASE_ART = [
+            './images/showa-badges/classic.webp',
+            './images/showa-fireball.webp',
+            './images/showa-mirrorball.webp',
+            './images/showa-stripeball.webp',
+            './images/showa-flashball.webp'
+        ];
+
         function getBattlePhaseTitle(phase) {
             const lang = currentLang || 'ko';
             const TITLES = {
                 ja: {
-                    1: { sub: 'PHASE 1', title: '⚾ ウォーミングアップ！' },
-                    2: { sub: 'PHASE 2', title: '🔥 11番 ファイヤーボール開幕！' },
-                    3: { sub: 'PHASE 3', title: '🪞 TOP 5 突入！ミラーボール開幕！' },
-                    4: { sub: 'PHASE 4', title: '🦓 TOP 3 激突！ストライプ開幕！' },
-                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 サドンデス！フラッシュボール！' }
+                    1: { sub: 'PHASE 1', title: 'ウォーミングアップ！' },
+                    2: { sub: 'PHASE 2', title: '11番 ファイヤーボール開幕！' },
+                    3: { sub: 'PHASE 3', title: 'TOP 5 突入！ミラーボール開幕！' },
+                    4: { sub: 'PHASE 4', title: 'TOP 3 激突！ストライプ開幕！' },
+                    5: { sub: 'FINAL PHASE', title: '1 vs 1 サドンデス！フラッシュボール！' }
                 },
                 ko: {
-                    1: { sub: 'PHASE 1', title: '⚾ 워밍업 스타트!' },
-                    2: { sub: 'PHASE 2', title: '🔥 11번 파이어볼 개막!' },
-                    3: { sub: 'PHASE 3', title: '🪞 TOP 5 돌입! 미러볼 개막!' },
-                    4: { sub: 'PHASE 4', title: '🦓 TOP 3 격돌! 스트라이프볼 개막!' },
-                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 결승 서든데스! 플래시볼!' }
+                    1: { sub: 'PHASE 1', title: '워밍업 스타트!' },
+                    2: { sub: 'PHASE 2', title: '11번 파이어볼 개막!' },
+                    3: { sub: 'PHASE 3', title: 'TOP 5 돌입! 미러볼 개막!' },
+                    4: { sub: 'PHASE 4', title: 'TOP 3 격돌! 스트라이프볼 개막!' },
+                    5: { sub: 'FINAL PHASE', title: '1 vs 1 결승 서든데스! 플래시볼!' }
                 },
                 en: {
-                    1: { sub: 'PHASE 1', title: '⚾ Warm-Up Pitch!' },
-                    2: { sub: 'PHASE 2', title: '🔥 #11 Fireball Unleashed!' },
-                    3: { sub: 'PHASE 3', title: '🪞 TOP 5! Mirrorball Active!' },
-                    4: { sub: 'PHASE 4', title: '🦓 TOP 3! Stripeball Active!' },
-                    5: { sub: 'FINAL PHASE', title: '⚡ 1 vs 1 Sudden Death! Flashball!' }
+                    1: { sub: 'PHASE 1', title: 'Warm-Up Pitch!' },
+                    2: { sub: 'PHASE 2', title: '#11 Fireball Unleashed!' },
+                    3: { sub: 'PHASE 3', title: 'TOP 5! Mirrorball Active!' },
+                    4: { sub: 'PHASE 4', title: 'TOP 3! Stripeball Active!' },
+                    5: { sub: 'FINAL PHASE', title: '1 vs 1 Sudden Death! Flashball!' }
                 },
                 'zh-TW': {
-                    1: { sub: 'PHASE 1', title: '⚾ 熱身投球開始！' },
-                    2: { sub: 'PHASE 2', title: '🔥 第11球 火球開戰！' },
-                    3: { sub: 'PHASE 3', title: '🪞 進入前5強！鏡像球啟動！' },
-                    4: { sub: 'PHASE 4', title: '🦓 前3強激戰！斑馬球啟動！' },
-                    5: { sub: 'FINAL PHASE', title: '⚡ 1對1決賽驟死戰！閃光球！' }
+                    1: { sub: 'PHASE 1', title: '熱身投球開始！' },
+                    2: { sub: 'PHASE 2', title: '第11球 火球開戰！' },
+                    3: { sub: 'PHASE 3', title: '進入前5強！鏡像球啟動！' },
+                    4: { sub: 'PHASE 4', title: '前3強激戰！斑馬球啟動！' },
+                    5: { sub: 'FINAL PHASE', title: '1對1決賽驟死戰！閃光球！' }
                 },
                 es: {
-                    1: { sub: 'FASE 1', title: '⚾ ¡Calentamiento!' },
-                    2: { sub: 'FASE 2', title: '🔥 ¡#11 Bola de Fuego!' },
-                    3: { sub: 'FASE 3', title: '🪞 ¡TOP 5! ¡Bola Espejo!' },
-                    4: { sub: 'FASE 4', title: '🦓 ¡TOP 3! ¡Bola Cebra!' },
-                    5: { sub: 'FASE FINAL', title: '⚡ ¡1 vs 1 Muerte Súbita!' }
+                    1: { sub: 'FASE 1', title: '¡Calentamiento!' },
+                    2: { sub: 'FASE 2', title: '¡#11 Bola de Fuego!' },
+                    3: { sub: 'FASE 3', title: '¡TOP 5! ¡Bola Espejo!' },
+                    4: { sub: 'FASE 4', title: '¡TOP 3! ¡Bola Cebra!' },
+                    5: { sub: 'FASE FINAL', title: '¡1 vs 1 Muerte Súbita!' }
                 }
             };
             const set = TITLES[lang] || TITLES.ko;
@@ -9906,6 +9835,10 @@
             const info = getBattlePhaseTitle(phase);
             subEl.innerText = info.sub;
             titleEl.innerText = info.title;
+            banner.dataset.phase = phase;
+            const art = document.getElementById('battle-phase-banner-art');
+            art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
+            art.hidden = false;
 
             banner.classList.remove('show');
             void banner.offsetWidth;
@@ -9933,23 +9866,11 @@
             }
             pill.classList.remove('hidden');
             const info = getBattlePhaseTitle(phase);
-            pill.innerText = `${info.sub} · ${info.title.split(' ')[0]} ${info.title.split(' ')[1] || ''}`;
-            if (phase === 5) {
-                pill.style.background = 'linear-gradient(135deg, #ff0055, #ffcc00)';
-                pill.style.boxShadow = '0 0 15px rgba(255, 0, 85, 0.8), 0 4px 0 #000';
-            } else if (phase === 4) {
-                pill.style.background = 'linear-gradient(135deg, #7c3aed, #a855f7)';
-                pill.style.boxShadow = '0 0 12px rgba(168, 85, 247, 0.6), 0 4px 0 #000';
-            } else if (phase === 3) {
-                pill.style.background = 'linear-gradient(135deg, #2563eb, #38bdf8)';
-                pill.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.6), 0 4px 0 #000';
-            } else if (phase === 2) {
-                pill.style.background = 'linear-gradient(135deg, #ea580c, #f97316)';
-                pill.style.boxShadow = '0 0 10px rgba(249, 115, 22, 0.6), 0 4px 0 #000';
-            } else {
-                pill.style.background = '';
-                pill.style.boxShadow = '';
-            }
+            document.getElementById('battle-phase-pill-label').innerText = `${info.sub} · ${info.title.split(' ')[0]}`;
+            pill.dataset.phase = phase;
+            const art = document.getElementById('battle-phase-pill-art');
+            art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
+            art.hidden = false;
         }
 
         function checkBattlePhaseTransition() {
@@ -11783,12 +11704,6 @@
             battleRef.child(roomId).on('value', battleListener);
         }
 
-        function getSkinIcon(skinId) {
-            if (!skinId || skinId === 'classic') return '';
-            const s = (typeof SKINS_CATALOG !== 'undefined') ? SKINS_CATALOG.find(x => x.id === skinId) : null;
-            return s ? s.icon : '';
-        }
-
         function formatPlayerRecordBadge(player) {
             const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
             const leagueBadge = rating > MASTER_LEAGUE_THRESHOLD ? '👑' : '🥈';
@@ -11796,10 +11711,7 @@
             const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
             const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
             const streakText = streak >= 2 ? ` 🔥${streak}` : '';
-            const skinId = (player && player.skin) ? player.skin : ((player && player.id === battlePlayerId && typeof getEquippedSkin === 'function') ? getEquippedSkin() : 'classic');
-            const skinIcon = getSkinIcon(skinId);
-            const skinBadge = skinIcon ? ` ${skinIcon}` : '';
-            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}${skinBadge}`;
+            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}`;
         }
 
         function renderBattleLobby(room) {
@@ -11913,7 +11825,6 @@
                 const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
                 const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
                 const skinId = (player && player.skin) ? player.skin : (isMe && typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
-                const skinIcon = (typeof getEquippedSkinIcon === 'function') ? getEquippedSkinIcon(skinId) : '⚾';
 
                 const collectionTitle = (TEXTS[lang] && TEXTS[lang].skinModalTitle) || 'Collection';
                 const streakMap = {
@@ -11931,7 +11842,7 @@
                             <span class="bpp-name" title="${label}">${label}</span>
                         </div>
                         <div class="bpp-badges">
-                            <span class="bpp-skin-icon" title="${collectionTitle}">${skinIcon}</span>
+                            <span class="bpp-skin-icon" title="${collectionTitle}">${renderSkinBadge(skinId)}</span>
                             ${isMe ? `<span class="bpp-me-badge">ME</span>` : ''}
                         </div>
                     </div>
@@ -12249,10 +12160,11 @@
                     const scoreText = Number(player.score || 0);
                     const meClass = player.id === battlePlayerId ? ' me' : '';
                     const doneClass = player.done ? ' done' : '';
+                    const skinId = player.skin || (player.id === battlePlayerId ? getEquippedSkin() : 'classic');
                     return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}">
                         <div class="bsc-name">${index + 1}. ${label}</div>
                         <div class="bsc-score">${scoreText}</div>
-                        <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}</div>
+                        <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}${renderSkinBadge(skinId, { showClassic: false })}</div>
                     </div>`;
                 }).join('');
                 listEl.querySelectorAll('.battle-score-card').forEach(card => {
@@ -12361,7 +12273,7 @@
                 const vigEl = document.getElementById('battle-final-vignette');
                 if (vigEl) vigEl.classList.remove('active');
                 const bannerEl = document.getElementById('battle-phase-banner');
-                if (bannerEl) bannerEl.classList.remove('active');
+                if (bannerEl) bannerEl.classList.remove('show');
                 if (canvasEl) {
                     canvasEl.style.display = 'none';
                     canvasEl.style.visibility = 'visible';
