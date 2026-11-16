@@ -4042,6 +4042,7 @@
                     </div>
                 </div>
 
+                <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()" style="width:100%;margin-bottom:10px;padding:12px 14px;border:3px solid #000;border-radius:16px;background:#fee2e2;color:#b91c1c;font-size:20px;font-weight:900;font-family:inherit;cursor:pointer;touch-action:auto !important;">🧪 [TEST] 내 데이터 초기화</button>
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
         </div>
@@ -5514,6 +5515,17 @@
             const descEl = document.getElementById('settings-account-desc');
             const actionsEl = document.getElementById('settings-account-actions');
             const lang = currentLang || 'ko';
+            const resetBtn = document.getElementById('settings-test-reset-btn');
+            if (resetBtn) {
+                const resetLabelMap = {
+                    ko: '🧪 [TEST] 내 데이터 초기화',
+                    en: '🧪 [TEST] Reset My Data',
+                    ja: '🧪 [TEST] データ初期化',
+                    'zh-TW': '🧪 [TEST] 重置我的資料',
+                    es: '🧪 [TEST] Reiniciar mis datos'
+                };
+                resetBtn.innerText = resetLabelMap[lang] || resetLabelMap.en;
+            }
             if (badgeEl && descEl && actionsEl) {
                 if (isLinked) {
                     let prov = 'Cloud';
@@ -5574,6 +5586,31 @@
                 updateSettingsUI();
                 if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             }, 600);
+        }
+
+        function resetMyLocalDataForTest() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            const lang = currentLang || 'ko';
+            const confirmMap = {
+                ko: '현재 기기의 모든 게임 데이터(이름, 최고기록, 레이팅, 컬렉션, 가이드 상태)를 초기화하고 새로 시작할까요?',
+                en: 'Reset all local game data (name, best score, rating, collection, guide) and restart?',
+                ja: '端末のゲームデータ（名前・最高記録・レート・コレクション・ガイド）をすべて初期化しますか？',
+                'zh-TW': '確定要重置此裝置的所有遊戲資料（名稱、最高分、積分、收藏、引導）並重新開始嗎？',
+                es: '¿Reiniciar todos los datos locales (nombre, récord, rating, colección, guía) y reiniciar?'
+            };
+            if (!confirm(confirmMap[lang] || confirmMap.en)) return;
+            try {
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && (k.startsWith('infinitePitcher') || k.startsWith('infinite_pitcher'))) {
+                        keysToRemove.push(k);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+            } catch (e) {}
+            location.reload();
         }
 
         function handleSettingsCloudSyncNow() {
