@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary-neon: #ccff00;
             --bg-dark: #0f172a;
             --block-bg: #1e293b;
             --text-white: #f8fafc;
@@ -299,7 +298,7 @@
             font-weight: 900;
             border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 6px 0 var(--primary-neon), 0 6px 0 2px #000000;
+            box-shadow: 0 6px 0 var(--palette-ink), 0 6px 0 2px #000000;
             transition: transform 0.1s, box-shadow 0.1s;
             font-family: 'Darumadrop One', 'Kosugi Maru', 'Noto Sans JP', sans-serif;
             letter-spacing: 1px;
@@ -377,7 +376,7 @@
 
         .start-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0 var(--primary-neon), 0 2px 0 2px #000000;
+            box-shadow: 0 2px 0 var(--palette-ink), 0 2px 0 2px #000000;
         }
 
         /* Game UI */
@@ -943,11 +942,6 @@
             text-shadow: 2px 2px 0 rgba(0,0,0,0.18);
         }
 
-        #battle-name-next-btn,
-        #battle-start-btn {
-            background: var(--palette-mint) !important;
-        }
-
         #battle-screen #battle-cancel-btn,
         #battle-result-screen #battle-exit-btn {
             background: #ffffff;
@@ -957,9 +951,8 @@
         }
 
         #battle-start-btn:disabled {
-            opacity: 0.35;
+            opacity: 0.75;
             transform: none;
-            box-shadow: 0 6px 0 #94a3b8, 0 6px 0 2px #000000;
             pointer-events: none;
         }
 
@@ -1059,9 +1052,8 @@
         /* 내 번호 박스: 눈에 확 띄는 강조 테두리 + 배경 */
         .battle-hud-box.me {
             background: var(--palette-yellow) !important;
-            border: 2.5px solid #e11d48 !important;
-            outline: 2px solid #fbbf24;
-            box-shadow: 0 2px 0 #000000, 0 0 6px rgba(225, 29, 72, 0.5) !important;
+            border: 2.5px solid var(--showa-red) !important;
+            outline: 2px solid var(--palette-yellow);
             transform: scale(1.03);
             z-index: 2;
         }
@@ -2079,14 +2071,14 @@
             padding: 33px 138px;
             font-size: 66px;
             border-radius: 33px;
-            box-shadow: 0 17px 0 var(--primary-neon), 0 17px 0 6px #000000;
+            box-shadow: 0 17px 0 var(--palette-ink), 0 17px 0 6px #000000;
             letter-spacing: 3px;
             margin-top: 28px;
         }
 
         .start-btn:active {
             transform: translateY(11px);
-            box-shadow: 0 6px 0 var(--primary-neon), 0 6px 0 6px #000000;
+            box-shadow: 0 6px 0 var(--palette-ink), 0 6px 0 6px #000000;
         }
 
         .intro-menu {
@@ -3020,7 +3012,7 @@
         .battle-hud-box.me {
             border-width: 4px !important;
             outline-width: 3px;
-            box-shadow: 0 4px 0 #000000, 0 0 12px rgba(225, 29, 72, 0.6) !important;
+            box-shadow: 0 4px 0 var(--palette-ink);
         }
 
         .battle-phase-pill {
@@ -3931,12 +3923,13 @@
         <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($4.99) 모달 -->
         <div id="play-gate-screen" class="screen hidden">
             <div class="continue-card">
+                <img id="play-gate-art" src="./images/showa-fireball.webp" alt="" hidden>
                 <h2 class="continue-title" id="play-gate-title">NEXT PLAY</h2>
                 <p class="continue-desc" id="play-gate-desc">오늘의 무료 플레이를 모두 사용했습니다.<br>다음 게임을 플레이하려면 광고를 시청해주세요!</p>
                 <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 광고 보고 플레이</button>
                 <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 광고 제거·무제한 플레이 ($4.99)</button>
                 <div class="play-gate-sub-actions">
-                    <button id="play-gate-test-free-btn" class="continue-skip-btn" style="background:var(--palette-yellow);color:#000;" onclick="skipAdForTest()">🛠️ 무료 테스트 플레이</button>
+                    <button id="play-gate-test-free-btn" class="continue-skip-btn hidden" onclick="skipAdForTest()">🛠️ 무료 테스트 플레이</button>
                     <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">구매 복원</button>
                     <button id="play-gate-close-btn" class="continue-skip-btn" onclick="closePlayGateModal()">닫기</button>
                 </div>
@@ -5617,6 +5610,7 @@
             const testRow = document.getElementById('test-start-row');
             if (!testRow) return;
             testRow.style.display = TEST_MODE_ENABLED ? 'flex' : 'none';
+            document.getElementById('play-gate-test-free-btn').classList.toggle('hidden', !TEST_MODE_ENABLED);
             if (!TEST_MODE_ENABLED) {
                 testMode = false;
                 testStartNum = 1;
@@ -5647,6 +5641,7 @@
         applyTestModeAvailability();
 
         function startSoloPractice() {
+            if (gameState !== 'INTRO') return;
             if (!requireInitialPlayerProfile(startSoloPractice)) return;
             leaveBattleRoom(true);
             stopQuickMatchTimer(false);
@@ -6176,15 +6171,8 @@
                 pillText = typeof fn === 'function' ? fn(soloRem, battleRem, DAILY_FREE_PLAY_LIMIT) : String(fn);
             }
 
-            const infoLabels = {
-                ja: 'プレイ・購入情報',
-                en: 'Play & purchase info',
-                ko: '플레이 · 구매 정보',
-                'zh-TW': '遊玩與購買資訊',
-                es: 'Juego y compras'
-            };
             const introTicket = document.getElementById('intro-ticket-pill');
-            introTicket.textContent = vip ? pillText : infoLabels[currentLang] || infoLabels.ja;
+            introTicket.textContent = pillText;
             introTicket.classList.toggle('is-vip', vip);
             const resultTicket = document.getElementById('gameover-ticket-pill');
             resultTicket.textContent = pillText;
@@ -6267,6 +6255,7 @@
             exitConfirmPaused = false;
             updateIngameBackBtnVisibility();
             updateUI();
+            draw();
 
             const countdownScreen = document.getElementById('countdown-screen');
             const countdownText = document.getElementById('countdown-text');
@@ -6275,8 +6264,7 @@
             // 안내 문구 표시 — 클릭/터치하면 카운트다운 시작
             countdownText.innerText = TEXTS[currentLang].instruction;
             countdownText.classList.add('countdown-instruction');
-            countdownText.style.color = 'var(--palette-ink)';
-            countdownText.style.textShadow = '';
+            countdownText.classList.remove('countdown-start');
             countdownText.style.fontSize = '';
             countdownText.style.whiteSpace = 'pre';
 
@@ -6306,8 +6294,6 @@
                 if (gameSessionId !== mySessionId || gameState !== 'COUNTDOWN') return;
                 if (count > 0) {
                     countdownText.innerText = count;
-                    countdownText.style.color = 'var(--palette-blue)';
-                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(64, 183, 242, 0.75)';
 
                     countdownText.classList.remove('countdown-animate');
                     void countdownText.offsetWidth;
@@ -6318,8 +6304,7 @@
                     setTimeout(runTick, 1000);
                 } else if (count === 0) {
                     countdownText.innerText = 'START!';
-                    countdownText.style.color = 'var(--palette-yellow)';
-                    countdownText.style.textShadow = '4px 4px 0 #ffffff, 8px 8px 0 #000000, 0 0 16px rgba(255, 232, 92, 0.75)';
+                    countdownText.classList.add('countdown-start');
 
                     countdownText.classList.remove('countdown-animate');
                     void countdownText.offsetWidth;
@@ -6482,7 +6467,8 @@
             const titleEl = document.getElementById('play-gate-title');
             const descEl = document.getElementById('play-gate-desc');
             const adBtnEl = document.getElementById('play-gate-ad-btn');
-            if (titleEl) titleEl.innerText = textFor('fireballUnlockTitle');
+            document.getElementById('play-gate-art').hidden = false;
+            if (titleEl) titleEl.innerText = textFor('fireballUnlockTitle').replace(/^🔥\s*/u, '');
             if (descEl) descEl.innerHTML = textFor('fireballUnlockHtml');
             if (adBtnEl) adBtnEl.style.display = 'none';
             document.getElementById('play-gate-screen').classList.remove('hidden');
@@ -6500,6 +6486,7 @@
             const titleEl = document.getElementById('play-gate-title');
             const descEl = document.getElementById('play-gate-desc');
             const adBtnEl = document.getElementById('play-gate-ad-btn');
+            document.getElementById('play-gate-art').hidden = true;
             if (titleEl) titleEl.innerText = textFor('playGateTitle');
             if (descEl) {
                 if (needAdNow) {
@@ -8532,11 +8519,11 @@
             const hintEl = document.getElementById('initial-name-hint');
             const inputEl = document.getElementById('initial-name-input');
             if (inputEl) {
-                inputEl.style.borderColor = '#e11d48';
+                inputEl.style.borderColor = 'var(--showa-red)';
             }
             if (hintEl) {
                 hintEl.innerText = textFor('forbiddenNameInlineHint') || '🚫';
-                hintEl.style.color = '#e11d48';
+                hintEl.style.color = 'var(--showa-red)';
                 if (forbiddenHintResetTimer) clearTimeout(forbiddenHintResetTimer);
                 forbiddenHintResetTimer = setTimeout(() => {
                     hintEl.innerText = textFor('initialNameHint');
@@ -9866,11 +9853,17 @@
             }
             pill.classList.remove('hidden');
             const info = getBattlePhaseTitle(phase);
-            document.getElementById('battle-phase-pill-label').innerText = `${info.sub} · ${info.title.split(' ')[0]}`;
-            pill.dataset.phase = phase;
-            const art = document.getElementById('battle-phase-pill-art');
-            art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
-            art.hidden = false;
+            const summary = phase === 5 ? '1 vs 1' : info.title.split(' ')[0];
+            const label = document.getElementById('battle-phase-pill-label');
+            const text = `${info.sub} · ${summary}`;
+            if (label.textContent !== text) label.textContent = text;
+
+            if (pill.dataset.phase !== String(phase)) {
+                pill.dataset.phase = phase;
+                const art = document.getElementById('battle-phase-pill-art');
+                art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
+                art.hidden = false;
+            }
         }
 
         function checkBattlePhaseTransition() {
@@ -10141,6 +10134,7 @@
             const divider = document.getElementById('battle-divider');
             const joinSection = document.getElementById('battle-join-section');
             const startBtn = document.getElementById('battle-start-btn');
+            document.getElementById('game-wrapper').dataset.battleView = battleViewMode;
 
             if (createSection) createSection.style.display = 'flex';
 
@@ -11008,7 +11002,7 @@
                             }
 
                             if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
-                            battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
+                            publishBattleScore(roomId, bot.id, state.score);
 
                             // 파이어볼 후 즉시 1단계 가속 적용 (유저와 동일 템포)
                             const nextInterval = getPitchInterval(state.nextExpected);
@@ -11025,7 +11019,7 @@
                     }
 
                     if (battlePlayers[bot.id]) battlePlayers[bot.id].score = state.score;
-                    battleRef.child(roomId + '/players/' + bot.id + '/score').set(state.score);
+                    publishBattleScore(roomId, bot.id, state.score);
 
                     // 유저와 동일한 투구 간격 + 인간적인 미세 손떨림 오차 (±20ms 이내)
                     const baseInterval = getPitchInterval(state.nextExpected);
@@ -11284,7 +11278,9 @@
             stopQuickMatchTimer(false);
             saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('battle-screen').classList.remove('hidden');
+            const battleScreen = document.getElementById('battle-screen');
+            battleScreen.classList.remove('hidden');
+            battleScreen.scrollTop = 0;
             document.getElementById('battle-result-screen').classList.add('hidden');
 
             const listEl = document.getElementById('battle-player-list');
@@ -11302,13 +11298,7 @@
                 const info = getLeagueInfo(currentBattleLeague);
                 const lang = currentLang || 'ko';
                 leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                if (currentBattleLeague === 'master') {
-                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
-                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
-                } else {
-                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
-                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
-                }
+                leaguePill.classList.toggle('master', currentBattleLeague === 'master');
             }
             showBattleRoomStep();
         }
@@ -11330,7 +11320,9 @@
             leaveBattleRoom(true);
             saveBattleNickname(permanentName);
             document.getElementById('intro-screen').classList.add('hidden');
-            document.getElementById('battle-screen').classList.remove('hidden');
+            const battleScreen = document.getElementById('battle-screen');
+            battleScreen.classList.remove('hidden');
+            battleScreen.scrollTop = 0;
             document.getElementById('battle-result-screen').classList.add('hidden');
 
             document.getElementById('battle-code-input').value = '';
@@ -11346,13 +11338,7 @@
                 const info = getLeagueInfo(currentBattleLeague);
                 const lang = currentLang || 'ko';
                 leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                if (currentBattleLeague === 'master') {
-                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
-                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
-                } else {
-                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
-                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
-                }
+                leaguePill.classList.toggle('master', currentBattleLeague === 'master');
             }
             showBattleRoomStep();
             createBattleRoom(permanentName);
@@ -11722,13 +11708,7 @@
                 const info = getLeagueInfo(l);
                 const lang = currentLang || 'ko';
                 leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                if (l === 'master') {
-                    leaguePill.style.background = 'linear-gradient(135deg, #b45309, #d97706)';
-                    leaguePill.style.boxShadow = '0 5px 0 #f59e0b, 0 5px 0 3px #000000';
-                } else {
-                    leaguePill.style.background = 'rgba(15, 23, 42, 0.9)';
-                    leaguePill.style.boxShadow = '0 5px 0 var(--palette-yellow), 0 5px 0 3px #000000';
-                }
+                leaguePill.classList.toggle('master', l === 'master');
             }
             const players = getBattlePlayerList(room);
             const isHost = battleRole === 'host';
@@ -11990,13 +11970,21 @@
             startGame();
         }
 
+        function publishBattleScore(roomId, playerId, nextScore) {
+            // 종료 트랜잭션이 먼저 완료됐다면 확정 점수를 덮어쓰지 않는다.
+            return battleRef.child(roomId + '/players/' + playerId).transaction(player => {
+                if (!player || player.done || nextScore <= Number(player.score || 0)) return;
+                return { ...player, score: nextScore };
+            }, undefined, false).catch(error => console.warn('[Battle] score sync failed:', error));
+        }
+
         function battleSyncScore() {
             if (!battleMode || !battleRoomId || !battlePlayerId) return;
             if (battlePlayers[battlePlayerId]) {
                 battlePlayers[battlePlayerId].score = score;
                 renderBattleHud({ players: battlePlayers });
             }
-            battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/score').set(score);
+            publishBattleScore(battleRoomId, battlePlayerId, score);
         }
 
         function battleGameOver() {
