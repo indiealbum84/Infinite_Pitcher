@@ -3890,7 +3890,7 @@
                     </div>
                 </div>
 
-                <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()" style="width:100%;margin-bottom:10px;padding:12px 14px;border:3px solid #000;border-radius:16px;background:#fee2e2;color:#b91c1c;font-size:20px;font-weight:900;font-family:inherit;cursor:pointer;touch-action:auto !important;">🧪 [TEST] 내 데이터 초기화</button>
+                <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()">🧪 [TEST] 내 데이터 초기화</button>
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
         </div>
@@ -5516,7 +5516,7 @@
             }, 600);
         }
 
-        function resetMyLocalDataForTest() {
+        async function resetMyLocalDataForTest() {
             playSfx('click', 0.8);
             triggerHaptic('light');
             const lang = currentLang || 'ko';
@@ -5527,7 +5527,7 @@
                 'zh-TW': '確定要重置此裝置的所有遊戲資料（名稱、最高分、積分、收藏、引導）並重新開始嗎？',
                 es: '¿Reiniciar todos los datos locales (nombre, récord, rating, colección, guía) y reiniciar?'
             };
-            if (!confirm(confirmMap[lang] || confirmMap.en)) return;
+            if (!await showGameDialog('confirm', confirmMap[lang] || confirmMap.en)) return;
             try {
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
