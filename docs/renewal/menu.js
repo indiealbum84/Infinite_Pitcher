@@ -151,7 +151,12 @@ function settings() {
 }
 
 const renderers = {
-  splash: () => `<div class="cover"><img src="assets/home-hero.webp" alt=""><h2 tabindex="-1">무한 피칭</h2></div>${panel('첫 시작', action('시작하기', 'language'), null)}`,
+  splash: () => `
+    <section class="opening" aria-labelledby="opening-title">
+      <img class="opening-art" src="assets/opening-fullshot.webp" alt="방과 후 야구장 마운드에 선 어린 투수의 전신" fetchpriority="high">
+      <h2 id="opening-title" tabindex="-1"><small>超特訓！無限ピッチング</small>무한 피칭</h2>
+      ${action('시작하기', 'language')}
+    </section>`,
   language: () => panel('언어 선택', `<div class="language-list">${languages.map(([key, label]) => `<button class="plain" type="button" data-language="${key}">${label}</button>`).join('')}</div>`, 'splash'),
   name: () => panel('선수 이름 등록', `
     <form class="form" id="name-form">
@@ -313,4 +318,8 @@ display.addEventListener('input', event => {
   }
 });
 
-navigate('home', false);
+if (new URLSearchParams(location.search).get('preview') === 'opening') {
+  chooseScenario('new');
+} else {
+  navigate('home', false);
+}

@@ -126,6 +126,51 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 850;
   letter-spacing: .12em;
 }
+.opening {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  aspect-ratio: 9 / 16;
+  min-height: 715px;
+  padding: max(30px, 6vh, calc(env(safe-area-inset-top) + 18px)) 16px max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  background: var(--paper);
+  text-align: center;
+}
+.opening-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.opening h2 {
+  color: var(--ink);
+  font-size: clamp(44px, 12vw, 63px);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -.085em;
+  text-shadow: 2px 2px 0 #fff0ce;
+}
+.opening h2:focus { outline: none; }
+.opening small {
+  display: block;
+  margin-bottom: 7px;
+  color: #852d26;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 900;
+  letter-spacing: .11em;
+}
+.opening .cta {
+  min-height: 52px;
+  width: min(100%, 205px);
+  font-size: 18px;
+}
 .home-content { display: grid; gap: 13px; padding: 15px 16px 18px; }
 .profile {
   display: grid;
@@ -233,8 +278,14 @@ input[type="range"] { width: 100%; min-height: 44px; margin: 0; accent-color: va
 @media (max-width: 760px) {
   .review { grid-template-columns: minmax(0, 414px); gap: 23px; padding: 0; }
   .device { grid-row: 1; border: 0; border-radius: 0; box-shadow: none; min-height: 100svh; }
+  .opening { min-height: 100svh; min-height: 100dvh; }
   .review-note { padding: 0 19px 24px; }
   .review-note h1 { font-size: 37px; }
+}
+@media (max-width: 480px) {
+  .review:has(.opening) { grid-template-columns: minmax(0, 1fr); }
+  .review:has(.opening) .review-note { display: none; }
+  .opening { aspect-ratio: auto; }
 }
 @media (max-width: 359px) {
   .review { font-size: 14px; }

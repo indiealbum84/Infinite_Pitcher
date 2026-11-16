@@ -2,7 +2,7 @@
 
 **방과 후 야구부**를 게임 전체의 얼굴로 잡는다. 예전 야구 만화의 검은 외곽선, 망점 인쇄, 종이색, 큰 공의 원근감을 활용한다. 주인공은 15–16세 정도의 야구부 선수로, 작은 체격과 둥근 얼굴선, 밝고 집중한 표정, 여유 있는 유니폼을 쓴다. 특정 성별로 강하게 읽히는 얼굴이나 체격을 피하고, 투구의 힘은 손과 공의 원근, 대각선 구도와 스피드라인으로 표현한다. 참고 사진의 캐릭터, 팀명, 모자 로고는 게임 고유의 디자인으로 새로 만든다.
 
-[메뉴 프로토타입](menu.html) · [메뉴 미리보기](assets/menu-preview.webp) · [홈 키 일러스트](assets/home-hero.webp) · [인게임 아트 보드](assets/field-studies.webp)
+[메뉴 프로토타입](menu.html) · [오프닝으로 바로 시작](menu.html?preview=opening) · [오프닝 미리보기](assets/opening-preview.webp) · [메뉴 미리보기](assets/menu-preview.webp) · [홈 키 일러스트](assets/home-hero.webp) · [인게임 아트 보드](assets/field-studies.webp)
 
 ![방과 후 야구부 홈 키 일러스트](assets/home-hero.webp)
 
@@ -10,7 +10,7 @@
 
 | 시안 | 그림과 색 | 배치 |
 | --- | --- | --- |
-| **A. 방과 후 야구부 · 메인** | 아이보리 종이, 잉크 남색 유니폼, 머스터드 햇빛, 주홍 스피드라인. 웃으며 공을 들어 보이는 투수와 가까이 보이는 공을 한 컷에 담는다. | 홈, 시작 화면, 앱 대표 이미지 |
+| **A. 방과 후 야구부 · 메인** | 아이보리 종이, 잉크 남색 유니폼, 머스터드 햇빛, 주홍 스피드라인. 오프닝은 마운드 위 투수의 전신과 주변 구장을 담고, 홈은 공을 내미는 투수의 클로즈업으로 잡는다. | 오프닝, 홈, 앱 대표 이미지 |
 | **B. 동네 연습장 · 솔로/친구** | 낮은 관중석, 흙빛 마운드, 잔디색. 좌우 가장자리에 배경 요소를 두고, 번호판 뒤는 낮은 대비의 큰 색면을 사용한다. | 나홀로 특훈, 친구와 특훈, 튜토리얼 |
 | **C. 야간 교류전 · 배틀** | 잉크 남색 하늘, 따뜻한 조명과 주홍 전광판. 관중은 작게 처리하고, 조명은 코트 가장자리에 둔다. | 세계 8인 배틀 로비, 경기 시작, 배틀 결과 |
 
@@ -22,7 +22,7 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 
 | 제작 묶음 | 다음 시안에서 필요한 리소스와 기준 |
 | --- | --- |
-| 타이틀·런처 | 회사 로고 스플래시와 게임 표지는 파일을 분리한다. 정식 일문 타이틀 `超特訓！無限ピッチング`과 현지화 이름은 별도 레이어로 둔다. 앱 아이콘은 공+모자 실루엣을 정사각형과 마스커블로 제작한다. |
+| 타이틀·런처 | 회사 로고 스플래시와 오프닝을 분리한다. [오프닝 원화](assets/opening-fullshot.webp)는 9:16 세로 전신 컷으로, 모자부터 양쪽 스파이크까지 들어오게 그린다. 정식 일문 타이틀 `超特訓！無限ピッチング`과 현지화 이름은 별도 레이어로 둔다. 앱 아이콘은 공+모자 실루엣을 정사각형과 마스커블로 제작한다. |
 | 홈·로비 아트 | 홈 일러스트 3:2, 로비 야간 배경 9:16. 얼굴과 공은 별도로 크롭을 검토한다. 타이틀과 안내 문구는 이미지가 아닌 UI 텍스트로 렌더링한다. |
 | 투수·카트 | 동일 인물의 준비·릴리스 포즈와 카트. 투수 스프라이트는 투명 PNG, 같은 프레임 크기와 발 기준점으로 제공한다. 동작 교체 시 좌우 중심과 바닥 위치가 튀지 않아야 한다. |
 | 게임 필드·블록 | 1080×1920 논리 화면 기준으로 낮과 밤 배경을 분리한다. 10열 블록의 숫자는 Canvas 텍스트로 유지하고, 기본 블록과 목표 블록의 윤곽·명도 차이를 확보한다. |
@@ -35,7 +35,7 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 
 | 상태 또는 화면 | 리뉴얼 정의 |
 | --- | --- |
-| 첫 실행 | 시작 → 언어 선택 → 선수 이름 등록 → 홈. 이름 제한과 변경 불가 안내는 입력 아래에 표시한다. 기존 선수의 Google·Apple 복원은 같은 화면 아래에 둔다. |
+| 첫 실행 | 세로 전신 일러스트가 오프닝 화면 전체를 채운다. 제목은 상단, ‘시작하기’는 하단 안전 영역 위에 놓고, 머리와 발 사이에 UI를 겹치지 않는다. 시작 → 언어 선택 → 선수 이름 등록 → 홈. 이름 제한과 변경 불가 안내는 입력 아래에 표시하고 Google·Apple 복원은 같은 화면 아래에 둔다. |
 | 홈 · 솔로 최고 31점 미만 | **나홀로 특훈**이 주 버튼이다. 세계 8인 배틀에 ‘솔로 최고 24 / 31점’처럼 진행을 표시한다. 잠긴 항목을 열면 해금 안내와 솔로로 가는 버튼을 보여준다. 친구와 특훈은 바로 접근할 수 있다. |
 | 홈 · 솔로 최고 31점 이상 | **세계 8인 배틀**이 주 버튼이 된다. 나홀로 특훈과 친구와 특훈은 같은 줄에 둔다. 홈 기록 카드는 선수명·솔로 최고·배틀 PT만 읽히게 하고, 리그와 누적 우승은 배틀 로비에서 보여준다. |
 | 세계 8인 배틀 | 로비에서 리그, 승점, 누적 우승을 본다. 일반은 1,200 PT 이하, 마스터는 1,200 PT 초과다. ‘빠른 매칭’ 후 카운트다운·실제 선수 수·8칸 슬롯·취소를 한 화면에 둔다. 최대 20초 대기와 빈자리 봇 충원 규칙을 따르고, 로비 진입만으로 매칭을 시작하지 않는다. |
@@ -58,6 +58,14 @@ A/B/C는 서로 다른 브랜드 후보가 아니라 같은 캐릭터와 인쇄 
 ## 이미지 제작 기록
 
 내장 ImageGen을 사용했다. 아래는 시안에 적용한 프롬프트다.
+
+**세로 오프닝**
+
+Use case: illustration-story. Create one new high-fidelity vertical 9:16 full-bleed opening illustration for Infinite Pitcher, a mobile retro sports manga baseball game. Input image 1 is the identity and print style reference for the protagonist. Input image 2 is the world and full-body drawing style reference; use the daylight training ground and the lower-left pitcher pose for inspiration. Draw the same original youthful East Asian high-school baseball player, 15–16, softly androgynous, lean light build, round cheeks, expressive eyes, a small confident smile, dark short loose hair and vintage ink-navy cap and jersey with soft mustard piping, cream baseball pants, dark stirrup socks, black cleats. Full-length long shot from slightly below, from cap to both cleats, absolutely no cropped body parts, both shoes clearly shown planted on terracotta mound. An anatomically grounded right-handed ready stance, body in a relaxed three-quarter view, glove and baseball both clear. One main character only. Keep the entire visible protagonist inside the middle horizontal 65 percent and the vertical band from 25 to 83 percent. Character should be large within that band, approximately 57 percent of total frame height. Above their head leave an open pale warm cream sky with very little detail for a dark two-line game logo in top 17 percent. Below their shoes leave a quiet unobstructed clay foreground for a beginning button centered in the bottom 11 percent. Zoomed-out view of grassy neighborhood baseball ground after school, small bleachers, peach sunlight and pale mustard motion strokes framing the scene, subtle verimilion accents. Analog Showa baseball manga cover, hand-inked heavy navy outlines, Ben-Day halftone shadows, screen-printed warm paper grain, lively and friendly club-sports tone. Fill the frame from edge to edge, no borders, no collaged panels, no mature physique, no angry or intimidating expression, no typography, no letters or digits, no logos, watermark or UI. The art will be cropped by a few percent on narrow screens, so keep hands, face and legs clear of the left/right edges.
+
+**세로 오프닝의 타이틀과 버튼 형태 제거**
+
+Use case: precise-object-edit. The input image is the portrait illustration to edit. Remove the entire large English lettering and its sweeping red underline in the top fifth, and remove the entire rounded yellow capsule with dark outline at the bottom. Inpaint the top with the same pale cream subtly textured open sky continuous with the surrounding sky, and inpaint the bottom with the same continuous flat textured terracotta clay of the mound. Preserve the full-body pitcher, face, both cap and shoes, the field and bleachers, motion strokes at the sides, the exact framing, line work, colors and all of the illustration outside these two areas. The final image must be a clean full-bleed 9:16 portrait illustration, with zero text, zero underlines, zero logos, zero marks, zero circles or rounded lozenges, zero UI or substitutes in either area. Empty sky above the player's cap and plain terracotta below the player's shoes. Do not make any other changes.
 
 **홈 키 일러스트**
 
