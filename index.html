@@ -1728,6 +1728,7 @@
 
         .settings-account-btn {
             flex: 1;
+            min-width: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1737,6 +1738,8 @@
             border-radius: 14px;
             font-size: 14px;
             font-weight: 900;
+            white-space: nowrap;
+            overflow: hidden;
             cursor: pointer;
             touch-action: auto !important;
             font-family: inherit;
@@ -5475,6 +5478,9 @@
                         <button type="button" class="settings-account-btn apple" onclick="handleSettingsAccountSync('apple')">🍎 ${appleLoginMap[lang] || appleLoginMap.en}</button>
                     `;
                 }
+            }
+            if (typeof fitLocalizedBoxes === 'function') {
+                requestAnimationFrame(() => fitLocalizedBoxes());
             }
         }
 
