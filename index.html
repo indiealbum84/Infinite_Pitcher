@@ -3869,8 +3869,16 @@
                     </div>
                 </div>
 
-                <button type="button" id="settings-support-btn" onclick="openSupportForm()" style="width:100%;margin-bottom:8px;padding:10px 14px;border:2.5px solid #000;border-radius:14px;background:#e0f2fe;color:#0369a1;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 #000;touch-action:auto !important;">📩 문의 / 버그 제보</button>
-                <a id="settings-privacy-link" href="./privacy.html" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;box-sizing:border-box;text-align:center;margin-bottom:8px;padding:8px 12px;border:2px solid #cbd5e1;border-radius:12px;background:#ffffff;color:#475569;font-size:13px;font-weight:800;text-decoration:none;touch-action:auto !important;">🔒 개인정보처리방침</a>
+                <!-- 5. 고객 지원 및 정책 -->
+                <div class="settings-section">
+                    <div class="settings-row">
+                        <span class="settings-label" id="settings-support-section-label">📩 고객 지원</span>
+                    </div>
+                    <div class="settings-account-actions">
+                        <button type="button" class="settings-account-btn google" id="settings-support-btn" onclick="openSupportForm()">📩 문의 / 버그 제보</button>
+                        <a class="settings-account-btn switch" id="settings-privacy-link" href="./privacy.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">🔒 개인정보처리방침</a>
+                    </div>
+                </div>
                 <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()">🧪 [TEST] 내 데이터 초기화</button>
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
@@ -5423,6 +5431,17 @@
             const descEl = document.getElementById('settings-account-desc');
             const actionsEl = document.getElementById('settings-account-actions');
             const lang = currentLang || 'ko';
+            const supportSectionLabel = document.getElementById('settings-support-section-label');
+            if (supportSectionLabel) {
+                const sectionLabelMap = {
+                    ko: '📩 고객 지원',
+                    en: '📩 Support',
+                    ja: '📩 サポート',
+                    'zh-TW': '📩 客服支援',
+                    es: '📩 Soporte'
+                };
+                supportSectionLabel.innerText = sectionLabelMap[lang] || sectionLabelMap.en;
+            }
             const supportBtn = document.getElementById('settings-support-btn');
             if (supportBtn) {
                 const supportLabelMap = {
