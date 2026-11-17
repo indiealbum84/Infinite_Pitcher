@@ -394,12 +394,6 @@
     box-shadow: 9px 12px 0 var(--showa-ink);
     color: var(--showa-ink);
 }
-.profile-permanent-warning {
-    background-color: #efd5ae;
-    border-color: var(--showa-red);
-    color: #772d27;
-    box-shadow: none;
-}
 :is(.settings-section, .initial-name-input, .battle-input, .battle-code-box, .settings-val-badge, .settings-account-badge) {
     background: var(--showa-cream);
     border-color: var(--showa-ink);

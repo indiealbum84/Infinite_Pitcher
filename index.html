@@ -3416,20 +3416,6 @@
             text-shadow: 5px 5px 0 #ffffff, 9px 9px 0 #000000;
         }
 
-        .profile-permanent-warning {
-            background: #fff1f2;
-            border: 5px solid #e11d48;
-            border-radius: 30px;
-            padding: 22px 28px;
-            color: #9f1239;
-            font-size: 30px;
-            font-weight: 900;
-            line-height: 1.48;
-            white-space: pre-line;
-            width: 100%;
-            box-shadow: 0 8px 0 rgba(225, 29, 72, 0.2);
-        }
-
         .initial-name-input {
             background: #ffffff;
             border: 7px solid #000000;
@@ -3449,53 +3435,162 @@
             pointer-events: auto !important;
         }
 
-        .initial-name-hint {
-            font-size: 27px;
+        #initial-nickname-step {
+            gap: 14px;
+            padding: 28px 44px 34px;
+        }
+
+        #initial-nickname-step .profile-setup-title {
+            font-size: 59px;
+            margin: 4px 0 12px;
+        }
+
+        #initial-lang-change-btn {
+            min-height: 92px;
+            padding: 10px 25px;
+            font-size: 28px;
+        }
+
+        #initial-nickname-step .initial-name-input {
+            max-width: none;
+            min-height: 144px;
+            border-radius: 16px;
+            font-size: 56px;
+        }
+
+        .profile-info-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            width: 100%;
+            text-align: start;
+        }
+
+        .profile-info-label {
+            margin: 0;
+            font-size: 42px;
             font-weight: 900;
-            color: #475569;
-            margin: -6px 0 0;
+            line-height: 1.25;
+        }
+
+        .profile-info-label .fa-lock {
+            margin-inline-end: 9px;
+            color: var(--showa-red);
+        }
+
+        .profile-help summary {
+            position: relative;
+            z-index: 3;
+            display: grid;
+            place-items: center;
+            width: 150px;
+            height: 150px;
+            border: 5px solid var(--showa-ink);
+            border-radius: 50%;
+            background: var(--showa-gold);
+            color: var(--showa-ink);
+            box-shadow: 0 5px 0 var(--showa-ink);
+            font: 900 48px/1 system-ui, sans-serif;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .profile-help summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .profile-help summary:focus-visible {
+            outline: 5px solid var(--showa-red);
+            outline-offset: 5px;
+        }
+
+        .profile-help-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            inset-inline: 0;
+            z-index: 2;
+            padding: 22px 26px;
+            border: 5px solid var(--showa-ink);
+            border-radius: 14px;
+            background: var(--showa-cream);
+            color: var(--showa-ink);
+            box-shadow: 6px 7px 0 var(--showa-ink);
+            font-size: 36px;
+            line-height: 1.45;
+        }
+
+        .profile-help-panel p {
+            margin: 0;
+        }
+
+        .profile-help-panel p + p {
+            margin-top: 14px;
+        }
+
+        .account-sync-box .profile-help-panel {
+            top: auto;
+            bottom: calc(100% + 12px);
+        }
+
+        #initial-name-feedback {
+            margin: 0;
+            color: var(--showa-red);
+            font-size: 29px;
+            font-weight: 900;
+        }
+
+        #initial-name-feedback:empty {
+            margin-top: -14px;
+        }
+
+        #initial-name-submit-btn {
+            width: 100%;
+            min-height: 150px;
+            margin: 0;
+            padding: 20px 28px;
+            font-size: 53px;
+            letter-spacing: 0;
         }
 
         .account-sync-box {
             width: 100%;
-            border-top: 4px dashed #cbd5e1;
-            padding-top: 20px;
-            margin-top: 4px;
+            border-top: 4px solid #d1b98c;
+            padding-top: 8px;
+            margin-top: 8px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .account-sync-label {
-            font-size: 26px;
-            font-weight: 900;
-            color: #334155;
-            margin: 0;
-            line-height: 1.4;
-            white-space: pre-line;
+            gap: 10px;
         }
 
         .account-sync-row {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
         }
 
         .account-sync-btn {
-            background: #ffffff;
-            color: #0f172a;
-            border: 5px solid #000000;
-            border-radius: 30px;
-            padding: 16px 28px;
-            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            min-height: 148px;
+            padding: 12px 18px;
+            border: 5px solid;
+            font-size: 41px;
             font-weight: 900;
             cursor: pointer;
-            font-family: inherit;
-            box-shadow: 0 8px 0 var(--palette-yellow), 0 8px 0 4px #000000;
+            font-family: system-ui, sans-serif;
             touch-action: auto !important;
+        }
+
+        .account-sync-btn .fa-brands {
+            font-size: 49px;
+        }
+
+        .account-sync-btn .fa-google {
+            color: #2d5fa0;
         }
 
         .intro-profile-pill,
@@ -3786,18 +3881,31 @@
             </div>
             <div id="initial-nickname-step" class="profile-setup-card">
                 <button type="button" id="initial-lang-change-btn" class="initial-lang-change-btn" onclick="showInitialLanguageStep()">🌐 한국어 ▾</button>
-                <h2 class="profile-setup-title" id="initial-profile-title">⚾ 선수 이름 등록</h2>
-                <div class="profile-permanent-warning" id="initial-profile-warning">⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!
-• 입력한 이름으로 서버에 등록되며 나의 최고 점수 1개만 올라갑니다.</div>
-                <input id="initial-name-input" class="initial-name-input" type="text" maxlength="10" placeholder="게임 이름 입력" oninput="handleInitialNameInput()" onkeydown="if(event.key==='Enter' && !event.isComposing) { event.preventDefault(); submitInitialPermanentName(); }" />
-                <p class="initial-name-hint" id="initial-name-hint">한글/일본어 5자 · 영문 10자까지 (변경 불가)</p>
-                <button id="initial-name-submit-btn" class="start-btn" style="width:100%;max-width:660px;" onclick="submitInitialPermanentName()">이 이름으로 게임 시작</button>
+                <h2 class="profile-setup-title" id="initial-profile-title">선수 이름 등록</h2>
+                <input id="initial-name-input" class="initial-name-input" type="text" maxlength="10" enterkeyhint="go" placeholder="게임 이름 입력" aria-labelledby="initial-profile-title" aria-describedby="initial-name-permanence" oninput="if(!event.isComposing) handleInitialNameInput()" onkeydown="if(event.key==='Enter' && !event.isComposing) { event.preventDefault(); submitInitialPermanentName(); }" />
+                <div class="profile-info-row">
+                    <p class="profile-info-label"><i class="fa-solid fa-lock" aria-hidden="true"></i><span id="initial-name-permanence">등록 후 변경 불가</span></p>
+                    <details class="profile-help" name="initial-profile-help">
+                        <summary id="initial-name-help" aria-label="이름 등록 도움말">?</summary>
+                        <div class="profile-help-panel">
+                            <p id="initial-name-hint">한글 5자 / 영문 10자까지</p>
+                            <p id="initial-profile-warning">등록한 이름으로 최고 점수 1개만 랭킹에 올라갑니다.</p>
+                        </div>
+                    </details>
+                </div>
+                <p id="initial-name-feedback" role="status"></p>
+                <button type="button" id="initial-name-submit-btn" class="start-btn" onclick="submitInitialPermanentName()">이 이름으로 시작</button>
                 <div class="account-sync-box">
-                    <p class="account-sync-label" id="initial-account-sync-label">📱 앱을 지웠다 다시 깔았거나 기존 계정이 있다면?
-같은 Google / Apple ID로 연동하면 기존 이름·기록·구매 내역이 그대로 복원됩니다.</p>
-                    <div class="account-sync-row">
-                        <button type="button" class="account-sync-btn" id="initial-google-btn" onclick="signInAndSyncAccount('google')">🌐 Google ID 연동/복원</button>
-                        <button type="button" class="account-sync-btn" id="initial-apple-btn" onclick="signInAndSyncAccount('apple')">🍎 Apple ID 연동/복원</button>
+                    <div class="profile-info-row">
+                        <h3 class="profile-info-label" id="initial-restore-title">기존 계정 복원</h3>
+                        <details class="profile-help" name="initial-profile-help">
+                            <summary id="initial-restore-help" aria-label="계정 복원 도움말">?</summary>
+                            <div class="profile-help-panel"><p id="initial-account-sync-label">같은 Google 또는 Apple 계정으로 이름·기록·구매 내역을 복원할 수 있습니다.</p></div>
+                        </details>
+                    </div>
+                    <div class="account-sync-row" role="group" aria-labelledby="initial-restore-title">
+                        <button type="button" class="account-sync-btn" id="initial-google-btn" onclick="signInAndSyncAccount('google')"><i class="fa-brands fa-google" aria-hidden="true"></i>Google</button>
+                        <button type="button" class="account-sync-btn" id="initial-apple-btn" onclick="signInAndSyncAccount('apple')"><i class="fa-brands fa-apple" aria-hidden="true"></i>Apple</button>
                     </div>
                 </div>
             </div>
@@ -4117,6 +4225,7 @@
         const pitcherImg = loadGameArt('pitcher-rear-right-ready');
         const pitcherReleaseImg = loadGameArt('pitcher-upfield-throw');
         const pitcherFollowThroughImg = loadGameArt('pitcher-follow-through');
+        const pitcherRecoveryImg = loadGameArt('pitcher-recovery');
         const ingameFieldBgImg = loadGameArt('field-perspective');
         const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
@@ -4124,7 +4233,10 @@
         const ballStripeImg = loadGameArt('stripeball');
         const ballFlashImg = loadGameArt('flashball');
 
-        const PITCH_RELEASE_POSE_MS = 100;
+        const PITCH_FOLLOW_THROUGH_AT_MS = 100;
+        const PITCH_RECOVERY_AT_MS = 210;
+        // Leave time in the ready pose before the fastest 400 ms pitch interval.
+        const PITCH_READY_AT_MS = 335;
         let pitchReleaseAt = null;
 
         function setPitcherThrowing(isThrowing) {
@@ -4550,14 +4662,18 @@
                 alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
                 loadingRanks: '読み込み中...',
                 emptyRanks: 'まだ記録がありません',
-                initialProfileTitle: '⚾ 選手名の登録',
-                initialProfileWarning: '⚠️ 一度登録した名前は絶対に変更できませんので、慎重に選んでください！\n・登録した名前でサーバーに保存され、自己ベスト1つのみがランキングに登録されます（複数登録不可）。',
+                initialProfileTitle: '選手名の登録',
+                initialNamePermanence: '登録後は変更不可',
+                initialNameHelp: '名前登録のヘルプ',
+                initialRestoreTitle: 'アカウントを復元',
+                initialRestoreHelp: '復元のヘルプ',
+                initialProfileWarning: '登録した名前で自己ベスト1件だけがランキングに載ります。',
                 initialNamePlaceholder: 'ゲーム名を入力',
-                initialNameHint: '日本語5文字 / 英字10文字まで (変更不可)',
-                initialNameSubmitBtn: 'この名前でゲーム開始',
-                initialAccountSyncLabel: '📱 アプリを再インストールした方や既存アカウントをお持ちの方：\n同じGoogle ID / Apple IDで連携すると、以前の名前・記録・購入履歴がそのまま復元されます。',
-                initialGoogleBtn: '🌐 Google ID 連携 / 復元',
-                initialAppleBtn: '🍎 Apple ID 連携 / 復元',
+                initialNameHint: '日本語5文字 / 英字10文字まで',
+                initialNameSubmitBtn: 'この名前で開始',
+                initialAccountSyncLabel: '同じ Google または Apple アカウントで、名前・記録・購入履歴を復元できます。',
+                initialGoogleBtn: 'Google ID 連携 / 復元',
+                initialAppleBtn: 'Apple ID 連携 / 復元',
                 confirmPermanentName: name => `本当に「${name}」で登録しますか？\n⚠️ 一度登録すると二度と名前を変更できません！`,
                 alertNameTaken: 'すでに他のプレイヤーが使用している名前です。別の名前を入力してください。',
                 alertNameAlreadyTaken: name => `「${name}」はすでに他のプレイヤーが使用しています。別の名前を入力してください。`,
@@ -4681,14 +4797,18 @@
                 alertRestoreNone: 'No previous purchase found to restore.',
                 loadingRanks: 'Loading...',
                 emptyRanks: 'No records yet',
-                initialProfileTitle: '⚾ REGISTER PLAYER NAME',
-                initialProfileWarning: '⚠️ Your name CANNOT be changed once registered. Please choose carefully!\n• Your single highest score is registered on the server under this name (no duplicate entries).',
+                initialProfileTitle: 'Player name',
+                initialNamePermanence: 'Permanent after registration',
+                initialNameHelp: 'Player name help',
+                initialRestoreTitle: 'Restore account',
+                initialRestoreHelp: 'Account restoration help',
+                initialProfileWarning: 'The leaderboard saves one personal best under your registered name.',
                 initialNamePlaceholder: 'Enter game name',
-                initialNameHint: 'Up to 10 English letters (Permanent)',
-                initialNameSubmitBtn: 'Start with This Name',
-                initialAccountSyncLabel: '📱 Reinstalled the app or have an existing account?\nSign in with the same Google ID or Apple ID to restore your name, records, and purchases.',
-                initialGoogleBtn: '🌐 Google ID Link / Restore',
-                initialAppleBtn: '🍎 Apple ID Link / Restore',
+                initialNameHint: 'Up to 10 English letters',
+                initialNameSubmitBtn: 'Start with this name',
+                initialAccountSyncLabel: 'Sign in with the same Google or Apple account to restore your name, records, and purchases.',
+                initialGoogleBtn: 'Google ID Link / Restore',
+                initialAppleBtn: 'Apple ID Link / Restore',
                 confirmPermanentName: name => `Register "${name}" as your permanent name?\n⚠️ You CANNOT change your name after this!`,
                 alertNameTaken: 'This name is already registered by another player. Please choose a different name.',
                 alertNameAlreadyTaken: name => `"${name}" is already registered by another player. Please choose a different name.`,
@@ -4812,14 +4932,18 @@
                 alertRestoreNone: '복원할 구매 내역이 없습니다.',
                 loadingRanks: '불러오는 중...',
                 emptyRanks: '아직 기록이 없습니다',
-                initialProfileTitle: '⚾ 나의 게임 이름 등록',
-                initialProfileWarning: '⚠️ 한 번 등록한 이름은 절대 바꿀 수 없으니 신중하게 선택해주세요!\n• 입력한 이름으로 서버에 등록되며, 나의 최고 점수 1개만 올라갑니다 (중복 등록 불가).',
+                initialProfileTitle: '선수 이름 등록',
+                initialNamePermanence: '등록 후 변경 불가',
+                initialNameHelp: '이름 등록 도움말',
+                initialRestoreTitle: '기존 계정 복원',
+                initialRestoreHelp: '계정 복원 도움말',
+                initialProfileWarning: '등록한 이름으로 최고 점수 1개만 랭킹에 올라갑니다.',
                 initialNamePlaceholder: '게임 이름 입력',
-                initialNameHint: '한글 5자 / 영문 10자까지 (등록 후 변경 불가)',
-                initialNameSubmitBtn: '이 이름으로 시작하기',
-                initialAccountSyncLabel: '📱 앱을 지웠다 다시 깔았거나 기존 계정이 있다면?\n같은 Google ID / Apple ID로 연동하면 기존 이름·기록·구매 내역이 그대로 복원됩니다.',
-                initialGoogleBtn: '🌐 Google ID 연동/복원',
-                initialAppleBtn: '🍎 Apple ID 연동/복원',
+                initialNameHint: '한글 5자 / 영문 10자까지',
+                initialNameSubmitBtn: '이 이름으로 시작',
+                initialAccountSyncLabel: '같은 Google 또는 Apple 계정으로 이름·기록·구매 내역을 복원할 수 있습니다.',
+                initialGoogleBtn: 'Google ID 연동/복원',
+                initialAppleBtn: 'Apple ID 연동/복원',
                 confirmPermanentName: name => `정말 "${name}"(으)로 이름을 등록하시겠습니까?\n⚠️ 한 번 등록한 이름은 절대 변경할 수 없습니다!`,
                 alertNameTaken: '이미 다른 플레이어가 등록한 이름입니다. 다른 이름을 선택해주세요.',
                 alertNameAlreadyTaken: name => `"${name}"(은)는 이미 다른 플레이어가 사용 중인 이름입니다. 다른 이름을 입력해주세요.`,
@@ -4943,14 +5067,18 @@
                 alertRestoreNone: '找不到可恢復的購買紀錄。',
                 loadingRanks: '載入中...',
                 emptyRanks: '尚無紀錄',
-                initialProfileTitle: '⚾ 登錄選手名稱',
-                initialProfileWarning: '⚠️ 名稱一旦登錄後將無法更改，請謹慎決定！\n• 將以您輸入的名稱登錄伺服器，僅保留您的最高分 1 筆紀錄。',
+                initialProfileTitle: '登錄選手名稱',
+                initialNamePermanence: '登錄後不可變更',
+                initialNameHelp: '名稱登錄說明',
+                initialRestoreTitle: '還原帳號',
+                initialRestoreHelp: '帳號還原說明',
+                initialProfileWarning: '排行榜會以登錄名稱保留一筆個人最高分。',
                 initialNamePlaceholder: '輸入遊戲名稱',
-                initialNameHint: '中文5字 / 英文10字以內 (登錄後不可變更)',
-                initialNameSubmitBtn: '以此名稱開始遊戲',
-                initialAccountSyncLabel: '📱 更換裝置或重新安裝過嗎？\n綁定相同的 Google / Apple ID 即可完整還原名稱、紀錄與購買項目。',
-                initialGoogleBtn: '🌐 Google ID 綁定/還原',
-                initialAppleBtn: '🍎 Apple ID 綁定/還原',
+                initialNameHint: '中文5字 / 英文10字以內',
+                initialNameSubmitBtn: '以此名稱開始',
+                initialAccountSyncLabel: '使用相同的 Google 或 Apple 帳號，即可還原名稱、紀錄與購買項目。',
+                initialGoogleBtn: 'Google ID 綁定/還原',
+                initialAppleBtn: 'Apple ID 綁定/還原',
                 confirmPermanentName: name => `確定要以「${name}」登錄名稱嗎？\n⚠️ 登錄後將永久無法修改！`,
                 alertNameTaken: '此名稱已被其他玩家使用，請換一個名稱。',
                 alertNameAlreadyTaken: name => `「${name}」已被其他玩家使用，請輸入其他名稱。`,
@@ -5074,14 +5202,18 @@
                 alertRestoreNone: 'No se encontraron compras previas.',
                 loadingRanks: 'Cargando...',
                 emptyRanks: 'Sin récords aún',
-                initialProfileTitle: '⚾ Registra tu Nombre',
-                initialProfileWarning: '⚠️ ¡El nombre elegido es PERMANENTE y no se puede cambiar!\n• Se registrará en el servidor con tu mejor puntuación.',
+                initialProfileTitle: 'Nombre de jugador',
+                initialNamePermanence: 'Permanente tras registrarlo',
+                initialNameHelp: 'Ayuda con el nombre',
+                initialRestoreTitle: 'Restaurar cuenta',
+                initialRestoreHelp: 'Ayuda para restaurar la cuenta',
+                initialProfileWarning: 'La clasificación guarda una sola mejor marca con tu nombre registrado.',
                 initialNamePlaceholder: 'Tu nombre de jugador',
-                initialNameHint: 'Hasta 10 letras (no se puede cambiar)',
+                initialNameHint: 'Hasta 10 letras',
                 initialNameSubmitBtn: 'Empezar con este nombre',
-                initialAccountSyncLabel: '📱 ¿Reinstalaste la app o tienes cuenta?\nVincula tu Google / Apple ID para restaurar nombre, récords y compras.',
-                initialGoogleBtn: '🌐 Vincular/Restaurar Google',
-                initialAppleBtn: '🍎 Vincular/Restaurar Apple',
+                initialAccountSyncLabel: 'Usa la misma cuenta de Google o Apple para recuperar tu nombre, tus marcas y tus compras.',
+                initialGoogleBtn: 'Vincular/Restaurar Google',
+                initialAppleBtn: 'Vincular/Restaurar Apple',
                 confirmPermanentName: name => `¿Registrar "${name}" permanentemente?\n⚠️ ¡No podrás cambiarlo después!`,
                 alertNameTaken: 'Ese nombre ya está en uso. Elige otro.',
                 alertNameAlreadyTaken: name => `"${name}" ya está ocupado. Ingresa otro nombre.`,
@@ -5233,8 +5365,6 @@
                 ['play-gate-restore-btn', 18],
                 ['play-gate-close-btn', 18],
                 ['initial-name-submit-btn', 22],
-                ['initial-google-btn', 18],
-                ['initial-apple-btn', 18],
                 ['battle-quick-btn', 20],
                 ['battle-join-btn', 18],
                 ['battle-start-btn', 18],
@@ -5317,13 +5447,17 @@
 
             setTxt('initial-profile-title', t.initialProfileTitle);
             setTxt('initial-profile-warning', t.initialProfileWarning);
+            setTxt('initial-name-permanence', t.initialNamePermanence);
+            setTxt('initial-restore-title', t.initialRestoreTitle);
+            document.getElementById('initial-name-help').setAttribute('aria-label', t.initialNameHelp);
+            document.getElementById('initial-restore-help').setAttribute('aria-label', t.initialRestoreHelp);
             const initInputEl = document.getElementById('initial-name-input');
             if (initInputEl && t.initialNamePlaceholder) initInputEl.placeholder = t.initialNamePlaceholder;
             setTxt('initial-name-hint', t.initialNameHint);
             setTxt('initial-name-submit-btn', t.initialNameSubmitBtn);
             setTxt('initial-account-sync-label', t.initialAccountSyncLabel);
-            setTxt('initial-google-btn', t.initialGoogleBtn);
-            setTxt('initial-apple-btn', t.initialAppleBtn);
+            document.getElementById('initial-google-btn').setAttribute('aria-label', t.initialGoogleBtn);
+            document.getElementById('initial-apple-btn').setAttribute('aria-label', t.initialAppleBtn);
 
             // Settings & Collection Modal Texts
             setTxt('settings-modal-title', t.settingsTitle);
@@ -6006,7 +6140,12 @@
             const availH = Math.max(1, viewport.height - safe.top - safe.bottom);
             const scaleX = availW / BASE_W;
             const scaleY = availH / BASE_H;
-            const scale = Math.min(scaleX, scaleY);
+            let scale = Math.min(scaleX, scaleY);
+            const profileCard = document.querySelector('#initial-profile-screen:not(.hidden) .profile-setup-card:not(.hidden)');
+            if (profileCard) {
+                // Fit the registration card itself when the keyboard reduces the visual viewport.
+                scale = Math.max(scale, Math.min(scaleX, availH / (profileCard.offsetHeight + 64), 0.5));
+            }
             const wrapper = document.getElementById('game-wrapper');
             wrapper.style.setProperty('--play-hud-height', `${PLAY_HUD_HEIGHT}px`);
             wrapper.style.left = `${viewport.offsetLeft + safe.left + availW / 2}px`;
@@ -7250,14 +7389,12 @@
                                     spliced = true;
                                     break;
                                 }
-                                setPitcherThrowing(false);
                                 gameOver(b);
                                 spliced = true;
                                 break;
                             }
                             b.activated = true;
                             blk.active = false;
-                            setPitcherThrowing(false);
                             score++;
                             if (!battleMode && !testMode && b.fireballStart === 31 && !isSoloFireballUnlocked()) {
                                 justUnlockedFireballThisRun = true;
@@ -7286,7 +7423,6 @@
                     if (!spliced && b.y < -scalePx(20)) {
                         balls.splice(i, 1);
                         fireballActive = false;
-                        setPitcherThrowing(false);
                         if (!b.activated) {
                             if (recoverTestPitch(-1, b)) return;
                             gameOver(b);
@@ -7312,7 +7448,6 @@
                     if (bestBlk) {
                         if (bestBlk.num === nextExpectedNumber) {
                             bestBlk.active = false;
-                            setPitcherThrowing(false);
                             score++;
                             const wasMirrorBall = b.isMirrorBall;
                             const wasStripeBall = b.isStripeBall;
@@ -7334,7 +7469,6 @@
                             }
                         } else {
                             if (recoverTestPitch(i, b)) continue;
-                            setPitcherThrowing(false);
                             gameOver(b);
                             return;
                         }
@@ -7348,7 +7482,6 @@
                             lastPitchTime = performance.now();
                         }
                         balls.splice(i, 1);
-                        setPitcherThrowing(false);
                         if (recoverTestPitch(-1, b)) continue;
                         gameOver(b);
                         return;
@@ -8089,7 +8222,15 @@
             let anchorX = 0.47;
             let bottomOffset = 34;
             if (pitchReleaseAt !== null) {
-                if (performance.now() - pitchReleaseAt >= PITCH_RELEASE_POSE_MS && isSpriteReady(pitcherFollowThroughImg)) {
+                const elapsed = performance.now() - pitchReleaseAt;
+                if (elapsed >= PITCH_READY_AT_MS) {
+                    pitchReleaseAt = null;
+                } else if (elapsed >= PITCH_RECOVERY_AT_MS && isSpriteReady(pitcherRecoveryImg)) {
+                    sprite = pitcherRecoveryImg;
+                    spriteHeight = 82;
+                    anchorX = 0.39;
+                    bottomOffset = 27;
+                } else if (elapsed >= PITCH_FOLLOW_THROUGH_AT_MS && isSpriteReady(pitcherFollowThroughImg)) {
                     // The follow-through's rear heel is in the air. Align the planted left foot.
                     sprite = pitcherFollowThroughImg;
                     spriteHeight = 80;
@@ -8760,19 +8901,35 @@
         let lastSafeInitialName = '';
         let forbiddenHintResetTimer = null;
 
+        function closeProfileHelp() {
+            document.querySelectorAll('#initial-nickname-step .profile-help[open]').forEach(help => { help.open = false; });
+        }
+
+        document.addEventListener('pointerdown', event => {
+            document.querySelectorAll('#initial-nickname-step .profile-help[open]').forEach(help => {
+                if (!help.contains(event.target)) help.open = false;
+            });
+        });
+
+        document.getElementById('initial-profile-screen').addEventListener('keydown', event => {
+            if (event.key !== 'Escape') return;
+            const help = document.querySelector('#initial-nickname-step .profile-help[open]');
+            if (!help) return;
+            help.open = false;
+            help.querySelector('summary').focus();
+        });
+
         function showForbiddenNameInlineFeedback() {
-            const hintEl = document.getElementById('initial-name-hint');
+            const hintEl = document.getElementById('initial-name-feedback');
             const inputEl = document.getElementById('initial-name-input');
             if (inputEl) {
                 inputEl.style.borderColor = 'var(--showa-red)';
             }
             if (hintEl) {
                 hintEl.innerText = textFor('forbiddenNameInlineHint') || '🚫';
-                hintEl.style.color = 'var(--showa-red)';
                 if (forbiddenHintResetTimer) clearTimeout(forbiddenHintResetTimer);
                 forbiddenHintResetTimer = setTimeout(() => {
-                    hintEl.innerText = textFor('initialNameHint');
-                    hintEl.style.color = '';
+                    hintEl.textContent = '';
                     if (inputEl) inputEl.style.borderColor = '';
                 }, 2400);
             }
@@ -8793,10 +8950,13 @@
             lastSafeInitialName = clamped;
         }
 
+        document.getElementById('initial-name-input').addEventListener('compositionend', handleInitialNameInput);
+
         let initialNameSubmitting = false;
 
         async function submitInitialPermanentName() {
             if (initialNameSubmitting) return;
+            closeProfileHelp();
             const input = document.getElementById('initial-name-input');
             const rawVal = input ? sanitizeAllowedNameChars(input.value) : '';
             const candidateName = clampBattleName(rawVal).trim();
@@ -8843,7 +9003,7 @@
         function finalizePermanentNameRegistration(permanentName) {
             setSavedPlayerName(permanentName);
             syncProfileToCloud();
-            document.getElementById('initial-profile-screen').classList.add('hidden');
+            hideInitialProfileScreen();
             document.getElementById('intro-screen').classList.remove('hidden');
             updateIntroProfilePillUI();
             updatePlayTicketStatusUI();
@@ -8901,10 +9061,12 @@
         }
 
         function showInitialLanguageStep() {
+            closeProfileHelp();
             const langStep = document.getElementById('initial-lang-step');
             const nickStep = document.getElementById('initial-nickname-step');
             if (langStep) langStep.classList.remove('hidden');
             if (nickStep) nickStep.classList.add('hidden');
+            resize();
             playSfx('click', 0.7);
             triggerHaptic('light');
         }
@@ -8917,11 +9079,13 @@
             const nickStep = document.getElementById('initial-nickname-step');
             if (langStep) langStep.classList.add('hidden');
             if (nickStep) nickStep.classList.remove('hidden');
+            resize();
             const input = document.getElementById('initial-name-input');
             if (input) setTimeout(() => input.focus(), 80);
         }
 
         function openInitialProfileScreen() {
+            closeProfileHelp();
             document.getElementById('intro-screen').classList.add('hidden');
             const screen = document.getElementById('initial-profile-screen');
             if (screen) screen.classList.remove('hidden');
@@ -8935,11 +9099,17 @@
                 if (langStep) langStep.classList.add('hidden');
                 if (nickStep) nickStep.classList.remove('hidden');
             }
+            resize();
             const input = document.getElementById('initial-name-input');
             if (input) {
                 input.value = '';
                 if (hasSavedLang) setTimeout(() => input.focus(), 80);
             }
+        }
+
+        function hideInitialProfileScreen() {
+            document.getElementById('initial-profile-screen').classList.add('hidden');
+            resize();
         }
 
         function restoreCloudProfileByRawId(providerType, rawAccountId, silentIfNone = false) {
@@ -8957,7 +9127,7 @@
                     if (restoredBest > 0) {
                         saveBestScoreToServer(remoteProfile.name, restoredBest, true);
                     }
-                    document.getElementById('initial-profile-screen').classList.add('hidden');
+                    hideInitialProfileScreen();
                     if (gameState === 'INTRO') {
                         document.getElementById('intro-screen').classList.remove('hidden');
                         if (typeof ensureTitleBgmOnIntro === 'function') ensureTitleBgmOnIntro();
