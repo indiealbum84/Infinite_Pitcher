@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./images/showa-app-icon-192.png">
     <link rel="apple-touch-icon" href="./images/showa-app-icon-192.png">
-    <link rel="preload" as="image" href="./images/title-pitch-follow-through.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="./images/title-pitch-follow-through-v2.webp" fetchpriority="high">
     <title>INFINITY PITCHING</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
@@ -121,7 +121,7 @@
         /* Title and menu share one frame and one crop. */
         #splash-screen,
         #intro-screen {
-            background: #f9edcf url('./images/title-pitch-follow-through.webp') center / cover no-repeat;
+            background: #f9edcf url('./images/title-pitch-follow-through-v2.webp') center / cover no-repeat;
         }
 
         #splash-screen {
@@ -254,9 +254,9 @@
 
         .title-baseball {
             position: absolute;
-            top: 35.6%;
-            left: 1.5%;
-            width: 39.8%;
+            top: 34.5%;
+            left: 1.4%;
+            width: 34%;
             aspect-ratio: 1;
             border: 6px solid #192738;
             border-radius: 50%;
@@ -4114,8 +4114,8 @@
         }
 
         const cartImg = loadGameArt('cart');
-        const pitcherImg = loadGameArt('pitcher-side-ready');
-        const pitcherThrowImg = loadGameArt('pitcher-side-throw');
+        const pitcherImg = loadGameArt('pitcher-rear-right-ready');
+        const pitcherThrowImg = loadGameArt('pitcher-upfield-throw');
         const ingameFieldBgImg = loadGameArt('field-perspective');
         const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
@@ -6864,9 +6864,11 @@
             if (isFireball && isWorldBattleRules()) {
                 battleSpecialBallCount += 1;
             }
+            const releaseY = player.y - scalePx(20);
             balls.push({
                 x: player.x,
-                y: player.y - scalePx(20),
+                y: releaseY,
+                releaseY,
                 radius: isFireball ? scalePx(14) : scalePx(8),
                 speed: isFireball ? scalePx(12) : scalePx(10),
                 isFireball: !!isFireball,
@@ -7576,10 +7578,14 @@
 
             // Draw Balls
             balls.forEach(b => {
-                const screenY = projectBoardY(b.y);
+                // Start the artwork at the pitcher's fingertips and ease into the
+                // existing projected lane without changing ball physics or hits.
+                const handBlend = isSpriteReady(pitcherThrowImg)
+                    ? Math.max(0, 1 - (b.releaseY - b.y) / scalePx(120)) : 0;
+                const screenY = projectBoardY(b.y - scalePx(51) * handBlend);
                 const fieldScale = getFieldScale(screenY);
                 ctx.save();
-                ctx.translate(projectFieldX(b.x, fieldScale), screenY);
+                ctx.translate(projectFieldX(b.x + scalePx(10) * handBlend, fieldScale), screenY);
                 ctx.scale(fieldScale, fieldScale);
                 ctx.translate(-b.x, -b.y);
 
@@ -8076,14 +8082,14 @@
                 ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(37), cartW, cartH);
             }
 
-            // Keep both poses on the same baseline so the player's feet do not jump.
+            // Register both poses to the same point at the bottom of the mound.
             const showFollowThrough = pitcherThrowing && isSpriteReady(pitcherThrowImg);
             const activePitcherImg = showFollowThrough ? pitcherThrowImg : pitcherImg;
             if (isSpriteReady(activePitcherImg)) {
-                const pitcherH = scalePx(showFollowThrough ? 68 : 83);
+                const pitcherH = scalePx(showFollowThrough ? 98 : 83);
                 const pitcherW = pitcherH * activePitcherImg.naturalWidth / activePitcherImg.naturalHeight;
-                const plantedFoot = showFollowThrough ? 0.24 : 0.58;
-                ctx.drawImage(activePitcherImg, px - pitcherW * plantedFoot, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
+                const anchorX = showFollowThrough ? 0.54 : 0.47;
+                ctx.drawImage(activePitcherImg, px - pitcherW * anchorX, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
             }
         }
 
