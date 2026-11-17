@@ -3869,6 +3869,7 @@
                     </div>
                 </div>
 
+                <button type="button" id="settings-support-btn" onclick="openSupportForm()" style="width:100%;margin-bottom:8px;padding:10px 14px;border:2.5px solid #000;border-radius:14px;background:#e0f2fe;color:#0369a1;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 3px 0 #000;touch-action:auto !important;">📩 문의 / 버그 제보</button>
                 <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()">🧪 [TEST] 내 데이터 초기화</button>
                 <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
             </div>
@@ -5203,6 +5204,7 @@
                 ['intro-tab-solo-global', 16],
                 ['intro-tab-solo-country', 16],
                 ['settings-close-btn', 18],
+                ['settings-support-btn', 12],
                 ['skin-modal-subtitle', 13]
             ];
             targets.forEach(([id, minPx]) => {
@@ -5420,6 +5422,17 @@
             const descEl = document.getElementById('settings-account-desc');
             const actionsEl = document.getElementById('settings-account-actions');
             const lang = currentLang || 'ko';
+            const supportBtn = document.getElementById('settings-support-btn');
+            if (supportBtn) {
+                const supportLabelMap = {
+                    ko: '📩 문의 / 버그 제보',
+                    en: '📩 Support & Bug Report',
+                    ja: '📩 お問い合わせ・不具合報告',
+                    'zh-TW': '📩 客服與問題回報',
+                    es: '📩 Soporte y Reporte de Errores'
+                };
+                supportBtn.innerText = supportLabelMap[lang] || supportLabelMap.en;
+            }
             const resetBtn = document.getElementById('settings-test-reset-btn');
             if (resetBtn) {
                 const resetLabelMap = {
@@ -5494,6 +5507,48 @@
                 updateSettingsUI();
                 if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             }, 600);
+        }
+
+        const SUPPORT_FORM_BASE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdzJ31PCPox0aWHAYY7Lnsw1kl62h-fvu3YLP5Cp5MaaJUQSw/viewform';
+        const recentRuntimeLogs = [];
+        function pushRuntimeErrorLog(msg) {
+            try {
+                const now = new Date();
+                const ts = now.toTimeString().slice(0, 8);
+                const clean = String(msg || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+                if (!clean) return;
+                recentRuntimeLogs.push(`[${ts}] ${clean}`);
+                if (recentRuntimeLogs.length > 10) recentRuntimeLogs.shift();
+            } catch (e) {}
+        }
+        window.addEventListener('error', (ev) => {
+            pushRuntimeErrorLog((ev && ev.message ? ev.message : 'Error') + (ev && ev.lineno ? `@L${ev.lineno}` : ''));
+        });
+        window.addEventListener('unhandledrejection', (ev) => {
+            const reason = ev && ev.reason ? (ev.reason.message || String(ev.reason)) : 'UnhandledRejection';
+            pushRuntimeErrorLog(reason);
+        });
+
+        function openSupportForm() {
+            playSfx('click', 0.8);
+            triggerHaptic('light');
+            const name = typeof getSavedPlayerName === 'function' ? (getSavedPlayerName() || '-') : '-';
+            const accKey = typeof getAccountKey === 'function' ? (getAccountKey() || '-') : '-';
+            const best = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
+            const rating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
+            const noAds = typeof isNoAdsPurchased === 'function' ? isNoAdsPurchased() : false;
+            const linked = typeof isCloudAccountLinked === 'function' ? isCloudAccountLinked() : false;
+            const ua = (navigator.userAgent || '').slice(0, 120);
+            const playerInfo = `Name:${name} | ID:${accKey} | Lang:${currentLang || 'ko'} | Country:${userCountry || '-'} | Best:${best} | Rating:${rating}PT | NoAds:${noAds} | Linked:${linked} | UA:${ua}`;
+            const errorLog = recentRuntimeLogs.length > 0 ? recentRuntimeLogs.join('\n') : 'No runtime errors captured';
+            const params = new URLSearchParams({
+                usp: 'pp_url',
+                'entry.786237147': playerInfo,
+                'entry.605936667': errorLog
+            });
+            const url = `${SUPPORT_FORM_BASE_URL}?${params.toString()}`;
+            const win = window.open(url, '_blank', 'noopener,noreferrer');
+            if (!win) window.location.href = url;
         }
 
         async function resetMyLocalDataForTest() {
