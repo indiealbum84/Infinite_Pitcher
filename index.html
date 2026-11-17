@@ -11,9 +11,9 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./images/showa-app-icon-192.png">
     <link rel="apple-touch-icon" href="./images/showa-app-icon-192.png">
-    <link rel="preload" as="image" href="./images/title-pitch-finish.webp" fetchpriority="high">
-    <title>インフィニティピッチング</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
+    <link rel="preload" as="image" href="./images/title-pitch-follow-through.webp" fetchpriority="high">
+    <title>INFINITY PITCHING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -121,7 +121,7 @@
         /* Title and menu share one frame and one crop. */
         #splash-screen,
         #intro-screen {
-            background: #f9edcf url('./images/title-pitch-finish.webp') center / cover no-repeat;
+            background: #f9edcf url('./images/title-pitch-follow-through.webp') center / cover no-repeat;
         }
 
         #splash-screen {
@@ -142,7 +142,8 @@
             border: 6px solid #192738;
             border-radius: 18px;
             box-shadow: 9px 10px 0 #192738;
-            font: 900 54px 'Noto Sans JP', sans-serif;
+            font: 400 54px 'Archivo Black', 'Arial Black', sans-serif;
+            letter-spacing: .06em;
         }
 
         #title-start-btn:active {
@@ -216,24 +217,52 @@
 
         .game-title {
             position: absolute;
-            top: 92px;
+            z-index: 1;
+            top: 86px;
             left: 50%;
-            width: 94%;
+            width: 90%;
             margin: 0;
-            transform: translateX(-50%);
-            color: #192738;
-            font: 900 119px/1.04 'Noto Sans JP', 'Hiragino Sans', sans-serif;
-            letter-spacing: -.075em;
-            text-shadow: 5px 5px 0 #fff0ce, 8px 10px 0 #e9a444;
+            transform: translateX(-50%) rotate(-5deg) skewX(-9deg);
+            color: #f8bd49;
+            font: 400 137px/.92 'Archivo Black', 'Arial Black', sans-serif;
+            letter-spacing: -.045em;
+            text-align: center;
+            -webkit-text-stroke: 11px #192738;
+            paint-order: stroke fill;
+            text-shadow: 8px 12px 0 #192738, 14px 19px 0 #852c27;
         }
 
         .game-title span {
             display: block;
         }
 
+        .game-title span:first-child {
+            color: #df4a31;
+            margin-inline-start: -8%;
+        }
+
+        .game-title span:last-child {
+            margin-inline-start: 7%;
+        }
+
         #intro-title {
-            top: 152px;
-            font-size: 93px;
+            top: 146px;
+            font-size: 91px;
+            -webkit-text-stroke-width: 8px;
+            text-shadow: 5px 8px 0 #192738, 9px 12px 0 #852c27;
+        }
+
+        .title-baseball {
+            position: absolute;
+            top: 35.6%;
+            left: 1.5%;
+            width: 39.8%;
+            aspect-ratio: 1;
+            border: 6px solid #192738;
+            border-radius: 50%;
+            background: #f9e7ba url('./images/title-baseball-leather.webp') center / cover no-repeat;
+            transform: rotate(-27deg);
+            pointer-events: none;
         }
 
         /* Speech Bubble */
@@ -3738,8 +3767,9 @@
         </div>
 
         <div id="splash-screen" class="screen">
-            <h1 class="game-title" lang="ja"><span>インフィニティ</span><span>ピッチング</span></h1>
-            <button id="title-start-btn" type="button" class="start-btn" lang="ja">スタート</button>
+            <div class="title-baseball" aria-hidden="true"></div>
+            <h1 class="game-title" lang="en"><span>INFINITY</span> <span>PITCHING</span></h1>
+            <button id="title-start-btn" type="button" class="start-btn" lang="en">START</button>
         </div>
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
@@ -3785,7 +3815,8 @@
                 <span aria-hidden="true">✦</span>
             </button>
 
-            <h2 id="intro-title" class="game-title" lang="ja" tabindex="-1"><span>インフィニティ</span><span>ピッチング</span></h2>
+            <div class="title-baseball" aria-hidden="true"></div>
+            <h2 id="intro-title" class="game-title" lang="en" tabindex="-1"><span>INFINITY</span> <span>PITCHING</span></h2>
             <div class="speech-bubble" id="intro-bubble">
                 <span id="intro-bubble-quote">よしっ！世界一のピッチャーに<br>なるために、今日も特訓だ！</span>
                 <span id="intro-bubble-guide" hidden></span>
@@ -4083,8 +4114,8 @@
         }
 
         const cartImg = loadGameArt('cart');
-        const pitcherImg = loadGameArt('pitcher-ready');
-        const pitcherThrowImg = loadGameArt('pitcher-throw');
+        const pitcherImg = loadGameArt('pitcher-side-ready');
+        const pitcherThrowImg = loadGameArt('pitcher-side-throw');
         const ingameFieldBgImg = loadGameArt('field-perspective');
         const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
@@ -8046,11 +8077,13 @@
             }
 
             // Keep both poses on the same baseline so the player's feet do not jump.
-            const activePitcherImg = pitcherThrowing && isSpriteReady(pitcherThrowImg) ? pitcherThrowImg : pitcherImg;
+            const showFollowThrough = pitcherThrowing && isSpriteReady(pitcherThrowImg);
+            const activePitcherImg = showFollowThrough ? pitcherThrowImg : pitcherImg;
             if (isSpriteReady(activePitcherImg)) {
-                const pitcherH = scalePx(83);
+                const pitcherH = scalePx(showFollowThrough ? 68 : 83);
                 const pitcherW = pitcherH * activePitcherImg.naturalWidth / activePitcherImg.naturalHeight;
-                ctx.drawImage(activePitcherImg, px - pitcherW / 2, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
+                const plantedFoot = showFollowThrough ? 0.24 : 0.58;
+                ctx.drawImage(activePitcherImg, px - pitcherW * plantedFoot, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
             }
         }
 
