@@ -21,7 +21,8 @@
     "users": {
       "$accountKey": {
         ".read": true,
-        ".write": "newData.exists() && (!data.child('name').exists() || newData.child('name').val() === data.child('name').val())"
+        ".write": "newData.exists() && (!data.child('name').exists() || newData.child('name').val() === data.child('name').val())",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && (!newData.child('bestScore').exists() || (newData.child('bestScore').isNumber() && newData.child('bestScore').val() >= 0 && newData.child('bestScore').val() <= 3000)) && (!newData.child('battleRating').exists() || (newData.child('battleRating').isNumber() && newData.child('battleRating').val() >= 600 && newData.child('battleRating').val() <= 10000))"
       }
     },
     "battles": {
@@ -37,7 +38,7 @@
       ".indexOn": ["rating", "name"],
       "$entryId": {
         ".write": "newData.exists() && (!data.exists() || newData.child('name').val() === data.child('name').val())",
-        ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 99999 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
+        ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 10000 && newData.child('rating').val() % 1 === 0 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
       }
     },
     "battle_ranks_country": {
@@ -46,7 +47,7 @@
         ".indexOn": ["rating", "name"],
         "$entryId": {
           ".write": "newData.exists() && (!data.exists() || newData.child('name').val() === data.child('name').val()) && $countryCode.length === 2",
-          ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('country').val() === $countryCode && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 99999 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
+          ".validate": "newData.hasChildren(['name', 'rating', 'country', 'updatedAt']) && newData.child('country').val() === $countryCode && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 12 && newData.child('rating').isNumber() && newData.child('rating').val() >= 600 && newData.child('rating').val() <= 10000 && newData.child('rating').val() % 1 === 0 && newData.child('country').isString() && newData.child('country').val().length === 2 && newData.child('updatedAt').isNumber()"
         }
       }
     }
