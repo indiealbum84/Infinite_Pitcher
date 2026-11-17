@@ -1406,6 +1406,7 @@
             width: 100%;
             height: 26px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
@@ -9668,70 +9669,70 @@
             {
                 id: 'classic',
                 name: { ko: '클래식 쇼와', ja: 'クラシック昭和', en: 'Classic Showa', 'zh-TW': '經典昭和', es: 'Showa Clásico' },
-                desc: { ko: '쇼와 레트로 기본 야구공 & 피처', ja: '昭和レトロ基本野球ボール＆ピッチャー', en: 'Classic Showa baseball & pitcher', 'zh-TW': '昭和復古經典棒球與投手', es: 'Pelota y lanzador retro Showa' },
+                desc: { ko: '쇼와 레트로<br>기본 야구공 & 피처', ja: '昭和レトロ<br>基本ボール＆ピッチャー', en: 'Classic Showa<br>baseball & pitcher', 'zh-TW': '昭和復古<br>經典棒球與投手', es: 'Pelota y lanzador<br>retro Showa' },
                 condition: { ko: '기본 지급', ja: '基本支給', en: 'Default Unlocked', 'zh-TW': '預設解鎖', es: 'Desbloqueado por defecto' },
                 checkUnlock: () => true
             },
             {
                 id: 'emerald',
                 name: { ko: '루키 에메랄드', ja: 'ルーキーエメラルド', en: 'Rookie Emerald', 'zh-TW': '新秀翡翠', es: 'Esmeralda Novato' },
-                desc: { ko: '산뜻한 에메랄드 그린 궤적 + 잔디 오라', ja: '爽やかなエメラルド軌跡＋芝生オーラ', en: 'Fresh emerald trail & turf aura', 'zh-TW': '清新翡翠軌跡＋草地光環', es: 'Estela esmeralda y aura de césped' },
+                desc: { ko: '산뜻한 에메랄드 궤적<br>+ 잔디 오라', ja: '爽やかなエメラルド軌跡<br>＋ 芝生オーラ', en: 'Fresh emerald trail<br>& turf aura', 'zh-TW': '清新翡翠軌跡<br>＋ 草地光環', es: 'Estela esmeralda<br>y aura de césped' },
                 condition: { ko: '8인 배틀 첫 1승 달성', ja: '8人バトル初勝利達成', en: 'Win your first Battle match', 'zh-TW': '8人對戰獲得首勝', es: 'Gana tu primera Batalla 8P' },
                 checkUnlock: (stats) => stats.wins >= 1
             },
             {
                 id: 'sunset',
                 name: { ko: '선셋 레트로', ja: 'サンセットレトロ', en: 'Sunset Retro', 'zh-TW': '夕陽復古', es: 'Atardecer Retro' },
-                desc: { ko: '노을빛 주황·자홍 궤적 + 황혼 구장 오라', ja: '夕焼けグラデ軌跡＋黄昏オーラ', en: 'Sunset orange-magenta trail & dusk aura', 'zh-TW': '晚霞橘紫漸層軌跡＋黃昏光環', es: 'Estela ocaso naranja y aura crepuscular' },
+                desc: { ko: '노을빛 주황·자홍 궤적<br>+ 황혼 구장 오라', ja: '夕焼けグラデ軌跡<br>＋ 黄昏オーラ', en: 'Sunset orange trail<br>& dusk aura', 'zh-TW': '晚霞橘紫漸層軌跡<br>＋ 黃昏光環', es: 'Estela ocaso naranja<br>y aura crepuscular' },
                 condition: { ko: '8인 배틀 10승 달성', ja: '8人バトル10勝達成', en: 'Win 10 Battle matches', 'zh-TW': '8人對戰累計 10 勝', es: 'Gana 10 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 10
             },
             {
                 id: 'flame',
                 name: { ko: '골든 프레임', ja: 'ゴールデンフレーム', en: 'Golden Flame', 'zh-TW': '黃金烈焰', es: 'Llama Dorada' },
-                desc: { ko: '타오르는 황금 불꽃 궤적 + 황금 오라', ja: '燃え上がる黄金軌跡＋ゴールドオーラ', en: 'Golden flame trail & blazing aura', 'zh-TW': '燃燒黃金火焰軌跡＋金色光環', es: 'Estela de fuego dorado y aura ardiente' },
+                desc: { ko: '타오르는 황금 불꽃 궤적<br>+ 황금 오라', ja: '燃え上がる黄金軌跡<br>＋ ゴールドオーラ', en: 'Golden flame trail<br>& blazing aura', 'zh-TW': '燃燒黃金火焰軌跡<br>＋ 金色光環', es: 'Estela fuego dorado<br>y aura ardiente' },
                 condition: { ko: '하루에 배틀 50판 플레이 달성', ja: '1日にバトル50回プレイ達成', en: 'Play 50 Battles in a single day', 'zh-TW': '單日遊玩對戰達 50 場', es: 'Juega 50 Batallas en un día' },
                 checkUnlock: (stats, bestScore, maxStreak, rating, dailyMax) => (dailyMax || getDailyBattleMaxMatches()) >= 50
             },
             {
                 id: 'spark',
                 name: { ko: '블루 스파크', ja: 'ブルースパーク', en: 'Blue Spark', 'zh-TW': '藍色電光', es: 'Chispa Azul' },
-                desc: { ko: '푸른 번개 전기 스파크 궤적 + 일렉트릭 오라', ja: '青い雷撃スパーク軌跡＋電撃オーラ', en: 'Blue lightning trail & electric aura', 'zh-TW': '藍色雷電火花軌跡＋電撃光環', es: 'Estela de rayo azul y aura eléctrica' },
+                desc: { ko: '푸른 번개 스파크 궤적<br>+ 일렉트릭 오라', ja: '青い雷撃スパーク軌跡<br>＋ 電撃オーラ', en: 'Blue lightning trail<br>& electric aura', 'zh-TW': '藍色雷電火花軌跡<br>＋ 電撃光環', es: 'Estela rayo azul<br>y aura eléctrica' },
                 condition: { ko: '8인 배틀 100승 달성', ja: '8人バトル100勝達成', en: 'Win 100 Battle matches', 'zh-TW': '8人對戰累計 100 勝', es: 'Gana 100 Batallas 8P' },
                 checkUnlock: (stats) => stats.wins >= 100
             },
             {
                 id: 'sakura',
                 name: { ko: '사쿠라 블룸', ja: 'サクラブルーム', en: 'Sakura Bloom', 'zh-TW': '櫻花綻放', es: 'Flor de Sakura' },
-                desc: { ko: '흩날리는 벚꽃잎 궤적 + 핑크빛 스프링 오라', ja: '舞い散る桜の花びら軌跡＋ピンクオーラ', en: 'Drifting sakura petals trail & pink aura', 'zh-TW': '飄落櫻花瓣軌跡＋粉櫻光環', es: 'Estela de pétalos sakura y aura rosa' },
+                desc: { ko: '흩날리는 벚꽃잎 궤적<br>+ 핑크 스프링 오라', ja: '舞い散る桜の花びら軌跡<br>＋ ピンクオーラ', en: 'Drifting sakura trail<br>& pink aura', 'zh-TW': '飄落櫻花瓣軌跡<br>＋ 粉櫻光環', es: 'Estela pétalos sakura<br>y aura rosa' },
                 condition: { ko: '나홀로 특훈 200점 돌파', ja: 'ひとり特訓200点突破', en: 'Reach 200+ pts in Solo mode', 'zh-TW': '單人特訓突破 200 分', es: 'Supera 200 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 200
             },
             {
                 id: 'emperor',
                 name: { ko: '황제 크라운', ja: 'エンペラークラウン', en: 'Emperor Crown', 'zh-TW': '皇帝皇冠', es: 'Corona Imperial' },
-                desc: { ko: '백금·황금 별빛 궤적 + 황제 크라운 오라', ja: '白金・黄金の星光軌跡＋皇帝オーラ', en: 'Royal gold starlight trail & crown aura', 'zh-TW': '白金黃金星光軌跡＋皇帝光環', es: 'Estela estelar dorada y aura imperial' },
+                desc: { ko: '백금·황금 별빛 궤적<br>+ 황제 크라운 오라', ja: '白金・黄金の星光軌跡<br>＋ 皇帝オーラ', en: 'Royal gold starlight trail<br>& crown aura', 'zh-TW': '白金黃金星光軌跡<br>＋ 皇帝光環', es: 'Estela estelar dorada<br>y aura imperial' },
                 condition: { ko: '나홀로 특훈 500점 돌파', ja: 'ひとり特訓500点突破', en: 'Reach 500+ pts in Solo mode', 'zh-TW': '單人特訓突破 500 分', es: 'Supera 500 pts en modo Solo' },
                 checkUnlock: (stats, bestScore) => bestScore >= 500
             },
             {
                 id: 'rainbow',
                 name: { ko: '쇼와 레인보우', ja: '昭和レインボー', en: 'Showa Rainbow', 'zh-TW': '昭和彩虹', es: 'Arcoíris Showa' },
-                desc: { ko: '무지개 빛 잔상 궤적 + 레인보우 오라', ja: '虹色の残像軌跡＋レインボーオーラ', en: '7-color rainbow trail & rainbow aura', 'zh-TW': '七彩霓虹殘影軌跡＋彩虹光環', es: 'Estela arcoíris de 7 colores y aura' },
+                desc: { ko: '무지개 빛 잔상 궤적<br>+ 레인보우 오라', ja: '虹色の残像軌跡<br>＋ レインボーオーラ', en: '7-color rainbow trail<br>& rainbow aura', 'zh-TW': '七彩霓虹殘影軌跡<br>＋ 彩虹光環', es: 'Estela arcoíris 7 colores<br>y aura arcoíris' },
                 condition: { ko: '8인 배틀 5연승 달성', ja: '8人バトル5連勝達成', en: 'Achieve 5 Win Streak in Battle', 'zh-TW': '8人對戰達成 5 連勝', es: 'Logra 5 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 5
             },
             {
                 id: 'double_rainbow',
                 name: { ko: '더블 레인보우', ja: 'ダブルレインボー', en: 'Double Rainbow', 'zh-TW': '雙重彩虹', es: 'Doble Arcoíris' },
-                desc: { ko: '찬란한 쌍무지개 빛 잔상 + 은하수 네온 오라', ja: '輝く二重虹の残像＋天の川ネオンオーラ', en: 'Double rainbow trail & galaxy aura', 'zh-TW': '璀璨雙彩虹殘影＋銀河霓虹光環', es: 'Estela doble arcoíris y aura galáctica' },
+                desc: { ko: '찬란한 쌍무지개 잔상<br>+ 은하수 네온 오라', ja: '輝く二重虹の残像<br>＋ 天の川ネオンオーラ', en: 'Double rainbow trail<br>& galaxy aura', 'zh-TW': '璀璨雙彩虹殘影<br>＋ 銀河霓虹光環', es: 'Estela doble arcoíris<br>y aura galáctica' },
                 condition: { ko: '8인 배틀 10연승 달성', ja: '8人バトル10連勝達成', en: 'Achieve 10 Win Streak in Battle', 'zh-TW': '8人對戰達成 10 連勝', es: 'Logra 10 victorias seguidas en Batalla' },
                 checkUnlock: (stats, bestScore, maxStreak) => maxStreak >= 10
             },
             {
                 id: 'prism',
                 name: { ko: '다이아 프리즘', ja: 'ダイヤプリズム', en: 'Diamond Prism', 'zh-TW': '鑽石稜鏡', es: 'Prisma Diamante' },
-                desc: { ko: '눈부신 다이아몬드 광채 프리즘 이펙트', ja: '眩しいダイヤモンドプリズムエフェクト', en: 'Diamond prism glints & crystalline aura', 'zh-TW': '閃耀鑽石光芒稜鏡特效', es: 'Destellos de prisma diamante y aura cristal' },
+                desc: { ko: '눈부신 다이아 광채<br>+ 프리즘 이펙트', ja: '眩しいダイヤの輝き<br>＋ プリズム効果', en: 'Diamond prism glints<br>& crystalline aura', 'zh-TW': '閃耀鑽石光芒<br>＋ 稜鏡特效', es: 'Destellos prisma diamante<br>y aura cristal' },
                 condition: { ko: '마스터 리그 1,500 PT 달성', ja: 'マスターリーグ1,500 PT達成', en: 'Reach 1,500+ PT in Master League', 'zh-TW': '大師聯賽達成 1,500 PT', es: 'Alcanza 1,500 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 1500
             },
@@ -9739,7 +9740,7 @@
                 id: 'lucky333',
                 hidden: true,
                 name: { ko: '럭키 333', ja: 'ラッキー333', en: 'Lucky 333', 'zh-TW': '幸運 333', es: 'Suerte 333' },
-                desc: { ko: '잭팟 골드 코인 궤적 + 황금 럭키 오라', ja: 'ジャックポットコイン軌跡＋黄金ラッキーオーラ', en: 'Jackpot gold coin trail & lucky aura', 'zh-TW': '大獎金幣軌跡＋幸運黃金光環', es: 'Estela de monedas jackpot y aura dorada' },
+                desc: { ko: '잭팟 골드 코인 궤적<br>+ 황금 럭키 오라', ja: 'ジャックポットコイン軌跡<br>＋ 黄金ラッキーオーラ', en: 'Jackpot gold coin trail<br>& lucky aura', 'zh-TW': '大獎金幣軌跡<br>＋ 幸運黃金光環', es: 'Estela monedas jackpot<br>y aura dorada' },
                 condition: { ko: '나홀로 특훈 정확히 333점 달성', ja: 'ひとり特訓ちょうど333点達成', en: 'Finish Solo mode with exact 333 pts', 'zh-TW': '單人特訓精準達成 333 分', es: 'Termina modo Solo con 333 pts exactos' },
                 checkUnlock: () => false
             },
@@ -9747,7 +9748,7 @@
                 id: 'dragon',
                 hidden: true,
                 name: { ko: '레전드 드래곤', ja: 'レジェンドドラゴン', en: 'Legend Dragon', 'zh-TW': '傳說神龍', es: 'Dragón Legendario' },
-                desc: { ko: '푸른 용염·비취빛 궤적 + 승천 용오라', ja: '蒼き龍炎・翡翠の軌跡＋昇龍オーラ', en: 'Azure dragonfire trail & rising dragon aura', 'zh-TW': '蒼藍龍炎軌跡＋騰龍光環', es: 'Estela de fuego dragón y aura mística' },
+                desc: { ko: '푸른 용염·비취빛 궤적<br>+ 승천 용오라', ja: '蒼き龍炎・翡翠の軌跡<br>＋ 昇龍オーラ', en: 'Azure dragonfire trail<br>& rising dragon aura', 'zh-TW': '蒼藍龍炎軌跡<br>＋ 騰龍光環', es: 'Estela fuego dragón<br>y aura mística' },
                 condition: { ko: '마스터 리그 2,000 PT 달성', ja: 'マスターリーグ2,000 PT達成', en: 'Reach 2,000+ PT in Master League', 'zh-TW': '大師聯賽達成 2,000 PT', es: 'Alcanza 2,000 PT en Liga Maestra' },
                 checkUnlock: (stats, bestScore, maxStreak, rating) => rating >= 2000
             }
