@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./images/showa-app-icon-192.png">
     <link rel="apple-touch-icon" href="./images/showa-app-icon-192.png">
-    <link rel="preload" as="image" href="./images/title-pitch-follow-through-v2.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="./images/title-pitch-follow-through-v3.webp" fetchpriority="high">
     <title>INFINITY PITCHING</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+JP:wght@400;700;900&family=Kosugi+Maru&family=Zen+Maru+Gothic:wght@700;900&family=Gamja+Flower&family=Darumadrop+One&family=Fredoka:wght@600;700&family=Orbitron:wght@700;900&display=swap"
         rel="stylesheet">
@@ -121,7 +121,7 @@
         /* Title and menu share one frame and one crop. */
         #splash-screen,
         #intro-screen {
-            background: #f9edcf url('./images/title-pitch-follow-through-v2.webp') center / cover no-repeat;
+            background: #f9edcf url('./images/title-pitch-follow-through-v3.webp') center / cover no-repeat;
         }
 
         #splash-screen {
@@ -254,7 +254,7 @@
 
         .title-baseball {
             position: absolute;
-            top: 34.5%;
+            top: 31.8%;
             left: 1.4%;
             width: 34%;
             aspect-ratio: 1;
@@ -4115,7 +4115,8 @@
 
         const cartImg = loadGameArt('cart');
         const pitcherImg = loadGameArt('pitcher-rear-right-ready');
-        const pitcherThrowImg = loadGameArt('pitcher-upfield-throw');
+        const pitcherReleaseImg = loadGameArt('pitcher-upfield-throw');
+        const pitcherFollowThroughImg = loadGameArt('pitcher-follow-through');
         const ingameFieldBgImg = loadGameArt('field-perspective');
         const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
@@ -4123,10 +4124,11 @@
         const ballStripeImg = loadGameArt('stripeball');
         const ballFlashImg = loadGameArt('flashball');
 
-        let pitcherThrowing = false;
+        const PITCH_RELEASE_POSE_MS = 100;
+        let pitchReleaseAt = null;
 
         function setPitcherThrowing(isThrowing) {
-            pitcherThrowing = isThrowing;
+            pitchReleaseAt = isThrowing ? performance.now() : null;
         }
 
 
@@ -7580,7 +7582,7 @@
             balls.forEach(b => {
                 // Start the artwork at the pitcher's fingertips and ease into the
                 // existing projected lane without changing ball physics or hits.
-                const handBlend = isSpriteReady(pitcherThrowImg)
+                const handBlend = isSpriteReady(pitcherReleaseImg)
                     ? Math.max(0, 1 - (b.releaseY - b.y) / scalePx(120)) : 0;
                 const screenY = projectBoardY(b.y - scalePx(51) * handBlend);
                 const fieldScale = getFieldScale(screenY);
@@ -8082,14 +8084,27 @@
                 ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(37), cartW, cartH);
             }
 
-            // Register both poses to the same point at the bottom of the mound.
-            const showFollowThrough = pitcherThrowing && isSpriteReady(pitcherThrowImg);
-            const activePitcherImg = showFollowThrough ? pitcherThrowImg : pitcherImg;
-            if (isSpriteReady(activePitcherImg)) {
-                const pitcherH = scalePx(showFollowThrough ? 98 : 83);
-                const pitcherW = pitcherH * activePitcherImg.naturalWidth / activePitcherImg.naturalHeight;
-                const anchorX = showFollowThrough ? 0.54 : 0.47;
-                ctx.drawImage(activePitcherImg, px - pitcherW * anchorX, py + scalePx(34) - pitcherH, pitcherW, pitcherH);
+            let sprite = pitcherImg;
+            let spriteHeight = 83;
+            let anchorX = 0.47;
+            let bottomOffset = 34;
+            if (pitchReleaseAt !== null) {
+                if (performance.now() - pitchReleaseAt >= PITCH_RELEASE_POSE_MS && isSpriteReady(pitcherFollowThroughImg)) {
+                    // The follow-through's rear heel is in the air. Align the planted left foot.
+                    sprite = pitcherFollowThroughImg;
+                    spriteHeight = 80;
+                    anchorX = 0.5;
+                    bottomOffset = 28;
+                } else if (isSpriteReady(pitcherReleaseImg)) {
+                    sprite = pitcherReleaseImg;
+                    spriteHeight = 98;
+                    anchorX = 0.54;
+                }
+            }
+            if (isSpriteReady(sprite)) {
+                const pitcherH = scalePx(spriteHeight);
+                const pitcherW = pitcherH * sprite.naturalWidth / sprite.naturalHeight;
+                ctx.drawImage(sprite, px - pitcherW * anchorX, py + scalePx(bottomOffset) - pitcherH, pitcherW, pitcherH);
             }
         }
 
