@@ -3937,7 +3937,13 @@
             <div class="intro-menu">
                 <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
                 <div class="intro-main-actions" id="intro-main-actions">
-                    <button type="button" id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">世界8人バトル</button>
+                    <button type="button" id="battle-quick-main-btn" class="start-btn locked" aria-labelledby="w8-button-label" aria-describedby="w8-lock-hint" disabled onclick="startWorld8Battle()">
+                        <span id="w8-button-label">世界8人バトル</span>
+                        <span class="w8-lock-overlay">
+                            <span class="w8-padlock" aria-hidden="true"></span>
+                            <span id="w8-lock-hint">ひとり特訓31点で解放</span>
+                        </span>
+                    </button>
                     <button type="button" id="start-btn-id" class="start-btn" onclick="startSoloPractice()">ひとり特訓</button>
                     <button type="button" id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">フレンド特訓</button>
                 </div>
@@ -5470,7 +5476,8 @@
             updateIntroGuideUI();
             setTxt('start-btn-id', menuModeLabel(t.startBtn));
             setTxt('start-btn', t.startBtn);
-            setTxt('battle-quick-main-btn', t.battleQuickMainBtn);
+            setTxt('w8-button-label', menuModeLabel(t.battleQuickMainBtn));
+            setTxt('w8-lock-hint', t.world8UnlockShort);
             setTxt('battle-friend-btn', menuModeLabel(t.battleFriendBtn));
             setTxt('battle-btn', t.battleBtn);
             setTxt('retry-btn', t.retryBtn);
@@ -11665,7 +11672,6 @@
             guideDone ||= unlocked && hasPlayedBattle;
 
             document.getElementById('start-btn-id').classList.toggle('intro-guide-pulse', !unlocked);
-            document.getElementById('battle-quick-main-btn').classList.toggle('intro-guide-pulse', unlocked && !guideDone && !w8UnlockAnimRunning);
             const guide = document.getElementById('intro-bubble-guide');
             const message = !unlocked ? t.introBubbleGuideSolo : (!guideDone ? t.introBubbleGuideBattle : '');
             if (guide.innerHTML !== message) guide.innerHTML = message;
@@ -11674,19 +11680,11 @@
 
         function renderWorld8BattleButton(unlocked) {
             const worldButton = document.getElementById('battle-quick-main-btn');
-            const actions = document.getElementById('intro-main-actions');
-            if (actions && worldButton && actions.firstElementChild !== worldButton) {
-                actions.prepend(worldButton);
-            }
-
             worldButton.classList.toggle('locked', !unlocked);
-            worldButton.textContent = menuModeLabel(textFor('battleQuickMainBtn'));
-            if (!unlocked) {
-                const hint = document.createElement('span');
-                hint.className = 'w8-lock-sub';
-                hint.textContent = textFor('world8UnlockShort');
-                worldButton.append(hint);
-            }
+            worldButton.disabled = !unlocked;
+            worldButton.querySelector('.w8-lock-overlay').hidden = unlocked;
+            if (unlocked) worldButton.removeAttribute('aria-describedby');
+            else worldButton.setAttribute('aria-describedby', 'w8-lock-hint');
         }
 
         function updateWorld8BattleLockUI() {
@@ -11713,22 +11711,35 @@
                 animSeen = true;
             }
 
-            if (!animSeen && introVisible) {
+            if (!animSeen) {
+                if (!introVisible) {
+                    renderWorld8BattleButton(false);
+                    return;
+                }
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    try { localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1'); } catch (e) {}
+                    renderWorld8BattleButton(true);
+                    updateIntroGuideUI();
+                    return;
+                }
                 w8UnlockAnimRunning = true;
                 renderWorld8BattleButton(false);
                 updateIntroGuideUI();
+                const button = document.getElementById('battle-quick-main-btn');
                 setTimeout(() => {
-                    try { localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1'); } catch (e) {}
-                    renderWorld8BattleButton(true);
-                    const button = document.getElementById('battle-quick-main-btn');
                     button.classList.add('w8-unlocking');
-                    fitLocalizedBoxes();
                     setTimeout(() => {
                         button.classList.remove('w8-unlocking');
                         w8UnlockAnimRunning = false;
+                        const stillUnlocked = isWorld8BattleUnlocked();
+                        if (stillUnlocked) {
+                            try { localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1'); } catch (e) {}
+                        }
+                        renderWorld8BattleButton(stillUnlocked);
                         updateIntroGuideUI();
-                    }, 980);
-                }, 360);
+                        fitLocalizedBoxes();
+                    }, 700);
+                }, 260);
                 return;
             }
 
