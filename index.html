@@ -3937,8 +3937,8 @@
             <div class="intro-menu">
                 <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
                 <div class="intro-main-actions" id="intro-main-actions">
-                    <button type="button" id="start-btn-id" class="start-btn" onclick="startSoloPractice()">ひとり特訓</button>
                     <button type="button" id="battle-quick-main-btn" class="start-btn" onclick="startWorld8Battle()">世界8人バトル</button>
+                    <button type="button" id="start-btn-id" class="start-btn" onclick="startSoloPractice()">ひとり特訓</button>
                     <button type="button" id="battle-friend-btn" class="start-btn" onclick="openFriendBattleScreen()">フレンド特訓</button>
                 </div>
                 <button type="button" id="intro-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">プレイ・購入情報</button>
@@ -11675,8 +11675,9 @@
         function renderWorld8BattleButton(unlocked) {
             const worldButton = document.getElementById('battle-quick-main-btn');
             const actions = document.getElementById('intro-main-actions');
-            const primary = unlocked ? worldButton : document.getElementById('start-btn-id');
-            if (actions.firstElementChild !== primary) actions.prepend(primary);
+            if (actions && worldButton && actions.firstElementChild !== worldButton) {
+                actions.prepend(worldButton);
+            }
 
             worldButton.classList.toggle('locked', !unlocked);
             worldButton.textContent = menuModeLabel(textFor('battleQuickMainBtn'));
