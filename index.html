@@ -131,24 +131,45 @@
 
         #title-start-btn {
             position: absolute;
-            bottom: 56px;
+            bottom: 66px;
             left: 50%;
-            width: min(570px, 80%);
-            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            width: min(610px, 84%);
+            min-height: 160px;
             margin: 0;
-            padding: 14px 28px;
-            transform: translateX(-50%);
-            background: #a6312c;
-            border: 6px solid #192738;
-            border-radius: 18px;
-            box-shadow: 9px 10px 0 #192738;
-            font: 400 54px 'Archivo Black', 'Arial Black', sans-serif;
-            letter-spacing: .06em;
+            padding: 18px 36px;
+            transform: translateX(-50%) skewX(-7deg);
+            background: repeating-linear-gradient(119deg, transparent 0 34px, #ffce6420 34px 43px, transparent 43px 59px),
+                linear-gradient(#ed5e24, #b02d20 55%, #861c1e);
+            border: 8px solid #192738;
+            border-radius: 19px;
+            box-shadow: inset 0 0 0 5px #f9b749, 0 12px 0 #192738;
+            color: #fff2cf;
+            font: 400 66px/1 'Archivo Black', 'Arial Black', sans-serif;
+            letter-spacing: .075em;
+            text-shadow: 4px 5px 0 #761916;
+        }
+
+        #title-start-btn::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-block: 24px solid transparent;
+            border-inline-start: 36px solid #ffe296;
+            filter: drop-shadow(4px 5px 0 #761916);
         }
 
         #title-start-btn:active {
-            transform: translate(-50%, 5px);
-            box-shadow: 4px 5px 0 #192738;
+            transform: translate(-50%, 7px) skewX(-7deg);
+            box-shadow: inset 0 0 0 5px #f9b749, 0 5px 0 #192738;
+        }
+
+        #title-start-btn:focus-visible {
+            outline: 7px solid #fff2cf;
+            outline-offset: 7px;
         }
 
 
@@ -218,38 +239,22 @@
         .game-title {
             position: absolute;
             z-index: 1;
-            top: 86px;
+            top: 62px;
             left: 50%;
-            width: 90%;
+            width: 94%;
             margin: 0;
-            transform: translateX(-50%) rotate(-5deg) skewX(-9deg);
-            color: #f8bd49;
-            font: 400 137px/.92 'Archivo Black', 'Arial Black', sans-serif;
-            letter-spacing: -.045em;
-            text-align: center;
-            -webkit-text-stroke: 11px #192738;
-            paint-order: stroke fill;
-            text-shadow: 8px 12px 0 #192738, 14px 19px 0 #852c27;
+            transform: translateX(-50%);
         }
 
-        .game-title span {
+        .game-title img {
             display: block;
-        }
-
-        .game-title span:first-child {
-            color: #df4a31;
-            margin-inline-start: -8%;
-        }
-
-        .game-title span:last-child {
-            margin-inline-start: 7%;
+            width: 100%;
+            height: auto;
         }
 
         #intro-title {
-            top: 146px;
-            font-size: 91px;
-            -webkit-text-stroke-width: 8px;
-            text-shadow: 5px 8px 0 #192738, 9px 12px 0 #852c27;
+            top: 151px;
+            width: 54%;
         }
 
         .title-baseball {
@@ -3863,7 +3868,7 @@
 
         <div id="splash-screen" class="screen">
             <div class="title-baseball" aria-hidden="true"></div>
-            <h1 class="game-title" lang="en"><span>INFINITY</span> <span>PITCHING</span></h1>
+            <h1 class="game-title" lang="en"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching" fetchpriority="high"></h1>
             <button id="title-start-btn" type="button" class="start-btn" lang="en">START</button>
         </div>
 
@@ -3924,7 +3929,7 @@
             </button>
 
             <div class="title-baseball" aria-hidden="true"></div>
-            <h2 id="intro-title" class="game-title" lang="en" tabindex="-1"><span>INFINITY</span> <span>PITCHING</span></h2>
+            <h2 id="intro-title" class="game-title" lang="en" tabindex="-1"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching"></h2>
             <div class="speech-bubble" id="intro-bubble">
                 <span id="intro-bubble-quote">よしっ！世界一のピッチャーに<br>なるために、今日も特訓だ！</span>
                 <span id="intro-bubble-guide" hidden></span>

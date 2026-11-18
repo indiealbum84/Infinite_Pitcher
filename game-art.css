@@ -69,7 +69,6 @@
 }
 #intro-screen .intro-main-actions > button:first-child { grid-column: 1 / -1; }
 
-#title-start-btn,
 #intro-screen .intro-main-actions .start-btn,
 #intro-ranking-btn,
 #intro-screen .intro-settings-btn,
@@ -83,7 +82,6 @@
     -webkit-text-stroke: 0;
 }
 
-#title-start-btn,
 #intro-screen .intro-main-actions .start-btn {
     background-color: var(--showa-gold);
     background-image: linear-gradient(113deg, transparent 83%, #19273822 83%, #19273822 86%, transparent 86%, transparent 89%, #19273822 89%), var(--showa-print);
@@ -103,7 +101,6 @@
     white-space: normal;
     overflow-wrap: anywhere;
 }
-#title-start-btn,
 #intro-screen .intro-main-actions > .start-btn:first-child {
     background-color: var(--showa-red);
     color: var(--showa-paper);
