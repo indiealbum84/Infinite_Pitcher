@@ -9654,11 +9654,11 @@
                     const items = list.querySelectorAll('.rank-item');
                     const item = items[myRankIdx];
                     if (!item) return;
-                    const rowHeight = item.getBoundingClientRect().height;
+                    const rowHeight = item.offsetHeight;
                     if (rowHeight === 0 || list.clientHeight === 0) return;
                     const visibleRows = Math.max(1, Math.floor(list.clientHeight / rowHeight));
                     const firstVisibleIndex = Math.max(0, myRankIdx - Math.floor((visibleRows - 1) / 2));
-                    const top = items[firstVisibleIndex].getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
+                    const top = items[firstVisibleIndex].offsetTop - items[0].offsetTop;
                     list.scrollTo({ top, behavior: 'smooth' });
                 }, 100);
             }
