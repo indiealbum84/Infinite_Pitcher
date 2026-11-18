@@ -406,7 +406,7 @@
 }
 :is(.initial-lang-btn, .initial-lang-change-btn, .settings-lang-btn, .settings-lang-current-btn,
     .settings-account-btn, .account-sync-btn, .exit-confirm-btn, .continue-skip-btn,
-    .leaderboard-btn, .leaderboard-login-btn, .rank-tab-btn, #gameover-ticket-pill),
+    .leaderboard-btn, .leaderboard-login-btn, .rank-tab-btn),
 #battle-screen #battle-cancel-btn,
 #battle-result-screen #battle-exit-btn {
     background: var(--showa-paper);
@@ -415,7 +415,7 @@
     border-radius: 12px;
     box-shadow: 0 6px 0 var(--showa-ink);
 }
-:is(.initial-lang-btn.active, .settings-lang-btn.active, .rank-tab-btn.active, #gameover-ticket-pill.is-vip) {
+:is(.initial-lang-btn.active, .settings-lang-btn.active, .rank-tab-btn.active) {
     background: var(--showa-gold);
     box-shadow: 0 6px 0 var(--showa-ink);
 }
@@ -599,6 +599,34 @@
     font-size: 39px;
     font-family: inherit;
 }
+#game-over-screen #result-noads-btn {
+    width: 100%;
+    min-height: 146px;
+    padding: 20px 30px;
+    border: 4px solid var(--showa-ink);
+    border-radius: 13px;
+    background: var(--showa-gold);
+    color: var(--showa-ink);
+    box-shadow: 0 6px 0 var(--showa-ink);
+    font: 800 38px/1.25 system-ui, sans-serif;
+    cursor: pointer;
+    touch-action: manipulation !important;
+}
+#result-noads-btn:not([hidden]) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    text-align: start;
+}
+#result-noads-btn strong {
+    flex-shrink: 0;
+    padding: 9px 20px;
+    border-radius: 8px;
+    background: var(--showa-ink);
+    color: var(--showa-paper);
+    font: 700 44px/1.2 'Fredoka', system-ui, sans-serif;
+}
 #game-over-screen #leaderboard-modal {
     flex: 1 1 420px;
     min-height: 380px;
@@ -663,47 +691,6 @@
     font-family: 'Fredoka', sans-serif;
     font-size: 36px;
     white-space: nowrap;
-}
-#game-over-screen .result-extras {
-    width: 100%;
-    padding: 0;
-    color: var(--showa-green);
-}
-.result-extras summary {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    min-height: 110px;
-    font-size: 32px;
-    cursor: pointer;
-    list-style: none;
-    touch-action: manipulation !important;
-}
-.result-extras summary::-webkit-details-marker {
-    display: none;
-}
-.result-extras summary::after {
-    content: '+';
-    font-family: system-ui, sans-serif;
-}
-.result-extras[open] summary::after {
-    content: '−';
-}
-#game-over-screen:has(.result-extras[open]) {
-    overflow-y: auto;
-}
-#game-over-screen #gameover-ticket-pill {
-    display: block;
-    width: 100%;
-    max-width: none;
-    min-height: 132px;
-    margin: 0 0 16px;
-    padding: 22px;
-    font-size: 30px;
-    line-height: 1.6;
-    white-space: normal;
-    touch-action: manipulation !important;
 }
 #game-over-screen :is(button, summary):focus-visible {
     outline: 6px solid var(--showa-red);

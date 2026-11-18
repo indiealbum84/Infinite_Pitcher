@@ -4096,6 +4096,11 @@
                 <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
             </div>
 
+            <button type="button" id="result-noads-btn" onclick="openPlayGateModal(null)">
+                <span id="result-noads-label">광고 제거 · 무제한 플레이</span>
+                <strong>$4.99</strong>
+            </button>
+
             <section id="leaderboard-modal" aria-label="TOP 1000">
                 <h3 style="margin-top:0">TOP 1000</h3>
                 <div class="rank-tabs">
@@ -4105,10 +4110,6 @@
                 <div id="rank-list"></div>
             </section>
 
-            <details id="game-over-footer" class="result-extras">
-                <summary id="result-extras-label">이용권 · 광고 제거</summary>
-                <button type="button" id="gameover-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">🎬 次回: 広告1回視聴  |  🚫 広告削除 $4.99</button>
-            </details>
         </div>
 
         <!-- 대전 매칭 화면 -->
@@ -4603,7 +4604,7 @@
                 resultBest: '自己ベスト',
                 resultNewBest: '自己ベスト更新！',
                 resultRanks: '自己ベストの順位',
-                resultExtras: 'プレイ回数・広告削除',
+                resultNoAds: '広告削除・無制限プレイ',
                 rankingBtn:  'ランキング',
                 closeBtn:    '閉じる',
                 homeBtn:     'メイン画面へ',
@@ -4743,7 +4744,7 @@
                 resultBest: 'Personal best',
                 resultNewBest: 'New personal best!',
                 resultRanks: 'Personal best ranking',
-                resultExtras: 'Play tickets · Remove ads',
+                resultNoAds: 'Remove ads · Unlimited play',
                 rankingBtn:  'Ranking',
                 closeBtn:    'Close',
                 homeBtn:     'Main menu',
@@ -4883,7 +4884,7 @@
                 resultBest: '나의 최고 기록',
                 resultNewBest: '최고 기록 경신!',
                 resultRanks: '최고 기록 순위',
-                resultExtras: '이용권 · 광고 제거',
+                resultNoAds: '광고 제거 · 무제한 플레이',
                 rankingBtn:  '랭킹',
                 closeBtn:    '닫기',
                 homeBtn:     '메인화면',
@@ -5023,7 +5024,7 @@
                 resultBest: '個人最高紀錄',
                 resultNewBest: '刷新最高紀錄！',
                 resultRanks: '最高紀錄排名',
-                resultExtras: '遊玩次數・移除廣告',
+                resultNoAds: '移除廣告・無限暢玩',
                 rankingBtn:  '排行榜',
                 closeBtn:    '關閉',
                 homeBtn:     '回到主畫面',
@@ -5163,7 +5164,7 @@
                 resultBest: 'Mejor marca',
                 resultNewBest: '¡Nueva mejor marca!',
                 resultRanks: 'Ranking de tu mejor marca',
-                resultExtras: 'Partidas · Quitar anuncios',
+                resultNoAds: 'Sin anuncios · Juego ilimitado',
                 rankingBtn:  'Ranking',
                 closeBtn:    'Cerrar',
                 homeBtn:     'Menú Principal',
@@ -5472,7 +5473,7 @@
             setTxt('result-score-label', t.resultScore);
             setTxt('result-best-label', t[document.querySelector('.result-record').classList.contains('is-new-best') ? 'resultNewBest' : 'resultBest']);
             setTxt('result-ranks-label', t.resultRanks);
-            setTxt('result-extras-label', t.resultExtras);
+            setTxt('result-noads-label', t.resultNoAds);
             setTxt('play-gate-title', t.playGateTitle);
             setTxt('play-gate-ad-btn', t.playGateAdBtn);
             setTxt('play-gate-noads-btn', t.playGateNoAdsBtn);
@@ -6548,9 +6549,7 @@
             const introTicket = document.getElementById('intro-ticket-pill');
             introTicket.textContent = pillText;
             introTicket.classList.toggle('is-vip', vip);
-            const resultTicket = document.getElementById('gameover-ticket-pill');
-            resultTicket.textContent = pillText;
-            resultTicket.classList.toggle('is-vip', vip);
+            document.getElementById('result-noads-btn').hidden = vip;
         }
 
         let gameSessionId = 0;
@@ -9536,7 +9535,6 @@
             document.querySelector('.result-record').classList.toggle('is-new-best', isNewPersonalBest);
             document.getElementById('result-best-label').textContent = textFor(isNewPersonalBest ? 'resultNewBest' : 'resultBest');
             document.getElementById('result-best-val').textContent = effectiveBestScore;
-            document.getElementById('game-over-footer').open = false;
             if (rankDetailEl) rankDetailEl.textContent = playerName;
             if (rankEntryEl) rankEntryEl.classList.add('hidden');
 
