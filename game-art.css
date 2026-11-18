@@ -605,7 +605,9 @@
     padding: 20px 30px;
     border: 4px solid var(--showa-ink);
     border-radius: 13px;
-    background: var(--showa-gold);
+    background:
+        linear-gradient(90deg, var(--showa-gold) 20%, #eab756ee 44%, transparent 63%, transparent 88%, var(--showa-gold) 96%),
+        var(--showa-gold) url('./images/showa-remove-ads.webp') right 55px center / 82% auto no-repeat;
     color: var(--showa-ink);
     box-shadow: 0 6px 0 var(--showa-ink);
     font: 800 38px/1.25 system-ui, sans-serif;
@@ -618,6 +620,9 @@
     justify-content: space-between;
     gap: 22px;
     text-align: start;
+}
+#result-noads-label {
+    max-width: 55%;
 }
 #result-noads-btn strong {
     flex-shrink: 0;
