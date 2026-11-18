@@ -4076,32 +4076,39 @@
 
         <div id="game-over-screen" class="screen hidden">
             <h2 class="game-over-title">GAME OVER</h2>
-            <div class="final-score">SCORE: <span id="final-score-val">0</span></div>
-
-            <!-- 내 최고 기록 & 순위 자동 등록 안내 (이름 재입력 없음) -->
-            <div id="rank-entry" class="hidden">
-                <p class="rank-announce"><span id="my-rank-val">1</span><span id="rank-suffix">위 달성!</span></p>
-                <p class="rank-sub-announce" id="my-rank-detail"></p>
-            </div>
+            <section class="result-record" aria-labelledby="result-score-label">
+                <div class="final-score">
+                    <span id="result-score-label" class="result-label">이번 점수</span>
+                    <span id="final-score-val">0</span>
+                </div>
+                <p class="result-best"><span id="result-best-label">나의 최고 기록</span><strong id="result-best-val">0</strong></p>
+                <div id="rank-entry" class="hidden" aria-live="polite">
+                    <div class="result-rank-heading"><span id="result-ranks-label">최고 기록 순위</span><p id="my-rank-detail" class="result-player"></p></div>
+                    <div class="result-ranks">
+                        <div><span class="result-label">GLOBAL</span><strong id="my-rank-val">—</strong></div>
+                        <div><span id="result-country-label" class="result-label">COUNTRY</span><strong id="result-country-rank">—</strong></div>
+                    </div>
+                </div>
+            </section>
 
             <div id="action-buttons">
                 <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
-                <button type="button" id="gameover-ticket-pill" class="ticket-status-pill" style="margin-top:14px;" onclick="openPlayGateModal(null)">🎬 次回: 広告1回視聴  |  🚫 広告削除 $4.99</button>
+                <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
             </div>
 
-            <div id="leaderboard-modal">
+            <section id="leaderboard-modal" aria-label="TOP 1000">
                 <h3 style="margin-top:0">TOP 1000</h3>
                 <div class="rank-tabs">
                     <button type="button" class="rank-tab-btn active" id="result-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL</button>
                     <button type="button" class="rank-tab-btn" id="result-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY</button>
                 </div>
-                <div id="my-rank-badge"></div>
                 <div id="rank-list"></div>
-            </div>
+            </section>
 
-            <div id="game-over-footer">
-                <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
-            </div>
+            <details id="game-over-footer" class="result-extras">
+                <summary id="result-extras-label">이용권 · 광고 제거</summary>
+                <button type="button" id="gameover-ticket-pill" class="ticket-status-pill" onclick="openPlayGateModal(null)">🎬 次回: 広告1回視聴  |  🚫 広告削除 $4.99</button>
+            </details>
         </div>
 
         <!-- 대전 매칭 화면 -->
@@ -4592,6 +4599,11 @@
                 nameHolder:  '名前を入力してください',
                 registerBtn: '登録して続ける',
                 retryBtn:    'リトライ',
+                resultScore: '今回のスコア',
+                resultBest: '自己ベスト',
+                resultNewBest: '自己ベスト更新！',
+                resultRanks: '自己ベストの順位',
+                resultExtras: 'プレイ回数・広告削除',
                 rankingBtn:  'ランキング',
                 closeBtn:    '閉じる',
                 homeBtn:     'メイン画面へ',
@@ -4727,6 +4739,11 @@
                 nameHolder:  'Enter your name',
                 registerBtn: 'Save and continue',
                 retryBtn:    'Retry',
+                resultScore: 'YOUR SCORE',
+                resultBest: 'Personal best',
+                resultNewBest: 'New personal best!',
+                resultRanks: 'Personal best ranking',
+                resultExtras: 'Play tickets · Remove ads',
                 rankingBtn:  'Ranking',
                 closeBtn:    'Close',
                 homeBtn:     'Main menu',
@@ -4862,6 +4879,11 @@
                 nameHolder:  '이름을 입력하세요',
                 registerBtn: '등록하고 계속하기',
                 retryBtn:    '다시 하기',
+                resultScore: '이번 점수',
+                resultBest: '나의 최고 기록',
+                resultNewBest: '최고 기록 경신!',
+                resultRanks: '최고 기록 순위',
+                resultExtras: '이용권 · 광고 제거',
                 rankingBtn:  '랭킹',
                 closeBtn:    '닫기',
                 homeBtn:     '메인화면',
@@ -4997,6 +5019,11 @@
                 nameHolder:  '請輸入玩家名稱',
                 registerBtn: '登錄並繼續',
                 retryBtn:    '再玩一次',
+                resultScore: '本次分數',
+                resultBest: '個人最高紀錄',
+                resultNewBest: '刷新最高紀錄！',
+                resultRanks: '最高紀錄排名',
+                resultExtras: '遊玩次數・移除廣告',
                 rankingBtn:  '排行榜',
                 closeBtn:    '關閉',
                 homeBtn:     '回到主畫面',
@@ -5132,6 +5159,11 @@
                 nameHolder:  'Ingresa tu nombre',
                 registerBtn: 'Registrar y seguir',
                 retryBtn:    'Reintentar',
+                resultScore: 'TU PUNTUACIÓN',
+                resultBest: 'Mejor marca',
+                resultNewBest: '¡Nueva mejor marca!',
+                resultRanks: 'Ranking de tu mejor marca',
+                resultExtras: 'Partidas · Quitar anuncios',
                 rankingBtn:  'Ranking',
                 closeBtn:    'Cerrar',
                 homeBtn:     'Menú Principal',
@@ -5435,9 +5467,12 @@
             setTxt('battle-quick-main-btn', t.battleQuickMainBtn);
             setTxt('battle-friend-btn', menuModeLabel(t.battleFriendBtn));
             setTxt('battle-btn', t.battleBtn);
-            setTxt('rank-suffix', t.rankSuffix);
             setTxt('retry-btn', t.retryBtn);
             setTxt('home-btn', t.homeBtn);
+            setTxt('result-score-label', t.resultScore);
+            setTxt('result-best-label', t[document.querySelector('.result-record').classList.contains('is-new-best') ? 'resultNewBest' : 'resultBest']);
+            setTxt('result-ranks-label', t.resultRanks);
+            setTxt('result-extras-label', t.resultExtras);
             setTxt('play-gate-title', t.playGateTitle);
             setTxt('play-gate-ad-btn', t.playGateAdBtn);
             setTxt('play-gate-noads-btn', t.playGateNoAdsBtn);
@@ -9497,13 +9532,13 @@
 
             const rankEntryEl = document.getElementById('rank-entry');
             const modalEl = document.getElementById('leaderboard-modal');
-            const badgeEl = document.getElementById('my-rank-badge');
             const rankDetailEl = document.getElementById('my-rank-detail');
-            const rankStatusEl = document.getElementById('my-best-record-status');
-
-            if (badgeEl) badgeEl.style.display = 'none';
-            if (rankDetailEl) rankDetailEl.innerText = '';
-            if (rankStatusEl) rankStatusEl.innerText = '';
+            document.querySelector('.result-record').classList.toggle('is-new-best', isNewPersonalBest);
+            document.getElementById('result-best-label').textContent = textFor(isNewPersonalBest ? 'resultNewBest' : 'resultBest');
+            document.getElementById('result-best-val').textContent = effectiveBestScore;
+            document.getElementById('game-over-footer').open = false;
+            if (rankDetailEl) rankDetailEl.textContent = playerName;
+            if (rankEntryEl) rankEntryEl.classList.add('hidden');
 
             // 항상 리더보드 모달을 바로 표시 (이름 입력창 없음)
             if (modalEl) modalEl.classList.remove('hidden');
@@ -9528,29 +9563,11 @@
                     const inGlobalTop = globalRank <= LEADERBOARD_LIMIT;
                     const inCountryTop = countryRank <= LEADERBOARD_LIMIT;
 
-                    if (effectiveBestScore > 0 && (inGlobalTop || inCountryTop)) {
-                        const primaryRank = inGlobalTop ? globalRank : countryRank;
+                    if (effectiveBestScore > 0) {
                         const rankValEl = document.getElementById('my-rank-val');
-                        const rankSuffixEl = document.getElementById('rank-suffix');
-                        if (rankValEl) rankValEl.innerText = primaryRank;
-                        if (rankSuffixEl) rankSuffixEl.innerText = textFor('rankSuffix');
-                        if (rankDetailEl) {
-                            const flag = countryToFlag(userCountry);
-                            const globalTxt = inGlobalTop ? `#${globalRank}` : '1000+';
-                            const countryTxt = inCountryTop ? `#${countryRank}` : '1000+';
-                            rankDetailEl.innerText = `👤 ${playerName}  |  🌍 GLOBAL ${globalTxt}  |  ${flag} ${userCountry} ${countryTxt}`;
-                        }
-                        if (rankStatusEl) {
-                            if (isNewPersonalBest) {
-                                const fn = textFor('rankStatusNewBest');
-                                rankStatusEl.innerText = typeof fn === 'function' ? fn(playerName, normalizedScore) : '';
-                                rankStatusEl.style.color = '#7dffb3';
-                            } else {
-                                const fn = textFor('rankStatusKeptBest');
-                                rankStatusEl.innerText = typeof fn === 'function' ? fn(effectiveBestScore) : '';
-                                rankStatusEl.style.color = '#ffe85c';
-                            }
-                        }
+                        if (rankValEl) rankValEl.textContent = inGlobalTop ? `#${globalRank}` : '1000+';
+                        document.getElementById('result-country-rank').textContent = inCountryTop ? `#${countryRank}` : '1000+';
+                        document.getElementById('result-country-label').textContent = `${countryToFlag(userCountry)} ${userCountry}`;
                         if (rankEntryEl) rankEntryEl.classList.remove('hidden');
                     } else if (rankEntryEl) {
                         rankEntryEl.classList.add('hidden');
@@ -9597,7 +9614,6 @@
         }
 
         function renderRankRows(list, ranks, highlightName, highlightScore) {
-            const badge = document.getElementById('my-rank-badge');
             const rows = Array.isArray(ranks) ? ranks.slice(0, LEADERBOARD_LIMIT) : [];
 
             // 공동순위 계산: 앞 항목과 점수 같으면 같은 순위
@@ -9619,14 +9635,6 @@
                 );
             }
 
-            if (myRankIdx >= 0 && badge && list.id === 'rank-list') {
-                badge.style.display = 'block';
-                const scopeIcon = currentLeaderboardScope === 'country' ? countryToFlag(userCountry) : '🏆';
-                badge.innerHTML = `${scopeIcon} <span class="rank-badge-number">${displayRanks[myRankIdx]}</span>${textFor('rankSuffix')}`;
-            } else if (badge && list.id === 'rank-list') {
-                badge.style.display = 'none';
-            }
-
             list.innerHTML = rows.map((r, i) => {
                 const isMe = i === myRankIdx;
                 const safeName = String(r.name || 'NO NAME').replace(/[&<>"']/g, ch => ({
@@ -9644,7 +9652,14 @@
             if (myRankIdx >= 0) {
                 setTimeout(() => {
                     const items = list.querySelectorAll('.rank-item');
-                    if (items[myRankIdx]) items[myRankIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    const item = items[myRankIdx];
+                    if (!item) return;
+                    const rowHeight = item.getBoundingClientRect().height;
+                    if (rowHeight === 0 || list.clientHeight === 0) return;
+                    const visibleRows = Math.max(1, Math.floor(list.clientHeight / rowHeight));
+                    const firstVisibleIndex = Math.max(0, myRankIdx - Math.floor((visibleRows - 1) / 2));
+                    const top = items[firstVisibleIndex].getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
+                    list.scrollTo({ top, behavior: 'smooth' });
                 }, 100);
             }
         }
