@@ -36,16 +36,20 @@ html[lang="zh-TW"] {
     font-variant-numeric: tabular-nums;
 }
 
+#intro-screen .title-baseball {
+    top: 36.6%;
+}
+
 #intro-screen .speech-bubble {
     position: absolute;
-    inset: 365px auto auto 38px;
+    inset: 415px auto auto 38px;
     width: max-content;
-    max-width: 580px;
+    max-width: 620px;
     margin: 0;
-    padding: 15px 24px;
+    padding: 17px 27px;
     text-align: left;
-    font-size: 31px;
-    line-height: 1.38;
+    font-size: 36px;
+    line-height: 1.28;
     border-radius: 22px;
     border-width: 6px;
     transform: none;
@@ -1071,7 +1075,7 @@ html[lang="zh-TW"] {
     padding-top: 8px;
     border-top: 2px dashed #947956;
     color: #70332a;
-    font-size: 25px;
+    font-size: 27px;
 }
 #intro-screen #intro-bubble .bubble-nowrap {
     white-space: normal;
