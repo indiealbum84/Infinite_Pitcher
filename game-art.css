@@ -1,4 +1,5 @@
 :root {
+    --font-game: 'Fredoka', var(--font-local, system-ui), sans-serif;
     --showa-ink: #192738;
     --showa-paper: #fff2cf;
     --showa-cream: #f9e7ba;
@@ -16,6 +17,23 @@
     --palette-soft-mint: #d6e0bd;
     --palette-soft-blue: #ccd8d1;
     --palette-soft-pink: #efd1b2;
+}
+
+html[lang="ja"] {
+    --font-local: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', system-ui;
+}
+html[lang="ko"] {
+    --font-local: 'Jua', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui;
+}
+html[lang="zh-TW"] {
+    --font-local: 'Huninn', 'PingFang TC', 'Microsoft JhengHei', system-ui;
+}
+
+:is(.stat-value, #final-score-val, .rank-num, .rank-score, .battle-hud-box .bhb-score,
+    .battle-score-card .bsc-score, .battle-code-box, .ipp-pt-number, .reward-ad-timer) {
+    font-family: var(--font-game);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
 #intro-screen .speech-bubble {
@@ -77,7 +95,7 @@
     border: 6px solid var(--showa-ink);
     border-radius: 12px;
     box-shadow: 7px 9px 0 var(--showa-ink);
-    font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+    font-family: var(--font-game);
     font-weight: 900;
     -webkit-text-stroke: 0;
 }
@@ -546,7 +564,7 @@
     box-shadow: none;
 }
 .result-label {
-    font-family: system-ui, sans-serif;
+    font-family: var(--font-game);
     font-size: 34px;
     font-weight: 800;
     line-height: 1.3;
@@ -568,7 +586,7 @@
     font-size: 34px;
 }
 .result-best strong {
-    font: 900 44px/1.1 'Fredoka', sans-serif;
+    font: 700 44px/1.1 var(--font-game);
     color: var(--showa-ink);
 }
 .is-new-best .result-best {
@@ -612,7 +630,7 @@
 }
 .result-ranks strong,
 #game-over-screen #my-rank-val {
-    font: 900 68px/1.15 'Fredoka', sans-serif;
+    font: 700 68px/1.15 var(--font-game);
     color: var(--showa-ink);
     font-variant-numeric: tabular-nums;
 }
@@ -655,7 +673,7 @@
         var(--showa-gold) url('./images/showa-remove-ads.webp') right 55px center / 82% auto no-repeat;
     color: var(--showa-ink);
     box-shadow: 0 6px 0 var(--showa-ink);
-    font: 800 38px/1.25 system-ui, sans-serif;
+    font: 800 38px/1.25 var(--font-game);
     cursor: pointer;
     touch-action: manipulation !important;
 }
@@ -675,7 +693,7 @@
     border-radius: 8px;
     background: var(--showa-ink);
     color: var(--showa-paper);
-    font: 700 44px/1.2 'Fredoka', system-ui, sans-serif;
+    font: 700 44px/1.2 var(--font-game);
 }
 #game-over-screen #leaderboard-modal {
     flex: 1 1 420px;
@@ -738,7 +756,7 @@
     font-size: 34px;
 }
 #game-over-screen .rank-score {
-    font-family: 'Fredoka', sans-serif;
+    font-family: var(--font-game);
     font-size: 36px;
     white-space: nowrap;
 }
@@ -953,7 +971,7 @@
     background: var(--showa-paper);
     color: var(--showa-ink);
     box-shadow: 5px 7px 0 var(--showa-ink);
-    font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+    font-family: var(--font-game);
     text-align: left;
 }
 
