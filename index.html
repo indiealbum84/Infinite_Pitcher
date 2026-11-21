@@ -6935,6 +6935,72 @@
             };
         }
 
+        // Capacitor 네이티브 Google 로그인 브릿지 (@capgo/capacitor-social-login)
+        // Firebase 콘솔 또는 Google Cloud Console의 '웹 애플리케이션' OAuth 2.0 클라이언트 ID를 입력해야 동작합니다.
+        const GOOGLE_WEB_CLIENT_ID = '134868428008-eg6scbu9m9p1rlifv40g80s1pvihmgc8.apps.googleusercontent.com';
+        let socialLoginGoogleInitialized = false;
+
+        function getSocialLoginPlugin() {
+            return window.Capacitor && window.Capacitor.Plugins ? window.Capacitor.Plugins.SocialLogin : null;
+        }
+
+        if (getSocialLoginPlugin() && GOOGLE_WEB_CLIENT_ID) {
+            window.signInInfinitePitcherAccount = async function(provider, onSuccess, onError) {
+                if (provider !== 'google') {
+                    if (typeof onError === 'function') onError('unsupported_provider');
+                    return;
+                }
+                const SocialLogin = getSocialLoginPlugin();
+                if (!SocialLogin) {
+                    if (typeof onError === 'function') onError('plugin_unavailable');
+                    return;
+                }
+                try {
+                    if (!socialLoginGoogleInitialized) {
+                        await SocialLogin.initialize({
+                            google: {
+                                webClientId: GOOGLE_WEB_CLIENT_ID,
+                                mode: 'online'
+                            }
+                        });
+                        socialLoginGoogleInitialized = true;
+                    }
+                    const res = await SocialLogin.login({
+                        provider: 'google',
+                        options: {
+                            scopes: ['email', 'profile']
+                        }
+                    });
+                    const result = (res && res.result) || {};
+                    const idToken = result.idToken || '';
+                    const profile = result.profile || {};
+                    let rawId = profile.email || profile.id || '';
+
+                    if (firebase.auth && idToken) {
+                        try {
+                            const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
+                            const authResult = await firebase.auth().signInWithCredential(credential);
+                            const fbUser = authResult && authResult.user;
+                            if (fbUser && (fbUser.email || fbUser.uid)) {
+                                rawId = fbUser.email || fbUser.uid;
+                            }
+                        } catch (fbErr) {
+                            console.warn('[SocialLogin] Firebase signInWithCredential skipped:', fbErr);
+                        }
+                    }
+
+                    if (rawId) {
+                        if (typeof onSuccess === 'function') onSuccess(rawId);
+                    } else {
+                        if (typeof onError === 'function') onError('no_account_id');
+                    }
+                } catch (err) {
+                    console.warn('[SocialLogin] Native Google login failed/cancelled:', err);
+                    if (typeof onError === 'function') onError(err);
+                }
+            };
+        }
+
         function watchAdForNextGame() {
             const targetMode = pendingPlayGateMode === 'battle' ? 'battle' : 'solo';
             const grantAndProceed = () => {
@@ -9294,7 +9360,11 @@
                             restoreCloudProfileByRawId(normProvider, accountIdOrEmail, false);
                         }
                     },
-                    () => {}
+                    (err) => {
+                        if (err === 'unsupported_provider' || err === 'plugin_unavailable') {
+                            promptAccountIdFallback(normProvider);
+                        }
+                    }
                 );
                 return;
             }
