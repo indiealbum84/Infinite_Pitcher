@@ -6840,6 +6840,101 @@
             document.getElementById('play-gate-screen').classList.add('hidden');
         }
 
+        // Capacitor AdMob 리워드 광고 연동 (현재 Google 공식 테스트 ID — 출시 전 본인 광고 단위 ID로 교체)
+        const ADMOB_TESTING_MODE = true;
+        const ADMOB_REWARDED_ID_ANDROID = 'ca-app-pub-3940256099942544/5224354917';
+        const ADMOB_REWARDED_ID_IOS = 'ca-app-pub-3940256099942544/1712485313';
+        let adMobInitialized = false;
+        let adMobRewardedReady = false;
+
+        function getAdMobPlugin() {
+            return window.Capacitor && window.Capacitor.Plugins ? window.Capacitor.Plugins.AdMob : null;
+        }
+
+        function getAdMobRewardedUnitId() {
+            const platform = window.Capacitor && typeof window.Capacitor.getPlatform === 'function'
+                ? window.Capacitor.getPlatform()
+                : 'android';
+            return platform === 'ios' ? ADMOB_REWARDED_ID_IOS : ADMOB_REWARDED_ID_ANDROID;
+        }
+
+        async function preloadCapacitorRewardedAd() {
+            const AdMob = getAdMobPlugin();
+            if (!AdMob) return false;
+            try {
+                if (!adMobInitialized) {
+                    await AdMob.initialize({ initializeForTesting: ADMOB_TESTING_MODE });
+                    adMobInitialized = true;
+                }
+                await AdMob.prepareRewardVideoAd({
+                    adId: getAdMobRewardedUnitId(),
+                    isTesting: ADMOB_TESTING_MODE
+                });
+                adMobRewardedReady = true;
+                return true;
+            } catch (e) {
+                console.warn('[AdMob] preload failed:', e);
+                adMobRewardedReady = false;
+                return false;
+            }
+        }
+
+        if (getAdMobPlugin()) {
+            preloadCapacitorRewardedAd();
+            window.showInfinitePitcherRewardedAd = async function(onRewarded, onFailed) {
+                const AdMob = getAdMobPlugin();
+                if (!AdMob) {
+                    if (typeof onFailed === 'function') onFailed();
+                    return;
+                }
+                let rewardEarned = false;
+                let settled = false;
+                const handles = [];
+                const cleanup = () => {
+                    handles.forEach(h => {
+                        try { if (h && typeof h.remove === 'function') h.remove(); } catch (e) {}
+                    });
+                };
+                try {
+                    if (!adMobRewardedReady) {
+                        const ok = await preloadCapacitorRewardedAd();
+                        if (!ok) throw new Error('Ad not ready');
+                    }
+                    handles.push(await AdMob.addListener('onRewardedVideoAdReward', () => {
+                        rewardEarned = true;
+                    }));
+                    handles.push(await AdMob.addListener('onRewardedVideoAdDismissed', () => {
+                        if (settled) return;
+                        settled = true;
+                        adMobRewardedReady = false;
+                        cleanup();
+                        preloadCapacitorRewardedAd();
+                        if (rewardEarned) {
+                            if (typeof onRewarded === 'function') onRewarded();
+                        } else if (typeof onFailed === 'function') {
+                            onFailed();
+                        }
+                    }));
+                    handles.push(await AdMob.addListener('onRewardedVideoAdFailedToShow', () => {
+                        if (settled) return;
+                        settled = true;
+                        adMobRewardedReady = false;
+                        cleanup();
+                        if (typeof onFailed === 'function') onFailed();
+                    }));
+                    await AdMob.showRewardVideoAd();
+                } catch (e) {
+                    console.warn('[AdMob] show rewarded failed:', e);
+                    if (!settled) {
+                        settled = true;
+                        adMobRewardedReady = false;
+                        cleanup();
+                        if (typeof onFailed === 'function') onFailed();
+                    }
+                }
+            };
+        }
+
         function watchAdForNextGame() {
             const targetMode = pendingPlayGateMode === 'battle' ? 'battle' : 'solo';
             const grantAndProceed = () => {

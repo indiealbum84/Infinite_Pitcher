@@ -1,0 +1,11 @@
+{
+  "appId": "games.project108.infinitepitch",
+  "appName": "Infinite Pitch",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
