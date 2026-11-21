@@ -7637,14 +7637,17 @@
         }
 
         function checkRowClear() {
-            const targetRowsCleared = Math.floor(score / 10);
+            const activeBlocks = blocks.filter(b => b.active);
+            if (!activeBlocks.length) return;
+            const lowestActiveRow = Math.min(...activeBlocks.map(b => Math.floor((b.num - 1) / 10)));
             const blockHeight = getBlockHeight();
-            const currentRowsCleared = Math.round(targetScrollY / blockHeight);
+            let currentRowsCleared = Math.round(targetScrollY / blockHeight);
 
-            if (targetRowsCleared > currentRowsCleared) {
-                targetScrollY = targetRowsCleared * blockHeight;
+            while (currentRowsCleared < lowestActiveRow) {
+                currentRowsCleared++;
+                targetScrollY = currentRowsCleared * blockHeight;
                 const maxNum = Math.max(...blocks.map(b => b.num));
-                let newRow = createRow(maxNum + 1);
+                const newRow = createRow(maxNum + 1);
                 const topMostY = Math.min(...blocks.map(b => b.y));
                 newRow.forEach(b => b.y = topMostY - blockHeight);
                 blocks.push(...newRow);
