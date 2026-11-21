@@ -3166,7 +3166,7 @@
             display: none;
         }
 
-        /* Play Gate & Remove Ads ($4.99) Modal */
+        /* Play Gate & Remove Ads ($2.99) Modal */
         #play-gate-screen {
             background: rgba(15, 23, 42, 0.92);
             z-index: 35;
@@ -3994,14 +3994,14 @@
             </div>
         </div>
 
-        <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($4.99) 모달 -->
+        <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($2.99) 모달 -->
         <div id="play-gate-screen" class="screen hidden">
             <div class="continue-card">
                 <img id="play-gate-art" src="./images/showa-fireball.webp" alt="" hidden>
                 <h2 class="continue-title" id="play-gate-title">NEXT PLAY</h2>
                 <p class="continue-desc" id="play-gate-desc">오늘의 무료 플레이를 모두 사용했습니다.<br>다음 게임을 플레이하려면 광고를 시청해주세요!</p>
                 <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 광고 보고 플레이</button>
-                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 광고 제거·무제한 플레이 ($4.99)</button>
+                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 광고 제거·무제한 플레이 ($2.99)</button>
                 <div class="play-gate-sub-actions">
                     <button id="play-gate-test-free-btn" class="continue-skip-btn hidden" onclick="skipAdForTest()">🛠️ 무료 테스트 플레이</button>
                     <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">구매 복원</button>
@@ -4043,7 +4043,7 @@
 
             <button type="button" id="result-noads-btn" onclick="openPlayGateModal(null)">
                 <span id="result-noads-label">광고 제거 · 무제한 플레이</span>
-                <strong>$4.99</strong>
+                <strong>$2.99</strong>
             </button>
 
             <section id="leaderboard-modal" aria-label="TOP 1000">
@@ -4601,22 +4601,22 @@
                 rematchReady: 'リマッチ参加完了',
                 playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
-                fireballUnlockHtml: '🎉 おめでとうございます！<br>ご用意した<b>31番ファイアボールコンテンツ</b>をアンロックしました！<br><br>これより個人モードは<b>1日3回まで無料</b>でプレイでき、その後は<b>広告を1回</b>見ることでプレイできます。<br><br>広告を見たくない場合は<b>$4.99 広告削除パス</b>をご購入ください！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを今すぐ購入する</a>',
-                playGateDescNeedAdSolo: '本日の個人モード無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$4.99 広告削除パスを購入するとすぐに次のゲームをプレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを購入して無制限プレイ</a>',
-                playGateDescNeedAdBattle: '本日のオンライン対戦無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$4.99 広告削除パスを購入するとすぐに対戦へ参加できます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを購入して無制限プレイ</a>',
+                fireballUnlockHtml: '🎉 おめでとうございます！<br>ご用意した<b>31番ファイアボールコンテンツ</b>をアンロックしました！<br><br>これより個人モードは<b>1日3回まで無料</b>でプレイでき、その後は<b>広告を1回</b>見ることでプレイできます。<br><br>広告を見たくない場合は<b>$2.99 広告削除パス</b>をご購入ください！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを今すぐ購入する</a>',
+                playGateDescNeedAdSolo: '本日の個人モード無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$2.99 広告削除パスを購入するとすぐに次のゲームをプレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを購入して無制限プレイ</a>',
+                playGateDescNeedAdBattle: '本日のオンライン対戦無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$2.99 広告削除パスを購入するとすぐに対戦へ参加できます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを購入して無制限プレイ</a>',
                 playGateResetLine: (h, m) => `⏰ 次の無料リセット(UTC 00:00)まで あと${h}時間${m}分`,
-                playGateDescShop: (soloText, battleRem, max) => `本日の残り無料プレイ<br>・個人モード: <b>${soloText}</b><br>・オンライン対戦: <b>${battleRem}/${max}回</b><br><br>広告削除パス($4.99)を購入すると、個人・対戦ともに広告なしで永久に無制限プレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 広告削除パスを今すぐ購入</a>`,
+                playGateDescShop: (soloText, battleRem, max) => `本日の残り無料プレイ<br>・個人モード: <b>${soloText}</b><br>・オンライン対戦: <b>${battleRem}/${max}回</b><br><br>広告削除パス($2.99)を購入すると、個人・対戦ともに広告なしで永久に無制限プレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを今すぐ購入</a>`,
                 soloUnlimitedLabel: '無制限無料 (31番突破前)',
                 playGateAdBtn: '🎬 広告を1回見てプレイ',
-                playGateNoAdsBtn: '👑 広告削除・無制限プレイ ($4.99)',
+                playGateNoAdsBtn: '👑 広告削除・無制限プレイ ($2.99)',
                 playGateRestoreBtn: '購入を復元',
                 playGateCloseBtn: '閉じる',
                 rewardAdMsg: '広告視聴後に次のゲームが始まります...',
-                ticketPillPreUnlock: (battleRem, max) => `⚾ 個人:無制限(31番前) · 対戦:${battleRem}/${max}回  |  🚫 広告削除 $4.99`,
-                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 無料 個人:${soloRem}/${max} · 対戦:${battleRem}/${max}  |  🚫 広告削除 $4.99`,
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 個人:無制限(31番前) · 対戦:${battleRem}/${max}回  |  🚫 広告削除 $2.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 無料 個人:${soloRem}/${max} · 対戦:${battleRem}/${max}  |  🚫 広告削除 $2.99`,
                 ticketPillVip: '👑 広告削除パス適用中 (個人・対戦 無制限プレイ)',
-                confirmBuyNoAds: '広告削除・無制限プレイパス ($4.99) を購入しますか？\n(テスト環境では即時適用されます)',
-                alertNoAdsActivated: '👑 広告削除パス($4.99)が適用されました！無制限にプレイできます。',
+                confirmBuyNoAds: '広告削除・無制限プレイパス ($2.99) を購入しますか？\n(テスト環境では即時適用されます)',
+                alertNoAdsActivated: '👑 広告削除パス($2.99)が適用されました！無制限にプレイできます。',
                 alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
                 loadingRanks: '読み込み中...',
                 emptyRanks: 'まだ記録がありません',
@@ -4741,22 +4741,22 @@
                 rematchReady: 'Rematch joined',
                 playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
-                fireballUnlockHtml: '🎉 Congratulations!<br>You unlocked our <b>#31 Fireball Content</b>!<br><br>From now on, you get <b>3 free Solo games</b> per day, and after that you can watch <b>1 ad</b> to play.<br><br>Don\'t want ads? Get the <b>$4.99 Remove Ads Pass</b>!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $4.99 Remove Ads Now</a>',
-                playGateDescNeedAdSolo: 'You used all 3 free Solo games for today.<br>Watch 1 ad or buy the $4.99 Remove Ads Pass to play the next game right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $4.99 Remove Ads for Unlimited Play</a>',
-                playGateDescNeedAdBattle: 'You used all 3 free Online Battle games for today.<br>Watch 1 ad or buy the $4.99 Remove Ads Pass to enter Battle right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $4.99 Remove Ads for Unlimited Play</a>',
+                fireballUnlockHtml: '🎉 Congratulations!<br>You unlocked our <b>#31 Fireball Content</b>!<br><br>From now on, you get <b>3 free Solo games</b> per day, and after that you can watch <b>1 ad</b> to play.<br><br>Don\'t want ads? Get the <b>$2.99 Remove Ads Pass</b>!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $2.99 Remove Ads Now</a>',
+                playGateDescNeedAdSolo: 'You used all 3 free Solo games for today.<br>Watch 1 ad or buy the $2.99 Remove Ads Pass to play the next game right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $2.99 Remove Ads for Unlimited Play</a>',
+                playGateDescNeedAdBattle: 'You used all 3 free Online Battle games for today.<br>Watch 1 ad or buy the $2.99 Remove Ads Pass to enter Battle right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $2.99 Remove Ads for Unlimited Play</a>',
                 playGateResetLine: (h, m) => `⏰ Next free reset (UTC 00:00) in ${h}h ${m}m`,
-                playGateDescShop: (soloText, battleRem, max) => `Free plays left today<br>• Solo Mode: <b>${soloText}</b><br>• Online Battle: <b>${battleRem}/${max}</b><br><br>Buy the Remove Ads Pass ($4.99) for unlimited ad-free Solo & Battle play forever!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $4.99 Remove Ads Now</a>`,
+                playGateDescShop: (soloText, battleRem, max) => `Free plays left today<br>• Solo Mode: <b>${soloText}</b><br>• Online Battle: <b>${battleRem}/${max}</b><br><br>Buy the Remove Ads Pass ($2.99) for unlimited ad-free Solo & Battle play forever!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $2.99 Remove Ads Now</a>`,
                 soloUnlimitedLabel: 'Unlimited Free (Before #31)',
                 playGateAdBtn: '🎬 Watch 1 Ad to Play',
-                playGateNoAdsBtn: '👑 Remove Ads + Unlimited Play ($4.99)',
+                playGateNoAdsBtn: '👑 Remove Ads + Unlimited Play ($2.99)',
                 playGateRestoreBtn: 'Restore Purchases',
                 playGateCloseBtn: 'Close',
                 rewardAdMsg: 'Next game starts right after the ad...',
-                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Unlimited(<#31) · Battle:${battleRem}/${max}  |  🚫 Remove Ads $4.99`,
-                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Free Solo:${soloRem}/${max} · Battle:${battleRem}/${max}  |  🚫 Remove Ads $4.99`,
+                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Unlimited(<#31) · Battle:${battleRem}/${max}  |  🚫 Remove Ads $2.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Free Solo:${soloRem}/${max} · Battle:${battleRem}/${max}  |  🚫 Remove Ads $2.99`,
                 ticketPillVip: '👑 Ad-Free Pass Active (Unlimited Solo & Battle)',
-                confirmBuyNoAds: 'Purchase Remove Ads + Unlimited Play Pass ($4.99)?\n(Activated immediately in test/preview mode)',
-                alertNoAdsActivated: '👑 Remove Ads Pass ($4.99) activated! Enjoy unlimited play.',
+                confirmBuyNoAds: 'Purchase Remove Ads + Unlimited Play Pass ($2.99)?\n(Activated immediately in test/preview mode)',
+                alertNoAdsActivated: '👑 Remove Ads Pass ($2.99) activated! Enjoy unlimited play.',
                 alertRestoreNone: 'No previous purchase found to restore.',
                 loadingRanks: 'Loading...',
                 emptyRanks: 'No records yet',
@@ -4881,22 +4881,22 @@
                 rematchReady: '다시하기 참가 완료',
                 playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 파이어볼 콘텐츠 언락!',
-                fireballUnlockHtml: '🎉 축하합니다! 우리가 준비한 <b>31번 파이어볼 콘텐츠</b>를 언락하셨습니다!<br><br>이제부터 개인모드는 하루에 <b>무료 3번</b>의 게임을 할 수 있고, 그 이후에는 <b>광고를 1번</b> 봐야 게임을 할 수 있습니다.<br><br>그게 싫으면 <b>$4.99 광고 없애기</b>를 구매해 무제한으로 플레이하세요!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 바로 구매하기</a>',
-                playGateDescNeedAdSolo: '오늘의 개인모드 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $4.99 광고 없애기를 구매하면 바로 다음 게임을 할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 구매 (무제한 플레이)</a>',
-                playGateDescNeedAdBattle: '오늘의 온라인 대전 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $4.99 광고 없애기를 구매하면 바로 대전에 진입할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 구매 (무제한 플레이)</a>',
+                fireballUnlockHtml: '🎉 축하합니다! 우리가 준비한 <b>31번 파이어볼 콘텐츠</b>를 언락하셨습니다!<br><br>이제부터 개인모드는 하루에 <b>무료 3번</b>의 게임을 할 수 있고, 그 이후에는 <b>광고를 1번</b> 봐야 게임을 할 수 있습니다.<br><br>그게 싫으면 <b>$2.99 광고 없애기</b>를 구매해 무제한으로 플레이하세요!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 바로 구매하기</a>',
+                playGateDescNeedAdSolo: '오늘의 개인모드 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $2.99 광고 없애기를 구매하면 바로 다음 게임을 할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 구매 (무제한 플레이)</a>',
+                playGateDescNeedAdBattle: '오늘의 온라인 대전 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $2.99 광고 없애기를 구매하면 바로 대전에 진입할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 구매 (무제한 플레이)</a>',
                 playGateResetLine: (h, m) => `⏰ 다음 무료 리셋(UTC 00:00)까지 ${h}시간 ${m}분 남음`,
-                playGateDescShop: (soloText, battleRem, max) => `오늘 남은 무료 게임<br>• 개인모드: <b>${soloText}</b><br>• 온라인 대전: <b>${battleRem}/${max}판</b><br><br>$4.99 광고 없애기를 구매하면 개인·대전 모두 광고 없이 평생 무제한 플레이할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $4.99 광고 없애기 바로 구매하기</a>`,
+                playGateDescShop: (soloText, battleRem, max) => `오늘 남은 무료 게임<br>• 개인모드: <b>${soloText}</b><br>• 온라인 대전: <b>${battleRem}/${max}판</b><br><br>$2.99 광고 없애기를 구매하면 개인·대전 모두 광고 없이 평생 무제한 플레이할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 바로 구매하기</a>`,
                 soloUnlimitedLabel: '무제한 무료 (31번 파이어볼 돌파 전)',
                 playGateAdBtn: '🎬 광고 1회 보고 다음 판 하기',
-                playGateNoAdsBtn: '👑 광고 제거 + 무제한 플레이 ($4.99)',
+                playGateNoAdsBtn: '👑 광고 제거 + 무제한 플레이 ($2.99)',
                 playGateRestoreBtn: '구매 복원',
                 playGateCloseBtn: '닫기',
                 rewardAdMsg: '광고 시청 후 다음 게임이 시작됩니다...',
-                ticketPillPreUnlock: (battleRem, max) => `⚾ 개인:무제한(31번 전) · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $4.99`,
-                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 무료 개인:${soloRem}/${max}판 · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $4.99`,
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 개인:무제한(31번 전) · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $2.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 무료 개인:${soloRem}/${max}판 · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $2.99`,
                 ticketPillVip: '👑 광고 제거 패스 적용 중 (개인·대전 무제한)',
-                confirmBuyNoAds: '광고 제거 + 무제한 플레이 패스($4.99)를 구매하시겠습니까?\n(현재 테스트 모드에서는 즉시 적용됩니다)',
-                alertNoAdsActivated: '👑 광고 제거 패스($4.99)가 적용되었습니다! 무제한으로 플레이하세요.',
+                confirmBuyNoAds: '광고 제거 + 무제한 플레이 패스($2.99)를 구매하시겠습니까?\n(현재 테스트 모드에서는 즉시 적용됩니다)',
+                alertNoAdsActivated: '👑 광고 제거 패스($2.99)가 적용되었습니다! 무제한으로 플레이하세요.',
                 alertRestoreNone: '복원할 구매 내역이 없습니다.',
                 loadingRanks: '불러오는 중...',
                 emptyRanks: '아직 기록이 없습니다',
@@ -5021,22 +5021,22 @@
                 rematchReady: '已準備再戰',
                 playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 火球模式解鎖！',
-                fireballUnlockHtml: '🎉 恭喜！您已解鎖我們準備的 <b>第31球火球內容</b>！<br><br>從現在起單人模式每天可 <b>免費遊玩3次</b>，之後需觀看 <b>1次廣告</b> 才能繼續遊玩。<br><br>若不想看廣告，可購買 <b>$4.99 移除廣告</b> 永久無限暢玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $4.99 移除廣告</a>',
-                playGateDescNeedAdSolo: '今日單人模式免費次數(3次)已用完。<br>觀看1次廣告或購買 $4.99 移除廣告，即可立即繼續遊玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $4.99 移除廣告 (無限暢玩)</a>',
-                playGateDescNeedAdBattle: '今日線上對戰免費次數(3次)已用完。<br>觀看1次廣告或購買 $4.99 移除廣告，即可立即進入對戰！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $4.99 移除廣告 (無限暢玩)</a>',
+                fireballUnlockHtml: '🎉 恭喜！您已解鎖我們準備的 <b>第31球火球內容</b>！<br><br>從現在起單人模式每天可 <b>免費遊玩3次</b>，之後需觀看 <b>1次廣告</b> 才能繼續遊玩。<br><br>若不想看廣告，可購買 <b>$2.99 移除廣告</b> 永久無限暢玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $2.99 移除廣告</a>',
+                playGateDescNeedAdSolo: '今日單人模式免費次數(3次)已用完。<br>觀看1次廣告或購買 $2.99 移除廣告，即可立即繼續遊玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $2.99 移除廣告 (無限暢玩)</a>',
+                playGateDescNeedAdBattle: '今日線上對戰免費次數(3次)已用完。<br>觀看1次廣告或購買 $2.99 移除廣告，即可立即進入對戰！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $2.99 移除廣告 (無限暢玩)</a>',
                 playGateResetLine: (h, m) => `⏰ 距離下次免費重置(UTC 00:00)還有 ${h}小時 ${m}分`,
-                playGateDescShop: (soloText, battleRem, max) => `今日剩餘免費次數<br>• 單人模式：<b>${soloText}</b><br>• 線上對戰：<b>${battleRem}/${max}場</b><br><br>購買 $4.99 移除廣告即可終身免廣告無限暢玩所有模式！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $4.99 移除廣告</a>`,
+                playGateDescShop: (soloText, battleRem, max) => `今日剩餘免費次數<br>• 單人模式：<b>${soloText}</b><br>• 線上對戰：<b>${battleRem}/${max}場</b><br><br>購買 $2.99 移除廣告即可終身免廣告無限暢玩所有模式！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $2.99 移除廣告</a>`,
                 soloUnlimitedLabel: '免費無限次 (突破第31球火球前)',
                 playGateAdBtn: '🎬 觀看1次廣告繼續下一場',
-                playGateNoAdsBtn: '👑 移除廣告 + 無限暢玩 ($4.99)',
+                playGateNoAdsBtn: '👑 移除廣告 + 無限暢玩 ($2.99)',
                 playGateRestoreBtn: '恢復購買',
                 playGateCloseBtn: '關閉',
                 rewardAdMsg: '廣告播放結束後將立即開始下一局...',
-                ticketPillPreUnlock: (battleRem, max) => `⚾ 單人:無限(31球前) · 對戰:${battleRem}/${max}場  |  🚫 去廣告 $4.99`,
-                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 免費 單人:${soloRem}/${max} · 對戰:${battleRem}/${max}  |  🚫 去廣告 $4.99`,
+                ticketPillPreUnlock: (battleRem, max) => `⚾ 單人:無限(31球前) · 對戰:${battleRem}/${max}場  |  🚫 去廣告 $2.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 免費 單人:${soloRem}/${max} · 對戰:${battleRem}/${max}  |  🚫 去廣告 $2.99`,
                 ticketPillVip: '👑 已啟用去廣告通行證 (單人·對戰無限)',
-                confirmBuyNoAds: '確定要購買 移除廣告 + 無限暢玩通行證 ($4.99) 嗎？\n(測試模式中將立即套用)',
-                alertNoAdsActivated: '👑 已啟用去廣告通行證 ($4.99)！祝您無限暢玩！',
+                confirmBuyNoAds: '確定要購買 移除廣告 + 無限暢玩通行證 ($2.99) 嗎？\n(測試模式中將立即套用)',
+                alertNoAdsActivated: '👑 已啟用去廣告通行證 ($2.99)！祝您無限暢玩！',
                 alertRestoreNone: '找不到可恢復的購買紀錄。',
                 loadingRanks: '載入中...',
                 emptyRanks: '尚無紀錄',
@@ -5161,22 +5161,22 @@
                 rematchReady: 'Listo para revancha',
                 playGateTitle: 'SIGUIENTE JUEGO',
                 fireballUnlockTitle: '🔥 ¡Modo Bola de Fuego!',
-                fireballUnlockHtml: '🎉 ¡Felicidades! ¡Desbloqueaste el <b>desafío Bola #31</b>!<br><br>Ahora tienes <b>3 partidas gratis al día</b> en modo Solo; luego mira <b>1 anuncio</b> por partida.<br><br>¡O compra <b>Sin Anuncios ($4.99)</b> para jugar sin límites!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
-                playGateDescNeedAdSolo: 'Usaste tus 3 partidas gratis de Solo hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($4.99) para seguir!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
-                playGateDescNeedAdBattle: 'Usaste tus 3 batallas gratis de hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($4.99) para entrar!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>',
+                fireballUnlockHtml: '🎉 ¡Felicidades! ¡Desbloqueaste el <b>desafío Bola #31</b>!<br><br>Ahora tienes <b>3 partidas gratis al día</b> en modo Solo; luego mira <b>1 anuncio</b> por partida.<br><br>¡O compra <b>Sin Anuncios ($2.99)</b> para jugar sin límites!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
+                playGateDescNeedAdSolo: 'Usaste tus 3 partidas gratis de Solo hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($2.99) para seguir!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
+                playGateDescNeedAdBattle: 'Usaste tus 3 batallas gratis de hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($2.99) para entrar!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
                 playGateResetLine: (h, m) => `⏰ Reinicio diario (UTC 00:00) en ${h}h ${m}m`,
-                playGateDescShop: (soloText, battleRem, max) => `Partidas gratis hoy<br>• Solo: <b>${soloText}</b><br>• Batalla: <b>${battleRem}/${max}</b><br><br>¡Compra Sin Anuncios ($4.99) y juega ilimitado para siempre!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($4.99)</a>`,
+                playGateDescShop: (soloText, battleRem, max) => `Partidas gratis hoy<br>• Solo: <b>${soloText}</b><br>• Batalla: <b>${battleRem}/${max}</b><br><br>¡Compra Sin Anuncios ($2.99) y juega ilimitado para siempre!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>`,
                 soloUnlimitedLabel: 'Gratis ilimitado (antes de #31)',
                 playGateAdBtn: '🎬 Ver 1 anuncio y jugar',
-                playGateNoAdsBtn: '👑 Sin Anuncios + Ilimitado ($4.99)',
+                playGateNoAdsBtn: '👑 Sin Anuncios + Ilimitado ($2.99)',
                 playGateRestoreBtn: 'Restaurar compra',
                 playGateCloseBtn: 'Cerrar',
                 rewardAdMsg: 'La siguiente partida iniciará tras el anuncio...',
-                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Ilimitado(pre-#31) · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $4.99`,
-                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Gratis Solo:${soloRem}/${max} · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $4.99`,
+                ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Ilimitado(pre-#31) · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $2.99`,
+                ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Gratis Solo:${soloRem}/${max} · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $2.99`,
                 ticketPillVip: '👑 Pase Sin Anuncios Activo (Ilimitado)',
-                confirmBuyNoAds: '¿Comprar Pase Sin Anuncios + Ilimitado ($4.99)?\n(En modo prueba se activa al instante)',
-                alertNoAdsActivated: '👑 ¡Pase Sin Anuncios ($4.99) activado! Disfruta sin límites.',
+                confirmBuyNoAds: '¿Comprar Pase Sin Anuncios + Ilimitado ($2.99)?\n(En modo prueba se activa al instante)',
+                alertNoAdsActivated: '👑 ¡Pase Sin Anuncios ($2.99) activado! Disfruta sin límites.',
                 alertRestoreNone: 'No se encontraron compras previas.',
                 loadingRanks: 'Cargando...',
                 emptyRanks: 'Sin récords aún',
@@ -6282,7 +6282,7 @@
         });
 
         /**
-         * GAME LOGIC & PLAY TICKET / REMOVE ADS ($4.99) BM
+         * GAME LOGIC & PLAY TICKET / REMOVE ADS ($2.99) BM
          */
         let sessionPlayStartedAt = 0;
         let accumulatedPlayTimeMs = 0;
@@ -9315,7 +9315,7 @@
             return usersRef.child(cloudKey).once('value').then(async snap => {
                 const remoteProfile = snap.val();
                 if (remoteProfile && remoteProfile.name) {
-                    // 서버에 기존 계정 프로필이 존재함 -> 이름, 최고기록, $4.99 광고제거, 파이어볼 언락, 대전 전적 모두 복원!
+                    // 서버에 기존 계정 프로필이 존재함 -> 이름, 최고기록, $2.99 광고제거, 파이어볼 언락, 대전 전적 모두 복원!
                     setAccountKey(cloudKey, providerType, trimmedId);
                     applyCloudProfileDataToLocal(remoteProfile);
                     const restoredBest = Math.max(getPersonalBestScore(), Number(remoteProfile.bestScore) || 0);

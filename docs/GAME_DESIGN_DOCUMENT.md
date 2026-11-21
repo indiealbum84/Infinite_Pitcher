@@ -193,7 +193,7 @@
 
 1. **초반 무료 온보딩**: 나홀로 특훈 31번 파이어볼 돌파 전까지 무제한 무료.
 2. **일일 무료 티켓 (`DAILY_FREE_PLAY_LIMIT = 3`)**: Capacitor 네이티브 앱 환경에서 31번 이후 솔로/대전 각각 하루 3판 무료 제공 (웹 테스트 환경에서는 제한 없이 허용).
-3. **보상형 광고 (AdMob) & 인앱결제 (`$4.99` 광고 제거)**:
+3. **보상형 광고 (AdMob) & 인앱결제 (`$2.99` 광고 제거)**:
    * `@capacitor-community/admob` 브릿지(`window.showInfinitePitcherRewardedAd`) 연동 (현재 테스트 ID 적용, 출시 전 실 ID 교체).
 4. **고객 지원 & 개인정보처리방침**:
    * 설정 모달 내 **고객 지원(`📩`)** 섹션에서 Google Form(플레이어 정보 + 최근 런타임 에러 로그 자동 채움) 및 **개인정보처리방침(`privacy.html`, `support@project108.games`)** 연결.
