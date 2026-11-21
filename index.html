@@ -4348,7 +4348,7 @@
         }
 
         function playClickSfx(e) {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             if (e && e.target && typeof e.target.closest === 'function' && e.target.closest('button')) {
                 triggerHaptic('selection');
             }
@@ -5507,7 +5507,7 @@
         }
 
         function openSettingsModal() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             toggleSettingsLangDropdown(true);
             updateSettingsUI();
@@ -5517,7 +5517,7 @@
         }
 
         function closeSettingsModal() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             toggleSettingsLangDropdown(true);
             const modal = document.getElementById('settings-modal');
@@ -5526,7 +5526,7 @@
 
         function selectSettingsLanguage(lang) {
             if (!TEXTS[lang]) return;
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('selection');
             setLanguage(lang);
             toggleSettingsLangDropdown(true);
@@ -5540,7 +5540,7 @@
         function handleSfxSliderChange(val) {
             const num = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
             setSfxVolume(num / 100);
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
         }
 
         function setBgmVolume(vol) {
@@ -5679,7 +5679,7 @@
         }
 
         function handleSettingsAccountSync(provider) {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             if (typeof signInAndSyncAccount === 'function') {
                 signInAndSyncAccount(provider);
@@ -5711,7 +5711,7 @@
         });
 
         function openSupportForm() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             const name = typeof getSavedPlayerName === 'function' ? (getSavedPlayerName() || '-') : '-';
             const accKey = typeof getAccountKey === 'function' ? (getAccountKey() || '-') : '-';
@@ -5733,7 +5733,7 @@
         }
 
         async function resetMyLocalDataForTest() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             const lang = currentLang || 'ko';
             const confirmMap = {
@@ -5758,7 +5758,7 @@
         }
 
         function handleSettingsCloudSyncNow() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             if (typeof syncProfileToCloud === 'function') {
                 syncProfileToCloud().then(ok => {
@@ -5780,7 +5780,7 @@
         }
 
         function handleSettingsSwitchAccount() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             const isIOS = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent || '');
             if (typeof signInAndSyncAccount === 'function') {
@@ -5877,11 +5877,11 @@
         }
 
         function playCountdownSfx() {
-            playSfx('countdown', 1.0);
+            playSfx('countdown', 0.7);
         }
 
         function playStartSfx() {
-            playSfx('start', 1.0);
+            playSfx('start', 0.7);
         }
 
         /**
@@ -5894,7 +5894,7 @@
 
         // 테스트 모드는 코드만 보관하고 기본적으로 비활성화한다.
         // 나중에 복구할 때 이 값을 true로 바꾸면 메뉴와 실행 경로가 다시 열린다.
-        const TEST_MODE_ENABLED = true;
+        const TEST_MODE_ENABLED = false;
         let testMode = false;
         let testStartNum = 1;
 
@@ -6619,7 +6619,7 @@
                     countdownText.classList.add('countdown-animate');
 
                     // start.mp3 재생 → 끝나는 순간 bgm_game 시작
-                    playSfx('start', 1.0, () => { playGameBgm(); });
+                    playSfx('start', 0.7, () => { playGameBgm(); });
 
                     count--;
                     setTimeout(runTick, 1000);
@@ -6757,7 +6757,7 @@
                 // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
                 battleGameOver();
             } else {
-                playSfx('gameover', 1.0);
+                playSfx('gameover', 0.7);
                 document.getElementById('game-over-screen').classList.remove('hidden');
                 evaluateScore(score);
                 if (justUnlockedFireballThisRun && !isNoAdsPurchased()) {
@@ -7163,13 +7163,13 @@
             });
             setPitcherThrowing(true);
             if (isFireball) {
-                playSfx('throw_fireball', 1.0);
+                playSfx('throw_fireball', 0.7);
             } else if (isMirrorBall) {
-                playSfx('throw_mirrorball', 1.0);
+                playSfx('throw_mirrorball', 0.7);
             } else if (isStripeBall) {
-                playSfx('throw_mirrorball', 1.0);
+                playSfx('throw_mirrorball', 0.7);
             } else if (isFlashBall) {
-                playSfx('throw_mirrorball', 1.0);
+                playSfx('throw_mirrorball', 0.7);
             } else {
                 playThrow();
             }
@@ -7411,7 +7411,7 @@
 
         function openExitConfirmModal(fromLobby = false) {
             if (!fromLobby && gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
             if (!fromLobby && !battleMode && gameState === 'PLAYING') exitConfirmPaused = true;
             const msgMap = {
@@ -7445,7 +7445,7 @@
         }
 
         function confirmExitToLobby() {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('medium');
             exitConfirmPaused = false;
             const modal = document.getElementById('exit-confirm-modal');
@@ -7541,7 +7541,7 @@
                                 justUnlockedFireballThisRun = true;
                                 unlockSoloFireball();
                             }
-                            playSfx('throw_hit', 1.0);
+                            playSfx('throw_hit', 0.7);
                             triggerHaptic('heavy');
                             advanceExpected();
                             updateUI();
@@ -7551,7 +7551,7 @@
                             if (blk.num <= fbCycleEnd) {
                                 blk.active = false;
                                 destroyedNumbers.add(blk.num);
-                                playSfx('throw_hit', 0.5);
+                                playSfx('throw_hit', 0.7);
                                 triggerHaptic('light');
                             }
                         }
@@ -7595,7 +7595,7 @@
                             const wasFlashBall = b.isFlashBall;
                             advanceExpected();
                             balls.splice(i, 1);
-                            playSfx('throw_hit', 1.0);
+                            playSfx('throw_hit', 0.7);
                             triggerHaptic(wasMirrorBall || wasStripeBall || wasFlashBall ? 'heavy' : 'light');
                             updateUI();
                             checkRowClear();
@@ -9267,7 +9267,7 @@
         }
 
         function chooseInitialLanguage(lang) {
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('selection');
             setLanguage(lang);
             const langStep = document.getElementById('initial-lang-step');
@@ -10226,7 +10226,7 @@
             renderSkinGrid();
             const modal = document.getElementById('skin-modal');
             if (modal) modal.classList.remove('hidden');
-            playSfx('click', 0.8);
+            playSfx('click', 0.7);
             triggerHaptic('light');
         }
 
@@ -10234,7 +10234,7 @@
             const modal = document.getElementById('skin-modal');
             if (modal) modal.classList.add('hidden');
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
-            playSfx('click', 0.6);
+            playSfx('click', 0.7);
             triggerHaptic('light');
         }
 
@@ -10288,7 +10288,7 @@
 
         function equipSkin(id) {
             if (setEquippedSkin(id)) {
-                playSfx('hit', 1.0);
+                playSfx('hit', 0.7);
                 triggerHaptic('medium');
                 renderSkinGrid();
                 if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
@@ -11477,7 +11477,7 @@
                             waitingEl.innerText = typeof fn === 'function' ? fn(countdownSec) : `🎮 매칭 완료! ${countdownSec}초 후 시작...`;
                         }
                         if (countdownSec > 0) {
-                            playSfx('click', 0.6);
+                            playSfx('click', 0.7);
                             triggerHaptic('light');
                         }
                     };
@@ -12976,8 +12976,8 @@
             renderBattleResultRatingBadge(lastBattleResultRatingData || provisionalRatingPreview);
 
             if (firstResultRender) {
-                if (resultClass === 'win') playSfx('win', 1.0);
-                else playSfx('gameover', 1.0);
+                if (resultClass === 'win') playSfx('win', 0.7);
+                else playSfx('gameover', 0.7);
             }
 
             const titleEl = document.getElementById('battle-result-title');
