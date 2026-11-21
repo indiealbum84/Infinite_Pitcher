@@ -6128,7 +6128,7 @@
             if (!Number.isFinite(player.x) || player.x <= 0) {
                 player.x = width / 2;
             } else {
-                player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), player.x));
+                player.x = Math.max(scalePx(16), Math.min(width - scalePx(16), player.x));
             }
             player.y = height - scalePx(105);
 
@@ -6258,7 +6258,7 @@
             const rect = canvas.getBoundingClientRect();
             const canvasX = ((clientX - rect.left) / rect.width) * width;
             const laneX = width / 2 + (canvasX - width / 2) / dragFieldScale;
-            player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), laneX));
+            player.x = Math.max(scalePx(16), Math.min(width - scalePx(16), laneX));
         }
 
         // Mouse Events
@@ -7487,7 +7487,7 @@
                     const targetX = targetBlk.x + targetBlk.size / 2;
                     const diff = targetX - player.x;
                     player.x += diff * getTestMoveFactor(nextExpectedNumber); // 투구 속도에 맞춰 자동 이동
-                    player.x = Math.max(scalePx(8), Math.min(width - scalePx(8), player.x));
+                    player.x = Math.max(scalePx(16), Math.min(width - scalePx(16), player.x));
                 }
             }
 
