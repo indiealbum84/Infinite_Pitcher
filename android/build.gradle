@@ -22,6 +22,12 @@ allprojects {
         google()
         mavenCentral()
     }
+    buildDir = new File(System.getProperty("java.io.tmpdir"), "InfinitePitcherBuild/${rootProject.name}/${project.name}")
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.browser:browser:1.8.0'
+        }
+    }
 }
 
 task clean(type: Delete) {

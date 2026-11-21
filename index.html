@@ -6968,7 +6968,7 @@
                     const res = await SocialLogin.login({
                         provider: 'google',
                         options: {
-                            scopes: ['email', 'profile']
+                            filterByAuthorizedAccounts: false
                         }
                     });
                     const result = (res && res.result) || {};
