@@ -8249,6 +8249,7 @@
         const CACHE_KEY_COUNTRY_PREFIX = 'infinitePitcherRanksCacheV4_country_';
         const PLAYER_NAME_KEY = 'infinitePitcherPlayerName';
         const USER_COUNTRY_KEY = 'infinitePitcherUserCountry';
+        const USER_COUNTRY_LOCKED_KEY = 'infinitePitcherUserCountryLocked_v1';
         const ACCOUNT_KEY_STORAGE = 'infinitePitcherAccountKey_v1';
         const ACCOUNT_PROVIDER_STORAGE = 'infinitePitcherAccountProvider_v1';
         const ACCOUNT_RAW_ID_STORAGE = 'infinitePitcherAccountRawId_v1';
@@ -8458,12 +8459,36 @@
             }
         }
 
-        // 접속 국가 IP 기반 자동 감지 (실패/오프라인 시 타임존/로케일 국가 코드 유지)
+        function isUserCountryLocked() {
+            try {
+                const hasName = typeof getSavedPlayerName === 'function' && Boolean(getSavedPlayerName());
+                const locked = localStorage.getItem(USER_COUNTRY_LOCKED_KEY) === '1';
+                const saved = localStorage.getItem(USER_COUNTRY_KEY);
+                return hasName && (locked || Boolean(saved && /^[A-Z]{2}$/.test(saved)));
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function lockUserCountry(code) {
+            const cc = String(code || userCountry || 'KR').toUpperCase();
+            if (!/^[A-Z]{2}$/.test(cc)) return;
+            userCountry = cc;
+            try {
+                localStorage.setItem(USER_COUNTRY_KEY, cc);
+                localStorage.setItem(USER_COUNTRY_LOCKED_KEY, '1');
+            } catch (e) {}
+            updateCountryTabLabels();
+        }
+
+        // 접속 국가 IP 기반 자동 감지 (최초 가입 시 1회 고정, 이후 VPN/해외 이동 시에도 국적 유지)
         (function detectUserCountryByIp() {
             updateCountryTabLabels();
+            if (isUserCountryLocked()) return;
             fetch('https://api.country.is/', { cache: 'no-store' })
                 .then(r => r.ok ? r.json() : null)
                 .then(data => {
+                    if (isUserCountryLocked()) return;
                     const cc = String(data?.country || '').toUpperCase();
                     if (/^[A-Z]{2}$/.test(cc)) {
                         userCountry = cc;
@@ -8672,7 +8697,7 @@
                     dailyBattleMaxMatches: Math.max(Number(current.dailyBattleMaxMatches) || 0, payload.dailyBattleMaxMatches),
                     equippedSkin: payload.equippedSkin || current.equippedSkin || 'classic',
                     unlockedSkins: mergedUnlockedSkins,
-                    country: payload.country || current.country || 'KR',
+                    country: current.country || payload.country || 'KR',
                     updatedAt: Date.now()
                 };
             }).then(result => {
@@ -8691,6 +8716,9 @@
             if (!remoteData || typeof remoteData !== 'object') return;
             if (remoteData.name) {
                 setSavedPlayerName(remoteData.name);
+            }
+            if (remoteData.country && /^[A-Z]{2}$/.test(String(remoteData.country).toUpperCase())) {
+                lockUserCountry(remoteData.country);
             }
             if (Number(remoteData.bestScore) > 0) {
                 setPersonalBestScore(Number(remoteData.bestScore));
@@ -8982,6 +9010,7 @@
 
         function finalizePermanentNameRegistration(permanentName) {
             setSavedPlayerName(permanentName);
+            lockUserCountry(userCountry);
             syncProfileToCloud();
             hideInitialProfileScreen();
             document.getElementById('intro-screen').classList.remove('hidden');
