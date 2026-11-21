@@ -7680,7 +7680,7 @@
             return width / 2 + (x - width / 2) * fieldScale;
         }
 
-        function drawProjectedTile(block, logicalY, isGuide) {
+        function drawProjectedTile(block, logicalY, isGuide, waveFlash) {
             const inset = scalePx(2.5);
             const left = block.x + inset;
             const right = block.x + block.size - inset;
@@ -7703,8 +7703,18 @@
             ctx.closePath();
             ctx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
             ctx.fill();
-            ctx.strokeStyle = isGuide ? '#a6312c' : '#192738';
-            ctx.lineWidth = scalePx(isGuide ? 2.5 : 1.5) * bottomScale;
+            if (waveFlash && waveFlash.alpha > 0.01) {
+                ctx.save();
+                ctx.fillStyle = waveFlash.type === 'stripe'
+                    ? `rgba(72, 214, 255, ${(waveFlash.alpha * 0.62).toFixed(3)})`
+                    : `rgba(176, 128, 255, ${(waveFlash.alpha * 0.52).toFixed(3)})`;
+                ctx.fill();
+                ctx.restore();
+            }
+            ctx.strokeStyle = (waveFlash && waveFlash.alpha > 0.25)
+                ? (waveFlash.type === 'stripe' ? '#199bd8' : '#7a45d6')
+                : (isGuide ? '#a6312c' : '#192738');
+            ctx.lineWidth = scalePx(isGuide ? 2.5 : (waveFlash && waveFlash.alpha > 0.25 ? 2.2 : 1.5)) * bottomScale;
             ctx.stroke();
 
             ctx.beginPath();
@@ -7808,21 +7818,32 @@
                     ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
-                drawProjectedTile(blk, drawY, isGuide);
 
-                // 웨이브 중: 아래 행부터 위로 순차 적용
+                // 웨이브 중: 아래 행부터 위로 순차 적용 + 통과 줄 플래시
                 let mirrorWaveFlipped = false;
                 let stripeWaveApplied = false;
+                let waveFlash = null;
                 if (mirrorWaveStart > 0 || stripeWaveStart > 0) {
                     // 아래 행(drawY 큼)일수록 rowNorm 큰 값 → progress가 작아도 먼저 뒤집힘
                     const rowNorm = (drawY - waveMinY) / waveRange; // 0(위)~1(아래)
+                    const rowOrder = 1 - rowNorm; // 0(아래)~1(위)
+                    const flashBand = 0.16;
                     if (mirrorWaveStart > 0) {
-                        mirrorWaveFlipped = (1 - rowNorm) <= mirrorWaveProgress; // 아래부터 뒤집힘
+                        mirrorWaveFlipped = rowOrder <= mirrorWaveProgress; // 아래부터 뒤집힘
+                        const dist = mirrorWaveProgress - rowOrder;
+                        if (dist >= 0 && dist <= flashBand) {
+                            waveFlash = { type: 'mirror', alpha: 1 - (dist / flashBand) };
+                        }
                     }
                     if (stripeWaveStart > 0) {
-                        stripeWaveApplied = (1 - rowNorm) <= stripeWaveProgress; // 아래부터 스트라이프 적용
+                        stripeWaveApplied = rowOrder <= stripeWaveProgress; // 아래부터 스트라이프 적용
+                        const dist = stripeWaveProgress - rowOrder;
+                        if (dist >= 0 && dist <= flashBand) {
+                            waveFlash = { type: 'stripe', alpha: 1 - (dist / flashBand) };
+                        }
                     }
                 }
+                drawProjectedTile(blk, drawY, isGuide, waveFlash);
                 let isReversed = mirrorballActive || mirrorWaveFlipped;
                 if ((stripeballActive || stripeWaveApplied) && isStripeNormalRow(blk.num)) {
                     isReversed = false;
@@ -7840,7 +7861,8 @@
                     const centerX = projectFieldX(laneX, fieldScale);
                     const slant = (laneX - width / 2) * (getFieldScale(bottom) - getFieldScale(top)) / tileHeight;
                     const fontScale = Math.max(0.8, Math.min(1, tileHeight / blk.height));
-                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale);
+                    const wavePop = (waveFlash && waveFlash.alpha > 0.05) ? (1 + 0.16 * waveFlash.alpha) : 1;
+                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale * wavePop);
                     ctx.save();
                     ctx.transform(1, 0, slant * 0.5, 1, centerX, centerY);
                     ctx.textAlign = 'center';
