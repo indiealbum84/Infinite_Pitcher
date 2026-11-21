@@ -4529,8 +4529,24 @@
             }, interval);
         }
 
-        // ── 언어 시스템 (기본값: 일본어 'ja') ────────────────────────────
-        let currentLang = localStorage.getItem('infinite_pitcher_lang') || 'ja';
+        // ── 언어 시스템 (접속 기기/브라우저 언어 자동 감지, 미지원 언어는 영어 'en' 폴백) ──
+        function detectDefaultLang() {
+            const candidates = Array.isArray(navigator.languages) && navigator.languages.length
+                ? navigator.languages
+                : [navigator.language || navigator.userLanguage || 'en'];
+            for (const raw of candidates) {
+                const loc = String(raw || '').trim().toLowerCase();
+                if (!loc) continue;
+                if (loc.startsWith('ko')) return 'ko';
+                if (loc.startsWith('ja')) return 'ja';
+                if (loc.startsWith('zh-tw') || loc.startsWith('zh-hk') || loc.startsWith('zh-mo') || loc.includes('hant') || loc.startsWith('zh')) return 'zh-TW';
+                if (loc.startsWith('es')) return 'es';
+                if (loc.startsWith('en')) return 'en';
+            }
+            return 'en';
+        }
+        let currentLang = localStorage.getItem('infinite_pitcher_lang') || detectDefaultLang();
+        document.documentElement.lang = currentLang;
 
         const TEXTS = {
             ja: {
