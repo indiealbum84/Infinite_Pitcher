@@ -270,3 +270,19 @@
 | **`SETTINGS_TEST_RESET_ENABLED`** | **`true`** | **`false`** | **`false`** | 설정창 내 `🧪 [TEST] 내 데이터 초기화` 버튼 노출 및 동작 여부 (출시 직전 `false`로 변경) |
 | **`TEST_MODE_ENABLED`** | **`false`** | **`false`** | **`false`** | 메인화면 개발용 자동 플레이 테스트 버튼(`1/30/100/200/300`) 노출 여부 |
 | **`ADMOB_TESTING_MODE`** | **`true`** | **`false`** | **`false`** | 정식 출시 빌드 시 `false`로 변경 및 실제 AdMob 앱 ID / 리워드 광고 단위 ID로 교체 |
+
+---
+
+## 12. 사업자 및 스토어·인프라 통합 마스터 계정 가이드
+
+개인 계정과 사업자/게임 서비스 계정을 분리하고 모든 심사·정산·고객지원을 한 곳에서 관리하기 위해 **`project108games@gmail.com`**을 공식 마스터 계정으로 통일하여 운영한다.
+
+| 구분 | 항목 / 서비스 | 공식 계정 / 설정값 | 비고 |
+| :--- | :--- | :--- | :--- |
+| **사업자 등록** | 상호명 / 업종코드 | **`프로젝트 108`** (영문 증명: **`Project 108`**) / **`722001`** | 모바일 게임 소프트웨어 개발 및 공급업 (`간이과세자`) |
+| **마스터 구글 계정** | 세무 · 스토어 · 인프라 총괄 | **`project108games@gmail.com`** | 모든 구글 서비스(Play Console, AdMob, Firebase) 기본 로그인 계정 |
+| **대외 고객지원 메일** | 스토어 표기 & 개인정보처리방침 | **`support@project108.games`** | Cloudflare Email Routing을 통해 **`project108games@gmail.com`**으로 자동 포워딩 |
+| **Firebase / GCP** | 프로젝트 소유자 & 지원 이메일 | **`project108games@gmail.com`** | `infinite-pitcher` 프로젝트 Owner 권한 및 OAuth 지원 이메일 설정 완료 |
+| **Google Play Console** | 개발자 계정 생성 및 출시 | **`project108games@gmail.com`** | 개발자 계정 가입($25), 본인/사업자 인증, 인앱결제(`$2.99`) 및 출시 관리 |
+| **Google AdMob** | 광고 수익화 및 정산 계정 | **`project108games@gmail.com`** | AdMob 가입 후 실제 앱 ID 및 리워드 광고 단위 ID 발급·연동 |
+| **Apple Developer** | iOS 앱스토어 개발자 계정 | **`project108games@gmail.com`** | Apple ID 생성 및 Apple Developer Program 가입용 |
