@@ -3969,8 +3969,8 @@
             align-items: center;
             justify-content: space-between;
             width: 808px;
-            min-height: 126px;
-            padding: 18px 28px;
+            min-height: 96px;
+            padding: 10px 22px;
             background: linear-gradient(135deg, #0b1329 0%, #172554 50%, #0f172a 100%);
             color: #ffffff;
             border: 6px solid #000000;
@@ -3998,8 +3998,10 @@
             flex-direction: column;
             align-items: flex-start;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             text-align: left;
+            min-width: 0;
+            flex: 1;
         }
 
         .intro-profile-pill .ipp-name-row,
@@ -4007,16 +4009,20 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            min-width: 0;
+            width: 100%;
+            flex-wrap: nowrap;
         }
 
         .intro-profile-pill .ipp-player-name,
         .battle-my-profile-card .ipp-player-name {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 900;
             color: #ffffff;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-shadow: 3px 3px 0 #000000;
-            max-width: 430px;
+            min-width: 0;
+            flex: 0 1 auto;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -4093,11 +4099,13 @@
 
         .intro-profile-pill .ipp-best-tag,
         .battle-my-profile-card .ipp-best-tag {
-            font-size: 31px;
+            font-size: 27px;
             font-weight: 900;
             color: #f8fafc;
             line-height: 1.15;
             white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 4px;
         }
 
         .intro-profile-pill .ipp-right,
@@ -4107,15 +4115,17 @@
             align-items: flex-end;
             justify-content: center;
             padding-left: 14px;
+            flex-shrink: 0;
         }
 
         .intro-profile-pill .ipp-pt-title,
         .battle-my-profile-card .ipp-pt-title {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 900;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: #93c5fd;
             text-transform: uppercase;
+            white-space: nowrap;
             margin-bottom: 2px;
         }
 
@@ -4201,7 +4211,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=20261122_6">
+    <link rel="stylesheet" href="./game-art.css?v=20261122_7">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -9907,12 +9917,12 @@
                         <span class="ipp-user-icon" title="${collectionTitle}">${renderSkinBadge(skinId)}</span>
                         <span class="ipp-player-name">${safeName}</span>
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
+                        <span class="ipp-best-tag">${bestLabel}</span>
                     </div>
                     <div class="ipp-sub-row">
                         <span class="ipp-league-tag ${isMaster ? 'master' : 'standard'}">${leagueBadge} ${leagueName}</span>
                         <span class="ipp-stats-tag">${statsLabel}</span>
                         ${streakBadge}
-                        <span class="ipp-best-tag">${bestLabel}</span>
                     </div>
                 </div>
                 <div class="ipp-right">

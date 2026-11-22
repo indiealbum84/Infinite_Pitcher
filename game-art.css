@@ -231,9 +231,9 @@ html[lang="zh-TW"] {
 }
 #intro-screen .intro-profile-pill {
     width: 100%;
-    min-height: 105px;
+    min-height: 96px;
     margin: 0;
-    padding: 13px 21px;
+    padding: 10px 20px;
     border-radius: 13px;
     background: var(--showa-ink);
     border-color: var(--showa-paper);
