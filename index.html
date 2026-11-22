@@ -11560,51 +11560,14 @@
         }
 
         function showBattlePhaseBanner(phase) {
-            if (isCurrentBattlePlayerDone()) return;
+            // 8인 배틀 페이즈 문구 배너(PHASE 1~5 / TOP3 격돌 등)는 노출하지 않고 특수볼 이미지·설명만 표시
             const banner = document.getElementById('battle-phase-banner');
-            const subEl = document.getElementById('bpb-sub');
-            const titleEl = document.getElementById('bpb-title');
-            if (!banner || !subEl || !titleEl) return;
-            const info = getBattlePhaseTitle(phase);
-            subEl.innerText = info.sub;
-            titleEl.innerText = info.title;
-            banner.dataset.phase = phase;
-            const art = document.getElementById('battle-phase-banner-art');
-            art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
-            art.hidden = false;
-
-            banner.classList.remove('show');
-            void banner.offsetWidth;
-            banner.classList.add('show');
-            // Phase 2~5 특수볼 사운드는 각 트리거(파이어볼 루프 / triggerMirrorball / triggerStripeball / triggerFlashball)에서 1회만 재생
-            triggerHaptic(phase >= 4 ? 'heavy' : 'medium');
-
-            if (battlePhaseBannerTimer) clearTimeout(battlePhaseBannerTimer);
-            battlePhaseBannerTimer = setTimeout(() => {
-                banner.classList.remove('show');
-            }, 1800);
+            if (banner) banner.classList.remove('show');
         }
 
         function updateBattlePhasePill(phase) {
             const pill = document.getElementById('battle-phase-pill');
-            if (!pill) return;
-            if (!battleMode) {
-                pill.classList.add('hidden');
-                return;
-            }
-            pill.classList.remove('hidden');
-            const info = getBattlePhaseTitle(phase);
-            const summary = phase === 5 ? '1 vs 1' : info.title.split(' ')[0];
-            const label = document.getElementById('battle-phase-pill-label');
-            const text = `${info.sub} · ${summary}`;
-            if (label.textContent !== text) label.textContent = text;
-
-            if (pill.dataset.phase !== String(phase)) {
-                pill.dataset.phase = phase;
-                const art = document.getElementById('battle-phase-pill-art');
-                art.src = BATTLE_PHASE_ART[phase - 1] || BATTLE_PHASE_ART[0];
-                art.hidden = false;
-            }
+            if (pill) pill.classList.add('hidden');
         }
 
         function checkBattlePhaseTransition() {
