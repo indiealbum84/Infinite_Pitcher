@@ -95,6 +95,7 @@ html[lang="zh-TW"] {
 #intro-ranking-btn,
 #intro-screen .intro-settings-btn,
 #intro-screen .intro-skin-btn,
+#intro-screen .intro-help-btn,
 #intro-ticket-pill {
     border: 6px solid var(--showa-ink);
     border-radius: 12px;
@@ -196,11 +197,11 @@ html[lang="zh-TW"] {
     background: radial-gradient(circle at center, #3b3e43 2px, transparent 3px), currentColor;
 }
 #intro-screen .intro-main-actions .start-btn:enabled:active,
-#intro-screen :is(.intro-settings-btn, .intro-skin-btn, #intro-ranking-btn, #intro-ticket-pill):active {
+#intro-screen :is(.intro-settings-btn, .intro-skin-btn, .intro-help-btn, #intro-ranking-btn, #intro-ticket-pill):active {
     transform: translate(3px, 5px);
     box-shadow: 3px 4px 0 var(--showa-ink);
 }
-#intro-screen :is(.intro-settings-btn, .intro-skin-btn) {
+#intro-screen :is(.intro-settings-btn, .intro-skin-btn, .intro-help-btn) {
     width: 112px;
     height: 108px;
     background: var(--showa-paper);
@@ -211,6 +212,13 @@ html[lang="zh-TW"] {
     color: var(--showa-paper);
     background: var(--showa-green);
     font-size: 57px;
+}
+#intro-screen .intro-help-btn {
+    right: 302px;
+    color: var(--showa-ink);
+    background: var(--showa-gold);
+    font-size: 56px;
+    font-weight: 900;
 }
 #intro-ranking-btn {
     background: var(--showa-ink);
@@ -448,7 +456,7 @@ html[lang="zh-TW"] {
 }
 
 /* Dialogs, first-run registration, and play tickets. */
-:is(#settings-modal, #intro-ranking-modal, #exit-confirm-modal, #play-gate-screen, #reward-ad-overlay) {
+:is(#settings-modal, #special-guide-modal, #intro-ranking-modal, #exit-confirm-modal, #play-gate-screen, #reward-ad-overlay) {
     background: #192738ba;
 }
 #initial-profile-screen {
