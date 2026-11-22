@@ -972,14 +972,14 @@ html[lang="zh-TW"] {
 #game-dialog {
     box-sizing: border-box;
     position: fixed;
-    width: min(340px, calc(100vw - 32px));
+    width: min(340px, calc(100% - 36px));
     max-width: none;
     max-height: calc(100dvh - 40px);
     margin: auto;
     padding: 0;
     overflow: auto;
     border: 3px solid var(--showa-ink);
-    border-radius: 14px;
+    border-radius: 12px;
     background: var(--showa-paper);
     color: var(--showa-ink);
     box-shadow: 5px 7px 0 var(--showa-ink);
@@ -999,32 +999,32 @@ html[lang="zh-TW"] {
 .game-dialog-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
+    gap: 9px;
+    padding: 10px 15px;
     border-bottom: 3px solid var(--showa-ink);
     background: var(--showa-print) 0 0 / 6px 6px, var(--showa-gold);
 }
 
 .game-dialog-header img {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
 }
 
 .game-dialog-header h2 {
     margin: 0;
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 900;
     word-break: keep-all;
     overflow-wrap: break-word;
 }
 
 .game-dialog-body {
-    padding: 16px;
+    padding: 15px;
 }
 
 #game-dialog-message {
-    margin: 0 0 16px;
-    font-size: 15.5px;
+    margin: 0 0 15px;
+    font-size: 15px;
     font-weight: 700;
     line-height: 1.5;
     white-space: pre-wrap;
@@ -1036,9 +1036,9 @@ html[lang="zh-TW"] {
     width: 100%;
     min-height: 44px;
     margin-bottom: 15px;
-    padding: 8px 12px;
+    padding: 8px 10px;
     border: 2px solid var(--showa-ink);
-    border-radius: 8px;
+    border-radius: 7px;
     background: #fffae8;
     color: var(--showa-ink);
     font: inherit;
@@ -1049,24 +1049,23 @@ html[lang="zh-TW"] {
 
 .game-dialog-actions {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 9px;
 }
 
 .game-dialog-actions button {
-    min-width: 84px;
-    min-height: 42px;
-    padding: 8px 16px;
-    border: 2.5px solid var(--showa-ink);
-    border-radius: 9px;
+    min-width: 76px;
+    min-height: 44px;
+    padding: 6px 13px;
+    border: 2px solid var(--showa-ink);
+    border-radius: 7px;
     background: var(--showa-cream);
     color: var(--showa-ink);
     box-shadow: 2px 3px 0 var(--showa-ink);
     font: inherit;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 900;
-    white-space: nowrap;
     cursor: pointer;
 }
 
