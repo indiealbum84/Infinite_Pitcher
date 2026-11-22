@@ -9737,7 +9737,7 @@
                 const snap = await ranksRef.orderByChild('name').equalTo(candidateName).limitToFirst(5).once('value')
                     .catch(() => null);
                 const existingMap = snap?.val() || {};
-                if (Object.keys(existingMap).some(key => key !== accountKey)) {
+                if (Object.entries(existingMap).some(([key, val]) => key !== accountKey && val && typeof val.country === 'string' && /^[A-Z]{2}$/i.test(val.country.trim()))) {
                     await showGameNotice(textFor('alertNameAlreadyTaken')(candidateName));
                     input?.focus();
                     return;
@@ -10034,9 +10034,14 @@
             };
         }
 
+        function hasValidRankCountry(cc) {
+            return typeof cc === 'string' && /^[A-Z]{2}$/i.test(cc.trim());
+        }
+
         function deduplicateRanksByPlayerName(rows) {
             const bestByName = new Map();
             for (const row of rows) {
+                if (!row || !hasValidRankCountry(row.country)) continue;
                 const key = String(row.name || '').trim().toUpperCase();
                 if (!key) continue;
                 const existing = bestByName.get(key);
@@ -10071,7 +10076,7 @@
                     const val = snap.val() || {};
                     const rawRows = Object.values(val)
                         .map(normalizeRankEntry)
-                        .filter(r => r.score > 0 && r.score <= 3000);
+                        .filter(r => r.score > 0 && r.score <= 3000 && hasValidRankCountry(r.country));
                     // 이름당 최고 점수 1개만 유지 (중복 이름 절대 불가)
                     const rows = deduplicateRanksByPlayerName(rawRows);
                     setCachedRanks(rows, scope);
@@ -10089,7 +10094,10 @@
 
         function getCachedBattleRanks(scope = 'global') {
             const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_' + userCountry) : 'infinite_pitcher_battle_ranks_global';
-            try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
+            try {
+                const list = JSON.parse(localStorage.getItem(key) || '[]');
+                return Array.isArray(list) ? list.filter(r => r && hasValidRankCountry(r.country)) : [];
+            } catch (e) { return []; }
         }
 
         function setCachedBattleRanks(ranks, scope = 'global') {
@@ -10108,7 +10116,7 @@
                     const val = snap.val() || {};
                     const bestByName = new Map();
                     Object.values(val).forEach(entry => {
-                        if (!entry || !entry.name) return;
+                        if (!entry || !entry.name || !hasValidRankCountry(entry.country)) return;
                         const rating = Math.max(MIN_BATTLE_RATING, Math.round(Number(entry.rating) || 0));
                         const row = {
                             name: String(entry.name),
@@ -10331,7 +10339,7 @@
         }
 
         function renderRankRows(list, ranks, highlightName, highlightScore) {
-            const rows = Array.isArray(ranks) ? ranks.slice(0, LEADERBOARD_LIMIT) : [];
+            const rows = Array.isArray(ranks) ? ranks.filter(r => r && hasValidRankCountry(r.country)).slice(0, LEADERBOARD_LIMIT) : [];
 
             // 공동순위 계산: 앞 항목과 점수 같으면 같은 순위
             const displayRanks = [];
