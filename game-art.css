@@ -144,6 +144,8 @@ html[lang="zh-TW"] {
 }
 #w8-button-label {
     display: block;
+}
+#battle-quick-main-btn.locked #w8-button-label {
     transform: translateY(-15px);
 }
 #intro-screen #battle-quick-main-btn.locked {
