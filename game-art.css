@@ -334,8 +334,10 @@ html[lang="zh-TW"] {
     color: var(--showa-paper);
 }
 :is(#fireball-announce-img, #mirrorball-announce-img, #stripeball-announce-img, #flashball-announce-img) {
-    width: 84%;
-    height: 68%;
+    width: 68%;
+    max-width: 720px;
+    height: auto;
+    max-height: 29%;
 }
 
 .skin-art-badge {

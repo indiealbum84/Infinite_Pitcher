@@ -674,28 +674,31 @@
             width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            padding-top: 165px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #fireball-announce.show {
-            animation: fbAnnounce 1.2s ease-out forwards;
+            animation: fbAnnounce 2.4s ease-out forwards;
         }
 
         @keyframes fbAnnounce {
             0%   { opacity: 0; transform: scale(0.4); }
-            20%  { opacity: 1; transform: scale(1.15); }
-            50%  { opacity: 1; transform: scale(1.0); }
-            80%  { opacity: 1; transform: scale(1.0); }
-            100% { opacity: 0; transform: scale(0.9); }
+            14%  { opacity: 1; transform: scale(1.1); }
+            28%  { opacity: 1; transform: scale(1.0); }
+            82%  { opacity: 1; transform: scale(1.0); }
+            100% { opacity: 0; transform: scale(0.92); }
         }
 
         #fireball-announce-img {
-            width: 120%;
-            height: 120%;
+            width: 68%;
+            max-width: 720px;
+            height: auto;
+            max-height: 29%;
             object-fit: contain;
             transform: translateX(-3%);
         }
@@ -707,20 +710,23 @@
             width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            padding-top: 165px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #flashball-announce.show {
-            animation: fbAnnounce 1.8s ease-out forwards;
+            animation: fbAnnounce 2.4s ease-out forwards;
         }
 
         #flashball-announce-img {
-            width: 120%;
-            height: 120%;
+            width: 68%;
+            max-width: 720px;
+            height: auto;
+            max-height: 29%;
             object-fit: contain;
             transform: translateX(-3%);
         }
@@ -732,20 +738,23 @@
             width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            padding-top: 165px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #stripeball-announce.show {
-            animation: fbAnnounce 1.2s ease-out forwards;
+            animation: fbAnnounce 2.4s ease-out forwards;
         }
 
         #stripeball-announce-img {
-            width: 120%;
-            height: 120%;
+            width: 68%;
+            max-width: 720px;
+            height: auto;
+            max-height: 29%;
             object-fit: contain;
             transform: translateX(-1%);
         }
@@ -757,15 +766,16 @@
             width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
+            padding-top: 165px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #mirrorball-announce.show {
-            animation: fbAnnounce 1.2s ease-out forwards;
+            animation: fbAnnounce 2.4s ease-out forwards;
         }
 
         /* 세계 8인 배틀 유도 배지 및 게임오버 직행 버튼 */
@@ -826,17 +836,19 @@
         }
 
         #mirrorball-announce-img {
-            width: 120%;
-            height: 120%;
+            width: 68%;
+            max-width: 720px;
+            height: auto;
+            max-height: 29%;
             object-fit: contain;
             transform: translateX(0.5%);
         }
 
-        /* 인게임 특수볼 중앙 설명 배너 */
+        /* 인게임 특수볼 하단(잔디 영역) 설명 배너 */
         #special-ball-tip-banner {
             position: absolute;
             left: 50%;
-            top: 52%;
+            top: 63.5%;
             transform: translate(-50%, -50%) scale(0.92);
             width: 92%;
             max-width: 960px;
@@ -4193,7 +4205,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=20261122_2">
+    <link rel="stylesheet" href="./game-art.css?v=20261122_3">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
