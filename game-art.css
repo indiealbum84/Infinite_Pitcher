@@ -115,10 +115,10 @@ html[lang="zh-TW"] {
 #intro-screen .intro-main-actions .start-btn {
     width: 100%;
     min-width: 0;
-    min-height: 120px;
+    min-height: 128px;
     margin: 0;
-    padding: 13px 15px;
-    font-size: 35px;
+    padding: 14px 18px;
+    font-size: 46px;
     line-height: 1.15;
     letter-spacing: 0;
     white-space: normal;
@@ -130,9 +130,9 @@ html[lang="zh-TW"] {
     text-shadow: 3px 3px 0 #5d2221;
 }
 #intro-screen .intro-main-actions > .start-btn:first-child {
-    min-height: 137px;
-    font-size: 51px;
-    letter-spacing: .025em;
+    min-height: 150px;
+    font-size: 64px;
+    letter-spacing: .02em;
 }
 #intro-screen #battle-friend-btn {
     background-color: var(--showa-paper);
@@ -144,7 +144,7 @@ html[lang="zh-TW"] {
 }
 #w8-button-label {
     display: block;
-    transform: translateY(-12px);
+    transform: translateY(-15px);
 }
 #intro-screen #battle-quick-main-btn.locked {
     color: var(--showa-paper);
@@ -162,13 +162,13 @@ html[lang="zh-TW"] {
 }
 .w8-lock-overlay:not([hidden]) {
     position: absolute;
-    inset: auto 12px 11px;
+    inset: auto 12px 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     color: var(--showa-gold);
-    font-size: 25px;
+    font-size: 31px;
     line-height: 1.15;
 }
 .w8-padlock {
@@ -238,16 +238,18 @@ html[lang="zh-TW"] {
     box-shadow: 4px 5px 0 var(--showa-ink);
 }
 #intro-ticket-pill {
-    min-height: 96px;
+    width: 100%;
+    min-height: 104px;
     align-self: center;
     background: var(--showa-paper);
     color: var(--showa-ink);
-    padding: 8px 26px;
+    padding: 14px 24px;
     max-width: 100%;
     height: auto;
-    font-size: 27px;
+    font-size: 33px;
     line-height: 1.25;
     white-space: normal;
+    word-break: keep-all;
 }
 #intro-ticket-pill.is-vip { background: var(--showa-gold); }
 
