@@ -2646,6 +2646,22 @@
             box-shadow: 0 10px 0 #92400e, 0 10px 0 5px #000000 !important;
         }
 
+        #battle-quick-btn:disabled {
+            background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%) !important;
+            box-shadow: 0 8px 0 #334155, 0 8px 0 5px #000000 !important;
+            color: #e2e8f0 !important;
+            opacity: 0.78;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        #battle-screen #battle-cancel-btn:disabled,
+        #battle-screen #battle-lobby-back-btn:disabled {
+            opacity: 0.45;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
         .battle-quick-status {
             font-size: 30px;
             font-weight: 900;
@@ -4589,6 +4605,7 @@
                 battleDivider: '── または ──',
                 battleQuickBtn: '⚡ マッチング開始',
                 battleQuickCancelBtn: '⏹ マッチング中止',
+                battleQuickEnteringBtn: 'バトル突入中',
                 battleQuickIdle: '世界中のプレイヤーと8人マッチング (最大20秒で開始)',
                 battleWorldIdleWaiting: '[マッチング開始] を押すと対戦相手を探します (20秒以内に開始)。',
                 battleQuickSearching: sec => `🔍 プレイヤーマッチング中... (${sec}秒)`,
@@ -4729,6 +4746,7 @@
                 battleDivider: '── OR ──',
                 battleQuickBtn: '⚡ Start Matchmaking',
                 battleQuickCancelBtn: '⏹ Cancel Matchmaking',
+                battleQuickEnteringBtn: 'Entering Battle',
                 battleQuickIdle: '8-player global matchmaking (starts within 20s)',
                 battleWorldIdleWaiting: 'Press [Start Matchmaking] to find opponents (starts within 20s).',
                 battleQuickSearching: sec => `🔍 Matching players... (${sec}s)`,
@@ -4869,6 +4887,7 @@
                 battleDivider: '── 또는 ──',
                 battleQuickBtn: '⚡ 매칭 시작',
                 battleQuickCancelBtn: '⏹ 매칭 취소',
+                battleQuickEnteringBtn: '배틀 진입중',
                 battleQuickIdle: '전 세계 플레이어와 8인 매칭 (최대 20초 내 시작)',
                 battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 상대를 찾습니다. (20초 내 경기 시작)',
                 battleQuickSearching: sec => `🔍 플레이어 탐색 중... (${sec}초)`,
@@ -5009,6 +5028,7 @@
                 battleDivider: '── 或 ──',
                 battleQuickBtn: '⚡ 開始配對',
                 battleQuickCancelBtn: '⏹ 取消配對',
+                battleQuickEnteringBtn: '進入對戰中',
                 battleQuickIdle: '全球玩家 8 人即時配對 (20秒內開賽)',
                 battleWorldIdleWaiting: '點擊 [開始配對] 尋找對手 (最多20秒後開賽)。',
                 battleQuickSearching: sec => `🔍 正在配對玩家... (${sec}秒)`,
@@ -5149,6 +5169,7 @@
                 battleDivider: '── O ──',
                 battleQuickBtn: '⚡ Buscar Partida',
                 battleQuickCancelBtn: '⏹ Cancelar',
+                battleQuickEnteringBtn: 'Entrando a Batalla',
                 battleQuickIdle: 'Emparejamiento global 8P (inicia en 20s)',
                 battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para buscar rivales (inicia en máx. 20s).',
                 battleQuickSearching: sec => `🔍 Buscando jugadores... (${sec}s)`,
@@ -7426,6 +7447,7 @@
         }
 
         function openExitConfirmModal(fromLobby = false) {
+            if (fromLobby && battleLobbyCountdownActive) return;
             if (!fromLobby && gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             playSfx('click', 0.7);
             triggerHaptic('light');
@@ -10871,8 +10893,27 @@
         function updateQuickMatchUI(customStatusText = null) {
             const btn = document.getElementById('battle-quick-btn');
             const statusEl = document.getElementById('battle-quick-status');
+            const cancelBtn = document.getElementById('battle-cancel-btn');
+            const topBackBtn = document.getElementById('battle-lobby-back-btn');
+            if (cancelBtn) cancelBtn.disabled = Boolean(battleLobbyCountdownActive);
+            if (topBackBtn) topBackBtn.disabled = Boolean(battleLobbyCountdownActive);
             if (!btn || !statusEl) return;
 
+            if (battleLobbyCountdownActive) {
+                btn.classList.remove('matching');
+                btn.disabled = true;
+                btn.innerText = textFor('battleQuickEnteringBtn') || '배틀 진입중';
+                if (customStatusText) {
+                    statusEl.style.display = '';
+                    statusEl.innerText = customStatusText;
+                } else {
+                    statusEl.style.display = 'none';
+                    statusEl.innerText = '';
+                }
+                return;
+            }
+
+            btn.disabled = false;
             if (quickMatchActive) {
                 btn.classList.add('matching');
                 btn.innerText = textFor('battleQuickCancelBtn');
@@ -10904,6 +10945,7 @@
         }
 
         function toggleQuickMatch() {
+            if (battleLobbyCountdownActive) return;
             if (quickMatchActive) {
                 cancelQuickMatch();
             } else {
@@ -11432,6 +11474,7 @@
                 quickMatchTimer = null;
             }
             quickMatchActive = false;
+            battleLobbyCountdownActive = true;
             updateQuickMatchUI(textFor('battleQuickMatched'));
 
             [QUICK_MATCH_QUEUE_STANDARD, QUICK_MATCH_QUEUE_MASTER].forEach(qKey => {
@@ -11510,6 +11553,7 @@
                             clearInterval(battleLobbyCountdownTimer);
                             battleLobbyCountdownTimer = null;
                             battleLobbyCountdownActive = false;
+                            updateQuickMatchUI();
                             if (battleRoomId === roomId && battleRole === 'host') {
                                 startBattleRoom();
                             }
@@ -12389,6 +12433,8 @@
             if (!battleLobbyCountdownActive) {
                 if (battleViewMode === 'world8') {
                     if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
+                        battleLobbyCountdownActive = true;
+                        updateQuickMatchUI(textFor('battleQuickMatched'));
                         const fn = textFor('matchFoundCountdown');
                         const fallbackFoundMap = {
                             ko: '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...',
@@ -13072,6 +13118,7 @@
         }
 
         function cancelBattle() {
+            if (battleLobbyCountdownActive) return;
             stopQuickMatchTimer(false);
             leaveBattleRoom(true);
             battleMode = false;
