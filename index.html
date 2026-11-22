@@ -775,23 +775,23 @@
             transform: translateX(0.5%);
         }
 
-        /* 인게임 특수볼 하단 1줄 설명 배너 */
+        /* 인게임 특수볼 중앙 설명 배너 */
         #special-ball-tip-banner {
             position: absolute;
             left: 50%;
-            bottom: 390px;
-            transform: translateX(-50%) scale(0.92);
-            width: 90%;
-            max-width: 920px;
-            padding: 20px 28px;
-            background: rgba(25, 39, 56, 0.94);
+            top: 52%;
+            transform: translate(-50%, -50%) scale(0.92);
+            width: 92%;
+            max-width: 960px;
+            padding: 26px 34px;
+            background: rgba(25, 39, 56, 0.95);
             color: #fff8e6;
-            border: 5px solid #edbc57;
-            border-radius: 22px;
-            box-shadow: 0 8px 0 #192738, 0 12px 24px rgba(0, 0, 0, 0.45);
-            font-size: 33px;
+            border: 6px solid #edbc57;
+            border-radius: 28px;
+            box-shadow: 0 10px 0 #192738, 0 16px 32px rgba(0, 0, 0, 0.55);
+            font-size: 44px;
             font-weight: 900;
-            line-height: 1.3;
+            line-height: 1.32;
             text-align: center;
             word-break: keep-all;
             pointer-events: none;
@@ -804,10 +804,10 @@
         }
 
         @keyframes specialTipAnim {
-            0%   { opacity: 0; transform: translateX(-50%) translateY(16px) scale(0.92); }
-            14%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-            82%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.96); }
+            0%   { opacity: 0; transform: translate(-50%, -42%) scale(0.9); }
+            14%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            82%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
         }
 
         /* ── 다인 대전 ── */
