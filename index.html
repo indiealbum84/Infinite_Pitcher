@@ -4135,35 +4135,35 @@
                 <h3 id="special-guide-title" class="settings-modal-title">⚾ 특수볼 가이드</h3>
                 <div class="special-guide-list">
                     <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-fireball.webp" alt="파이어볼">
+                        <img class="special-guide-thumb" src="./images/showa-fireball.webp" alt="FIREBALL">
                         <div class="special-guide-info">
-                            <p class="special-guide-name">🔥 파이어볼 (FIREBALL)</p>
-                            <p class="special-guide-desc">현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.</p>
+                            <p class="special-guide-name" id="sg-name-fireball">🔥 파이어볼 (FIREBALL)</p>
+                            <p class="special-guide-desc" id="sg-desc-fireball">현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.</p>
                         </div>
                     </div>
                     <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-mirrorball.webp" alt="미러볼">
+                        <img class="special-guide-thumb" src="./images/showa-mirrorball.webp" alt="MIRRORBALL">
                         <div class="special-guide-info">
-                            <p class="special-guide-name">🪞 미러볼 (MIRRORBALL)</p>
-                            <p class="special-guide-desc">모든 숫자가 좌우 반전 됩니다.</p>
+                            <p class="special-guide-name" id="sg-name-mirrorball">🪞 미러볼 (MIRRORBALL)</p>
+                            <p class="special-guide-desc" id="sg-desc-mirrorball">모든 숫자가 좌우 반전 됩니다.</p>
                         </div>
                     </div>
                     <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-stripeball.webp" alt="스트라이프볼">
+                        <img class="special-guide-thumb" src="./images/showa-stripeball.webp" alt="STRIPEBALL">
                         <div class="special-guide-info">
-                            <p class="special-guide-name">🦓 스트라이프볼 (STRIPEBALL)</p>
-                            <p class="special-guide-desc">한 줄은 반전, 한줄은 정상 숫자로 돌아옵니다.</p>
+                            <p class="special-guide-name" id="sg-name-stripeball">🦓 스트라이프볼 (STRIPEBALL)</p>
+                            <p class="special-guide-desc" id="sg-desc-stripeball">한 줄은 반전, 한줄은 정상 숫자로 돌아옵니다.</p>
                         </div>
                     </div>
                     <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-flashball.webp" alt="플래시볼">
+                        <img class="special-guide-thumb" src="./images/showa-flashball.webp" alt="FLASHBALL">
                         <div class="special-guide-info">
-                            <p class="special-guide-name">⚡ 플래시볼 (FLASHBALL)</p>
-                            <p class="special-guide-desc">숫자가 깜빡이며 사라졌다 나타납니다.</p>
+                            <p class="special-guide-name" id="sg-name-flashball">⚡ 플래시볼 (FLASHBALL)</p>
+                            <p class="special-guide-desc" id="sg-desc-flashball">숫자가 깜빡이며 사라졌다 나타납니다.</p>
                         </div>
                     </div>
                 </div>
-                <button type="button" class="start-btn settings-confirm-btn" onclick="closeSpecialGuideModal()">확인</button>
+                <button type="button" class="start-btn settings-confirm-btn" id="special-guide-confirm-btn" onclick="closeSpecialGuideModal()">확인</button>
             </div>
         </div>
 
@@ -5620,6 +5620,7 @@
 
             setHtml('intro-bubble-quote', t.introBubble);
             updateIntroGuideUI();
+            if (typeof updateSpecialGuideModalLang === 'function') updateSpecialGuideModalLang();
             setTxt('start-btn-id', menuModeLabel(t.startBtn));
             setTxt('start-btn', t.startBtn);
             setTxt('w8-button-label', menuModeLabel(t.battleQuickMainBtn));
@@ -7395,18 +7396,111 @@
             return String(num);
         }
 
-        const SPECIAL_BALL_TIPS_KO = {
-            fireball:   '현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.',
-            mirrorball: '모든 숫자가 좌우 반전 됩니다.',
-            stripeball: '한 줄은 반전, 한줄은 정상 숫자로 돌아옵니다.',
-            flashball:  '숫자가 깜빡이며 사라졌다 나타납니다.'
+        const SPECIAL_BALL_I18N = {
+            ko: {
+                title: '⚾ 특수볼 가이드',
+                confirm: '확인',
+                names: {
+                    fireball:   '🔥 파이어볼 (FIREBALL)',
+                    mirrorball: '🪞 미러볼 (MIRRORBALL)',
+                    stripeball: '🦓 스트라이프볼 (STRIPEBALL)',
+                    flashball:  '⚡ 플래시볼 (FLASHBALL)'
+                },
+                tips: {
+                    fireball:   '현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.',
+                    mirrorball: '모든 숫자가 좌우 반전 됩니다.',
+                    stripeball: '한 줄은 반전, 한줄은 정상 숫자로 돌아옵니다.',
+                    flashball:  '숫자가 깜빡이며 사라졌다 나타납니다.'
+                }
+            },
+            en: {
+                title: '⚾ Special Ball Guide',
+                confirm: 'OK',
+                names: {
+                    fireball:   '🔥 FIREBALL',
+                    mirrorball: '🪞 MIRRORBALL',
+                    stripeball: '🦓 STRIPEBALL',
+                    flashball:  '⚡ FLASHBALL'
+                },
+                tips: {
+                    fireball:   'Hit the current number to destroy the entire column.',
+                    mirrorball: 'All numbers flip left-to-right.',
+                    stripeball: 'One row stays flipped, the next returns to normal.',
+                    flashball:  'Numbers blink on and off.'
+                }
+            },
+            ja: {
+                title: '⚾ 特殊ボールガイド',
+                confirm: '確認',
+                names: {
+                    fireball:   '🔥 ファイアボール (FIREBALL)',
+                    mirrorball: '🪞 ミラーボール (MIRRORBALL)',
+                    stripeball: '🦓 ストライプボール (STRIPEBALL)',
+                    flashball:  '⚡ フラッシュボール (FLASHBALL)'
+                },
+                tips: {
+                    fireball:   '現在の番号を当てると縦1列をすべて破壊します。',
+                    mirrorball: 'すべての数字が左右反転します。',
+                    stripeball: '1列は反転、もう1列は通常の数字に戻ります。',
+                    flashball:  '数字が点滅して消えたり現れたりします。'
+                }
+            },
+            'zh-TW': {
+                title: '⚾ 特殊球指南',
+                confirm: '確定',
+                names: {
+                    fireball:   '🔥 火球 (FIREBALL)',
+                    mirrorball: '🪞 鏡像球 (MIRRORBALL)',
+                    stripeball: '🦓 條紋球 (STRIPEBALL)',
+                    flashball:  '⚡ 閃光球 (FLASHBALL)'
+                },
+                tips: {
+                    fireball:   '擊中當前號碼即可摧毀整條直列。',
+                    mirrorball: '所有數字將左右反轉。',
+                    stripeball: '一排保持反轉，一排恢復為正常數字。',
+                    flashball:  '數字會閃爍並忽隱忽現。'
+                }
+            },
+            es: {
+                title: '⚾ Guía de Bolas Especiales',
+                confirm: 'Aceptar',
+                names: {
+                    fireball:   '🔥 BOLA DE FUEGO (FIREBALL)',
+                    mirrorball: '🪞 BOLA ESPEJO (MIRRORBALL)',
+                    stripeball: '🦓 BOLA RAYADA (STRIPEBALL)',
+                    flashball:  '⚡ BOLA FLASH (FLASHBALL)'
+                },
+                tips: {
+                    fireball:   'Acierta el número actual para destruir toda la columna.',
+                    mirrorball: 'Todos los números se invierten horizontalmente.',
+                    stripeball: 'Una fila queda invertida y la otra vuelve a la normalidad.',
+                    flashball:  'Los números parpadean apareciendo y desapareciendo.'
+                }
+            }
         };
         let specialBallTipTimer = null;
+
+        function updateSpecialGuideModalLang() {
+            const pack = SPECIAL_BALL_I18N[currentLang] || SPECIAL_BALL_I18N.ko;
+            const setEl = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+            setEl('special-guide-title', pack.title);
+            setEl('special-guide-confirm-btn', pack.confirm);
+            ['fireball', 'mirrorball', 'stripeball', 'flashball'].forEach(k => {
+                setEl('sg-name-' + k, pack.names[k]);
+                setEl('sg-desc-' + k, pack.tips[k]);
+            });
+            const helpBtn = document.getElementById('intro-help-btn');
+            if (helpBtn) {
+                helpBtn.title = pack.title;
+                helpBtn.setAttribute('aria-label', pack.title);
+            }
+        }
 
         function showSpecialBallTip(type) {
             const el = document.getElementById('special-ball-tip-banner');
             if (!el) return;
-            const msg = SPECIAL_BALL_TIPS_KO[type];
+            const pack = SPECIAL_BALL_I18N[currentLang] || SPECIAL_BALL_I18N.ko;
+            const msg = pack.tips && pack.tips[type];
             if (!msg) return;
             if (specialBallTipTimer) {
                 clearTimeout(specialBallTipTimer);
@@ -10494,6 +10588,7 @@
         }
 
         function openSpecialGuideModal() {
+            if (typeof updateSpecialGuideModalLang === 'function') updateSpecialGuideModalLang();
             const modal = document.getElementById('special-guide-modal');
             if (modal) modal.classList.remove('hidden');
             playSfx('click', 0.7);
@@ -10822,117 +10917,323 @@
             if (resultPill) resultPill.innerText = label;
         }
 
-        // ── 리그별 1,000명 봇 풀 & 인간적 하방 편향 실수 공식 (서버 비용 0원 클라이언트 생성) ──
-        const BOT_COUNTRY_FLAGS = ['🇯🇵', '🇰🇷', '🇺🇸', '🇹🇼', '🇨🇦', '🇦🇺', '🇬🇧', '🇩🇪', '🇫🇷', '🇲🇽', '🇧🇷', '🇪🇸', '🇮🇹', '🇻🇳', '🇵🇭', '🇳🇱', '🇦🇷', '🇨🇿', '🇸🇪', '🇫🇮'];
+        // ── 1,000명 고유 봇 생태계 (20개국 야구 인기 가중치 배분 + 일반 850명/마스터 150명 0G 0W 출발 + Firebase 실시간 전적 합산) ──
+        const ROOKIE_SHIELD_MATCHES = 10;
+        const SHARED_BOT_FIREBASE_ROOM_KEY = '_BOT'; // battles/$roomId (.write: $roomId.length === 4 규칙 즉시 호환)
+        const SHARED_BOT_LOCAL_STORAGE_KEY = 'infinitePitcherSharedBots_v1';
+        const RECENT_BOT_INDICES_KEY = 'infinitePitcherRecentBotIndices_v1';
 
-        // 약 80% 확률로 사용하는 글로벌 영문 게이머 닉네임 풀 (실명 배제, 실제 온라인 랭킹 스타일)
+        const BOT_COUNTRY_FLAGS = ['🇺🇸', '🇰🇷', '🇯🇵', '🇹🇼', '🇲🇽', '🇪🇸', '🇨🇦', '🇦🇷', '🇧🇷', '🇦🇺', '🇬🇧', '🇩🇪', '🇫🇷', '🇮🇹', '🇳🇱', '🇵🇭', '🇻🇳', '🇨🇿', '🇸🇪', '🇫🇮'];
+
+        // 20개국 1,000명 정원 배분표 (일반 850명 + 마스터 150명 = 1,000명)
+        const BOT_COUNTRY_QUOTAS = [
+            { code: 'US', flag: '🇺🇸', std: 161, mst: 29 }, // 190
+            { code: 'KR', flag: '🇰🇷', std: 153, mst: 27 }, // 180
+            { code: 'JP', flag: '🇯🇵', std: 153, mst: 27 }, // 180
+            { code: 'TW', flag: '🇹🇼', std: 85,  mst: 15 }, // 100
+            { code: 'MX', flag: '🇲🇽', std: 43,  mst: 7  }, // 50
+            { code: 'ES', flag: '🇪🇸', std: 34,  mst: 6  }, // 40
+            { code: 'CA', flag: '🇨🇦', std: 30,  mst: 5  }, // 35
+            { code: 'AR', flag: '🇦🇷', std: 25,  mst: 5  }, // 30
+            { code: 'BR', flag: '🇧🇷', std: 26,  mst: 4  }, // 30
+            { code: 'AU', flag: '🇦🇺', std: 21,  mst: 4  }, // 25
+            { code: 'GB', flag: '🇬🇧', std: 21,  mst: 4  }, // 25
+            { code: 'DE', flag: '🇩🇪', std: 17,  mst: 3  }, // 20
+            { code: 'FR', flag: '🇫🇷', std: 17,  mst: 3  }, // 20
+            { code: 'IT', flag: '🇮🇹', std: 13,  mst: 2  }, // 15
+            { code: 'NL', flag: '🇳🇱', std: 13,  mst: 2  }, // 15
+            { code: 'PH', flag: '🇵🇭', std: 13,  mst: 2  }, // 15
+            { code: 'VN', flag: '🇻🇳', std: 13,  mst: 2  }, // 15
+            { code: 'CZ', flag: '🇨🇿', std: 4,   mst: 1  }, // 5
+            { code: 'SE', flag: '🇸🇪', std: 4,   mst: 1  }, // 5
+            { code: 'FI', flag: '🇫🇮', std: 4,   mst: 1  }  // 5
+        ];
+
         const BOT_GLOBAL_NAMES = [
             'zKaze', 'xMav', 'Ace77', 'Sora_x', 'Ryder', 'Max99', 'Viper', 'NovaX', 'Blaze', 'Echo7',
             'Kobe8', 'Sho17', 'Clutch', 'Pixel8', 'ZeroX', 'Mint9', 'Boba7', 'Neo99', 'Spark', 'LunaX',
             'Ghost', 'Kuro7', 'Drift', 'Turbo', 'Nyx_x', 'Jinx9', 'Zed77', 'Rex_9', 'Pika9', 'Snipe',
             'Frost', 'Blitz', 'Cobra', 'Apex7', 'Mochi', 'Yuzu7', 'Tofu9', 'NoriX', 'Kiwi7', 'Mango',
             'Coco9', 'Oreo7', 'Latte', 'Waffl', 'Choco', 'Sushi', 'Ramen', 'Gyoza', 'Udon9', 'Shiba',
-            'Corgi', 'Panda', 'Doge9', 'Pepe7', 'Smurf', 'Carry', 'Ggez7', 'Noob9', 'Pro_x', 'TryHd'
+            'Corgi', 'Panda', 'Doge9', 'Pepe7', 'Smurf', 'Carry', 'Ggez7', 'Noob9', 'Pro_x', 'TryHd',
+            'Zephyr', 'Axel7', 'Kairo', 'Riven', 'Talon', 'Vex99', 'Lux77', 'EzraX', 'Milo9', 'Finn7',
+            'Otis8', 'ArloX', 'Zane7', 'Knox9', 'Jude7', 'RoryX', 'Remy9', 'Kai77', 'Leo99', 'Theo8',
+            'Hugo7', 'Enzo9', 'NicoX', 'Luca7', 'Mika9', 'Taro7', 'RikuX', 'Haru9', 'Ren77', 'Yuto8',
+            'Sota7', 'Kaito', 'Asahi', 'Daiki', 'Kenta', 'Kenji', 'Shin9', 'Ryu77', 'Taka8', 'Masa9',
+            'Bento', 'Matcha', 'Pocky', 'Dango', 'Katsu', 'Soba7', 'Temp9', 'Wasbi', 'Ponzu', 'Miso8',
+            'Bagel', 'Donut', 'Pretz', 'Nacho', 'Salsa', 'Guac9', 'Queso', 'Fajta', 'Burrt', 'Tamle',
+            'Crispy', 'Zesty', 'Spicy', 'Tangy', 'Chewy', 'Fluff', 'Cloud', 'Storm', 'Comet', 'Orbit',
+            'Pluto', 'Astro', 'Cosmo', 'Solar', 'Lunar', 'Quark', 'Pulse', 'Surge', 'Volt9', 'Watt7',
+            'Ohm77', 'Amp99', 'Laser', 'Radar', 'Sonar', 'Cyber', 'Synth', 'Retro', 'Arcde', 'Combo',
+            'Crit7', 'Buff9', 'Nerf8', 'Loot7', 'Quest', 'Guild', 'Arena', 'Champ', 'Titan', 'rogue',
+            'Bards', 'Mages', 'Paldn', 'Monk7', 'Druid', 'Scout', 'Aegis', 'Lance', 'Saber', 'Katna',
+            'Kunai', 'Shuri', 'Arrow', 'Bolts', 'Darts', 'Sling', 'curve', 'Slidr', 'Knuck', 'Fork9',
+            'Split', 'Sinkr', 'Cutt7', 'Fast9', 'Pitch', 'Mound', 'Plate', 'Glove', 'Homer', 'Grand',
+            'Bunt7', 'Steal', 'Slide', 'Catch', 'Swing', 'Bat99', 'Inng9', 'Derby', 'Relvr', 'Closr'
         ];
 
-        // 약 20% 확률로 사용하는 국가별 현지 게임 닉네임 풀 (실명 배제, 랭킹판 유저 감성)
         const BOT_LOCAL_NAMES_BY_FLAG = {
-            '🇰🇷': ['치킨각', '야식왕', '퇴근각', '월급루팡', '아아한잔', '민초단', '감튀왕', '불닭면', '냥펀치', '댕댕이', '고인물', '뉴비임', '손풀기', '즐겜러', '빡겜중', '새벽반'],
-            '🇯🇵': ['ねこぱん', 'もちもち', 'ねむい', 'ひまじん', 'からあげ', 'おにぎり', 'たこやき', 'ラーメン', 'ぎょうざ', 'ぽてと', 'まっちゃ', 'やきそば', 'エンジョ', 'ガチ勢', '深夜勢', '無課金'],
-            '🇹🇼': ['珍奶控', '滷肉飯', '雞排俠', '鹽酥雞', '夜貓族', '想睡覺', '社畜君', '歐皇', '非洲人', '菜鳥', '佛系玩', '邊緣人', '摸魚中', '肝帝'],
-            '🇲🇽': ['ElCrack', 'Taco99', 'Churro', 'Fuego7', 'GatoX', 'Lobo99', 'Rey77', 'Pibe7', 'MagoX', 'Chile9'],
-            '🇪🇸': ['ElCrack', 'Fuego7', 'GatoX', 'Lobo99', 'Rey77', 'MagoX', 'Tapa9', 'Churr', 'Loco7', 'Jefe9'],
-            '🇦🇷': ['Asado9', 'Mate77', 'Che_99', 'Pibe7', 'ElCrack', 'Fuego7', 'GatoX', 'Lobo9', 'Rey77', 'Campe'],
-            '🇧🇷': ['Mito99', 'Brabo7', 'Zika9', 'Coxinh', 'GatoBR', 'Lenda', 'Fera9', 'TopBR', 'Bala7', 'Pão9'],
-            '🇫🇷': ['Crois7', 'Bagu9', 'Chaton', 'Loup7', 'Roi77', 'Nuit9', 'Zorro', 'Tigrou', 'Eclair', 'Chef9'],
-            '🇩🇪': ['Brot99', 'Bier77', 'Fuchs7', 'Wolf9', 'Keks9', 'Blitz', 'Nacht', 'Wurst', 'Adler', 'Jäger'],
-            '🇮🇹': ['Pizza7', 'Pasta9', 'Lupo9', 'Gatto', 'Re_IT', 'Fuoco', 'Bomba', 'Caffe', 'Tigre', 'Veloce'],
-            '🇻🇳': ['Pho99', 'BanhMi', 'CaPhe', 'ProVN', 'Ga_VN', 'Meo99', 'Rong7', 'Top1VN', 'BunBo', 'TraDa'],
-            '🇵🇭': ['Lodi99', 'Adobo7', 'Sisig9', 'Pogi77', 'Astig', 'GgwpPH', 'Idol9', 'Taho9', 'Kuya7', 'Bida9'],
-            '🇺🇸': ['Taco9', 'Donut', 'Bacon7', 'Burger', 'Fries9', 'Soda7', 'Nugget', 'Eagle', 'Hawk9', 'Ranch'],
-            '🇨🇦': ['Maple7', 'Moose9', 'Poutin', 'Hockey', 'Ice99', 'Snow7', 'Beaver', 'Puck9', 'North'],
-            '🇬🇧': ['Tea77', 'Bruv9', 'Scone', 'Chippy', 'Corgi', 'Crown7', 'Fog99', 'Ldn_x', 'Mate9'],
-            '🇦🇺': ['Koala7', 'Roo99', 'Kiwis', 'Syd_x', 'Dingo7', 'Surf9', 'Aussie', 'Mate7', 'Croc9'],
-            '🇳🇱': ['Stroop', 'Kaas9', 'Tulip7', 'Bike9', 'Oranje', 'Wind9', 'Lion7', 'Canal'],
-            '🇨🇿': ['Pivo9', 'Knedl', 'Praga7', 'Lev99', 'Vlk_7', 'Hokej', 'Kral9', 'Sokol'],
-            '🇸🇪': ['Fika9', 'Ikea7', 'Viking', 'Kanel', 'Moose', 'Nord7', 'Krona', 'Snö9'],
+            '🇰🇷': [
+                '치킨각', '야식왕', '퇴근각', '월급루팡', '아아한잔', '민초단', '감튀왕', '불닭면', '냥펀치', '댕댕이',
+                '고인물', '뉴비임', '손풀기', '즐겜러', '빡겜중', '새벽반', '떡볶이', '삼겹살', '국밥충', '라멘집',
+                '붕어빵', '호떡왕', '타코야', '마라탕', '탕후루', '제로콜', '만두왕', '김밥천', '우동한', '짬뽕각',
+                '직구왕', '변화구', '마구왕', '투수왕', '삼진왕', '완투승', '세이브', '만루포', '끝내기', '에이스'
+            ],
+            '🇯🇵': [
+                'ねこぱん', 'もちもち', 'ねむい', 'ひまじん', 'からあげ', 'おにぎり', 'たこやき', 'ラーメン', 'ぎょうざ', 'ぽてと',
+                'まっちゃ', 'やきそば', 'エンジョ', 'ガチ勢', '深夜勢', '無課金', 'ぷりん', 'たいやき', 'だんご', 'すし好き',
+                'かつどん', 'うどん派', 'そば派', 'みそ汁', 'たくあん', 'うめぼし', 'せんべい', 'ラムネ', 'メロン', 'いちご',
+                'エース', '魔球王', '豪速球', '三振王', '完封勝', 'ストッパ', '満塁男', 'サヨナラ', '特訓中', '野球小僧'
+            ],
+            '🇹🇼': [
+                '珍奶控', '滷肉飯', '雞排俠', '鹽酥雞', '夜貓族', '想睡覺', '社畜君', '歐皇', '非洲人', '菜鳥',
+                '佛系玩', '邊緣人', '摸魚中', '肝帝', '小籠包', '牛肉麵', '臭豆腐', '蚵仔煎', '大腸包', '芒果冰',
+                '豆花控', '蛋餅王', '飯糰君', '鐵蛋俠', '直球王', '變化球', '三振王', '王牌投', '完投勝', '再見安'
+            ],
+            '🇲🇽': ['ElCrack', 'Taco99', 'Churro', 'Fuego7', 'GatoX', 'Lobo99', 'Rey77', 'Pibe7', 'MagoX', 'Chile9', 'Azteca', 'ElToro', 'Salsa7', 'Charro', 'Mariac'],
+            '🇪🇸': ['Torero', 'Fuego8', 'GatoES', 'LoboES', 'ReyES', 'MagoES', 'Tapa9', 'Churr', 'Loco7', 'Jefe9', 'Ibérico', 'Paella', 'Bravo7', 'Rayo99', 'Trueno'],
+            '🇦🇷': ['Asado9', 'Mate77', 'Che_99', 'PibeAR', 'Gaucho', 'Tango7', 'GatoAR', 'Lobo9', 'ReyAR', 'Campe', 'Albi9', 'Pampa7', 'Fernet', 'Chori9'],
+            '🇧🇷': ['Mito99', 'Brabo7', 'Zika9', 'Coxinh', 'GatoBR', 'Lenda', 'Fera9', 'TopBR', 'Bala7', 'Pão9', 'Samba7', 'Craque', 'Açaí99', 'Canari'],
+            '🇫🇷': ['Crois7', 'Bagu9', 'Chaton', 'Loup7', 'Roi77', 'Nuit9', 'Zorro', 'Tigrou', 'Eclair', 'Chef9', 'Bisou7', 'Soleil', 'Fromge', 'Crêpe9'],
+            '🇩🇪': ['Brot99', 'Bier77', 'Fuchs7', 'Wolf9', 'Keks9', 'BlitzD', 'Nacht', 'Wurst', 'Adler', 'Jäger', 'Brezel', 'Kaiser', 'Donner', 'Sturm9'],
+            '🇮🇹': ['Pizza7', 'Pasta9', 'Lupo9', 'Gatto', 'Re_IT', 'Fuoco', 'Bomba', 'Caffe', 'Tigre', 'Veloce', 'Gelato', 'Vespa9', 'Calcio', 'Azzurr'],
+            '🇻🇳': ['Pho99', 'BanhMi', 'CaPhe', 'ProVN', 'Ga_VN', 'Meo99', 'Rong7', 'Top1VN', 'BunBo', 'TraDa', 'Nem99', 'Sen77', 'BaoVN', 'Lua99'],
+            '🇵🇭': ['Lodi99', 'Adobo7', 'Sisig9', 'Pogi77', 'Astig', 'GgwpPH', 'Idol9', 'Taho9', 'Kuya7', 'Bida9', 'Halo99', 'Balut7', 'PinoyX', 'Tropa9'],
+            '🇺🇸': ['Taco9', 'DonutX', 'Bacon7', 'Burger', 'Fries9', 'Soda7', 'Nugget', 'Eagle', 'Hawk9', 'Ranch', 'Sluggr', 'AceUSA', 'Bronx9', 'Dodger', 'Fenway', 'Wrigly'],
+            '🇨🇦': ['Maple7', 'Moose9', 'Poutin', 'Hockey', 'Ice99', 'Snow7', 'Beaver', 'Puck9', 'North', 'Yukon7', 'Canuck', 'TimBit'],
+            '🇬🇧': ['Tea77', 'Bruv9', 'Scone', 'Chippy', 'CorgiX', 'Crown7', 'Fog99', 'Ldn_x', 'Mate9', 'Biscit', 'Crump7', 'Thames'],
+            '🇦🇺': ['Koala7', 'Roo99', 'Kiwis', 'Syd_x', 'Dingo7', 'Surf9', 'Aussie', 'Mate7', 'Croc9', 'Outbck', 'Boomer', 'Bondi9'],
+            '🇳🇱': ['Stroop', 'Kaas9', 'Tulip7', 'Bike9', 'Oranje', 'Wind9', 'Lion7', 'Canal', 'Polder', 'Klomp7'],
+            '🇨🇿': ['Pivo9', 'Knedl', 'Praga7', 'Lev99', 'Vlk_7', 'HokejC', 'Kral9', 'Sokol'],
+            '🇸🇪': ['Fika9', 'Ikea7', 'Viking', 'Kanel', 'MooseS', 'Nord7', 'Krona', 'Snö9'],
             '🇫🇮': ['Sauna9', 'Sisu7', 'Lumi9', 'Karhu', 'Poron', 'Salmi', 'Hki_x', 'Tuli7']
         };
 
-        function generateLeagueBot(index, league = 'standard') {
-            const isMaster = league === 'master';
-            const flag = BOT_COUNTRY_FLAGS[(index * 7 + (isMaster ? 11 : 3)) % BOT_COUNTRY_FLAGS.length];
-            const useLocal = ((index * 17 + (isMaster ? 3 : 1)) % 10) < 2; // 약 20% 현지어, 80% 글로벌 영어
-            const localPool = BOT_LOCAL_NAMES_BY_FLAG[flag] || BOT_GLOBAL_NAMES;
-            const pool = useLocal ? localPool : BOT_GLOBAL_NAMES;
-            const baseName = pool[(index * 19 + (isMaster ? 23 : 7)) % pool.length];
-            const numTag = (index >= 250 && !/\d$/.test(baseName) && baseName.length <= 5) ? String((index % 89) + 10) : '';
-            const displayName = clampBattleName(`${flag} ${baseName}${numTag}`);
-
-            // 1,000명의 봇을 3대 실력 티어(루키 30%, 중수 50%, 에이스 20%)로 분할
-            const tierMod = index % 10;
-            const tier = tierMod < 3 ? 0 : (tierMod < 8 ? 1 : 2);
-
-            let rating, matches, wins, streak, baseTarget;
-            if (isMaster) {
-                if (tier === 0) {
-                    // 도전자 마스터 (1,220 ~ 1,450 PT, 기본 기대치 48 ~ 68점)
-                    rating = 1220 + ((index * 23) % 230);
-                    matches = 80 + ((index * 17) % 70);
-                    wins = Math.round(matches * (0.35 + ((index % 10) / 100)));
-                    streak = (index % 7 === 0) ? 2 : 0;
-                    baseTarget = 48 + ((index * 11) % 21);
-                } else if (tier === 1) {
-                    // 베테랑 마스터 (1,460 ~ 1,850 PT, 기본 기대치 72 ~ 105점)
-                    rating = 1460 + ((index * 41) % 390);
-                    matches = 120 + ((index * 29) % 120);
-                    wins = Math.round(matches * (0.42 + ((index % 12) / 100)));
-                    streak = (index % 5 === 0) ? (2 + (index % 3)) : 0;
-                    baseTarget = 72 + ((index * 13) % 34);
-                } else {
-                    // 챔피언 마스터 (1,860 ~ 2,400 PT, 기본 기대치 108 ~ 155점)
-                    rating = 1860 + ((index * 53) % 540);
-                    matches = 200 + ((index * 37) % 180);
-                    wins = Math.round(matches * (0.50 + ((index % 15) / 100)));
-                    streak = (index % 3 === 0) ? (3 + (index % 5)) : 1;
-                    baseTarget = 108 + ((index * 17) % 48);
+        // 1,000명 고유 봇 로스터 생성 (0~849: 일반 리그 1,000 PT / 0G 0W, 850~999: 마스터 리그 1,220 PT / 0G 0W)
+        const BOT_ROSTER_1000 = (() => {
+            const stdEntries = [];
+            const mstEntries = [];
+            BOT_COUNTRY_QUOTAS.forEach(q => {
+                for (let i = 0; i < q.std; i++) stdEntries.push({ code: q.code, flag: q.flag, initLeague: 'standard', localIdx: i });
+                for (let i = 0; i < q.mst; i++) mstEntries.push({ code: q.code, flag: q.flag, initLeague: 'master', localIdx: i });
+            });
+            // 국가가 한쪽에 몰리지 않도록 결정론적으로 골고루 섞음
+            const interleave = (arr, step) => {
+                const res = [];
+                const visited = new Array(arr.length).fill(false);
+                let cur = 0;
+                for (let i = 0; i < arr.length; i++) {
+                    while (visited[cur]) cur = (cur + 1) % arr.length;
+                    res.push(arr[cur]);
+                    visited[cur] = true;
+                    cur = (cur + step) % arr.length;
                 }
-            } else {
-                if (tier === 0) {
-                    // 일반 리그 - 루키 봇 (600 ~ 750 PT, 기본 기대치 16 ~ 26점)
-                    rating = 600 + ((index * 17) % 150);
-                    matches = 8 + ((index * 7) % 25);
-                    wins = Math.max(1, Math.round(matches * (0.12 + ((index % 7) / 100))));
-                    streak = 0;
-                    baseTarget = 16 + ((index * 7) % 11);
-                } else if (tier === 1) {
-                    // 일반 리그 - 중수/베테랑 봇 (760 ~ 1,020 PT, 기본 기대치 32 ~ 52점)
-                    rating = 760 + ((index * 29) % 260);
-                    matches = 25 + ((index * 13) % 55);
-                    wins = Math.max(3, Math.round(matches * (0.22 + ((index % 9) / 100))));
-                    streak = (index % 8 === 0) ? 2 : 0;
-                    baseTarget = 32 + ((index * 11) % 21);
-                } else {
-                    // 일반 리그 - 에이스 라이벌 봇 (1,030 ~ 1,190 PT, 기본 기대치 58 ~ 85점)
-                    rating = 1030 + ((index * 31) % 160);
-                    matches = 50 + ((index * 19) % 90);
-                    wins = Math.max(15, Math.round(matches * (0.35 + ((index % 10) / 100))));
-                    streak = (index % 4 === 0) ? (2 + (index % 3)) : 1;
-                    baseTarget = 58 + ((index * 13) % 28);
+                return res;
+            };
+            const ordered = [...interleave(stdEntries, 37), ...interleave(mstEntries, 19)];
+            const usedBareNames = new Set();
+            const roster = [];
+
+            for (let idx = 0; idx < ordered.length; idx++) {
+                const item = ordered[idx];
+                const isMaster = item.initLeague === 'master';
+                const localPool = BOT_LOCAL_NAMES_BY_FLAG[item.flag] || BOT_GLOBAL_NAMES;
+                const useLocal = ((idx * 13 + item.localIdx * 7) % 10) < 2; // 약 20% 현지어, 80% 글로벌 영문
+                const primaryPool = useLocal ? localPool : BOT_GLOBAL_NAMES;
+
+                let bareName = '';
+                for (let attempt = 0; attempt < primaryPool.length + BOT_GLOBAL_NAMES.length; attempt++) {
+                    const pool = attempt < primaryPool.length ? primaryPool : BOT_GLOBAL_NAMES;
+                    const cand = pool[(idx * 19 + attempt * 11 + (isMaster ? 23 : 7)) % pool.length];
+                    if (!usedBareNames.has(cand.toUpperCase())) {
+                        bareName = cand;
+                        break;
+                    }
                 }
+                if (!bareName) {
+                    const base = primaryPool[(idx * 17) % primaryPool.length].replace(/\d+$/, '');
+                    let tag = (idx % 89) + 10;
+                    while (usedBareNames.has(`${base}${tag}`.toUpperCase())) {
+                        tag++;
+                    }
+                    bareName = `${base}${tag}`;
+                }
+                usedBareNames.add(bareName.toUpperCase());
+
+                const tierMod = idx % 10;
+                const tier = tierMod < 3 ? 0 : (tierMod < 8 ? 1 : 2); // 0: 루키 30%, 1: 중수 50%, 2: 에이스 20%
+                const initialRating = isMaster ? 1220 : 1000;
+                const baseTarget = isMaster
+                    ? (tier === 0 ? 52 : (tier === 1 ? 76 : 104))
+                    : (tier === 0 ? 15 : (tier === 1 ? 26 : 38));
+
+                roster.push({
+                    idIndex: idx,
+                    botKey: 'b' + idx,
+                    country: item.code,
+                    flag: item.flag,
+                    bareName,
+                    name: clampBattleName(`${item.flag} ${bareName}`),
+                    initLeague: item.initLeague,
+                    tier,
+                    initialRating,
+                    baseTarget
+                });
             }
+            return roster;
+        })();
 
+        let sharedBotStatsCache = (() => {
+            try {
+                const raw = localStorage.getItem(SHARED_BOT_LOCAL_STORAGE_KEY);
+                return raw ? (JSON.parse(raw) || {}) : {};
+            } catch (e) {
+                return {};
+            }
+        })();
+        let sharedBotPoolInitialized = false;
+
+        function persistSharedBotStatsLocal() {
+            try {
+                localStorage.setItem(SHARED_BOT_LOCAL_STORAGE_KEY, JSON.stringify(sharedBotStatsCache));
+            } catch (e) {}
+        }
+
+        function initSharedBotPoolFromFirebase() {
+            if (sharedBotPoolInitialized || typeof battleRef === 'undefined' || !battleRef) return;
+            sharedBotPoolInitialized = true;
+            try {
+                const botsNode = battleRef.child(SHARED_BOT_FIREBASE_ROOM_KEY);
+                botsNode.on('value', snap => {
+                    const val = snap && snap.val();
+                    if (val && typeof val === 'object') {
+                        sharedBotStatsCache = { ...sharedBotStatsCache, ...val };
+                        persistSharedBotStatsLocal();
+                    } else if (val === null) {
+                        // 최초 1회: Firebase에 1,000명 초기 상태(일반 850명 1,000 PT / 마스터 150명 1,220 PT, 0G 0W) 시드 생성
+                        const seedPayload = {};
+                        BOT_ROSTER_1000.forEach(b => {
+                            seedPayload[b.botKey] = { r: b.initialRating, m: 0, w: 0, s: 0 };
+                        });
+                        sharedBotStatsCache = seedPayload;
+                        persistSharedBotStatsLocal();
+                        botsNode.set(seedPayload).catch(() => {});
+                    }
+                });
+            } catch (e) {
+                console.warn('[Bots] Firebase sync init skipped:', e);
+            }
+        }
+        setTimeout(initSharedBotPoolFromFirebase, 600);
+
+        function getBotLiveRecord(index) {
+            const safeIdx = ((index % 1000) + 1000) % 1000;
+            const meta = BOT_ROSTER_1000[safeIdx];
+            const stat = sharedBotStatsCache[meta.botKey];
+            const rating = (stat && typeof stat.r === 'number') ? Math.max(600, Math.min(10000, Math.round(stat.r))) : meta.initialRating;
+            const matches = (stat && typeof stat.m === 'number') ? Math.max(0, Math.round(stat.m)) : 0;
+            const wins = (stat && typeof stat.w === 'number') ? Math.max(0, Math.round(stat.w)) : 0;
+            const streak = (stat && typeof stat.s === 'number') ? Math.max(0, Math.round(stat.s)) : 0;
+            const currentLeague = rating > MASTER_LEAGUE_THRESHOLD ? 'master' : 'standard';
             return {
-                idIndex: index,
-                tier,
-                league,
-                name: displayName,
+                idIndex: safeIdx,
+                botKey: meta.botKey,
+                country: meta.country,
+                flag: meta.flag,
+                bareName: meta.bareName,
+                name: meta.name,
+                tier: meta.tier,
+                league: currentLeague,
                 rating,
                 matches,
                 wins,
                 streak,
-                baseTarget
+                baseTarget: meta.baseTarget
             };
+        }
+
+        function generateLeagueBot(index, league = 'standard') {
+            return getBotLiveRecord(index);
+        }
+
+        function getRecentMatchedBotIndices() {
+            try {
+                const raw = localStorage.getItem(RECENT_BOT_INDICES_KEY);
+                const arr = raw ? JSON.parse(raw) : [];
+                return Array.isArray(arr) ? arr : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function rememberMatchedBotIndices(indices) {
+            try {
+                const prev = getRecentMatchedBotIndices();
+                const merged = [...prev, ...indices].slice(-56); // 최근 8판(56명) 기억하여 중복 출현 방지
+                localStorage.setItem(RECENT_BOT_INDICES_KEY, JSON.stringify(merged));
+            } catch (e) {}
+        }
+
+        function recordEndedMatchBotStats(room) {
+            if (!room || room.status !== 'ended' || !room.players) return;
+            const roomId = battleRoomId;
+            const players = Object.values(room.players);
+            const botsInRoom = players.filter(p => p && p.isBot && typeof p.botIndex === 'number');
+            if (!botsInRoom.length) return;
+
+            // 방마다 중복 반영 방지를 위해 로컬 처리 키 체크
+            const processedKey = 'infinitePitcherBotProcessed_' + (roomId || '') + '_' + (room.endedAt || '');
+            try {
+                if (sessionStorage.getItem(processedKey)) return;
+                sessionStorage.setItem(processedKey, '1');
+            } catch (e) {}
+
+            // 호스트(또는 방에 남은 로컬 클라이언트)가 봇 전적/레이팅을 합산
+            const botUpdates = {};
+            const now = Date.now();
+            botsInRoom.forEach(botPlayer => {
+                const idx = Number(botPlayer.botIndex);
+                if (isNaN(idx) || idx < 0 || idx >= 1000) return;
+                const cur = getBotLiveRecord(idx);
+                const rank = Number(botPlayer.rank || 8);
+                const rawDelta = BATTLE_RANK_DELTAS[rank] !== undefined ? BATTLE_RANK_DELTAS[rank] : 0;
+                const nextMatches = cur.matches + 1;
+                // 봇도 첫 10판은 감점 면제 (오르는 점수만 반영)
+                const effectiveDelta = (nextMatches <= ROOKIE_SHIELD_MATCHES && rawDelta < 0) ? 0 : rawDelta;
+                const nextRating = Math.max(MIN_BATTLE_RATING, Math.min(10000, cur.rating + effectiveDelta));
+                const nextWins = cur.wins + (rank === 1 ? 1 : 0);
+                const nextStreak = (rank === 1) ? (cur.streak + 1) : 0;
+
+                const entry = { r: nextRating, m: nextMatches, w: nextWins, s: nextStreak };
+                sharedBotStatsCache[cur.botKey] = entry;
+                botUpdates[cur.botKey] = entry;
+
+                // 실전을 치른 봇은 8인 세계/국가별 랭킹 보드에도 실시간 반영
+                if (battleRole === 'host' && typeof db !== 'undefined' && db) {
+                    const rankEntryKey = 'bot_' + idx;
+                    const rankPayload = {
+                        name: cur.bareName.slice(0, 12),
+                        rating: nextRating,
+                        matches: nextMatches,
+                        wins: nextWins,
+                        streak: nextStreak,
+                        skin: botPlayer.skin || 'classic',
+                        country: cur.country,
+                        updatedAt: now
+                    };
+                    try {
+                        db.ref('battle_ranks/' + rankEntryKey).set(rankPayload).catch(() => {});
+                        db.ref('battle_ranks_country/' + cur.country + '/' + rankEntryKey).set(rankPayload).catch(() => {});
+                    } catch (e) {}
+                }
+            });
+
+            persistSharedBotStatsLocal();
+            if (battleRole === 'host' && typeof battleRef !== 'undefined' && battleRef && Object.keys(botUpdates).length > 0) {
+                try {
+                    battleRef.child(SHARED_BOT_FIREBASE_ROOM_KEY).update(botUpdates).catch(() => {});
+                } catch (e) {}
+            }
         }
 
         function genCode() {
@@ -11524,18 +11825,32 @@
         function pickRandomBattleBots(count, existingNames = [], league = null) {
             const activeLeague = league || (typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle() ? 'master' : getPlayerLeague());
             const used = new Set(existingNames.map(n => String(n || '').toUpperCase()));
+            const recentSet = new Set(getRecentMatchedBotIndices());
             const picked = [];
 
-            // 1,000명의 봇 풀을 3대 실력 티어(루키 30%, 중수 50%, 에이스 20%)로 분류
             const rookieIndices = [];
             const solidIndices = [];
             const aceIndices = [];
 
+            // 해당 리그에 속하며 최근 8판(56명) 이내에 만나지 않은 봇 우선 분류
             for (let i = 0; i < 1000; i++) {
-                const mod = i % 10;
-                if (mod < 3) rookieIndices.push(i);
-                else if (mod < 8) solidIndices.push(i);
+                if (recentSet.has(i)) continue;
+                const live = getBotLiveRecord(i);
+                if (live.league !== activeLeague) continue;
+                if (live.tier === 0) rookieIndices.push(i);
+                else if (live.tier === 1) solidIndices.push(i);
                 else aceIndices.push(i);
+            }
+            // 만약 해당 리그 가용 인원이 부족하면 최근 제외 필터만 해제하여 보충
+            if (rookieIndices.length + solidIndices.length + aceIndices.length < count * 2) {
+                for (let i = 0; i < 1000; i++) {
+                    if (!recentSet.has(i)) continue;
+                    const live = getBotLiveRecord(i);
+                    if (live.league !== activeLeague) continue;
+                    if (live.tier === 0) rookieIndices.push(i);
+                    else if (live.tier === 1) solidIndices.push(i);
+                    else aceIndices.push(i);
+                }
             }
 
             const shuffleArray = (arr) => {
@@ -11550,15 +11865,25 @@
             shuffleArray(solidIndices);
             shuffleArray(aceIndices);
 
-            // 매 판마다 방 난이도 성향 3단계 랜덤화:
-            // 1. 쉬운 판 (약 25%): 1위 봇이 25~38점대 탈락 (유저가 28~36점 정도로도 기분 좋게 1위 달성!)
-            // 2. 보통 판 (약 50%): 1위 봇이 42~60점대 탈락 (31번 스트라이프볼 전후 표준 배틀)
-            // 3. 어려운 판 (약 25%): 에이스가 65~88점까지 생존 (보스급 진검승부)
+            const myStats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
+            const myMatches = Number(myStats.matches || 0);
+            const myRating = typeof getBattleRating === 'function' ? getBattleRating() : DEFAULT_BATTLE_RATING;
+            const isNewcomerProtected = (activeLeague !== 'master' && myMatches <= 3);
+            const isBeginnerShieldTier = (activeLeague !== 'master' && (myMatches <= ROOKIE_SHIELD_MATCHES || myRating <= 1040));
+
             const lobbyRoll = Math.random();
-            const lobbyDifficulty = lobbyRoll < 0.25 ? 'easy' : (lobbyRoll < 0.75 ? 'normal' : 'hard');
+            const lobbyDifficulty = isNewcomerProtected
+                ? 'easy'
+                : (isBeginnerShieldTier
+                    ? (lobbyRoll < 0.55 ? 'easy' : 'normal')
+                    : (lobbyRoll < 0.30 ? 'easy' : (lobbyRoll < 0.80 ? 'normal' : 'hard')));
 
             let neededAce, neededRookie, neededSolid;
-            if (lobbyDifficulty === 'easy') {
+            if (isNewcomerProtected) {
+                neededAce = 0;
+                neededRookie = Math.min(count, Math.max(4, Math.round(count * 0.65)));
+                neededSolid = count - neededRookie;
+            } else if (lobbyDifficulty === 'easy') {
                 neededAce = Math.random() < 0.2 ? 1 : 0;
                 neededRookie = Math.min(count - neededAce, Math.max(2, Math.round(count * 0.45)));
                 neededSolid = count - neededAce - neededRookie;
@@ -11576,59 +11901,75 @@
             const selectedIndices = [];
             let rIdx = 0, sIdx = 0, aIdx = 0;
 
-            // 1. 에이스 봇 선발
             while (selectedIndices.length < neededAce && aIdx < aceIndices.length) {
                 selectedIndices.push(aceIndices[aIdx++]);
             }
-            // 2. 중수 봇 선발
             const solidTarget = selectedIndices.length + neededSolid;
             while (selectedIndices.length < solidTarget && sIdx < solidIndices.length) {
                 selectedIndices.push(solidIndices[sIdx++]);
             }
-            // 3. 루키 봇 선발
             while (selectedIndices.length < count && rIdx < rookieIndices.length) {
                 selectedIndices.push(rookieIndices[rIdx++]);
             }
-            // 남은 자리가 있으면 중수 풀에서 보충
             while (selectedIndices.length < count && sIdx < solidIndices.length) {
                 selectedIndices.push(solidIndices[sIdx++]);
             }
+            while (selectedIndices.length < count && aIdx < aceIndices.length) {
+                selectedIndices.push(aceIndices[aIdx++]);
+            }
 
-            // 대기실 로스터에 골고루 섞이도록 셔플
             shuffleArray(selectedIndices);
 
-            const createBotInstance = (botTemplate, botIndex) => {
+            const createBotInstance = (botTemplate, botSlotIndex) => {
                 const isMaster = (activeLeague === 'master');
                 const tier = botTemplate.tier; // 0: 루키, 1: 중수, 2: 에이스
 
-                // 각 봇의 당일 컨디션 및 이변(Upset) 난수:
-                // 15% 확률로 에이스의 초반 헛스윙 실수 / 15% 확률로 중수의 인생 경기
                 const conditionRoll = Math.random();
-                const isUpset = (conditionRoll < 0.16);
-                const isHotHand = (conditionRoll > 0.84);
+                const isUpset = (conditionRoll < 0.18);
+                const isHotHand = (conditionRoll > 0.85);
 
                 let targetScore;
                 if (isMaster) {
                     if (tier === 0) {
-                        const base = (lobbyDifficulty === 'easy' ? 44 : (lobbyDifficulty === 'hard' ? 62 : 52));
-                        targetScore = Math.max(32, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 15 : (isUpset ? -12 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 40 : (lobbyDifficulty === 'hard' ? 56 : 48));
+                        targetScore = Math.max(28, Math.round(base + (Math.random() * 14 - 7) + (isHotHand ? 12 : (isUpset ? -12 : 0))));
                     } else if (tier === 1) {
-                        const base = (lobbyDifficulty === 'easy' ? 60 : (lobbyDifficulty === 'hard' ? 95 : 78));
-                        targetScore = Math.max(48, Math.round(base + (Math.random() * 22 - 11) + (isHotHand ? 20 : (isUpset ? -18 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 54 : (lobbyDifficulty === 'hard' ? 84 : 68));
+                        targetScore = Math.max(42, Math.round(base + (Math.random() * 20 - 10) + (isHotHand ? 16 : (isUpset ? -16 : 0))));
                     } else {
-                        const base = (lobbyDifficulty === 'easy' ? 68 : (lobbyDifficulty === 'hard' ? 125 : 98));
-                        targetScore = Math.max(55, Math.round(base + (Math.random() * 28 - 14) + (isHotHand ? 25 : (isUpset ? -25 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 62 : (lobbyDifficulty === 'hard' ? 112 : 86));
+                        targetScore = Math.max(50, Math.round(base + (Math.random() * 24 - 12) + (isHotHand ? 20 : (isUpset ? -22 : 0))));
+                    }
+                } else if (isNewcomerProtected) {
+                    // 첫 3판 초심자 온보딩 보호: 11번 파이어볼 전후~20점대 중반에서 봇들이 자연스럽게 탈락하여 첫 승/상위권 경험 제공
+                    if (tier === 0) {
+                        targetScore = Math.max(7, Math.round(11 + (Math.random() * 8 - 4)));
+                    } else if (tier === 1) {
+                        targetScore = Math.max(12, Math.round(18 + (Math.random() * 10 - 5)));
+                    } else {
+                        targetScore = Math.max(16, Math.round(24 + (Math.random() * 10 - 5)));
+                    }
+                } else if (isBeginnerShieldTier) {
+                    // 4~10판 초심자 보호 구간 & 1,040 PT 이하: 부담 없는 초중급 난이도
+                    if (tier === 0) {
+                        targetScore = Math.max(9, Math.round(14 + (Math.random() * 8 - 4) + (isHotHand ? 4 : (isUpset ? -4 : 0))));
+                    } else if (tier === 1) {
+                        targetScore = Math.max(15, Math.round(23 + (Math.random() * 10 - 5) + (isHotHand ? 7 : (isUpset ? -7 : 0))));
+                    } else {
+                        targetScore = Math.max(21, Math.round(31 + (Math.random() * 12 - 6) + (isHotHand ? 9 : (isUpset ? -10 : 0))));
                     }
                 } else {
+                    // 일반 리그 중상위 (1,041 ~ 1,200 PT): 51번 미러볼 전후에서 승부가 갈리는 표준 밸런스
+                    const highTierBoost = myRating >= 1120 ? 5 : 0;
                     if (tier === 0) {
-                        const base = (lobbyDifficulty === 'easy' ? 14 : (lobbyDifficulty === 'hard' ? 20 : 17));
-                        targetScore = Math.max(12, Math.round(base + (Math.random() * 8 - 4) + (isHotHand ? 6 : (isUpset ? -4 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 13 : (lobbyDifficulty === 'hard' ? 18 : 15)) + highTierBoost;
+                        targetScore = Math.max(10, Math.round(base + (Math.random() * 8 - 4) + (isHotHand ? 5 : (isUpset ? -4 : 0))));
                     } else if (tier === 1) {
-                        const base = (lobbyDifficulty === 'easy' ? 26 : (lobbyDifficulty === 'hard' ? 44 : 36));
-                        targetScore = Math.max(18, Math.round(base + (Math.random() * 12 - 6) + (isHotHand ? 12 : (isUpset ? -10 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 22 : (lobbyDifficulty === 'hard' ? 34 : 28)) + highTierBoost;
+                        targetScore = Math.max(16, Math.round(base + (Math.random() * 10 - 5) + (isHotHand ? 9 : (isUpset ? -8 : 0))));
                     } else {
-                        const base = (lobbyDifficulty === 'easy' ? 34 : (lobbyDifficulty === 'hard' ? 74 : 52));
-                        targetScore = Math.max(26, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 14 : (isUpset ? -18 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 30 : (lobbyDifficulty === 'hard' ? 52 : 40)) + highTierBoost;
+                        targetScore = Math.max(24, Math.round(base + (Math.random() * 14 - 7) + (isHotHand ? 11 : (isUpset ? -14 : 0))));
                     }
                 }
 
@@ -11641,18 +11982,17 @@
                     } else {
                         botSkin = Math.random() < 0.3 ? 'spark' : 'classic';
                     }
-                } else {
-                    if (tier === 2) {
-                        botSkin = Math.random() < 0.45 ? 'rainbow' : (Math.random() < 0.35 ? 'spark' : 'flame');
-                    } else if (tier === 1) {
-                        botSkin = Math.random() < 0.35 ? 'flame' : (Math.random() < 0.3 ? 'sakura' : 'classic');
-                    } else {
-                        botSkin = 'classic';
+                } else if (botTemplate.matches >= 5) {
+                    if (tier === 2 && botTemplate.wins >= 2) {
+                        botSkin = Math.random() < 0.4 ? 'rainbow' : (Math.random() < 0.35 ? 'spark' : 'flame');
+                    } else if (tier === 1 && botTemplate.matches >= 10) {
+                        botSkin = Math.random() < 0.3 ? 'flame' : (Math.random() < 0.25 ? 'sakura' : 'classic');
                     }
                 }
 
                 return {
-                    id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + botIndex,
+                    id: 'bot_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6) + '_' + botSlotIndex,
+                    botIndex: botTemplate.idIndex,
                     name: botTemplate.name,
                     rating: botTemplate.rating,
                     matches: botTemplate.matches,
@@ -11664,33 +12004,40 @@
                 };
             };
 
+            const pickedBotIndices = [];
             for (let i = 0; i < selectedIndices.length && picked.length < count; i++) {
                 const botTemplate = generateLeagueBot(selectedIndices[i], activeLeague);
                 if (used.has(botTemplate.name.toUpperCase())) continue;
                 used.add(botTemplate.name.toUpperCase());
+                pickedBotIndices.push(botTemplate.idIndex);
                 picked.push(createBotInstance(botTemplate, picked.length));
             }
 
-            // 100% 무조건 count명 충원 보장 1단계: 이름 중복 등으로 인해 누락된 봇이 있다면 1,000명 풀에서 겹치지 않게 추가 선발
             if (picked.length < count) {
                 const allIndices = [...aceIndices, ...solidIndices, ...rookieIndices];
                 for (let k = 0; k < allIndices.length && picked.length < count; k++) {
                     const botTemplate = generateLeagueBot(allIndices[k], activeLeague);
                     if (used.has(botTemplate.name.toUpperCase())) continue;
                     used.add(botTemplate.name.toUpperCase());
+                    pickedBotIndices.push(botTemplate.idIndex);
                     picked.push(createBotInstance(botTemplate, picked.length));
                 }
             }
 
-            // 100% 무조건 count명 충원 보장 2단계(최후 안전장치): 고유 번호를 붙여서라도 무조건 정확히 count명을 채움
             let safetyNum = 1;
             while (picked.length < count) {
                 const rndIdx = Math.floor(Math.random() * 1000);
                 const botTemplate = generateLeagueBot(rndIdx, activeLeague);
-                botTemplate.name = clampBattleName(`${botTemplate.name} ${safetyNum++}`);
+                if (!used.has(botTemplate.name.toUpperCase())) {
+                    used.add(botTemplate.name.toUpperCase());
+                } else {
+                    botTemplate.name = clampBattleName(`${botTemplate.name} ${safetyNum++}`);
+                }
+                pickedBotIndices.push(botTemplate.idIndex);
                 picked.push(createBotInstance(botTemplate, picked.length));
             }
 
+            rememberMatchedBotIndices(pickedBotIndices);
             return picked;
         }
 
@@ -11751,6 +12098,7 @@
                             skin: bot.skin || 'classic',
                             isHost: false,
                             isBot: true,
+                            botIndex: typeof bot.botIndex === 'number' ? bot.botIndex : null,
                             targetScore: bot.targetScore,
                             joinedAt: now + idx + 1
                         };
@@ -12457,6 +12805,7 @@
                             skin: bot.skin || 'classic',
                             isHost: false,
                             isBot: true,
+                            botIndex: typeof bot.botIndex === 'number' ? bot.botIndex : null,
                             targetScore: bot.targetScore,
                             joinedAt: now + idx + 1
                         };
@@ -13221,8 +13570,11 @@
                 resultText = textFor('rankText')(provisionalRank);
                 resultClass = 'lose';
                 const curRating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
-                const estDelta = (typeof BATTLE_RANK_DELTAS !== 'undefined' && BATTLE_RANK_DELTAS[provisionalRank] !== undefined)
+                const playedMatches = Math.max(1, Number((typeof getBattleStats === 'function' ? getBattleStats().matches : 1) || 1));
+                const rookieShieldActive = playedMatches <= ROOKIE_SHIELD_MATCHES;
+                const rawDelta = (typeof BATTLE_RANK_DELTAS !== 'undefined' && BATTLE_RANK_DELTAS[provisionalRank] !== undefined)
                     ? BATTLE_RANK_DELTAS[provisionalRank] : 0;
+                const estDelta = (rookieShieldActive && rawDelta < 0) ? 0 : rawDelta;
                 const estNew = Math.max(600, curRating + estDelta);
                 provisionalRatingPreview = {
                     prevRating: curRating,
@@ -13231,6 +13583,9 @@
                     prevStreak: 0,
                     newStreak: 0,
                     myRank: provisionalRank,
+                    rookieShieldActive,
+                    rookieMatchNum: playedMatches,
+                    rookieShieldSaved: Boolean(rookieShieldActive && rawDelta < 0),
                     newlyUnlocked: null
                 };
             } else if (myRank === 1) {
@@ -13262,6 +13617,9 @@
             updateBattleStatsUI();
 
             // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (경기 완전 종료 후 최종 점수 기반 순위로 판당 1회 처리)
+            if (isEnded && typeof recordEndedMatchBotStats === 'function') {
+                recordEndedMatchBotStats(room);
+            }
             if (!battleRatingProcessed && isEnded && myRank > 0) {
                 applyBattleResultRating(myRank);
             }
@@ -13340,10 +13698,24 @@
                 unlockHtml = `<div style="font-size:18px;color:#fbbf24;margin-top:4px;font-weight:900;">${unlockMap[lang] || unlockMap.en}</div>`;
             }
 
+            let shieldHtml = '';
+            if (data.rookieShieldActive) {
+                const mNum = Math.min(ROOKIE_SHIELD_MATCHES, Math.max(1, Number(data.rookieMatchNum || 1)));
+                const shieldMap = {
+                    ko: `🛡️ 초심자 보호 (${mNum}/${ROOKIE_SHIELD_MATCHES}판): 첫 ${ROOKIE_SHIELD_MATCHES}판은 점수가 내려가지 않습니다!`,
+                    en: `🛡️ Rookie Shield (${mNum}/${ROOKIE_SHIELD_MATCHES}): No rating loss in your first ${ROOKIE_SHIELD_MATCHES} matches!`,
+                    ja: `🛡️ 初心者保護 (${mNum}/${ROOKIE_SHIELD_MATCHES}戦): 最初の${ROOKIE_SHIELD_MATCHES}戦はレートが下がりません！`,
+                    'zh-TW': `🛡️ 新手保護 (${mNum}/${ROOKIE_SHIELD_MATCHES}場): 前${ROOKIE_SHIELD_MATCHES}場對戰積分不會下降！`,
+                    es: `🛡️ Escudo Novato (${mNum}/${ROOKIE_SHIELD_MATCHES}): ¡Tus puntos no bajan en las primeras ${ROOKIE_SHIELD_MATCHES} partidas!`
+                };
+                shieldHtml = `<div style="width:100%;font-size:19px;color:#38bdf8;margin-top:6px;font-weight:900;text-align:center;">${shieldMap[lang] || shieldMap.en}</div>`;
+            }
+
             pill.innerHTML = `
                 <span class="brp-score">${data.newRating}</span>
                 <span class="brp-delta ${deltaClass}">${deltaText}</span>
                 ${streakHtml}
+                ${shieldHtml}
                 ${unlockHtml}
             `;
         }
@@ -13467,7 +13839,10 @@
             if (battleRatingProcessed || !rank || rank <= 0) return null;
             battleRatingProcessed = true;
             const prevRating = getBattleRating();
-            const delta = BATTLE_RANK_DELTAS[rank] !== undefined ? BATTLE_RANK_DELTAS[rank] : 0;
+            const playedMatches = Math.max(1, Number((typeof getBattleStats === 'function' ? getBattleStats().matches : 1) || 1));
+            const rookieShieldActive = playedMatches <= ROOKIE_SHIELD_MATCHES;
+            const rawDelta = BATTLE_RANK_DELTAS[rank] !== undefined ? BATTLE_RANK_DELTAS[rank] : 0;
+            const delta = (rookieShieldActive && rawDelta < 0) ? 0 : rawDelta;
             const newRating = saveBattleRating(prevRating + delta);
             const actualDelta = newRating - prevRating;
 
@@ -13487,6 +13862,9 @@
                 prevStreak,
                 newStreak,
                 myRank: rank,
+                rookieShieldActive,
+                rookieMatchNum: playedMatches,
+                rookieShieldSaved: Boolean(rookieShieldActive && rawDelta < 0),
                 newlyUnlocked
             };
             return lastBattleResultRatingData;
