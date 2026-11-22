@@ -867,6 +867,113 @@
             100% { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
         }
 
+        /* 사망 순간 원인 확인 정지(Freeze) 배너 (블록 아래 · 투수 위 잔디 영역) */
+        #death-freeze-banner {
+            position: absolute;
+            left: 50%;
+            top: 63.5%;
+            transform: translate(-50%, -50%);
+            width: 92%;
+            max-width: 960px;
+            padding: 24px 28px 22px;
+            background: rgba(25, 39, 56, 0.96);
+            color: #fff8e6;
+            border: 6px solid #edbc57;
+            border-radius: 32px;
+            box-shadow: 0 12px 0 #000000, 0 20px 40px rgba(0, 0, 0, 0.65);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 45;
+            cursor: pointer;
+            word-break: keep-all;
+            touch-action: manipulation;
+        }
+
+        #death-freeze-banner.show {
+            display: flex;
+            animation: deathBannerPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes deathBannerPop {
+            0%   { opacity: 0; transform: translate(-50%, -46%) scale(0.88); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .dfb-compare {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            width: 100%;
+        }
+
+        .dfb-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 16px 14px;
+            border-radius: 22px;
+            border: 4px solid;
+            text-align: center;
+        }
+
+        .dfb-box.target {
+            background: rgba(22, 163, 74, 0.25);
+            border-color: #4ade80;
+        }
+
+        .dfb-box.wrong {
+            background: rgba(220, 38, 38, 0.28);
+            border-color: #f87171;
+        }
+
+        .dfb-label {
+            font-size: 25px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .dfb-box.target .dfb-label {
+            color: #86efac;
+        }
+
+        .dfb-box.wrong .dfb-label {
+            color: #fca5a5;
+        }
+
+        .dfb-num {
+            font-size: 56px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.08;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 4px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .dfb-sub {
+            font-size: 21px;
+            font-weight: 800;
+            color: #fde047;
+            line-height: 1.2;
+        }
+
+        .dfb-prompt {
+            font-size: 29px;
+            font-weight: 900;
+            color: #fde047;
+            text-align: center;
+            margin: 2px 0 0;
+            animation: dfbPulse 1.1s ease-in-out infinite;
+        }
+
+        @keyframes dfbPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.72; transform: scale(0.98); }
+        }
+
         /* ── 다인 대전 ── */
         #battle-screen {
             background: #f9e7ba;
@@ -4559,6 +4666,9 @@
         <!-- 인게임 특수볼 하단 1줄 설명 배너 -->
         <div id="special-ball-tip-banner" aria-live="polite"></div>
 
+        <!-- 사망 순간 원인 확인 정지(Freeze) 배너 -->
+        <div id="death-freeze-banner" onclick="proceedFromDeathFreeze()" ontouchstart="if(event.cancelable) event.preventDefault(); proceedFromDeathFreeze();" aria-live="assertive"></div>
+
         <dialog id="game-dialog" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
             <form method="dialog">
                 <header class="game-dialog-header">
@@ -6699,6 +6809,10 @@
         let dragFieldScale = 1;
 
         function handleStart(clientX, clientY) {
+            if (gameState === 'DYING') {
+                proceedFromDeathFreeze();
+                return;
+            }
             if (testMode) return;
             if (gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             isDragging = true;
@@ -6984,6 +7098,7 @@
 
         function startCountdown(skipToNum) {
             gameSessionId++;
+            if (typeof hideDeathFreezeBanner === 'function') hideDeathFreezeBanner();
             consumePlayTicket(battleMode ? 'battle' : 'solo');
             justUnlockedFireballThisRun = false;
             gameState = 'COUNTDOWN';
@@ -7213,14 +7328,180 @@
             }
         }
 
-        function gameOver() {
+        let deathFreezeState = null;
+
+        function isBlockNumberMirrored(num) {
+            let reversed = mirrorballActive;
+            if (stripeballActive && typeof isStripeNormalRow === 'function' && isStripeNormalRow(num)) {
+                reversed = false;
+            }
+            return Boolean(reversed);
+        }
+
+        function hideDeathFreezeBanner() {
+            deathFreezeState = null;
+            const banner = document.getElementById('death-freeze-banner');
+            if (banner) {
+                banner.classList.remove('show');
+                banner.innerHTML = '';
+            }
+        }
+
+        function showDeathFreezeBanner() {
+            const banner = document.getElementById('death-freeze-banner');
+            if (!banner || !deathFreezeState) return;
+            const lang = currentLang || 'ko';
+            const expectedNum = deathFreezeState.expectedNum;
+            const hitBlk = deathFreezeState.hitBlock;
+            const hitNum = hitBlk ? hitBlk.num : null;
+
+            const expectedMirrored = isBlockNumberMirrored(expectedNum);
+            const expectedDisplayed = expectedMirrored ? String(expectedNum).split('').reverse().join('') : String(expectedNum);
+            const hitMirrored = hitNum !== null ? isBlockNumberMirrored(hitNum) : false;
+            const hitDisplayed = hitNum !== null
+                ? (hitMirrored ? String(hitNum).split('').reverse().join('') : String(hitNum))
+                : null;
+
+            const i18n = {
+                ko: {
+                    targetLabel: '🎯 원래 맞춰야 할 공',
+                    wrongLabel: '❌ 내가 맞춘 공',
+                    missText: '빈 줄 통과',
+                    mirrorSub: disp => `🪞 반전 표기: ${disp}`,
+                    prompt: '👆 화면을 터치하면 결과 화면으로 넘어갑니다'
+                },
+                en: {
+                    targetLabel: '🎯 Target Ball',
+                    wrongLabel: '❌ Ball You Hit',
+                    missText: 'Missed Row',
+                    mirrorSub: disp => `🪞 Flipped as: ${disp}`,
+                    prompt: '👆 Tap anywhere to continue to results'
+                },
+                ja: {
+                    targetLabel: '🎯 当てるべき番号',
+                    wrongLabel: '❌ 当てた番号',
+                    missText: '空列を通過',
+                    mirrorSub: disp => `🪞 反転表記: ${disp}`,
+                    prompt: '👆 画面をタップして結果画面へ'
+                },
+                'zh-TW': {
+                    targetLabel: '🎯 應擊中號碼',
+                    wrongLabel: '❌ 實際擊中號碼',
+                    missText: '穿過空列',
+                    mirrorSub: disp => `🪞 反轉顯示: ${disp}`,
+                    prompt: '👆 點擊畫面進入結算畫面'
+                },
+                es: {
+                    targetLabel: '🎯 Bola Objetivo',
+                    wrongLabel: '❌ Bola Golpeada',
+                    missText: 'Fila vacía',
+                    mirrorSub: disp => `🪞 Invertido: ${disp}`,
+                    prompt: '👆 Toca la pantalla para ver el resultado'
+                }
+            }[lang] || {
+                targetLabel: '🎯 Target Ball',
+                wrongLabel: '❌ Ball You Hit',
+                missText: 'Missed',
+                mirrorSub: disp => `🪞 Flipped: ${disp}`,
+                prompt: '👆 Tap anywhere to continue'
+            };
+
+            const targetSubHtml = (expectedMirrored && expectedDisplayed !== String(expectedNum))
+                ? `<span class="dfb-sub">${i18n.mirrorSub(expectedDisplayed)}</span>`
+                : '';
+            const wrongMainText = hitNum !== null ? `#${hitNum}` : i18n.missText;
+            const wrongSubHtml = (hitNum !== null && hitMirrored && hitDisplayed !== String(hitNum))
+                ? `<span class="dfb-sub">${i18n.mirrorSub(hitDisplayed)}</span>`
+                : '';
+
+            banner.innerHTML = `
+                <div class="dfb-compare">
+                    <div class="dfb-box target">
+                        <span class="dfb-label">${i18n.targetLabel}</span>
+                        <strong class="dfb-num">#${expectedNum}</strong>
+                        ${targetSubHtml}
+                    </div>
+                    <div class="dfb-box wrong">
+                        <span class="dfb-label">${i18n.wrongLabel}</span>
+                        <strong class="dfb-num" style="${hitNum === null ? 'font-size:38px;' : ''}">${wrongMainText}</strong>
+                        ${wrongSubHtml}
+                    </div>
+                </div>
+                <p class="dfb-prompt">${i18n.prompt}</p>
+            `;
+            banner.classList.add('show');
+        }
+
+        function gameOver(ball = null, hitBlock = null) {
+            if (gameState === 'DYING' || gameState === 'GAMEOVER') return;
             setPitcherThrowing(false);
             pausePlayTimer();
+            hideSpecialBallTip();
+            isDragging = false;
+            stopAllBgm();
+
+            // 플래시볼 깜빡임 중 사망했더라도 모든 번호를 즉시 보이게 고정
+            if (flashballTimer) {
+                clearTimeout(flashballTimer);
+                flashballTimer = null;
+            }
+            flashballVisible = true;
+            ['fireball-announce', 'mirrorball-announce', 'stripeball-announce', 'flashball-announce'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('show');
+            });
+
+            if (ball && hitBlock) {
+                // 맞춘 블록의 숫자가 공에 가려지지 않도록 블록 하단 타격 지점에 공을 고정
+                ball.x = Math.max(hitBlock.x + ball.radius, Math.min(hitBlock.x + hitBlock.size - ball.radius, ball.x));
+                ball.y = hitBlock.y + scrollY + hitBlock.height - scalePx(2);
+                balls = [ball];
+            } else {
+                balls = ball ? [ball] : [];
+            }
+
+            gameState = 'DYING';
+            deathFreezeState = {
+                ball,
+                hitBlock,
+                expectedNum: nextExpectedNumber,
+                startedAt: performance.now(),
+                battleReported: false
+            };
+
             triggerHaptic('error');
+            if (!battleMode) {
+                playSfx('gameover', 0.7);
+            } else {
+                playSfx('throw_hit', 0.9);
+                if (battleRoomId && battlePlayerId) {
+                    deathFreezeState.battleReported = true;
+                    const savedScore = score;
+                    if (battlePlayers[battlePlayerId]) {
+                        battlePlayers[battlePlayerId].score = savedScore;
+                        battlePlayers[battlePlayerId].done = true;
+                        renderBattleHud({ players: battlePlayers });
+                    }
+                    finishBattlePlayer(savedScore);
+                    if (typeof resumeBotsAfterLocalHumanDone === 'function') resumeBotsAfterLocalHumanDone();
+                }
+            }
+
+            showDeathFreezeBanner();
+            draw();
+        }
+
+        function proceedFromDeathFreeze() {
+            if (gameState !== 'DYING') return;
+            if (deathFreezeState && (performance.now() - deathFreezeState.startedAt < 320)) return;
+            playSfx('click', 0.7);
+            triggerHaptic('light');
             finalizeGameOver();
         }
 
         function finalizeGameOver() {
+            const alreadyReportedBattle = Boolean(deathFreezeState && deathFreezeState.battleReported);
+            hideDeathFreezeBanner();
             hideSpecialBallTip();
             pausePlayTimer();
             gameState = 'GAMEOVER';
@@ -7236,10 +7517,24 @@
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
             if (battleMode) {
-                // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
-                battleGameOver();
+                if (alreadyReportedBattle) {
+                    battleMode = false;
+                    const vignette = document.getElementById('battle-final-vignette');
+                    if (vignette) vignette.classList.remove('active');
+                    const pill = document.getElementById('battle-phase-pill');
+                    if (pill) pill.classList.add('hidden');
+                    const banner = document.getElementById('battle-phase-banner');
+                    if (banner) banner.classList.remove('show');
+                    if (battleResultPendingRoom) {
+                        showBattleResult(battleResultPendingRoom);
+                    } else {
+                        showBattleResult({ players: battlePlayers, status: 'playing' });
+                    }
+                } else {
+                    // 대전 모드: 효과음은 결과 화면에서 승패에 따라 재생
+                    battleGameOver();
+                }
             } else {
-                playSfx('gameover', 0.7);
                 document.getElementById('game-over-screen').classList.remove('hidden');
                 if (typeof updateGameOverWorld8PromoUI === 'function') updateGameOverWorld8PromoUI();
                 evaluateScore(score);
@@ -8147,6 +8442,10 @@
 
         function openExitConfirmModal(fromLobby = false) {
             if (fromLobby && battleLobbyCountdownActive) return;
+            if (!fromLobby && gameState === 'DYING') {
+                finalizeGameOver();
+                return;
+            }
             if (!fromLobby && gameState !== 'PLAYING' && gameState !== 'COUNTDOWN') return;
             playSfx('click', 0.7);
             triggerHaptic('light');
@@ -8194,6 +8493,7 @@
             }
             stopFlashball();
             hideSpecialBallTip();
+            hideDeathFreezeBanner();
             stopAllBgm();
             gameState = 'INTRO';
             goToMain();
@@ -8269,7 +8569,7 @@
                                     spliced = true;
                                     break;
                                 }
-                                gameOver(b);
+                                gameOver(b, blk);
                                 spliced = true;
                                 break;
                             }
@@ -8305,7 +8605,7 @@
                         fireballActive = false;
                         if (!b.activated) {
                             if (recoverTestPitch(-1, b)) return;
-                            gameOver(b);
+                            gameOver(b, null);
                             return;
                         }
                         lastPitchTime = performance.now();
@@ -8349,7 +8649,7 @@
                             }
                         } else {
                             if (recoverTestPitch(i, b)) continue;
-                            gameOver(b);
+                            gameOver(b, bestBlk);
                             return;
                         }
                     } else if (b.y < -scalePx(20)) {
@@ -8363,7 +8663,7 @@
                         }
                         balls.splice(i, 1);
                         if (recoverTestPitch(-1, b)) continue;
-                        gameOver(b);
+                        gameOver(b, null);
                         return;
                     }
                 }
@@ -8422,7 +8722,7 @@
             return width / 2 + (x - width / 2) * fieldScale;
         }
 
-        function drawProjectedTile(block, logicalY, isGuide, waveFlash) {
+        function drawProjectedTile(block, logicalY, isGuide, waveFlash, deathRole = null) {
             const inset = scalePx(2.5);
             const left = block.x + inset;
             const right = block.x + block.size - inset;
@@ -8436,6 +8736,11 @@
             const bottomRight = projectFieldX(right, bottomScale);
             const radius = scalePx(3) * topScale;
 
+            ctx.save();
+            if (deathRole === 'dim') {
+                ctx.globalAlpha = 0.55;
+            }
+
             ctx.beginPath();
             ctx.moveTo((topLeft + topRight) / 2, top);
             ctx.arcTo(topRight, top, bottomRight, bottom, radius);
@@ -8443,9 +8748,17 @@
             ctx.arcTo(bottomLeft, bottom, topLeft, top, radius);
             ctx.arcTo(topLeft, top, topRight, top, radius);
             ctx.closePath();
-            ctx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
+
+            if (deathRole === 'target') {
+                ctx.fillStyle = '#16a34a';
+            } else if (deathRole === 'wrong') {
+                ctx.fillStyle = '#dc2626';
+            } else {
+                ctx.fillStyle = isGuide ? '#edbc57' : '#fff2cf';
+            }
             ctx.fill();
-            if (waveFlash && waveFlash.alpha > 0.01) {
+
+            if (waveFlash && waveFlash.alpha > 0.01 && !deathRole) {
                 ctx.save();
                 ctx.fillStyle = waveFlash.type === 'stripe'
                     ? `rgba(72, 214, 255, ${(waveFlash.alpha * 0.62).toFixed(3)})`
@@ -8453,17 +8766,26 @@
                 ctx.fill();
                 ctx.restore();
             }
-            ctx.strokeStyle = (waveFlash && waveFlash.alpha > 0.25)
-                ? (waveFlash.type === 'stripe' ? '#199bd8' : '#7a45d6')
-                : (isGuide ? '#a6312c' : '#192738');
-            ctx.lineWidth = scalePx(isGuide ? 2.5 : (waveFlash && waveFlash.alpha > 0.25 ? 2.2 : 1.5)) * bottomScale;
-            ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(bottomLeft + radius, bottom - ctx.lineWidth);
-            ctx.lineTo(bottomRight - radius, bottom - ctx.lineWidth);
-            ctx.strokeStyle = isGuide ? '#a6312c' : '#19273833';
-            ctx.stroke();
+            if (deathRole === 'target' || deathRole === 'wrong') {
+                const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.01);
+                ctx.strokeStyle = deathRole === 'target' ? '#fde047' : '#ffffff';
+                ctx.lineWidth = scalePx(3.6 + pulse * 1.4) * bottomScale;
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = (waveFlash && waveFlash.alpha > 0.25)
+                    ? (waveFlash.type === 'stripe' ? '#199bd8' : '#7a45d6')
+                    : (isGuide ? '#a6312c' : '#192738');
+                ctx.lineWidth = scalePx(isGuide ? 2.5 : (waveFlash && waveFlash.alpha > 0.25 ? 2.2 : 1.5)) * bottomScale;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(bottomLeft + radius, bottom - ctx.lineWidth);
+                ctx.lineTo(bottomRight - radius, bottom - ctx.lineWidth);
+                ctx.strokeStyle = isGuide ? '#a6312c' : '#19273833';
+                ctx.stroke();
+            }
+            ctx.restore();
         }
 
         function tracePitchLane(x, fromY, toY) {
@@ -8550,6 +8872,7 @@
             }
 
             // Draw Blocks
+            const isDyingFreeze = (gameState === 'DYING' && deathFreezeState);
             blocks.forEach(blk => {
                 if (!blk.active) return;
                 const drawY = blk.y + scrollY;
@@ -8560,6 +8883,17 @@
                     ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
+
+                let deathRole = null;
+                if (isDyingFreeze) {
+                    if (blk === deathFreezeState.hitBlock) {
+                        deathRole = 'wrong';
+                    } else if (blk.num === deathFreezeState.expectedNum) {
+                        deathRole = 'target';
+                    } else {
+                        deathRole = 'dim';
+                    }
+                }
 
                 // 웨이브 중: 아래 행부터 위로 순차 적용 + 통과 줄 플래시
                 let mirrorWaveFlipped = false;
@@ -8585,14 +8919,14 @@
                         }
                     }
                 }
-                drawProjectedTile(blk, drawY, isGuide, waveFlash);
+                drawProjectedTile(blk, drawY, isGuide, waveFlash, deathRole);
                 let isReversed = mirrorballActive || mirrorWaveFlipped;
                 if ((stripeballActive || stripeWaveApplied) && isStripeNormalRow(blk.num)) {
                     isReversed = false;
                 }
                 const label = isReversed ? String(blk.num).split('').reverse().join('') : String(blk.num);
 
-                const showLabel = !flashballActive || flashballVisible || isGuide;
+                const showLabel = isDyingFreeze || !flashballActive || flashballVisible || isGuide;
                 if (showLabel) {
                     const top = projectBoardY(drawY);
                     const bottom = projectBoardY(drawY + blk.height);
@@ -8604,13 +8938,22 @@
                     const slant = (laneX - width / 2) * (getFieldScale(bottom) - getFieldScale(top)) / tileHeight;
                     const fontScale = Math.max(0.8, Math.min(1, tileHeight / blk.height));
                     const wavePop = (waveFlash && waveFlash.alpha > 0.05) ? (1 + 0.16 * waveFlash.alpha) : 1;
-                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale * wavePop);
+                    const deathPop = (deathRole === 'target' || deathRole === 'wrong') ? 1.12 : 1;
+                    const numberFontSize = Math.round(scalePx(label.length >= 4 ? 12 : label.length >= 3 ? 14 : 16) * fontScale * wavePop * deathPop);
                     ctx.save();
+                    if (deathRole === 'dim') ctx.globalAlpha = 0.55;
                     ctx.transform(1, 0, slant * 0.5, 1, centerX, centerY);
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.font = `700 ${numberFontSize}px "Fredoka", system-ui, sans-serif`;
-                    ctx.fillStyle = isGuide ? '#852c27' : '#192738';
+                    if (deathRole === 'target' || deathRole === 'wrong') {
+                        ctx.strokeStyle = '#0f172a';
+                        ctx.lineWidth = scalePx(2.8) * fontScale;
+                        ctx.strokeText(label, 0, 0, (blk.size - scalePx(9)) * fieldScale);
+                        ctx.fillStyle = '#ffffff';
+                    } else {
+                        ctx.fillStyle = isGuide ? '#852c27' : '#192738';
+                    }
                     ctx.fillText(label, 0, 0, (blk.size - scalePx(9)) * fieldScale);
                     ctx.restore();
                 }
@@ -9161,7 +9504,7 @@
         function gameLoop(timestamp) {
             update(timestamp);
             draw();
-            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN') requestAnimationFrame(gameLoop);
+            if (gameState === 'PLAYING' || gameState === 'COUNTDOWN' || gameState === 'DYING') requestAnimationFrame(gameLoop);
         }
 
         /**
@@ -13377,7 +13720,7 @@
                     }
                     stopQuickMatchTimer();
                     const isMyDone = !!(battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done);
-                    if (!isMyDone) {
+                    if (!isMyDone || gameState === 'DYING') {
                         renderBattleHud(room);
                     }
                     if (battleRole === 'host' && !battleSimStarted) {
@@ -13385,6 +13728,10 @@
                         startBotSimulation(room);
                     }
                     if (isMyDone) {
+                        if (gameState === 'DYING') {
+                            battleResultPendingRoom = room;
+                            return;
+                        }
                         if (battleMode) {
                             battleMode = false;
                             gameState = 'GAMEOVER';
@@ -13402,8 +13749,15 @@
                     stopBotSimulation();
                     battleSimStarted = false;
                     const isMyDone = !!(battlePlayers[battlePlayerId] && battlePlayers[battlePlayerId].done);
-                    if (!isMyDone) {
+                    if (!isMyDone || gameState === 'DYING') {
                         renderBattleHud(room);
+                    }
+                    if (gameState === 'DYING') {
+                        battleResultPendingRoom = room;
+                        if (typeof recordEndedMatchBotStats === 'function') {
+                            recordEndedMatchBotStats(room);
+                        }
+                        return;
                     }
                     if (battleMode) {
                         battleMode = false;
@@ -13832,6 +14186,7 @@
 
         function scheduleBattleResult(room) {
             battleResultPendingRoom = room;
+            if (gameState === 'DYING') return;
             const now = performance.now();
             const timeSinceLast = now - lastBattleResultRenderTime;
 
@@ -14366,6 +14721,7 @@
 
         function goToMain() {
             gameSessionId++;
+            if (typeof hideDeathFreezeBanner === 'function') hideDeathFreezeBanner();
             if (typeof activeCountdownCleanup === 'function') {
                 activeCountdownCleanup();
                 activeCountdownCleanup = null;
@@ -14434,6 +14790,7 @@
         }
 
         function exitBattle(forceRemoveRoom = false) {
+            if (typeof hideDeathFreezeBanner === 'function') hideDeathFreezeBanner();
             if (battleResultShown && !battleRatingProcessed && lastProvisionalBattleRank > 0) {
                 applyBattleResultRating(lastProvisionalBattleRank);
             }
