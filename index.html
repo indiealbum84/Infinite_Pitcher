@@ -3393,20 +3393,24 @@
 
         .continue-title {
             font-family: var(--font-game);
-            font-size: 92px;
+            font-size: 62px;
             color: var(--palette-blue);
             margin: 0;
-            line-height: 1.05;
+            line-height: 1.12;
+            white-space: nowrap;
+            word-break: keep-all;
             text-shadow: 6px 6px 0 #ffffff, 11px 11px 0 #000000;
         }
 
         .continue-desc {
-            font-size: 36px;
+            font-size: 31px;
             font-weight: 900;
             color: var(--palette-ink);
             margin: 0;
-            line-height: 1.48;
+            line-height: 1.46;
             white-space: pre-line;
+            word-break: keep-all;
+            overflow-wrap: break-word;
         }
 
         .continue-ad-btn {
@@ -5614,6 +5618,10 @@
                 ['start-btn-id', 20],
                 ['battle-friend-btn', 20],
                 ['battle-quick-main-btn', 24],
+                ['play-gate-title', 28],
+                ['play-gate-go-battle-btn', 20],
+                ['gameover-world8-btn', 20],
+                ['gameover-world8-badge', 14],
                 ['play-gate-ad-btn', 22],
                 ['play-gate-noads-btn', 20],
                 ['play-gate-restore-btn', 18],
@@ -7076,53 +7084,53 @@
 
         const WORLD8_PROMO_I18N = {
             ko: {
-                unlockTitle: '⚡ 세계 8인 배틀 오픈!',
-                unlockHtml: '🎉 <b>31점 특훈 돌파!</b> 메인 콘텐츠인 <b>[⚡ 세계 8인 배틀]</b>이 해금되었습니다!<br><br>🛡️ <b>초심자 보호</b>: 첫 10판은 져도 레이팅이 절대 내려가지 않습니다!<br>🍀 <b>첫 1승 보상</b>: 1위 달성 시 <b>[루키 에메랄드]</b> 컬렉션 즉시 지급!<br><br><span style="font-size:0.9em;opacity:0.9;">(개인·대전 각각 하루 3회 무료 플레이 가능 / $2.99 광고 제거 패스로 영구 무제한)</span>',
+                unlockTitle: '⚡ 세계 8인 배틀 해금!',
+                unlockHtml: '🎉 <b>31점 특훈 돌파 축하합니다!</b><br>메인 모드 <b>[⚡ 세계 8인 배틀]</b>이 열렸습니다!<br><br>🛡️ <b>초심자 보호 (첫 10판)</b><br>패배해도 레이팅이 절대 내려가지 않습니다!<br><br>🍀 <b>첫 1승 달성 보상</b><br>1위 달성 시 <b>[루키 에메랄드]</b> 즉시 지급!<br><br><span style="font-size:0.88em;opacity:0.9;">개인·대전 각각 하루 3회 무료 플레이<br>($2.99 광고 제거 패스로 영구 무제한)</span>',
                 goBattleNowBtn: '⚡ 지금 세계 8인 배틀 출전하기',
-                goBattleFreeBtn: (rem, max) => `⚡ 세계 8인 배틀 무료 출전 (오늘 ${rem}/${max}회 남음)`,
+                goBattleFreeBtn: (rem, max) => `⚡ 세계 8인 배틀 무료 출전 (오늘 ${rem}/${max}회)`,
                 gameOverBtn: '⚡ 세계 8인 배틀 출전하기',
-                gameOverBadgeNew: '🎁 NEW! 첫 10판 점수 하락 면제 · 첫 1승 스킨 보상!',
-                gameOverBadgeShield: (m, max) => `🛡️ 초심자 보호 적용 중 (${m}/${max}판 · 레이팅 하락 면제)`,
+                gameOverBadgeNew: '🎁 NEW! 첫 10판 감점 면제 · 첫 1승 스킨 보상!',
+                gameOverBadgeShield: (m, max) => `🛡️ 초심자 보호 적용 중 (${m}/${max}판 · 감점 면제)`,
                 newBadge: '🔥 NEW!'
             },
             en: {
-                unlockTitle: '⚡ WORLD 8P BATTLE UNLOCKED!',
-                unlockHtml: '🎉 <b>31+ Drill Cleared!</b> The main event <b>[⚡ World 8P Battle]</b> is now unlocked!<br><br>🛡️ <b>Rookie Shield</b>: No rating loss in your first 10 matches!<br>🍀 <b>1st Win Reward</b>: Win 1st place to unlock the <b>[Rookie Emerald]</b> skin!<br><br><span style="font-size:0.9em;opacity:0.9;">(3 free Solo & 3 free Battle games daily / $2.99 Remove Ads for unlimited play)</span>',
+                unlockTitle: '⚡ WORLD 8P BATTLE!',
+                unlockHtml: '🎉 <b>31+ Drill Cleared!</b><br>Main mode <b>[⚡ World 8P Battle]</b> is open!<br><br>🛡️ <b>Rookie Shield (First 10 Matches)</b><br>Your rating never drops even if you lose!<br><br>🍀 <b>1st Win Reward</b><br>Win 1st place to get <b>[Rookie Emerald]</b>!<br><br><span style="font-size:0.88em;opacity:0.9;">3 free Solo & 3 free Battle games daily<br>($2.99 Remove Ads for unlimited play)</span>',
                 goBattleNowBtn: '⚡ Enter World 8P Battle Now',
-                goBattleFreeBtn: (rem, max) => `⚡ Play Free World 8P Battle (${rem}/${max} left today)`,
+                goBattleFreeBtn: (rem, max) => `⚡ Free World 8P Battle (${rem}/${max} left)`,
                 gameOverBtn: '⚡ Play World 8P Battle',
-                gameOverBadgeNew: '🎁 NEW! First 10 Matches No Rating Loss · 1st Win Skin!',
-                gameOverBadgeShield: (m, max) => `🛡️ Rookie Shield Active (${m}/${max} · No Rating Loss)`,
+                gameOverBadgeNew: '🎁 NEW! First 10 Matches No Loss · 1st Win Skin!',
+                gameOverBadgeShield: (m, max) => `🛡️ Rookie Shield Active (${m}/${max} · No Loss)`,
                 newBadge: '🔥 NEW!'
             },
             ja: {
                 unlockTitle: '⚡ 世界8人バトル解放！',
-                unlockHtml: '🎉 <b>31点特訓突破！</b>メインモード<b>[⚡ 世界8人バトル]</b>が解放されました！<br><br>🛡️ <b>初心者保護</b>: 最初の10戦は負けてもレートが下がりません！<br>🍀 <b>初勝利報酬</b>: 1位達成で<b>[ルーキーエメラルド]</b>を即時獲得！<br><br><span style="font-size:0.9em;opacity:0.9;">(個人・対戦それぞれ1日3回無料 / $2.99 広告削除パスで永久無制限)</span>',
+                unlockHtml: '🎉 <b>31点特訓突破おめでとう！</b><br>メインモード<b>[⚡ 世界8人バトル]</b>が解放！<br><br>🛡️ <b>初心者保護 (最初の10戦)</b><br>負けてもレートが絶対に下がりません！<br><br>🍀 <b>初勝利ボーナス</b><br>1位達成で<b>[ルーキーエメラルド]</b>を即時獲得！<br><br><span style="font-size:0.88em;opacity:0.9;">個人・対戦それぞれ1日3回まで無料<br>($2.99 広告削除パスで永久無制限)</span>',
                 goBattleNowBtn: '⚡ 今すぐ世界8人バトルへ参戦',
-                goBattleFreeBtn: (rem, max) => `⚡ 世界8人バトル無料参戦 (本日残り${rem}/${max}回)`,
+                goBattleFreeBtn: (rem, max) => `⚡ 世界8人バトル無料参戦 (残り${rem}/${max}回)`,
                 gameOverBtn: '⚡ 世界8人バトルへ参戦',
-                gameOverBadgeNew: '🎁 NEW! 最初の10戦レート低下なし・初勝利スキン報酬！',
-                gameOverBadgeShield: (m, max) => `🛡️ 初心者保護適用中 (${m}/${max}戦・レート低下なし)`,
+                gameOverBadgeNew: '🎁 NEW! 最初の10戦レート低下なし・初勝利報酬！',
+                gameOverBadgeShield: (m, max) => `🛡️ 初心者保護適用中 (${m}/${max}戦・低下なし)`,
                 newBadge: '🔥 NEW!'
             },
             'zh-TW': {
                 unlockTitle: '⚡ 世界8人對戰解鎖！',
-                unlockHtml: '🎉 <b>突破31分特訓！</b>主打內容<b>[⚡ 世界8人對戰]</b>正式解鎖！<br><br>🛡️ <b>新手保護</b>: 前10場對戰落敗也不會扣減積分！<br>🍀 <b>首勝獎勵</b>: 奪得第1名即可立即獲得<b>[新秀翡翠]</b>造型！<br><br><span style="font-size:0.9em;opacity:0.9;">(單人與對戰每日各3場免費 / $2.99 移除廣告可終身無限暢玩)</span>',
+                unlockHtml: '🎉 <b>恭喜突破31分特訓！</b><br>主打模式<b>[⚡ 世界8人對戰]</b>正式開放！<br><br>🛡️ <b>新手保護 (前10場)</b><br>對戰落敗也絕不會扣減積分！<br><br>🍀 <b>首勝專屬獎勵</b><br>奪得第1名立即獲得<b>[新秀翡翠]</b>！<br><br><span style="font-size:0.88em;opacity:0.9;">單人與對戰每日各3場免費暢玩<br>($2.99 移除廣告可終身無限暢玩)</span>',
                 goBattleNowBtn: '⚡ 立即參加世界8人對戰',
-                goBattleFreeBtn: (rem, max) => `⚡ 免費參加世界8人對戰 (今日剩餘${rem}/${max}場)`,
+                goBattleFreeBtn: (rem, max) => `⚡ 免費參加世界8人對戰 (剩餘${rem}/${max}場)`,
                 gameOverBtn: '⚡ 參加世界8人對戰',
                 gameOverBadgeNew: '🎁 NEW! 前10場不扣積分・首勝送專屬造型！',
                 gameOverBadgeShield: (m, max) => `🛡️ 新手保護生效中 (${m}/${max}場・不扣積分)`,
                 newBadge: '🔥 NEW!'
             },
             es: {
-                unlockTitle: '⚡ ¡BATALLA MUNDIAL 8P ABIERTA!',
-                unlockHtml: '🎉 <b>¡Superaste 31 pts!</b> ¡El modo principal <b>[⚡ Batalla Mundial 8P]</b> está desbloqueado!<br><br>🛡️ <b>Escudo Novato</b>: ¡Tus puntos no bajan en las primeras 10 partidas!<br>🍀 <b>Premio 1ª Victoria</b>: ¡Gana el 1° lugar para obtener <b>[Esmeralda Novato]</b>!<br><br><span style="font-size:0.9em;opacity:0.9;">(3 partidas Solo y 3 Batallas gratis al día / $2.99 Sin Anuncios ilimitado)</span>',
-                goBattleNowBtn: '⚡ Entrar a Batalla Mundial 8P Ahora',
-                goBattleFreeBtn: (rem, max) => `⚡ Batalla Mundial 8P Gratis (${rem}/${max} restantes hoy)`,
+                unlockTitle: '⚡ ¡BATALLA MUNDIAL 8P!',
+                unlockHtml: '🎉 <b>¡Superaste 31 puntos!</b><br>¡El modo <b>[⚡ Batalla Mundial 8P]</b> está abierto!<br><br>🛡️ <b>Escudo Novato (10 Partidas)</b><br>¡Tus puntos nunca bajan aunque pierdas!<br><br>🍀 <b>Premio 1ª Victoria</b><br>¡Gana el 1° lugar y obtén <b>[Esmeralda Novato]</b>!<br><br><span style="font-size:0.88em;opacity:0.9;">3 partidas Solo y 3 Batallas gratis al día<br>($2.99 Sin Anuncios para jugar sin límites)</span>',
+                goBattleNowBtn: '⚡ Entrar a Batalla Mundial 8P',
+                goBattleFreeBtn: (rem, max) => `⚡ Batalla 8P Gratis (${rem}/${max} hoy)`,
                 gameOverBtn: '⚡ Jugar Batalla Mundial 8P',
-                gameOverBadgeNew: '🎁 ¡NUEVO! 10 partidas sin perder puntos · Premio 1ª victoria',
-                gameOverBadgeShield: (m, max) => `🛡️ Escudo Novato Activo (${m}/${max} · Sin perder puntos)`,
+                gameOverBadgeNew: '🎁 ¡NUEVO! 10 partidas sin bajar · Premio 1ª victoria',
+                gameOverBadgeShield: (m, max) => `🛡️ Escudo Novato Activo (${m}/${max} · Sin bajar)`,
                 newBadge: '🔥 ¡NUEVO!'
             }
         };
@@ -7190,6 +7198,7 @@
                 noadsBtn.innerText = textFor('playGateNoAdsBtn');
             }
             document.getElementById('play-gate-screen').classList.remove('hidden');
+            requestAnimationFrame(() => { if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes(); });
         }
 
         function openPlayGateModal(onTicketGranted = null, mode = 'solo') {
@@ -7253,6 +7262,7 @@
             if (closeBtn) closeBtn.innerText = textFor('playGateCloseBtn');
 
             document.getElementById('play-gate-screen').classList.remove('hidden');
+            requestAnimationFrame(() => { if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes(); });
         }
 
         function skipAdForTest() {
