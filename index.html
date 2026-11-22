@@ -6022,15 +6022,36 @@
             };
             if (!await showGameDialog('confirm', confirmMap[lang] || confirmMap.en)) return;
             try {
+                if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                    await firebase.auth().signOut().catch(() => {});
+                }
+            } catch (e) {}
+            try {
+                const social = typeof getSocialLoginPlugin === 'function' ? getSocialLoginPlugin() : null;
+                if (social && typeof social.logout === 'function') {
+                    await social.logout({ provider: 'google' }).catch(() => {});
+                }
+            } catch (e) {}
+            try {
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const k = localStorage.key(i);
                     if (k && (k.startsWith('infinitePitcher') || k.startsWith('infinite_pitcher'))) {
+                        if (k === SHARED_BOT_LOCAL_STORAGE_KEY) continue; // 공용 1,000명 봇 데이터는 유지
                         keysToRemove.push(k);
                     }
                 }
                 keysToRemove.forEach(k => localStorage.removeItem(k));
+                const freshKey = 'acct_local_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem(ACCOUNT_KEY_STORAGE, freshKey);
             } catch (e) {}
+            try {
+                sessionStorage.clear();
+            } catch (e) {}
+            closeSettingsModal();
+            if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+            if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
+            if (typeof updatePlayTicketStatusUI === 'function') updatePlayTicketStatusUI();
             location.reload();
         }
 
