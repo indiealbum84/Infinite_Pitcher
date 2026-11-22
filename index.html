@@ -6206,6 +6206,9 @@
         const TEST_MODE_ENABLED = false;
         // 설정 모달 내 [TEST] 내 데이터 초기화 버튼 노출 여부 (출시 직전 false로 변경하면 버튼과 동작이 즉시 숨김/비활성화됨)
         const SETTINGS_TEST_RESET_ENABLED = true;
+        // 8인 배틀 랭킹(TOP 1000)에 봇 점수 노출 여부
+        // (현재 테스트 단계: false로 숨김 → 출시 직후 초반: true로 켜서 랭킹 활성화 → 실제 유저 충분히 확보 후: 다시 false로 변경)
+        const SHOW_BOTS_IN_BATTLE_RANKING = false;
         let testMode = false;
         let testStartNum = 1;
 
@@ -10110,15 +10113,17 @@
         }
 
         function getCachedBattleRanks(scope = 'global') {
-            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_' + userCountry) : 'infinite_pitcher_battle_ranks_global';
+            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_v2_' + userCountry) : 'infinite_pitcher_battle_ranks_v2_global';
             try {
                 const list = JSON.parse(localStorage.getItem(key) || '[]');
-                return Array.isArray(list) ? list.filter(r => r && hasValidRankCountry(r.country)) : [];
+                return Array.isArray(list)
+                    ? list.filter(r => r && hasValidRankCountry(r.country) && (SHOW_BOTS_IN_BATTLE_RANKING || !r.isBot))
+                    : [];
             } catch (e) { return []; }
         }
 
         function setCachedBattleRanks(ranks, scope = 'global') {
-            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_' + userCountry) : 'infinite_pitcher_battle_ranks_global';
+            const key = scope === 'country' ? ('infinite_pitcher_battle_ranks_v2_' + userCountry) : 'infinite_pitcher_battle_ranks_v2_global';
             try { localStorage.setItem(key, JSON.stringify(ranks)); } catch (e) {}
         }
 
@@ -10132,15 +10137,18 @@
                 .then(snap => {
                     const val = snap.val() || {};
                     const bestByName = new Map();
-                    Object.values(val).forEach(entry => {
+                    Object.entries(val).forEach(([dbKey, entry]) => {
                         if (!entry || !entry.name || !hasValidRankCountry(entry.country)) return;
+                        const isBotEntry = Boolean(entry.isBot || String(dbKey || '').startsWith('bot_'));
+                        if (isBotEntry && !SHOW_BOTS_IN_BATTLE_RANKING) return;
                         const rating = Math.max(MIN_BATTLE_RATING, Math.round(Number(entry.rating) || 0));
                         const row = {
                             name: String(entry.name),
                             score: rating,
                             scoreLabel: `${rating.toLocaleString()} PT`,
                             country: String(entry.country || ''),
-                            createdAt: Number(entry.updatedAt || 0)
+                            createdAt: Number(entry.updatedAt || 0),
+                            isBot: isBotEntry
                         };
                         const key = row.name.trim().toUpperCase();
                         const prev = bestByName.get(key);
@@ -11438,8 +11446,8 @@
                 sharedBotStatsCache[cur.botKey] = entry;
                 botUpdates[cur.botKey] = entry;
 
-                // 실전을 치른 봇은 8인 세계/국가별 랭킹 보드에도 실시간 반영
-                if (battleRole === 'host' && typeof db !== 'undefined' && db) {
+                // 실전을 치른 봇의 8인 세계/국가별 랭킹 보드 반영 (SHOW_BOTS_IN_BATTLE_RANKING 토글에 따름)
+                if (SHOW_BOTS_IN_BATTLE_RANKING && battleRole === 'host' && typeof db !== 'undefined' && db) {
                     const rankEntryKey = 'bot_' + idx;
                     const rankPayload = {
                         name: cur.bareName.slice(0, 12),
@@ -11449,6 +11457,7 @@
                         streak: nextStreak,
                         skin: botPlayer.skin || 'classic',
                         country: cur.country,
+                        isBot: true,
                         updatedAt: now
                     };
                     try {
