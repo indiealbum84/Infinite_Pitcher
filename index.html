@@ -11557,12 +11557,7 @@
             banner.classList.remove('show');
             void banner.offsetWidth;
             banner.classList.add('show');
-            if (phase === 5) {
-                playSfx('flashball', 1.0);
-            } else if (phase >= 3) {
-                playSfx('mirrorball', 1.0);
-            }
-            // Phase 2(파이어볼)는 투구 루프에서 자체 사운드가 재생되므로 중복 방지
+            // Phase 2~5 특수볼 사운드는 각 트리거(파이어볼 루프 / triggerMirrorball / triggerStripeball / triggerFlashball)에서 1회만 재생
             triggerHaptic(phase >= 4 ? 'heavy' : 'medium');
 
             if (battlePhaseBannerTimer) clearTimeout(battlePhaseBannerTimer);
