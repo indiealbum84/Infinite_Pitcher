@@ -5893,6 +5893,8 @@
             }
             const resetBtn = document.getElementById('settings-test-reset-btn');
             if (resetBtn) {
+                const enabled = typeof SETTINGS_TEST_RESET_ENABLED === 'undefined' || Boolean(SETTINGS_TEST_RESET_ENABLED);
+                resetBtn.style.display = enabled ? '' : 'none';
                 const resetLabelMap = {
                     ko: '🧪 [TEST] 내 데이터 초기화',
                     en: '🧪 [TEST] Reset My Data',
@@ -6010,6 +6012,7 @@
         }
 
         async function resetMyLocalDataForTest() {
+            if (typeof SETTINGS_TEST_RESET_ENABLED !== 'undefined' && !SETTINGS_TEST_RESET_ENABLED) return;
             playSfx('click', 0.7);
             triggerHaptic('light');
             const lang = currentLang || 'ko';
@@ -6193,10 +6196,14 @@
         // 테스트 모드는 코드만 보관하고 기본적으로 비활성화한다.
         // 나중에 복구할 때 이 값을 true로 바꾸면 메뉴와 실행 경로가 다시 열린다.
         const TEST_MODE_ENABLED = false;
+        // 설정 모달 내 [TEST] 내 데이터 초기화 버튼 노출 여부 (출시 직전 false로 변경하면 버튼과 동작이 즉시 숨김/비활성화됨)
+        const SETTINGS_TEST_RESET_ENABLED = true;
         let testMode = false;
         let testStartNum = 1;
 
         function applyTestModeAvailability() {
+            const resetBtn = document.getElementById('settings-test-reset-btn');
+            if (resetBtn) resetBtn.style.display = SETTINGS_TEST_RESET_ENABLED ? '' : 'none';
             const testRow = document.getElementById('test-start-row');
             if (!testRow) return;
             testRow.style.display = TEST_MODE_ENABLED ? 'flex' : 'none';
