@@ -676,31 +676,30 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding-top: 165px;
+            padding-top: 70px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #fireball-announce.show {
-            animation: fbAnnounce 2.4s ease-out forwards;
+            animation: fbAnnounce 2.6s ease-out forwards;
         }
 
         @keyframes fbAnnounce {
-            0%   { opacity: 0; transform: scale(0.4); }
-            14%  { opacity: 1; transform: scale(1.1); }
-            28%  { opacity: 1; transform: scale(1.0); }
-            82%  { opacity: 1; transform: scale(1.0); }
-            100% { opacity: 0; transform: scale(0.92); }
+            0%   { opacity: 0; transform: scale(0.5); }
+            12%  { opacity: 1; transform: scale(1.06); }
+            24%  { opacity: 1; transform: scale(1.0); }
+            88%  { opacity: 1; transform: scale(1.0); }
+            100% { opacity: 0; transform: scale(0.95); }
         }
 
         #fireball-announce-img {
-            width: 68%;
-            max-width: 720px;
+            width: 100%;
             height: auto;
-            max-height: 29%;
+            max-height: 44%;
             object-fit: contain;
-            transform: translateX(-3%);
+            transform: translateX(-2%);
         }
 
         /* Flashball 알림 오버레이 */
@@ -712,23 +711,22 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding-top: 165px;
+            padding-top: 70px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #flashball-announce.show {
-            animation: fbAnnounce 2.4s ease-out forwards;
+            animation: fbAnnounce 2.6s ease-out forwards;
         }
 
         #flashball-announce-img {
-            width: 68%;
-            max-width: 720px;
+            width: 100%;
             height: auto;
-            max-height: 29%;
+            max-height: 44%;
             object-fit: contain;
-            transform: translateX(-3%);
+            transform: translateX(-2%);
         }
 
         /* Stripeball 알림 오버레이 */
@@ -740,21 +738,20 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding-top: 165px;
+            padding-top: 70px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #stripeball-announce.show {
-            animation: fbAnnounce 2.4s ease-out forwards;
+            animation: fbAnnounce 2.6s ease-out forwards;
         }
 
         #stripeball-announce-img {
-            width: 68%;
-            max-width: 720px;
+            width: 100%;
             height: auto;
-            max-height: 29%;
+            max-height: 44%;
             object-fit: contain;
             transform: translateX(-1%);
         }
@@ -768,14 +765,14 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding-top: 165px;
+            padding-top: 70px;
             pointer-events: none;
             z-index: 30;
             opacity: 0;
         }
 
         #mirrorball-announce.show {
-            animation: fbAnnounce 2.4s ease-out forwards;
+            animation: fbAnnounce 2.6s ease-out forwards;
         }
 
         /* 세계 8인 배틀 유도 배지 및 게임오버 직행 버튼 */
@@ -836,10 +833,9 @@
         }
 
         #mirrorball-announce-img {
-            width: 68%;
-            max-width: 720px;
+            width: 100%;
             height: auto;
-            max-height: 29%;
+            max-height: 44%;
             object-fit: contain;
             transform: translateX(0.5%);
         }
@@ -4205,7 +4201,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=20261122_4">
+    <link rel="stylesheet" href="./game-art.css?v=20261122_5">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));

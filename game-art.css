@@ -336,10 +336,10 @@ html[lang="zh-TW"] {
     color: var(--showa-paper);
 }
 :is(#fireball-announce-img, #mirrorball-announce-img, #stripeball-announce-img, #flashball-announce-img) {
-    width: 68%;
-    max-width: 720px;
+    width: 100%;
+    max-width: none;
     height: auto;
-    max-height: 29%;
+    max-height: 44%;
 }
 
 .skin-art-badge {
@@ -449,11 +449,8 @@ html[lang="zh-TW"] {
     width: 260px;
     height: 140px;
 }
-#battle-phase-banner.show[data-phase="2"] ~ #fireball-announce,
-#battle-phase-banner.show[data-phase="3"] ~ #mirrorball-announce,
-#battle-phase-banner.show[data-phase="4"] ~ #stripeball-announce,
-#battle-phase-banner.show[data-phase="5"] ~ #flashball-announce {
-    visibility: hidden;
+#battle-phase-banner.show ~ :is(#fireball-announce, #mirrorball-announce, #stripeball-announce, #flashball-announce) {
+    visibility: visible;
 }
 #battle-final-vignette {
     box-shadow: inset 0 0 65px #852c27ad, inset 0 0 110px #a6312c66;
