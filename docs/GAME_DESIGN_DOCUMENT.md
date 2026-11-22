@@ -205,9 +205,14 @@
 ### 7.1 영구 닉네임 & 다국어 금칙어 필터
 * 최초 1회 영구 등록(한글/일본어 최대 5자, 영문 최대 10자). NFD 정규화·리트스피크 치환·다국어 금칙어 필터 적용.
 
-### 7.2 최초 가입 국가 고정 (`homeCountry`) & TOP 1000 리더보드
+### 7.2 최초 가입 국가 고정 (`homeCountry`) & RANKING (세계 TOP 1000 / 국가 TOP 100)
 * 이름 등록 전까지만 IP(`api.country.is`)로 국가를 감지하며, **최초 이름 등록 순간 해당 국가로 영구 고정**(`USER_COUNTRY_LOCKED_KEY`, 서버 `users/{accountKey}/country` 우선 유지)하여 VPN 등을 이용한 다국가 1위 중복 등록을 방지한다.
-* 글로벌(`ranks`, `battle_ranks`) 및 자국(`ranks_country`, `battle_ranks_country`) TOP 1000 리더보드 지원.
+* **명칭 통일 (`RANKING`)**: 메인화면 좌상단 버튼(`RANKING`)과 랭킹 모달·게임 오버 리더보드 제목(`🏆 RANKING`)을 통일한다.
+* **세계 TOP 1000 / 국가 TOP 100 이원화**:
+  * **세계 랭킹 (`ranks`, `battle_ranks`)**: 상위 **1,000명 (`TOP 1000`, 순위권 밖 `1000+`)** 표시
+  * **국가 랭킹 (`ranks_country`, `battle_ranks_country`)**: 상위 **100명 (`TOP 100`, 순위권 밖 `100+`)** 표시
+* **랭킹 모달 내 [내 순위 (세계 / 국가)] 상단 고정 바 (`#intro-my-rank-bar`)**:
+  * 메인화면 `RANKING` 모달에서 탭 바로 아래에 현재 모드의 내 점수(`PT` / `PTS`)와 **`🌍 세계 (TOP 1000)` 등수 · `🏳️ 국가 (TOP 100)` 등수**를 나란히 고정 표시하여, 순위권 밖이거나 스크롤 아래에 있어도 즉시 내 위치를 확인할 수 있다.
 
 ### 7.3 Firebase 보안 규칙 (`database.rules.json`) & 계정 연동
 * `ranks` / `ranks_country`: `score` 정수(1~3000), `playTimeMs >= score * 350`, 서명 검증, 최고점 갱신만 허용.
