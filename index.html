@@ -119,14 +119,26 @@
             opacity: 0;
         }
 
-        /* Title and menu share one frame and one crop. */
+        /* Title and menu share the scene so the ball keeps its motion through START. */
         #splash-screen,
         #intro-screen {
             --splash-title-top: 62px;
             --intro-title-top: 151px;
             --splash-title-scale: .97;
             --intro-title-scale: .65;
+        }
+
+        #title-scenery {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 9;
             background: #f9edcf url('./images/title-pitch-follow-through-v4.webp') center / cover no-repeat;
+            pointer-events: none;
+        }
+
+        :is(#splash-screen, #intro-screen):not(.hidden) ~ #title-scenery {
+            display: block;
         }
 
         #splash-screen {
@@ -4099,7 +4111,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=splash-impact">
+    <link rel="stylesheet" href="./game-art.css?v=splash-stamp-ball">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4183,7 +4195,6 @@
         </div>
 
         <div id="splash-screen" class="screen splash-loading">
-            <div class="title-baseball" aria-hidden="true"></div>
             <h1 class="game-title" lang="en"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching" width="1150" height="411" fetchpriority="high"></h1>
             <button id="title-start-btn" type="button" class="start-btn" lang="en">START</button>
         </div>
@@ -4265,7 +4276,6 @@
                 <span aria-hidden="true">?</span>
             </button>
 
-            <div class="title-baseball" aria-hidden="true"></div>
             <h2 id="intro-title" class="game-title" lang="en" tabindex="-1"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching"></h2>
             <div class="speech-bubble" id="intro-bubble">
                 <span id="intro-bubble-quote">よしっ！世界一のピッチャーに<br>なるために、今日も特訓だ！</span>
@@ -4298,6 +4308,7 @@
                 </div>
             </div>
         </div>
+        <div id="title-scenery" aria-hidden="true"><div class="title-baseball"></div></div>
 
         <!-- 메인화면 설정 모달 -->
         <div id="settings-modal" class="hidden" onclick="if(event.target===this) closeSettingsModal()">

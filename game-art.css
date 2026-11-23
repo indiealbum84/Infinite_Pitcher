@@ -40,6 +40,9 @@ html[lang="zh-TW"] {
     #splash-screen.splash-loading :is(.game-title, #title-start-btn) { visibility: hidden; }
     #splash-screen.splash-opening .game-title { animation: splash-title-impact 290ms backwards; }
     #splash-screen.splash-opening #title-start-btn { animation: splash-start-impact 240ms 290ms backwards; }
+    #title-scenery .title-baseball {
+        animation: title-ball-drift 5.8s ease-in-out infinite, title-ball-spin 8.6s ease-in-out infinite;
+    }
 
     #intro-screen.intro-entering { --intro-title-duration: 420ms; }
 
@@ -71,21 +74,56 @@ html[lang="zh-TW"] {
     .intro-bubble-untyped { opacity: 0; }
 }
 
+@keyframes title-ball-drift {
+    0%, 100% { translate: 0 0; }
+    25% { translate: 7px -15px; }
+    50% { translate: 3px -7px; }
+    75% { translate: -5px 10px; }
+}
+
+@keyframes title-ball-spin {
+    0% { transform: rotate(-27deg); filter: blur(0); }
+    24% { transform: rotate(-14deg); }
+    44% { transform: rotate(-46deg); filter: blur(0); animation-timing-function: ease-in; }
+    47% { transform: rotate(68deg); filter: blur(1.8px); animation-timing-function: linear; }
+    51% { transform: rotate(533deg); filter: blur(2.6px); animation-timing-function: ease-out; }
+    55% { transform: rotate(685deg); filter: blur(0); }
+    70% { transform: rotate(704deg); }
+    100% { transform: rotate(693deg); filter: blur(0); }
+}
+
 @keyframes splash-title-impact {
     from {
         opacity: 0;
-        translate: 0 -160px;
-        scale: .98 1.1;
-        animation-timing-function: cubic-bezier(.55, .04, .8, .48);
+        translate: 0 -185px;
+        scale: 1.025 1.39;
+        filter: drop-shadow(0 24px 16px #56271975);
+        animation-timing-function: ease-out;
     }
-    61% {
+    24% {
         opacity: 1;
-        translate: 0 9px;
-        scale: 1.024 .83;
-        animation-timing-function: cubic-bezier(.21, .7, .38, 1);
+        translate: 0 -135px;
+        scale: 1.024 1.28;
+        filter: drop-shadow(0 20px 14px #56271975);
+        animation-timing-function: cubic-bezier(.58, .08, .83, .55);
     }
-    81% { opacity: 1; translate: 0 -12px; scale: .99 1.045; }
-    to { opacity: 1; translate: 0 0; scale: 1; }
+    54% {
+        opacity: 1;
+        translate: 0 3px;
+        scale: 1.016 .92;
+        filter: drop-shadow(0 3px 1px #562719a6);
+        animation-timing-function: linear;
+    }
+    60% { opacity: 1; translate: -6px 2px; scale: 1.008 .975; }
+    66% { opacity: 1; translate: 5px -2px; scale: 1 1.008; }
+    72% { opacity: 1; translate: -3px 1px; scale: 1; }
+    78% { opacity: 1; translate: 1.5px 0; scale: 1; }
+    85%, to {
+        opacity: 1;
+        translate: 0 0;
+        scale: 1;
+        filter: drop-shadow(0 0 0 transparent);
+    }
 }
 
 @keyframes splash-start-impact {
