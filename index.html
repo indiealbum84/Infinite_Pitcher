@@ -6428,8 +6428,8 @@
                 return;
             }
 
-            // This patch covers the jersey. Its edges stay fixed against the original illustration.
-            const patch = { x: 272, y: 564, width: 404, height: 254 };
+            // Original-image coordinates covering the shoulders and the extended arm.
+            const patch = { x: 417, y: 530, width: 390, height: 416 };
             const canvas = document.createElement('canvas');
             canvas.className = 'title-breath-canvas';
             canvas.width = patch.width;
@@ -6439,10 +6439,14 @@
             if (!context) return;
             scenery.insertBefore(canvas, scenery.querySelector('.title-baseball'));
 
-            const centerX = 195;
-            const centerY = 120;
-            function influence(x, y) {
-                return Math.max(0, 1 - ((x - centerX) / 173) ** 2 - ((y - centerY) / 101) ** 2) ** 2;
+            function softOval(x, y, centerX, centerY, radiusX, radiusY) {
+                return Math.max(0, 1 - ((x - centerX) / radiusX) ** 2 - ((y - centerY) / radiusY) ** 2) ** 2;
+            }
+
+            function liftAt(x, y) {
+                return 5.6 * softOval(x, y, 550, 634, 111, 89) +
+                    2.8 * softOval(x, y, 624, 747, 75, 96) +
+                    1.45 * softOval(x, y, 691, 835, 84, 92);
             }
             const tiles = [];
             const tileSize = 14;
@@ -6450,13 +6454,10 @@
                 for (let x = 0; x < patch.width; x += tileSize) {
                     const w = Math.min(tileSize, patch.width - x);
                     const h = Math.min(tileSize, patch.height - y);
-                    const midX = x + w / 2;
-                    const midY = y + h / 2;
-                    const left = -.045 * (x - centerX) * influence(x, midY);
-                    const right = -.045 * (x + w - centerX) * influence(x + w, midY);
-                    const top = 6.5 * influence(midX, y);
-                    const bottom = 6.5 * influence(midX, y + h);
-                    if (left || right || top || bottom) tiles.push({ x, y, w, h, left, right, top, bottom });
+                    const midX = patch.x + x + w / 2;
+                    const top = liftAt(midX, patch.y + y);
+                    const bottom = liftAt(midX, patch.y + y + h);
+                    if (top || bottom) tiles.push({ x, y, w, h, top, bottom });
                 }
             }
 
@@ -6471,9 +6472,9 @@
                 const breath = (1 - Math.cos(Math.PI * progress)) / 2;
                 context.drawImage(art, patch.x, patch.y, patch.width, patch.height, 0, 0, patch.width, patch.height);
                 if (breath > 0) {
-                    for (const { x, y, w, h, left, right, top, bottom } of tiles) {
-                        context.drawImage(art, patch.x + x + left * breath, patch.y + y + top * breath,
-                            w + (right - left) * breath, h + (bottom - top) * breath, x, y, w, h);
+                    for (const { x, y, w, h, top, bottom } of tiles) {
+                        context.drawImage(art, patch.x + x, patch.y + y + top * breath,
+                            w, h + (bottom - top) * breath, x, y, w, h);
                     }
                 }
                 lastPaint = now;
