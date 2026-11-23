@@ -4111,7 +4111,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=title-two-spin">
+    <link rel="stylesheet" href="./game-art.css?v=title-flame-outline">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -6334,6 +6334,87 @@
 
         let splashDismissed = false;
 
+        async function setupTitleFlames() {
+            const screens = [document.getElementById('splash-screen'), document.getElementById('intro-screen')];
+            const art = screens[0].querySelector('.game-title img');
+            try {
+                if (typeof art.decode === 'function') await art.decode();
+                else if (!art.complete) {
+                    art.addEventListener('load', setupTitleFlames, { once: true });
+                    return;
+                }
+            } catch {
+                return;
+            }
+            const width = art.naturalWidth;
+            const height = art.naturalHeight;
+            if (!width || !height) return;
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            if (!context) return;
+            const padding = Math.ceil(height * .035);
+            const flameBottom = Math.round(height * .215);
+            const stripWidth = Math.ceil(width / 96);
+            canvas.width = width;
+            canvas.height = height + padding;
+            canvas.className = 'title-flame-canvas';
+            canvas.setAttribute('aria-hidden', 'true');
+            canvas.style.top = `${-padding / height * 100}%`;
+            context.drawImage(art, 0, flameBottom, width, height - flameBottom,
+                0, padding + flameBottom, width, height - flameBottom);
+
+            const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            let activeTitle = null;
+            let frame = null;
+            let lastFrame = -Infinity;
+
+            function paintFlames(now) {
+                // Stretch each strip from a fixed bottom edge. The lettering below is never redrawn.
+                context.clearRect(0, 0, width, padding + flameBottom);
+                const phase = now / 245;
+                for (let x = 0; x < width; x += stripWidth) {
+                    const strip = Math.min(stripWidth, width - x);
+                    const across = (x + strip / 2) / width;
+                    const sway = height * (.017 * Math.sin(across * 31 - phase) + .008 * Math.sin(across * 57 + phase * 1.35));
+                    context.drawImage(art, x, 0, strip, flameBottom,
+                        x, padding + sway, strip, flameBottom - sway);
+                }
+                lastFrame = now;
+            }
+
+            function tick(now) {
+                if (now - lastFrame >= 32) paintFlames(now);
+                frame = requestAnimationFrame(tick);
+            }
+
+            function syncVisibleTitle() {
+                const visible = motion.matches ? null : screens.find(screen => !screen.classList.contains('hidden'));
+                const nextTitle = visible?.querySelector('.game-title') ?? null;
+                if (nextTitle === activeTitle) return;
+                activeTitle?.classList.remove('flames-active');
+                activeTitle = nextTitle;
+                if (activeTitle) {
+                    activeTitle.append(canvas);
+                    if (frame === null) {
+                        paintFlames(performance.now());
+                        frame = requestAnimationFrame(tick);
+                    }
+                    activeTitle.classList.add('flames-active');
+                } else if (frame !== null) {
+                    cancelAnimationFrame(frame);
+                    frame = null;
+                }
+            }
+
+            const observer = new MutationObserver(syncVisibleTitle);
+            screens.forEach(screen => observer.observe(screen, { attributes: true, attributeFilter: ['class'] }));
+            motion.addEventListener?.('change', syncVisibleTitle);
+            syncVisibleTitle();
+        }
+
+        setupTitleFlames();
+
         function typeIntroBubble(bubble) {
             const walker = document.createTreeWalker(bubble, NodeFilter.SHOW_TEXT);
             const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(currentLang, { granularity: 'grapheme' }) : null;
@@ -6384,21 +6465,10 @@
             const intro = document.getElementById('intro-screen');
             const introTitle = document.getElementById('intro-title');
             const bubble = document.getElementById('intro-bubble');
-            const flameStarts = new Map();
-            if (typeof introTitle.getAnimations === 'function') {
-                for (const animation of splash.querySelector('.game-title').getAnimations({ subtree: true })) {
-                    if (animation.animationName?.startsWith('title-flame-') && animation.startTime !== null) {
-                        flameStarts.set(animation.animationName, animation.startTime);
-                    }
-                }
-            }
             splash.classList.add('hidden');
             intro.classList.remove('hidden');
             if (typeof introTitle.getAnimations === 'function') {
                 intro.classList.add('intro-entering');
-                for (const animation of introTitle.getAnimations({ subtree: true })) {
-                    if (flameStarts.has(animation.animationName)) animation.startTime = flameStarts.get(animation.animationName);
-                }
                 const titleMotion = introTitle.getAnimations().find(animation => animation.animationName === 'intro-title-settle');
                 const bubbleMotion = bubble.getAnimations().find(animation => animation.animationName === 'intro-bubble-pop');
                 const startTyping = () => typeIntroBubble(bubble);
