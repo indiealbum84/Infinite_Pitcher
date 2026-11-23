@@ -36,8 +36,40 @@ html[lang="zh-TW"] {
     font-variant-numeric: tabular-nums;
 }
 
-#intro-screen .title-baseball {
-    top: 36.6%;
+@media (prefers-reduced-motion: no-preference) {
+    #intro-screen.intro-entering #intro-title {
+        transform-origin: center top;
+        animation: intro-title-settle 400ms cubic-bezier(.22, .71, .26, 1) both;
+    }
+
+    #intro-screen.intro-entering :is(#intro-ranking-btn, #intro-settings-btn, #intro-skin-btn, #intro-help-btn,
+        #intro-bubble, #intro-profile-pill, #battle-quick-main-btn, #start-btn-id, #battle-friend-btn, #intro-ticket-pill, #test-start-row) {
+        animation: intro-item-in 212ms cubic-bezier(.2, .78, .29, 1) var(--intro-entry-delay, 0ms) both;
+    }
+
+    #intro-ranking-btn { --intro-entry-delay: 18ms; --intro-entry-y: -25px; }
+    #intro-settings-btn { --intro-entry-delay: 36ms; --intro-entry-y: -25px; }
+    #intro-skin-btn { --intro-entry-delay: 54ms; --intro-entry-y: -25px; }
+    #intro-help-btn { --intro-entry-delay: 72ms; --intro-entry-y: -25px; }
+    #intro-bubble { --intro-entry-delay: 70ms; --intro-entry-x: -33px; --intro-entry-y: 7px; }
+    #intro-profile-pill { --intro-entry-delay: 85ms; }
+    #battle-quick-main-btn { --intro-entry-delay: 105ms; }
+    #start-btn-id { --intro-entry-delay: 128ms; --intro-entry-x: -18px; }
+    #battle-friend-btn { --intro-entry-delay: 145ms; --intro-entry-x: 18px; }
+    #intro-ticket-pill, #test-start-row { --intro-entry-delay: 170ms; }
+}
+
+@keyframes intro-title-settle {
+    from {
+        transform: translate(-50%, calc(var(--splash-title-top) - var(--intro-title-top)))
+            scale(calc(var(--splash-title-scale) / var(--intro-title-scale)));
+    }
+    to { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes intro-item-in {
+    from { opacity: 0; visibility: hidden; translate: var(--intro-entry-x, 0px) var(--intro-entry-y, 30px); }
+    to { opacity: 1; visibility: visible; translate: 0 0; }
 }
 
 #intro-screen .speech-bubble {
