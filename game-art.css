@@ -41,7 +41,17 @@ html[lang="zh-TW"] {
     #splash-screen.splash-opening .game-title { animation: splash-title-impact 290ms backwards; }
     #splash-screen.splash-opening #title-start-btn { animation: splash-start-impact 240ms 290ms backwards; }
     #title-scenery .title-baseball {
-        animation: title-ball-drift 5.8s ease-in-out infinite, title-ball-spin 8.6s ease-in-out infinite;
+        --title-ball-spin-duration: 8.6s;
+        animation: title-ball-drift 5.8s ease-in-out infinite, title-ball-spin var(--title-ball-spin-duration) ease-in-out infinite;
+    }
+
+    #title-scenery .title-baseball::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: inherit;
+        animation: title-ball-spin-trail var(--title-ball-spin-duration) ease-in-out infinite;
     }
 
     #intro-screen.intro-entering { --intro-title-duration: 420ms; }
@@ -85,11 +95,16 @@ html[lang="zh-TW"] {
     0% { transform: rotate(-27deg); filter: blur(0); }
     24% { transform: rotate(-14deg); }
     44% { transform: rotate(-46deg); filter: blur(0); animation-timing-function: ease-in; }
-    47% { transform: rotate(68deg); filter: blur(1.8px); animation-timing-function: linear; }
-    51% { transform: rotate(533deg); filter: blur(2.6px); animation-timing-function: ease-out; }
-    55% { transform: rotate(685deg); filter: blur(0); }
-    70% { transform: rotate(704deg); }
-    100% { transform: rotate(693deg); filter: blur(0); }
+    47% { transform: rotate(160deg); filter: blur(4.2px); animation-timing-function: linear; }
+    51% { transform: rotate(1060deg); filter: blur(6.4px); animation-timing-function: ease-out; }
+    55% { transform: rotate(1405deg); filter: blur(0); }
+    70% { transform: rotate(1424deg); }
+    100% { transform: rotate(1413deg); filter: blur(0); }
+}
+
+@keyframes title-ball-spin-trail {
+    0%, 44%, 55%, 100% { opacity: 0; rotate: 0deg; }
+    48%, 51% { opacity: .48; rotate: -34deg; }
 }
 
 @keyframes splash-title-impact {
