@@ -4111,7 +4111,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=splash-stamp-ball">
+    <link rel="stylesheet" href="./game-art.css?v=splash-depth-stamp">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -13309,6 +13309,7 @@
                 guide.dataset.message = message;
             }
             guide.hidden = !message;
+            guide.parentElement.classList.toggle('quote-only', !message);
         }
 
         function renderWorld8BattleButton(unlocked) {

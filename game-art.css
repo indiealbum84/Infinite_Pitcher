@@ -95,34 +95,34 @@ html[lang="zh-TW"] {
 @keyframes splash-title-impact {
     from {
         opacity: 0;
-        translate: 0 -185px;
-        scale: 1.025 1.39;
-        filter: drop-shadow(0 24px 16px #56271975);
-        animation-timing-function: ease-out;
+        translate: 0 0;
+        transform: translateX(-50%) scale(2.45);
+        filter: blur(5px);
+        animation-timing-function: cubic-bezier(.22, .56, .46, 1);
     }
-    24% {
+    22% {
         opacity: 1;
-        translate: 0 -135px;
-        scale: 1.024 1.28;
-        filter: drop-shadow(0 20px 14px #56271975);
-        animation-timing-function: cubic-bezier(.58, .08, .83, .55);
+        translate: 0 0;
+        transform: translateX(-50%) scale(1.86);
+        filter: blur(2px);
+        animation-timing-function: cubic-bezier(.56, .06, .82, .58);
     }
     54% {
         opacity: 1;
-        translate: 0 3px;
-        scale: 1.016 .92;
-        filter: drop-shadow(0 3px 1px #562719a6);
+        translate: 0 0;
+        transform: translateX(-50%) scale(1.016, .92);
+        filter: blur(0);
         animation-timing-function: linear;
     }
-    60% { opacity: 1; translate: -6px 2px; scale: 1.008 .975; }
-    66% { opacity: 1; translate: 5px -2px; scale: 1 1.008; }
-    72% { opacity: 1; translate: -3px 1px; scale: 1; }
-    78% { opacity: 1; translate: 1.5px 0; scale: 1; }
+    60% { opacity: 1; translate: -6px 0; transform: translateX(-50%) scale(1.008, .975); }
+    66% { opacity: 1; translate: 5px 0; transform: translateX(-50%) scale(1, 1.008); }
+    72% { opacity: 1; translate: -3px 0; transform: translateX(-50%); }
+    78% { opacity: 1; translate: 1.5px 0; transform: translateX(-50%); }
     85%, to {
         opacity: 1;
         translate: 0 0;
-        scale: 1;
-        filter: drop-shadow(0 0 0 transparent);
+        transform: translateX(-50%);
+        filter: blur(0);
     }
 }
 
@@ -212,6 +212,10 @@ html[lang="zh-TW"] {
     background: var(--showa-paper);
     box-shadow: 5px 6px 0 var(--showa-ink);
     pointer-events: none;
+}
+
+#intro-screen .speech-bubble.quote-only {
+    top: 460px;
 }
 
 #intro-screen .speech-bubble::before,
