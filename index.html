@@ -4099,7 +4099,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=title-entry">
+    <link rel="stylesheet" href="./game-art.css?v=title-entry-pop">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -6305,6 +6305,48 @@
 
         let splashDismissed = false;
 
+        function typeIntroBubble(bubble) {
+            const walker = document.createTreeWalker(bubble, NodeFilter.SHOW_TEXT);
+            const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(currentLang, { granularity: 'grapheme' }) : null;
+            const runs = [];
+            let length = 0;
+            while (walker.nextNode()) {
+                const text = walker.currentNode;
+                if (!text.data.trim() || text.parentElement.closest('[hidden]')) continue;
+                const glyphs = segmenter ? Array.from(segmenter.segment(text.data), entry => entry.segment) : Array.from(text.data);
+                runs.push({ text, glyphs, start: length, visible: 0 });
+                length += glyphs.length;
+            }
+            if (!length) return;
+
+            // Keep the unrevealed suffix in the same line layout and accessibility tree.
+            for (const run of runs) {
+                const suffix = document.createElement('span');
+                suffix.className = 'intro-bubble-untyped';
+                suffix.textContent = run.text.data;
+                run.text.data = '';
+                run.text.after(suffix);
+                run.suffix = suffix;
+            }
+
+            const startAt = performance.now() + 145;
+            const duration = 620;
+            function reveal(now) {
+                const progress = bubble.closest('.hidden') ? 1 : Math.max(0, Math.min(1, (now - startAt) / duration));
+                const visible = Math.floor(progress * length);
+                for (const run of runs) {
+                    const count = Math.max(0, Math.min(run.glyphs.length, visible - run.start));
+                    if (count === run.visible || !run.suffix.isConnected) continue;
+                    run.text.appendData(run.glyphs.slice(run.visible, count).join(''));
+                    run.visible = count;
+                    if (count === run.glyphs.length) run.suffix.remove();
+                    else run.suffix.firstChild.data = run.glyphs.slice(count).join('');
+                }
+                if (progress < 1) requestAnimationFrame(reveal);
+            }
+            requestAnimationFrame(reveal);
+        }
+
         function enterIntroFromSplash() {
             if (splashDismissed) return;
             splashDismissed = true;
@@ -6317,8 +6359,10 @@
                 intro.classList.add('intro-entering');
                 const titleMotion = introTitle.getAnimations().find(animation => animation.animationName === 'intro-title-settle');
                 const finishEntry = () => intro.classList.remove('intro-entering');
-                if (titleMotion) titleMotion.finished.then(finishEntry, finishEntry);
-                else finishEntry();
+                if (titleMotion) {
+                    titleMotion.finished.then(finishEntry, finishEntry);
+                    typeIntroBubble(document.getElementById('intro-bubble'));
+                } else finishEntry();
             }
             introTitle.focus({ preventScroll: true });
             unlockAudioOnTap();
@@ -13228,7 +13272,10 @@
             if (typeof updateGameOverWorld8PromoUI === 'function') updateGameOverWorld8PromoUI();
             const guide = document.getElementById('intro-bubble-guide');
             const message = !unlocked ? t.introBubbleGuideSolo : (!guideDone ? t.introBubbleGuideBattle : '');
-            if (guide.innerHTML !== message) guide.innerHTML = message;
+            if (guide.dataset.message !== message) {
+                guide.innerHTML = message;
+                guide.dataset.message = message;
+            }
             guide.hidden = !message;
         }
 
