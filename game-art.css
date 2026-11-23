@@ -37,13 +37,20 @@ html[lang="zh-TW"] {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+    #intro-screen.intro-entering { --intro-title-duration: 420ms; }
+
     #intro-screen.intro-entering #intro-title {
         transform-origin: center top;
-        animation: intro-title-settle 420ms both;
+        animation: intro-title-settle var(--intro-title-duration) both;
+    }
+
+    #intro-screen.intro-entering #intro-bubble {
+        transform-origin: calc(100% + 15px) 49%;
+        animation: intro-bubble-pop 300ms var(--intro-title-duration) both;
     }
 
     #intro-screen.intro-entering :is(#intro-ranking-btn, #intro-settings-btn, #intro-skin-btn, #intro-help-btn,
-        #intro-bubble, #intro-profile-pill, #battle-quick-main-btn, #start-btn-id, #battle-friend-btn, #intro-ticket-pill, #test-start-row) {
+        #intro-profile-pill, #battle-quick-main-btn, #start-btn-id, #battle-friend-btn, #intro-ticket-pill, #test-start-row) {
         animation: intro-item-in 230ms var(--intro-entry-delay, 0ms) both;
     }
 
@@ -51,7 +58,6 @@ html[lang="zh-TW"] {
     #intro-settings-btn { --intro-entry-delay: 106ms; --intro-entry-y: -42px; }
     #intro-skin-btn { --intro-entry-delay: 120ms; --intro-entry-y: -42px; }
     #intro-help-btn { --intro-entry-delay: 134ms; --intro-entry-y: -42px; }
-    #intro-bubble { --intro-entry-delay: 82ms; --intro-entry-x: -63px; --intro-entry-y: 9px; --intro-entry-angle: -4deg; }
     #intro-profile-pill { --intro-entry-delay: 95ms; }
     #battle-quick-main-btn { --intro-entry-delay: 110ms; }
     #start-btn-id { --intro-entry-delay: 140ms; --intro-entry-x: -55px; --intro-entry-angle: -3deg; }
@@ -73,6 +79,23 @@ html[lang="zh-TW"] {
         animation-timing-function: cubic-bezier(.32, .04, .24, 1);
     }
     to { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes intro-bubble-pop {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(158px, 65px) scale(.16, .38);
+        animation-timing-function: cubic-bezier(.16, .76, .26, 1);
+    }
+    62% {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(4px) scale(1.052, 1.035);
+        animation-timing-function: ease-in-out;
+    }
+    82% { opacity: 1; transform: translateY(2px) scale(.985, .99); }
+    to { opacity: 1; visibility: visible; transform: none; }
 }
 
 @keyframes intro-item-in {
