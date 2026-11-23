@@ -4626,6 +4626,8 @@
         const pitcherReleaseImg = loadGameArt('pitcher-upfield-throw');
         const pitcherFollowThroughImg = loadGameArt('pitcher-follow-through');
         const pitcherRecoveryImg = loadGameArt('pitcher-recovery');
+        const pitcherStepLeftImg = loadGameArt('pitcher-step-left');
+        const pitcherStepRightImg = loadGameArt('pitcher-step-right');
         const pitcherStumbleImg = loadGameArt('pitcher-buckling');
         const pitcherKneelImg = loadGameArt('pitcher-kneel');
         const ingameFieldBgImg = loadGameArt('field-perspective');
@@ -6512,8 +6514,8 @@
         }
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
-        const cartRoll = { previousX: null, phase: 0, lastMoveAt: -Infinity };
-        const reducedCartMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const lateralMotion = { previousX: null, cartPhase: 0, lastMoveAt: -Infinity, direction: 0, stride: 0, plantedX: 0 };
+        const reducedMovementMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let blocks = [];
         let balls = [];
         let scrollY = 0;
@@ -7080,9 +7082,9 @@
             }
             setPlayHudMode(isWorldBattleRules() ? 'world' : battleMode ? 'friend' : 'solo');
             exitConfirmPaused = false;
-            cartRoll.previousX = null;
-            cartRoll.phase = 0;
-            cartRoll.lastMoveAt = -Infinity;
+            lateralMotion.previousX = null;
+            lateralMotion.cartPhase = 0;
+            lateralMotion.lastMoveAt = -Infinity;
             updateUI();
             draw();
 
@@ -9254,8 +9256,9 @@
             ctx.restore();
         }
 
-        function drawGroundShadow(x, y, radiusX, radiusY) {
+        function drawGroundShadow(x, y, radiusX, radiusY, opacity = 1) {
             ctx.save();
+            ctx.globalAlpha *= opacity;
             ctx.translate(x, y);
             ctx.scale(radiusX, radiusY);
             const shade = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
@@ -9267,10 +9270,52 @@
             ctx.restore();
         }
 
+        // Contacts measured from the cropped artwork: x/y fraction, width, and strength.
+        const pitcherContacts = new Map([
+            [pitcherImg, [[.15, .935, 6, 1], [.72, .98, 7, 1]]],
+            [pitcherReleaseImg, [[.40, .795, 6, 1], [.60, 1, 5, .27]]],
+            [pitcherFollowThroughImg, [[.38, .823, 6, 1], [.80, 1, 5, .24]]],
+            [pitcherRecoveryImg, [[.17, .958, 6, .85], [.80, .986, 6, 1]]],
+            [pitcherStepLeftImg, [[.16, .946, 7, 1], [.78, .986, 5, .45]]],
+            [pitcherStepRightImg, [[.13, .951, 5, .45], [.81, .986, 7, 1]]],
+            [pitcherStumbleImg, [[.20, .945, 6, 1], [.51, .976, 7, 1]]],
+            [pitcherKneelImg, [[.34, .765, 6, .88], [.62, .84, 8, 1], [.18, .685, 5, .82], [.87, .706, 6, .85]]],
+        ]);
+
+        function updateLateralMotion(x, now) {
+            const delta = x - (lateralMotion.previousX ?? x);
+            lateralMotion.previousX = x;
+            const canMove = (gameState === 'PLAYING' || gameState === 'COUNTDOWN') &&
+                !exitConfirmPaused && !isPageInactive && !reducedMovementMotion.matches;
+            if (!canMove) lateralMotion.lastMoveAt = -Infinity;
+            const distance = Math.abs(delta);
+            if (canMove && distance > scalePx(.15)) {
+                const direction = Math.sign(delta);
+                if (direction !== lateralMotion.direction || now - lateralMotion.lastMoveAt >= 75) {
+                    lateralMotion.direction = direction;
+                    lateralMotion.stride = 0;
+                    lateralMotion.plantedX = x;
+                } else {
+                    lateralMotion.stride += Math.min(distance / scalePx(36), .2);
+                    if (lateralMotion.stride >= 1) {
+                        lateralMotion.stride %= 1;
+                        lateralMotion.plantedX = x;
+                    }
+                }
+                lateralMotion.cartPhase += Math.min(distance / scalePx(8), 1);
+                lateralMotion.lastMoveAt = now;
+            }
+            // Bridge gaps between input events before returning to the resting pose.
+            const idleFor = now - lateralMotion.lastMoveAt;
+            if (idleFor >= 75) lateralMotion.cartPhase = 0;
+            return idleFor;
+        }
+
         function drawPlayer() {
             const px = player.x;
             const py = player.y;
-            drawGroundShadow(px, py + scalePx(33), scalePx(20), scalePx(5));
+            const now = performance.now();
+            const idleFor = updateLateralMotion(px, now);
 
             // 장착된 스킨에 따른 피처 오라 (Pitcher Aura) 렌더링
             const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
@@ -9405,19 +9450,8 @@
                 const cartW = scalePx(53);
                 const cartH = cartW * cartImg.naturalHeight / cartImg.naturalWidth;
                 const wheelY = py + scalePx(41) + cartH;
-                const moveDistance = Math.abs(px - (cartRoll.previousX ?? px));
-                cartRoll.previousX = px;
-                const canRoll = (gameState === 'PLAYING' || gameState === 'COUNTDOWN') &&
-                    !exitConfirmPaused && !isPageInactive && !reducedCartMotion.matches;
-                const now = performance.now();
-                if (canRoll && moveDistance > scalePx(.15)) {
-                    cartRoll.phase += Math.min(moveDistance / scalePx(8), 1);
-                    cartRoll.lastMoveAt = now;
-                }
-                // Briefly bridge gaps between pointer events, then settle fully at rest.
-                const roll = canRoll ? Math.max(0, 1 - Math.max(0, now - cartRoll.lastMoveAt - 30) / 45) : 0;
-                if (!roll) cartRoll.phase = 0;
-                const squash = Math.sin(cartRoll.phase) * roll;
+                const roll = Math.max(0, 1 - Math.max(0, idleFor - 30) / 45);
+                const squash = Math.sin(lateralMotion.cartPhase) * roll;
                 const rollingWidth = cartW * (1 + squash * .024);
                 const rollingHeight = cartH * (1 - squash * .036);
                 drawGroundShadow(px, wheelY - scalePx(1), scalePx(29), scalePx(5));
@@ -9428,8 +9462,9 @@
             let spriteHeight = 83;
             let anchorX = 0.47;
             let bottomOffset = 34;
+            let renderX = px;
             if (deathFreezeState) {
-                const elapsed = performance.now() - deathFreezeState.startedAt;
+                const elapsed = now - deathFreezeState.startedAt;
                 const landed = deathFreezeState.reducedMotion || elapsed >= PITCHER_KNEEL_AT_MS;
                 anchorX = 0.5;
                 if ((landed || !isSpriteReady(pitcherStumbleImg)) && isSpriteReady(pitcherKneelImg)) {
@@ -9440,7 +9475,7 @@
                     spriteHeight = 73;
                 }
             } else if (pitchReleaseAt !== null) {
-                const elapsed = performance.now() - pitchReleaseAt;
+                const elapsed = now - pitchReleaseAt;
                 if (elapsed >= PITCH_READY_AT_MS) {
                     pitchReleaseAt = null;
                 } else if (elapsed >= PITCH_RECOVERY_AT_MS && isSpriteReady(pitcherRecoveryImg)) {
@@ -9460,10 +9495,26 @@
                     anchorX = 0.54;
                 }
             }
+            if (sprite === pitcherImg && pitchReleaseAt === null && idleFor < 75 && lateralMotion.stride < .62) {
+                const step = lateralMotion.direction < 0 ? pitcherStepLeftImg : pitcherStepRightImg;
+                if (isSpriteReady(step)) {
+                    sprite = step;
+                    const plantLimit = scalePx(4);
+                    renderX += Math.max(-plantLimit, Math.min(plantLimit, lateralMotion.plantedX - px));
+                }
+            }
             if (isSpriteReady(sprite)) {
                 const pitcherH = scalePx(spriteHeight);
                 const pitcherW = pitcherH * sprite.naturalWidth / sprite.naturalHeight;
-                ctx.drawImage(sprite, px - pitcherW * anchorX, py + scalePx(bottomOffset) - pitcherH, pitcherW, pitcherH);
+                const left = renderX - pitcherW * anchorX;
+                const top = py + scalePx(bottomOffset) - pitcherH;
+                const contacts = pitcherContacts.get(sprite);
+                const contactDepth = contacts.reduce((sum, point) => sum + point[1], 0) / contacts.length;
+                drawGroundShadow(renderX, top + pitcherH * contactDepth, scalePx(19), scalePx(4), .33);
+                for (const [x, y, radius, strength] of contacts) {
+                    drawGroundShadow(left + pitcherW * x, top + pitcherH * y, scalePx(radius), scalePx(2.2), strength);
+                }
+                ctx.drawImage(sprite, left, top, pitcherW, pitcherH);
             }
         }
 
