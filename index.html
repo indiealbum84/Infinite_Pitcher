@@ -4642,6 +4642,7 @@
         // Leave time in the ready pose before the fastest 400 ms pitch interval.
         const PITCH_READY_AT_MS = 335;
         const PITCHER_KNEEL_AT_MS = 240;
+        const PITCHER_MOVE_POSE_HOLD_MS = 90;
         const DEATH_FREEZE_MIN_MS = 620;
         let pitchReleaseAt = null;
 
@@ -6514,7 +6515,7 @@
         }
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
-        const lateralMotion = { previousX: null, cartPhase: 0, lastMoveAt: -Infinity, direction: 0, stride: 0, plantedX: 0 };
+        const lateralMotion = { previousX: null, cartPhase: 0, lastMoveAt: -Infinity, direction: 0, turnX: 0 };
         const reducedMovementMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let blocks = [];
         let balls = [];
@@ -9291,17 +9292,12 @@
             const distance = Math.abs(delta);
             if (canMove && distance > scalePx(.15)) {
                 const direction = Math.sign(delta);
-                if (direction !== lateralMotion.direction || now - lateralMotion.lastMoveAt >= 75) {
+                if (now - lateralMotion.lastMoveAt >= PITCHER_MOVE_POSE_HOLD_MS ||
+                    (direction !== lateralMotion.direction && Math.abs(x - lateralMotion.turnX) >= scalePx(2.5))) {
                     lateralMotion.direction = direction;
-                    lateralMotion.stride = 0;
-                    lateralMotion.plantedX = x;
-                } else {
-                    lateralMotion.stride += Math.min(distance / scalePx(36), .2);
-                    if (lateralMotion.stride >= 1) {
-                        lateralMotion.stride %= 1;
-                        lateralMotion.plantedX = x;
-                    }
                 }
+                // Ignore brief reversals from finger jitter until the drag travels back far enough.
+                if (direction === lateralMotion.direction) lateralMotion.turnX = x;
                 lateralMotion.cartPhase += Math.min(distance / scalePx(8), 1);
                 lateralMotion.lastMoveAt = now;
             }
@@ -9462,7 +9458,6 @@
             let spriteHeight = 83;
             let anchorX = 0.47;
             let bottomOffset = 34;
-            let renderX = px;
             if (deathFreezeState) {
                 const elapsed = now - deathFreezeState.startedAt;
                 const landed = deathFreezeState.reducedMotion || elapsed >= PITCHER_KNEEL_AT_MS;
@@ -9495,22 +9490,18 @@
                     anchorX = 0.54;
                 }
             }
-            if (sprite === pitcherImg && pitchReleaseAt === null && idleFor < 75 && lateralMotion.stride < .62) {
+            if (sprite === pitcherImg && pitchReleaseAt === null && idleFor < PITCHER_MOVE_POSE_HOLD_MS) {
                 const step = lateralMotion.direction < 0 ? pitcherStepLeftImg : pitcherStepRightImg;
-                if (isSpriteReady(step)) {
-                    sprite = step;
-                    const plantLimit = scalePx(4);
-                    renderX += Math.max(-plantLimit, Math.min(plantLimit, lateralMotion.plantedX - px));
-                }
+                if (isSpriteReady(step)) sprite = step;
             }
             if (isSpriteReady(sprite)) {
                 const pitcherH = scalePx(spriteHeight);
                 const pitcherW = pitcherH * sprite.naturalWidth / sprite.naturalHeight;
-                const left = renderX - pitcherW * anchorX;
+                const left = px - pitcherW * anchorX;
                 const top = py + scalePx(bottomOffset) - pitcherH;
                 const contacts = pitcherContacts.get(sprite);
                 const contactDepth = contacts.reduce((sum, point) => sum + point[1], 0) / contacts.length;
-                drawGroundShadow(renderX, top + pitcherH * contactDepth, scalePx(19), scalePx(4), .33);
+                drawGroundShadow(px, top + pitcherH * contactDepth, scalePx(19), scalePx(4), .33);
                 for (const [x, y, radius, strength] of contacts) {
                     drawGroundShadow(left + pitcherW * x, top + pitcherH * y, scalePx(radius), scalePx(2.2), strength);
                 }
