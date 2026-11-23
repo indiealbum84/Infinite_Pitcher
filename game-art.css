@@ -40,6 +40,29 @@ html[lang="zh-TW"] {
     #splash-screen.splash-loading :is(.game-title, #title-start-btn) { visibility: hidden; }
     #splash-screen.splash-opening .game-title { animation: splash-title-impact 290ms backwards; }
     #splash-screen.splash-opening #title-start-btn { animation: splash-start-impact 240ms 290ms backwards; }
+    .game-title::before,
+    .game-title::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: url('./images/showa-fire-title.webp') center / 100% 100% no-repeat;
+        mask-image: linear-gradient(#000 0 15%, transparent 25%);
+        filter: brightness(1.13) saturate(1.2) drop-shadow(0 -4px 7px #ff622970);
+    }
+
+    .game-title::before {
+        clip-path: inset(0 49% 0 0);
+        transform-origin: 27% 22%;
+        animation: title-flame-left 1.65s ease-in-out infinite;
+    }
+
+    .game-title::after {
+        clip-path: inset(0 0 0 49%);
+        transform-origin: 76% 22%;
+        animation: title-flame-right 2.05s ease-in-out infinite;
+    }
+
     #title-scenery .title-baseball {
         --title-ball-spin-duration: 8.6s;
         animation: title-ball-drift 5.8s ease-in-out infinite, title-ball-spin var(--title-ball-spin-duration) ease-in-out infinite;
@@ -82,6 +105,20 @@ html[lang="zh-TW"] {
     #intro-ticket-pill, #test-start-row { --intro-entry-delay: 185ms; }
 
     .intro-bubble-untyped { opacity: 0; }
+}
+
+@keyframes title-flame-left {
+    0%, 100% { opacity: .56; transform: translate(-1px, -3px) skewX(-1deg) scaleY(1.05); }
+    34% { opacity: .87; transform: translate(3px, -8px) skewX(4deg) scaleY(1.22); }
+    59% { opacity: .64; transform: translate(-2px, -3px) skewX(1deg) scaleY(1.09); }
+    78% { opacity: .77; transform: translate(2px, -6px) skewX(-3deg) scaleY(1.17); }
+}
+
+@keyframes title-flame-right {
+    0%, 100% { opacity: .82; transform: translate(2px, -6px) skewX(2deg) scaleY(1.17); }
+    27% { opacity: .55; transform: translate(-2px, -2px) skewX(-2deg) scaleY(1.05); }
+    55% { opacity: .89; transform: translate(2px, -9px) skewX(4deg) scaleY(1.23); }
+    80% { opacity: .62; transform: translate(-1px, -3px) skewX(-1deg) scaleY(1.1); }
 }
 
 @keyframes title-ball-drift {

@@ -4111,7 +4111,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=splash-fast-spin">
+    <link rel="stylesheet" href="./game-art.css?v=title-flame-motion">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -6380,13 +6380,25 @@
             if (splashDismissed) return;
             splashDismissed = true;
             applyLang(currentLang);
+            const splash = document.getElementById('splash-screen');
             const intro = document.getElementById('intro-screen');
             const introTitle = document.getElementById('intro-title');
             const bubble = document.getElementById('intro-bubble');
-            document.getElementById('splash-screen').classList.add('hidden');
+            const flameStarts = new Map();
+            if (typeof introTitle.getAnimations === 'function') {
+                for (const animation of splash.querySelector('.game-title').getAnimations({ subtree: true })) {
+                    if (animation.animationName?.startsWith('title-flame-') && animation.startTime !== null) {
+                        flameStarts.set(animation.animationName, animation.startTime);
+                    }
+                }
+            }
+            splash.classList.add('hidden');
             intro.classList.remove('hidden');
             if (typeof introTitle.getAnimations === 'function') {
                 intro.classList.add('intro-entering');
+                for (const animation of introTitle.getAnimations({ subtree: true })) {
+                    if (flameStarts.has(animation.animationName)) animation.startTime = flameStarts.get(animation.animationName);
+                }
                 const titleMotion = introTitle.getAnimations().find(animation => animation.animationName === 'intro-title-settle');
                 const bubbleMotion = bubble.getAnimations().find(animation => animation.animationName === 'intro-bubble-pop');
                 const startTyping = () => typeIntroBubble(bubble);
