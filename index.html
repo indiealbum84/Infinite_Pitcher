@@ -6512,6 +6512,8 @@
         }
 
         let player = { x: 0, y: 0, width: 60, height: 80 };
+        const cartRoll = { previousX: null, phase: 0, lastMoveAt: -Infinity };
+        const reducedCartMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let blocks = [];
         let balls = [];
         let scrollY = 0;
@@ -7078,6 +7080,9 @@
             }
             setPlayHudMode(isWorldBattleRules() ? 'world' : battleMode ? 'friend' : 'solo');
             exitConfirmPaused = false;
+            cartRoll.previousX = null;
+            cartRoll.phase = 0;
+            cartRoll.lastMoveAt = -Infinity;
             updateUI();
             draw();
 
@@ -9249,9 +9254,23 @@
             ctx.restore();
         }
 
+        function drawGroundShadow(x, y, radiusX, radiusY) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(radiusX, radiusY);
+            const shade = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+            shade.addColorStop(0, 'rgba(45, 23, 17, .39)');
+            shade.addColorStop(.57, 'rgba(45, 23, 17, .25)');
+            shade.addColorStop(1, 'rgba(45, 23, 17, 0)');
+            ctx.fillStyle = shade;
+            ctx.fillRect(-1, -1, 2, 2);
+            ctx.restore();
+        }
+
         function drawPlayer() {
             const px = player.x;
             const py = player.y;
+            drawGroundShadow(px, py + scalePx(33), scalePx(20), scalePx(5));
 
             // 장착된 스킨에 따른 피처 오라 (Pitcher Aura) 렌더링
             const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
@@ -9385,7 +9404,24 @@
             if (isSpriteReady(cartImg)) {
                 const cartW = scalePx(53);
                 const cartH = cartW * cartImg.naturalHeight / cartImg.naturalWidth;
-                ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(41), cartW, cartH);
+                const wheelY = py + scalePx(41) + cartH;
+                const moveDistance = Math.abs(px - (cartRoll.previousX ?? px));
+                cartRoll.previousX = px;
+                const canRoll = (gameState === 'PLAYING' || gameState === 'COUNTDOWN') &&
+                    !exitConfirmPaused && !isPageInactive && !reducedCartMotion.matches;
+                const now = performance.now();
+                if (canRoll && moveDistance > scalePx(.15)) {
+                    cartRoll.phase += Math.min(moveDistance / scalePx(8), 1);
+                    cartRoll.lastMoveAt = now;
+                }
+                // Briefly bridge gaps between pointer events, then settle fully at rest.
+                const roll = canRoll ? Math.max(0, 1 - Math.max(0, now - cartRoll.lastMoveAt - 30) / 45) : 0;
+                if (!roll) cartRoll.phase = 0;
+                const squash = Math.sin(cartRoll.phase) * roll;
+                const rollingWidth = cartW * (1 + squash * .024);
+                const rollingHeight = cartH * (1 - squash * .036);
+                drawGroundShadow(px, wheelY - scalePx(1), scalePx(29), scalePx(5));
+                ctx.drawImage(cartImg, px - rollingWidth / 2, wheelY - rollingHeight, rollingWidth, rollingHeight);
             }
 
             let sprite = pitcherImg;
