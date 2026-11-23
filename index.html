@@ -4640,7 +4640,6 @@
         // Leave time in the ready pose before the fastest 400 ms pitch interval.
         const PITCH_READY_AT_MS = 335;
         const PITCHER_KNEEL_AT_MS = 240;
-        const PITCHER_KNEEL_SETTLE_MS = 110;
         const DEATH_FREEZE_MIN_MS = 620;
         let pitchReleaseAt = null;
 
@@ -9384,8 +9383,8 @@
             }
 
             if (isSpriteReady(cartImg)) {
-                const cartW = scalePx(67);
-                const cartH = cartW * cartImg.naturalHeight / cartImg.naturalWidth;
+                const cartW = scalePx(55);
+                const cartH = scalePx(25);
                 ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(37), cartW, cartH);
             }
 
@@ -9399,12 +9398,12 @@
                 anchorX = 0.5;
                 if ((landed || !isSpriteReady(pitcherStumbleImg)) && isSpriteReady(pitcherKneelImg)) {
                     sprite = pitcherKneelImg;
-                    const settle = deathFreezeState.reducedMotion ? 1 : Math.max(0, Math.min(1, (elapsed - PITCHER_KNEEL_AT_MS) / PITCHER_KNEEL_SETTLE_MS));
-                    spriteHeight = 55 - 4 * (1 - settle) ** 2;
+                    spriteHeight = 45;
                 } else if (isSpriteReady(pitcherStumbleImg)) {
                     sprite = pitcherStumbleImg;
                     const fall = Math.min(1, elapsed / PITCHER_KNEEL_AT_MS);
-                    spriteHeight = 73 - 8 * fall ** 2;
+                    // The forward lean widens the silhouette. Size the torso consistently with the other poses.
+                    spriteHeight = 53 - 5 * fall ** 2;
                 }
             } else if (pitchReleaseAt !== null) {
                 const elapsed = performance.now() - pitchReleaseAt;
