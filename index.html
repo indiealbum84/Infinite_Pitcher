@@ -4099,7 +4099,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=title-bubble-pop">
+    <link rel="stylesheet" href="./game-art.css?v=splash-impact">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4182,11 +4182,29 @@
             </div>
         </div>
 
-        <div id="splash-screen" class="screen">
+        <div id="splash-screen" class="screen splash-loading">
             <div class="title-baseball" aria-hidden="true"></div>
-            <h1 class="game-title" lang="en"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching" fetchpriority="high"></h1>
+            <h1 class="game-title" lang="en"><img src="./images/showa-fire-title.webp" alt="Infinity Pitching" width="1150" height="411" fetchpriority="high"></h1>
             <button id="title-start-btn" type="button" class="start-btn" lang="en">START</button>
         </div>
+        <script>
+            (() => {
+                const splash = document.getElementById('splash-screen');
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    splash.classList.remove('splash-loading');
+                    return;
+                }
+                const logo = splash.querySelector('.game-title img');
+                const reveal = () => {
+                    clearTimeout(fallback);
+                    splash.classList.replace('splash-loading', 'splash-opening');
+                };
+                // Let the logo decode before the first hit without blocking START on a slow image.
+                const fallback = setTimeout(reveal, 450);
+                if (typeof logo.decode === 'function') logo.decode().then(reveal, reveal);
+                else reveal();
+            })();
+        </script>
 
         <!-- 게임 최초 시작 시 영구 게임 이름 등록 & Google/Apple 계정 복원 모달 -->
         <div id="initial-profile-screen" class="screen hidden">

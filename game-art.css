@@ -37,6 +37,10 @@ html[lang="zh-TW"] {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+    #splash-screen.splash-loading :is(.game-title, #title-start-btn) { visibility: hidden; }
+    #splash-screen.splash-opening .game-title { animation: splash-title-impact 290ms backwards; }
+    #splash-screen.splash-opening #title-start-btn { animation: splash-start-impact 240ms 290ms backwards; }
+
     #intro-screen.intro-entering { --intro-title-duration: 420ms; }
 
     #intro-screen.intro-entering #intro-title {
@@ -65,6 +69,42 @@ html[lang="zh-TW"] {
     #intro-ticket-pill, #test-start-row { --intro-entry-delay: 185ms; }
 
     .intro-bubble-untyped { opacity: 0; }
+}
+
+@keyframes splash-title-impact {
+    from {
+        opacity: 0;
+        translate: 0 -160px;
+        scale: .98 1.1;
+        animation-timing-function: cubic-bezier(.55, .04, .8, .48);
+    }
+    61% {
+        opacity: 1;
+        translate: 0 9px;
+        scale: 1.024 .83;
+        animation-timing-function: cubic-bezier(.21, .7, .38, 1);
+    }
+    81% { opacity: 1; translate: 0 -12px; scale: .99 1.045; }
+    to { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+@keyframes splash-start-impact {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        translate: 0 -152px;
+        scale: .79 1.12;
+        animation-timing-function: cubic-bezier(.54, .07, .8, .48);
+    }
+    62% {
+        opacity: 1;
+        visibility: visible;
+        translate: 0 8px;
+        scale: 1.085 .82;
+        animation-timing-function: cubic-bezier(.2, .73, .4, 1);
+    }
+    82% { opacity: 1; visibility: visible; translate: 0 -8px; scale: .985 1.05; }
+    to { opacity: 1; visibility: visible; translate: 0 0; scale: 1; }
 }
 
 @keyframes intro-title-settle {
