@@ -667,114 +667,6 @@
             touch-action: auto !important;
         }
 
-        /* Fireball 알림 오버레이 */
-        #fireball-announce {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding-top: 70px;
-            pointer-events: none;
-            z-index: 30;
-            opacity: 0;
-        }
-
-        #fireball-announce.show {
-            animation: fbAnnounce 2.6s ease-out forwards;
-        }
-
-        @keyframes fbAnnounce {
-            0%   { opacity: 0; transform: scale(0.5); }
-            12%  { opacity: 1; transform: scale(1.06); }
-            24%  { opacity: 1; transform: scale(1.0); }
-            88%  { opacity: 1; transform: scale(1.0); }
-            100% { opacity: 0; transform: scale(0.95); }
-        }
-
-        #fireball-announce-img {
-            width: 100%;
-            height: auto;
-            max-height: 44%;
-            object-fit: contain;
-            transform: translateX(-2%);
-        }
-
-        /* Flashball 알림 오버레이 */
-        #flashball-announce {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding-top: 70px;
-            pointer-events: none;
-            z-index: 30;
-            opacity: 0;
-        }
-
-        #flashball-announce.show {
-            animation: fbAnnounce 2.6s ease-out forwards;
-        }
-
-        #flashball-announce-img {
-            width: 100%;
-            height: auto;
-            max-height: 44%;
-            object-fit: contain;
-            transform: translateX(-2%);
-        }
-
-        /* Stripeball 알림 오버레이 */
-        #stripeball-announce {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding-top: 70px;
-            pointer-events: none;
-            z-index: 30;
-            opacity: 0;
-        }
-
-        #stripeball-announce.show {
-            animation: fbAnnounce 2.6s ease-out forwards;
-        }
-
-        #stripeball-announce-img {
-            width: 100%;
-            height: auto;
-            max-height: 44%;
-            object-fit: contain;
-            transform: translateX(-1%);
-        }
-
-        /* Mirrorball 알림 오버레이 */
-        #mirrorball-announce {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding-top: 70px;
-            pointer-events: none;
-            z-index: 30;
-            opacity: 0;
-        }
-
-        #mirrorball-announce.show {
-            animation: fbAnnounce 2.6s ease-out forwards;
-        }
-
         /* 세계 8인 배틀 유도 배지 및 게임오버 직행 버튼 */
         .w8-new-badge {
             position: absolute;
@@ -830,14 +722,6 @@
             color: #fff8e6 !important;
             font-size: 38px !important;
             padding: 20px 28px !important;
-        }
-
-        #mirrorball-announce-img {
-            width: 100%;
-            height: auto;
-            max-height: 44%;
-            object-fit: contain;
-            transform: translateX(0.5%);
         }
 
         /* 인게임 특수볼 하단(잔디 영역) 설명 배너 */
@@ -4211,7 +4095,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=20261122_7">
+    <link rel="stylesheet" href="./game-art.css?v=cutin-kneel">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4663,25 +4547,38 @@
             <div id="countdown-text">3</div>
         </div>
 
-        <!-- 미러볼 알림 오버레이 -->
-        <div id="flashball-announce">
-            <img src="./images/showa-flashball.webp" id="flashball-announce-img" alt="">
+        <div id="flashball-announce" class="special-cutin" data-move="flashball" lang="en">
+            <img src="./images/showa-cutin-flashball.webp" alt="" fetchpriority="low">
+            <strong class="special-cutin-title">
+                <span>FLASHBALL</span>
+                <img class="special-title-art" src="./images/showa-letter-flashball.webp" alt="FLASHBALL" fetchpriority="low" hidden onload="this.hidden = false; this.previousElementSibling.hidden = true">
+            </strong>
         </div>
 
-        <div id="stripeball-announce">
-            <img src="./images/showa-stripeball.webp" id="stripeball-announce-img" alt="">
+        <div id="stripeball-announce" class="special-cutin" data-move="stripeball" lang="en">
+            <img src="./images/showa-cutin-stripeball.webp" alt="" fetchpriority="low">
+            <strong class="special-cutin-title">
+                <span>STRIPEBALL</span>
+                <img class="special-title-art" src="./images/showa-letter-stripeball.webp" alt="STRIPEBALL" fetchpriority="low" hidden onload="this.hidden = false; this.previousElementSibling.hidden = true">
+            </strong>
         </div>
 
-        <div id="mirrorball-announce">
-            <img src="./images/showa-mirrorball.webp" id="mirrorball-announce-img" alt="">
+        <div id="mirrorball-announce" class="special-cutin" data-move="mirrorball" lang="en">
+            <img src="./images/showa-cutin-mirrorball.webp" alt="" fetchpriority="low">
+            <strong class="special-cutin-title">
+                <span>MIRRORBALL</span>
+                <img class="special-title-art" src="./images/showa-letter-mirrorball.webp" alt="MIRRORBALL" fetchpriority="low" hidden onload="this.hidden = false; this.previousElementSibling.hidden = true">
+            </strong>
         </div>
 
-        <!-- 파이어볼 알림 오버레이 -->
-        <div id="fireball-announce">
-            <img src="./images/showa-fireball.webp" id="fireball-announce-img" alt="">
+        <div id="fireball-announce" class="special-cutin" data-move="fireball" lang="en">
+            <img src="./images/showa-cutin-fireball.webp" alt="" fetchpriority="low">
+            <strong class="special-cutin-title">
+                <span>FIREBALL</span>
+                <img class="special-title-art" src="./images/showa-letter-fireball.webp" alt="FIREBALL" fetchpriority="low" hidden onload="this.hidden = false; this.previousElementSibling.hidden = true">
+            </strong>
         </div>
 
-        <!-- 인게임 특수볼 하단 1줄 설명 배너 -->
         <div id="special-ball-tip-banner" aria-live="polite"></div>
 
         <!-- 사망 순간 원인 확인 정지(Freeze) 배너 -->
@@ -4724,11 +4621,13 @@
             return Boolean(img && img.complete && img.naturalWidth > 0);
         }
 
-        const cartImg = loadGameArt('cart');
+        const cartImg = loadGameArt('cart-horizontal');
         const pitcherImg = loadGameArt('pitcher-rear-right-ready');
         const pitcherReleaseImg = loadGameArt('pitcher-upfield-throw');
         const pitcherFollowThroughImg = loadGameArt('pitcher-follow-through');
         const pitcherRecoveryImg = loadGameArt('pitcher-recovery');
+        const pitcherStumbleImg = loadGameArt('pitcher-stumble');
+        const pitcherKneelImg = loadGameArt('pitcher-kneel');
         const ingameFieldBgImg = loadGameArt('field-perspective');
         const ingameStadiumBgImg = loadGameArt('stadium-perspective');
         const ballFireImg = loadGameArt('fireball');
@@ -4740,6 +4639,9 @@
         const PITCH_RECOVERY_AT_MS = 210;
         // Leave time in the ready pose before the fastest 400 ms pitch interval.
         const PITCH_READY_AT_MS = 335;
+        const PITCHER_KNEEL_AT_MS = 240;
+        const PITCHER_KNEEL_SETTLE_MS = 110;
+        const DEATH_FREEZE_MIN_MS = 620;
         let pitchReleaseAt = null;
 
         function setPitcherThrowing(isThrowing) {
@@ -7485,6 +7387,7 @@
                 hitBlock,
                 expectedNum: nextExpectedNumber,
                 startedAt: performance.now(),
+                reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
                 battleReported: false
             };
 
@@ -7512,7 +7415,8 @@
 
         function proceedFromDeathFreeze() {
             if (gameState !== 'DYING') return;
-            if (deathFreezeState && (performance.now() - deathFreezeState.startedAt < 320)) return;
+            const minimumHold = deathFreezeState?.reducedMotion ? 320 : DEATH_FREEZE_MIN_MS;
+            if (deathFreezeState && performance.now() - deathFreezeState.startedAt < minimumHold) return;
             playSfx('click', 0.7);
             triggerHaptic('light');
             finalizeGameOver();
@@ -8211,13 +8115,14 @@
                 specialBallTipTimer = null;
             }
             el.textContent = msg;
+            el.dataset.move = type;
             el.classList.remove('show');
             void el.offsetWidth;
             el.classList.add('show');
             specialBallTipTimer = setTimeout(() => {
                 el.classList.remove('show');
                 specialBallTipTimer = null;
-            }, 2400);
+            }, type === 'flashball' ? 3000 : 2400);
         }
 
         function hideSpecialBallTip() {
@@ -9351,7 +9256,7 @@
 
             // 장착된 스킨에 따른 피처 오라 (Pitcher Aura) 렌더링
             const equippedSkin = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
-            if (equippedSkin !== 'classic') {
+            if (equippedSkin !== 'classic' && !deathFreezeState) {
                 ctx.save();
                 const t = performance.now();
                 if (equippedSkin === 'flame') {
@@ -9479,7 +9384,7 @@
             }
 
             if (isSpriteReady(cartImg)) {
-                const cartW = scalePx(47);
+                const cartW = scalePx(67);
                 const cartH = cartW * cartImg.naturalHeight / cartImg.naturalWidth;
                 ctx.drawImage(cartImg, px - cartW / 2, py + scalePx(37), cartW, cartH);
             }
@@ -9488,7 +9393,20 @@
             let spriteHeight = 83;
             let anchorX = 0.47;
             let bottomOffset = 34;
-            if (pitchReleaseAt !== null) {
+            if (deathFreezeState) {
+                const elapsed = performance.now() - deathFreezeState.startedAt;
+                const landed = deathFreezeState.reducedMotion || elapsed >= PITCHER_KNEEL_AT_MS;
+                anchorX = 0.5;
+                if ((landed || !isSpriteReady(pitcherStumbleImg)) && isSpriteReady(pitcherKneelImg)) {
+                    sprite = pitcherKneelImg;
+                    const settle = deathFreezeState.reducedMotion ? 1 : Math.max(0, Math.min(1, (elapsed - PITCHER_KNEEL_AT_MS) / PITCHER_KNEEL_SETTLE_MS));
+                    spriteHeight = 55 - 4 * (1 - settle) ** 2;
+                } else if (isSpriteReady(pitcherStumbleImg)) {
+                    sprite = pitcherStumbleImg;
+                    const fall = Math.min(1, elapsed / PITCHER_KNEEL_AT_MS);
+                    spriteHeight = 73 - 8 * fall ** 2;
+                }
+            } else if (pitchReleaseAt !== null) {
                 const elapsed = performance.now() - pitchReleaseAt;
                 if (elapsed >= PITCH_READY_AT_MS) {
                     pitchReleaseAt = null;
