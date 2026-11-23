@@ -133,7 +133,7 @@
             position: absolute;
             inset: 0;
             z-index: 9;
-            background: #f9edcf;
+            background: #f9edcf url('./images/title-pitch-follow-through-v4.webp') center / cover no-repeat;
             pointer-events: none;
         }
 
@@ -4111,7 +4111,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=title-breathing">
+    <link rel="stylesheet" href="./game-art.css?v=title-flame-outline">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4308,10 +4308,7 @@
                 </div>
             </div>
         </div>
-        <div id="title-scenery" aria-hidden="true">
-            <img class="title-backdrop" src="./images/title-pitch-follow-through-v4.webp" alt="" width="900" height="1600" fetchpriority="high">
-            <div class="title-baseball"></div>
-        </div>
+        <div id="title-scenery" aria-hidden="true"><div class="title-baseball"></div></div>
 
         <!-- 메인화면 설정 모달 -->
         <div id="settings-modal" class="hidden" onclick="if(event.target===this) closeSettingsModal()">
@@ -6417,106 +6414,6 @@
         }
 
         setupTitleFlames();
-
-        async function setupTitleBreathing() {
-            if (typeof IntersectionObserver !== 'function') return;
-            const scenery = document.getElementById('title-scenery');
-            const art = scenery.querySelector('.title-backdrop');
-            try {
-                await art.decode();
-            } catch {
-                return;
-            }
-
-            // Original-image coordinates covering the shoulders and the extended arm.
-            const patch = { x: 417, y: 530, width: 390, height: 416 };
-            const canvas = document.createElement('canvas');
-            canvas.className = 'title-breath-canvas';
-            canvas.width = patch.width;
-            canvas.height = patch.height;
-            canvas.hidden = true;
-            const context = canvas.getContext('2d', { alpha: false });
-            if (!context) return;
-            scenery.insertBefore(canvas, scenery.querySelector('.title-baseball'));
-
-            function softOval(x, y, centerX, centerY, radiusX, radiusY) {
-                return Math.max(0, 1 - ((x - centerX) / radiusX) ** 2 - ((y - centerY) / radiusY) ** 2) ** 2;
-            }
-
-            function liftAt(x, y) {
-                return 5.6 * softOval(x, y, 550, 634, 111, 89) +
-                    2.8 * softOval(x, y, 624, 747, 75, 96) +
-                    1.45 * softOval(x, y, 691, 835, 84, 92);
-            }
-            const tiles = [];
-            const tileSize = 14;
-            for (let y = 0; y < patch.height; y += tileSize) {
-                for (let x = 0; x < patch.width; x += tileSize) {
-                    const w = Math.min(tileSize, patch.width - x);
-                    const h = Math.min(tileSize, patch.height - y);
-                    const midX = patch.x + x + w / 2;
-                    const top = liftAt(midX, patch.y + y);
-                    const bottom = liftAt(midX, patch.y + y + h);
-                    if (top || bottom) tiles.push({ x, y, w, h, top, bottom });
-                }
-            }
-
-            const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-            let visible = false;
-            let frame = null;
-            let lastPaint = -Infinity;
-
-            function paintBreathing(now) {
-                const phase = now % 4150;
-                const progress = phase < 1600 ? phase / 1600 : (4150 - phase) / 2550;
-                const breath = (1 - Math.cos(Math.PI * progress)) / 2;
-                context.drawImage(art, patch.x, patch.y, patch.width, patch.height, 0, 0, patch.width, patch.height);
-                if (breath > 0) {
-                    for (const { x, y, w, h, top, bottom } of tiles) {
-                        context.drawImage(art, patch.x + x, patch.y + y + top * breath,
-                            w, h + (bottom - top) * breath, x, y, w, h);
-                    }
-                }
-                lastPaint = now;
-            }
-
-            function tickBreathing(now) {
-                if (now - lastPaint >= 40) paintBreathing(now);
-                frame = requestAnimationFrame(tickBreathing);
-            }
-
-            function syncBreathing() {
-                const active = visible && !motion.matches;
-                canvas.hidden = !active;
-                if (!active) {
-                    if (frame !== null) cancelAnimationFrame(frame);
-                    frame = null;
-                    return;
-                }
-
-                // Match the centered cover sizing of the image underneath the opaque patch.
-                const width = scenery.clientWidth;
-                const height = scenery.clientHeight;
-                const scale = Math.max(width / art.naturalWidth, height / art.naturalHeight);
-                canvas.style.left = `${(width - art.naturalWidth * scale) / 2 + patch.x * scale}px`;
-                canvas.style.top = `${(height - art.naturalHeight * scale) / 2 + patch.y * scale}px`;
-                canvas.style.width = `${patch.width * scale}px`;
-                canvas.style.height = `${patch.height * scale}px`;
-                if (frame === null) {
-                    paintBreathing(performance.now());
-                    frame = requestAnimationFrame(tickBreathing);
-                }
-            }
-
-            const observer = new IntersectionObserver(([entry]) => {
-                visible = entry.isIntersecting;
-                syncBreathing();
-            });
-            observer.observe(scenery);
-            motion.addEventListener?.('change', syncBreathing);
-        }
-
-        setupTitleBreathing();
 
         function typeIntroBubble(bubble) {
             const walker = document.createTreeWalker(bubble, NodeFilter.SHOW_TEXT);
