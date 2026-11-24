@@ -4379,9 +4379,9 @@
                 <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
                 <h3 id="intro-ranking-title" style="margin:0 0 10px;color:#111827;text-align:center;">🏆 RANKING</h3>
                 <div class="rank-tabs">
-                    <button type="button" class="rank-tab-btn active" id="intro-tab-battle-global" onclick="switchIntroRankTab('battle_global')">⚡ 8인 세계</button>
+                    <button type="button" class="rank-tab-btn active" id="intro-tab-battle-global" onclick="switchIntroRankTab('battle_global')">🌍 8인 세계</button>
                     <button type="button" class="rank-tab-btn" id="intro-tab-battle-country" onclick="switchIntroRankTab('battle_country')">🏳️ 8인 국내</button>
-                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-global" onclick="switchIntroRankTab('solo_global')">🧢 개인 세계</button>
+                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-global" onclick="switchIntroRankTab('solo_global')">🌍 개인 세계</button>
                     <button type="button" class="rank-tab-btn" id="intro-tab-solo-country" onclick="switchIntroRankTab('solo_country')">🏳️ 개인 국내</button>
                 </div>
                 <div id="intro-my-rank-bar" class="intro-my-rank-bar"></div>
@@ -9732,33 +9732,33 @@
             const flag = countryToFlag(userCountry);
             const map = {
                 ko: {
-                    battleGlobal: '⚡ 8인 세계',
+                    battleGlobal: '🌍 8인 세계',
                     battleCountry: `${flag} 8인 ${userCountry}`,
-                    soloGlobal: '🧢 개인 세계',
+                    soloGlobal: '🌍 개인 세계',
                     soloCountry: `${flag} 개인 ${userCountry}`
                 },
                 en: {
-                    battleGlobal: '⚡ 8P Global',
+                    battleGlobal: '🌍 8P Global',
                     battleCountry: `${flag} 8P ${userCountry}`,
-                    soloGlobal: '🧢 Solo Global',
+                    soloGlobal: '🌍 Solo Global',
                     soloCountry: `${flag} Solo ${userCountry}`
                 },
                 ja: {
-                    battleGlobal: '⚡ 8人 世界',
+                    battleGlobal: '🌍 8人 世界',
                     battleCountry: `${flag} 8人 ${userCountry}`,
-                    soloGlobal: '🧢 個人 世界',
+                    soloGlobal: '🌍 個人 世界',
                     soloCountry: `${flag} 個人 ${userCountry}`
                 },
                 'zh-TW': {
-                    battleGlobal: '⚡ 8人 世界',
+                    battleGlobal: '🌍 8人 世界',
                     battleCountry: `${flag} 8人 ${userCountry}`,
-                    soloGlobal: '🧢 單人 世界',
+                    soloGlobal: '🌍 單人 世界',
                     soloCountry: `${flag} 單人 ${userCountry}`
                 },
                 es: {
-                    battleGlobal: '⚡ 8P Mundial',
+                    battleGlobal: '🌍 8P Mundial',
                     battleCountry: `${flag} 8P ${userCountry}`,
-                    soloGlobal: '🧢 Solo Mundial',
+                    soloGlobal: '🌍 Solo Mundial',
                     soloCountry: `${flag} Solo ${userCountry}`
                 }
             };
