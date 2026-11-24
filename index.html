@@ -6582,16 +6582,25 @@
             return Boolean(battleMode && battleViewMode !== 'friend');
         }
 
+        function getWorldFireballStartNumber() {
+            return (typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle()) ? 11 : 21;
+        }
+
         function getRoomSpecialBallCount(ballNum = 0) {
             const players = Object.values(battlePlayers || {}).filter(Boolean);
             const totalPlayers = players.length;
             const aliveCount = totalPlayers > 0 ? players.filter(p => !p.done).length : 8;
             const roomMaxScore = players.reduce((m, p) => Math.max(m, Number(p.score || 0)), 0);
             const refBall = Math.max(Number(ballNum || 0), roomMaxScore + 1);
-            const fireballCount = refBall >= 11 ? (1 + Math.floor((refBall - 11) / 100)) : 0;
-            const mirrorCount = (totalPlayers > 0 && aliveCount <= 5) || refBall >= 51 ? 1 : 0;
-            const stripeCount = (totalPlayers > 0 && aliveCount <= 3) || refBall >= 91 ? 1 : 0;
             const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
+            const fbStart = getWorldFireballStartNumber();
+            const fireballCount = refBall >= fbStart ? (1 + Math.floor((refBall - fbStart) / 100)) : 0;
+            const mirrorCount = isMaster
+                ? (((totalPlayers > 0 && aliveCount <= 5) || refBall >= 51) ? 1 : 0)
+                : (refBall >= 51 ? 1 : 0);
+            const stripeCount = isMaster
+                ? (((totalPlayers > 0 && aliveCount <= 3) || refBall >= 91) ? 1 : 0)
+                : (refBall >= 101 ? 1 : 0);
             const flashCount = isMaster && ((totalPlayers > 0 && aliveCount <= 2) || refBall >= 131) ? 1 : 0;
             return Math.max(battleSpecialBallCount || 0, fireballCount + mirrorCount + stripeCount + flashCount);
         }
@@ -8491,9 +8500,10 @@
             if (!fireballCharging && !fireballActive && !mirrorballCharging && !stripeballCharging && !flashballCharging && timestamp - lastPitchTime > currentPitchInterval) {
                 lastPitchTime = timestamp;
 
-                // 31, 131, 231... (나홀로/친구와 특훈) / 11, 111, 211... (세계 8인 배틀) → 파이어볼
+                // 31, 131, 231... (나홀로/친구와 특훈) / 마스터 11, 111, 211... / 일반 21, 121, 221... (세계 8인 배틀) → 파이어볼
+                const worldFbStart = getWorldFireballStartNumber();
                 const isFireballTurn = isWorldBattleRules()
-                    ? (nextExpectedNumber >= 11 && (nextExpectedNumber - 11) % 100 === 0)
+                    ? (nextExpectedNumber >= worldFbStart && (nextExpectedNumber - worldFbStart) % 100 === 0)
                     : (nextExpectedNumber >= 31 && (nextExpectedNumber - 31) % 100 === 0);
 
                 if (isFireballTurn) {
@@ -8852,8 +8862,9 @@
                 if (drawY > height || drawY + blk.height <= PLAY_HUD_HEIGHT) return;
 
                 const isNext = blk.num === nextExpectedNumber;
+                const worldFbStart = getWorldFireballStartNumber();
                 const isFireballNext = isWorldBattleRules()
-                    ? ((nextExpectedNumber - 11) % 100 === 0 && nextExpectedNumber >= 11)
+                    ? ((nextExpectedNumber - worldFbStart) % 100 === 0 && nextExpectedNumber >= worldFbStart)
                     : ((nextExpectedNumber - 31) % 100 === 0 && nextExpectedNumber >= 31);
                 const isGuide = isNext && (nextExpectedNumber === 1 || isFireballNext || mirrorGuideActive || stripeGuideActive || flashGuideActive);
 
@@ -11531,15 +11542,18 @@
             if (!battleMode) return 1;
             const alive = getBattleAliveCount();
             const isMaster = typeof isMasterLeagueBattle === 'function' && isMasterLeagueBattle();
-            // Phase 5 (마스터 리그 전용): 최후 2인 결승 1:1 OR 131번 도달
-            if (isMaster && (alive <= 2 || nextExpectedNumber >= 131)) return 5;
-            // Phase 4: 생존자 3명 이하 OR 91번 도달 (일반 리그는 Phase 4 스트라이프볼이 최종 단계)
-            if (alive <= 3 || nextExpectedNumber >= 91) return 4;
-            // Phase 3: 생존자 5명 이하 OR 51번 도달
-            if (alive <= 5 || nextExpectedNumber >= 51) return 3;
-            // Phase 2: 11번 파이어볼 도달
-            if (nextExpectedNumber >= 11) return 2;
-            // Phase 1: 기본 워밍업 (1~10번)
+            if (isMaster) {
+                // 마스터 리그: 기존 룰 유지 (생존자 수 또는 번호 도달)
+                if (alive <= 2 || nextExpectedNumber >= 131) return 5;
+                if (alive <= 3 || nextExpectedNumber >= 91) return 4;
+                if (alive <= 5 || nextExpectedNumber >= 51) return 3;
+                if (nextExpectedNumber >= 11) return 2;
+                return 1;
+            }
+            // 일반 리그: 번호 기준 발동 (파이어볼 21·121..., 미러볼 51, 스트라이프볼 101, 플래시볼 미발동)
+            if (nextExpectedNumber >= 101) return 4;
+            if (nextExpectedNumber >= 51) return 3;
+            if (nextExpectedNumber >= 21) return 2;
             return 1;
         }
 
