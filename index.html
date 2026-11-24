@@ -12737,35 +12737,35 @@
                         targetScore = Math.max(50, Math.round(base + (Math.random() * 24 - 12) + (isHotHand ? 20 : (isUpset ? -22 : 0))));
                     }
                 } else if (isNewcomerProtected) {
-                    // 첫 3판 초심자 온보딩 보호: 11번 파이어볼 전후~20점대 중반에서 봇들이 자연스럽게 탈락하여 첫 승/상위권 경험 제공
+                    // 첫 3판 초심자 온보딩 보호: 21번 파이어볼 전후~30점대 중반까지 경쟁
                     if (tier === 0) {
-                        targetScore = Math.max(7, Math.round(11 + (Math.random() * 8 - 4)));
+                        targetScore = Math.max(11, Math.round(16 + (Math.random() * 10 - 5)));
                     } else if (tier === 1) {
-                        targetScore = Math.max(12, Math.round(18 + (Math.random() * 10 - 5)));
+                        targetScore = Math.max(18, Math.round(26 + (Math.random() * 12 - 6)));
                     } else {
-                        targetScore = Math.max(16, Math.round(24 + (Math.random() * 10 - 5)));
+                        targetScore = Math.max(25, Math.round(36 + (Math.random() * 12 - 6)));
                     }
                 } else if (isBeginnerShieldTier) {
-                    // 4~10판 초심자 보호 구간 & 1,040 PT 이하: 부담 없는 초중급 난이도
+                    // 4~10판 초심자 보호 구간 & 1,040 PT 이하: 21번 파이어볼~51번 미러볼 전후 경쟁
                     if (tier === 0) {
-                        targetScore = Math.max(9, Math.round(14 + (Math.random() * 8 - 4) + (isHotHand ? 4 : (isUpset ? -4 : 0))));
+                        targetScore = Math.max(14, Math.round(20 + (Math.random() * 10 - 5) + (isHotHand ? 5 : (isUpset ? -5 : 0))));
                     } else if (tier === 1) {
-                        targetScore = Math.max(15, Math.round(23 + (Math.random() * 10 - 5) + (isHotHand ? 7 : (isUpset ? -7 : 0))));
+                        targetScore = Math.max(24, Math.round(34 + (Math.random() * 12 - 6) + (isHotHand ? 8 : (isUpset ? -8 : 0))));
                     } else {
-                        targetScore = Math.max(21, Math.round(31 + (Math.random() * 12 - 6) + (isHotHand ? 9 : (isUpset ? -10 : 0))));
+                        targetScore = Math.max(33, Math.round(46 + (Math.random() * 14 - 7) + (isHotHand ? 11 : (isUpset ? -11 : 0))));
                     }
                 } else {
-                    // 일반 리그 중상위 (1,041 ~ 1,200 PT): 51번 미러볼 전후에서 승부가 갈리는 표준 밸런스
-                    const highTierBoost = myRating >= 1120 ? 5 : 0;
+                    // 일반 리그 중상위 (1,041 ~ 1,200 PT): 51번 미러볼~101번 스트라이프볼 구간까지 치열한 경쟁
+                    const highTierBoost = myRating >= 1120 ? 8 : 0;
                     if (tier === 0) {
-                        const base = (lobbyDifficulty === 'easy' ? 13 : (lobbyDifficulty === 'hard' ? 18 : 15)) + highTierBoost;
-                        targetScore = Math.max(10, Math.round(base + (Math.random() * 8 - 4) + (isHotHand ? 5 : (isUpset ? -4 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 20 : (lobbyDifficulty === 'hard' ? 30 : 25)) + highTierBoost;
+                        targetScore = Math.max(16, Math.round(base + (Math.random() * 10 - 5) + (isHotHand ? 6 : (isUpset ? -5 : 0))));
                     } else if (tier === 1) {
-                        const base = (lobbyDifficulty === 'easy' ? 22 : (lobbyDifficulty === 'hard' ? 34 : 28)) + highTierBoost;
-                        targetScore = Math.max(16, Math.round(base + (Math.random() * 10 - 5) + (isHotHand ? 9 : (isUpset ? -8 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 34 : (lobbyDifficulty === 'hard' ? 54 : 44)) + highTierBoost;
+                        targetScore = Math.max(26, Math.round(base + (Math.random() * 14 - 7) + (isHotHand ? 11 : (isUpset ? -10 : 0))));
                     } else {
-                        const base = (lobbyDifficulty === 'easy' ? 30 : (lobbyDifficulty === 'hard' ? 52 : 40)) + highTierBoost;
-                        targetScore = Math.max(24, Math.round(base + (Math.random() * 14 - 7) + (isHotHand ? 11 : (isUpset ? -14 : 0))));
+                        const base = (lobbyDifficulty === 'easy' ? 48 : (lobbyDifficulty === 'hard' ? 76 : 62)) + highTierBoost;
+                        targetScore = Math.max(38, Math.round(base + (Math.random() * 16 - 8) + (isHotHand ? 14 : (isUpset ? -15 : 0))));
                     }
                 }
 
