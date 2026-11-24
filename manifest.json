@@ -1,6 +1,6 @@
 {
-  "name": "Infinity Pitching",
-  "short_name": "Infinity Pitching",
+  "name": "Infinity Pitch",
+  "short_name": "Infinity Pitch",
   "description": "숫자 순서대로 공을 맞춰 세계 최고의 투수가 되자! 글로벌 & 국가별 TOP 1000 랭킹 도전!",
   "start_url": "./index.html",
   "display": "fullscreen",
