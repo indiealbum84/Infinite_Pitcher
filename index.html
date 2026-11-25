@@ -1181,6 +1181,7 @@
             transition: none !important;
             overflow: hidden;
             justify-content: center;
+            padding: 24px 20px;
         }
 
         #battle-result-screen > * {
@@ -3338,10 +3339,11 @@
         }
 
         .battle-result-title {
-            font-size: 132px;
-            text-shadow: 8px 8px 0 #ffffff, 14px 14px 0 #000000;
+            font-size: 112px;
+            text-shadow: 7px 7px 0 #ffffff, 13px 13px 0 #000000;
             position: relative;
             z-index: 2;
+            margin-bottom: 4px;
         }
 
         .battle-scores {
@@ -3349,9 +3351,9 @@
             flex-direction: column;
             flex-wrap: nowrap;
             align-items: stretch;
-            gap: 8px;
-            margin: 12px 0 14px;
-            max-width: 960px;
+            gap: 10px;
+            margin: 12px 0;
+            max-width: 100%;
             width: 100%;
             position: relative;
             z-index: 2;
@@ -3359,35 +3361,36 @@
 
         .battle-score-card {
             position: relative;
-            border-width: 4px;
-            border-radius: 18px;
-            padding: 8px 20px;
+            border-width: 5px;
+            border-radius: 20px;
+            padding: 10px 22px;
             width: 100%;
-            height: 74px;
-            min-height: 74px;
+            height: 104px;
+            min-height: 104px;
             box-sizing: border-box;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             box-shadow: 0 5px 0 var(--palette-blue);
             overflow: hidden;
         }
 
         .battle-score-card .bsc-rank {
             flex-shrink: 0;
-            min-width: 104px;
-            padding: 6px 10px;
-            border-radius: 12px;
+            width: 124px;
+            padding: 10px 8px;
+            border-radius: 14px;
             border: 3px solid #000000;
             background: #1e293b;
             color: #ffffff;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 900;
             line-height: 1.05;
             text-align: center;
             white-space: nowrap;
+            box-sizing: border-box;
         }
 
         .battle-score-card .bsc-rank.rank-1 {
@@ -3423,7 +3426,7 @@
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
-            gap: 10px;
+            gap: 12px;
             overflow: hidden;
         }
 
@@ -3440,7 +3443,7 @@
         .battle-score-card .bsc-name {
             flex: 0 1 auto;
             min-width: 0;
-            font-size: 24px;
+            font-size: 28px;
             line-height: 1.15;
             font-weight: 900;
             white-space: nowrap;
@@ -3451,8 +3454,8 @@
 
         .battle-score-card .bsc-score {
             flex-shrink: 0;
-            min-width: 84px;
-            font-size: 50px;
+            min-width: 96px;
+            font-size: 56px;
             height: auto;
             line-height: 1;
             font-variant-numeric: tabular-nums;
@@ -3462,12 +3465,15 @@
 
         .battle-score-card .bsc-record {
             flex-shrink: 0;
-            font-size: 19px;
+            font-size: 21px;
+            font-weight: 800;
             line-height: 1.15;
-            color: #475569;
+            color: #334155;
+            background: rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
             white-space: nowrap;
             margin-top: 0;
-            padding: 3px 10px;
+            padding: 5px 14px;
         }
 
         #battle-rematch-btn {
