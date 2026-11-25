@@ -7140,6 +7140,91 @@
 
         let gameSessionId = 0;
         let activeCountdownCleanup = null;
+        let pitcherPreGameQuote = '';
+        let showPitcherPreGameBubble = false;
+
+        const PITCHER_PREGAME_QUOTES = {
+            solo: {
+                ko: [
+                    '세계 최고가 되기 위해 오늘도 연습!',
+                    '연습만이 살 길!',
+                    '집중! 1번부터 끝까지 실수 없이!',
+                    '가볍게 몸부터 풀어볼까?',
+                    '특훈에서 흘린 땀이 본선에서 빛난다!'
+                ],
+                en: [
+                    'Practicing today to be #1 in the world!',
+                    'Practice is the only way!',
+                    'Focus! Clean from #1 to the end!',
+                    'Let’s warm up nice and easy!',
+                    'Sweat in practice shines in the match!'
+                ],
+                ja: [
+                    '世界一になるため今日も練習！',
+                    '練習あるのみ！',
+                    '集中！1番から最後までノーミスで！',
+                    '軽くウォーミングアップしようか！',
+                    '特訓の汗が本番で輝く！'
+                ],
+                'zh-TW': [
+                    '為了成為世界第一，今天也要練習！',
+                    '唯有練習才是王道！',
+                    '專注！從第1球到最後零失誤！',
+                    '先輕鬆熱身一下吧！',
+                    '特訓流的汗水會在實戰發光！'
+                ],
+                es: [
+                    '¡Entrenando hoy para ser el #1!',
+                    '¡La práctica es el único camino!',
+                    '¡Concentración! ¡Sin fallos desde la #1!',
+                    '¿Calentamos un poco primero?',
+                    '¡El sudor del entreno brilla en la batalla!'
+                ]
+            },
+            battle: {
+                ko: [
+                    '세계 최강은 바로 나!',
+                    '실수하는 순간 끝이야. 집중하자!',
+                    '끝까지 살아남는 자가 승리한다!',
+                    '최후의 1인이 될 준비 완료!',
+                    '자, 진검승부 시작이다!'
+                ],
+                en: [
+                    'I’m the best in the world!',
+                    'One mistake and it’s over. Focus!',
+                    'Last pitcher standing wins!',
+                    'Ready to be the last one standing!',
+                    'Now, the real showdown begins!'
+                ],
+                ja: [
+                    '世界最強はこの俺だ！',
+                    'ミスした瞬間終わりだ。集中！',
+                    '最後まで生き残った者が勝つ！',
+                    '最後の1人になる準備は万端！',
+                    'さあ、真剣勝負の始まりだ！'
+                ],
+                'zh-TW': [
+                    '世界最強就是我！',
+                    '失誤的瞬間就結束了，專注！',
+                    '活到最後的人才是贏家！',
+                    '準備好成為最後一人了！',
+                    '來吧，真正的對決開始了！'
+                ],
+                es: [
+                    '¡Soy el mejor del mundo!',
+                    'Un error y se acabó. ¡Concéntrate!',
+                    '¡El último en pie gana!',
+                    '¡Listo para ser el último en pie!',
+                    '¡Ahora empieza el duelo real!'
+                ]
+            }
+        };
+
+        function pickPitcherPreGameQuote() {
+            const modeKey = (typeof isWorldBattleRules === 'function' && isWorldBattleRules()) ? 'battle' : 'solo';
+            const langPack = PITCHER_PREGAME_QUOTES[modeKey][currentLang] || PITCHER_PREGAME_QUOTES[modeKey].ko;
+            return langPack[Math.floor(Math.random() * langPack.length)] || '';
+        }
 
         function startCountdown(skipToNum) {
             gameSessionId++;
@@ -7214,6 +7299,8 @@
             countdownScreen.classList.remove('hidden');
 
             // 안내 문구 표시 — 클릭/터치하면 카운트다운 시작
+            pitcherPreGameQuote = pickPitcherPreGameQuote();
+            showPitcherPreGameBubble = Boolean(pitcherPreGameQuote);
             countdownText.innerText = TEXTS[currentLang].instruction;
             countdownText.classList.add('countdown-instruction');
             countdownText.classList.remove('countdown-start');
@@ -7235,6 +7322,7 @@
                     cleanupCountdownListeners();
                     return;
                 }
+                showPitcherPreGameBubble = false;
                 countdownText.classList.remove('countdown-instruction');
                 countdownText.style.fontSize = '';
                 countdownText.style.whiteSpace = '';
@@ -9577,7 +9665,113 @@
                     drawGroundShadow(left + pitcherW * x, top + pitcherH * y, scalePx(radius), scalePx(2.2), strength);
                 }
                 ctx.drawImage(sprite, left, top, pitcherW, pitcherH);
+                if (gameState === 'COUNTDOWN' && showPitcherPreGameBubble && pitcherPreGameQuote) {
+                    drawPitcherSpeechBubble(px, top - scalePx(12), pitcherPreGameQuote);
+                }
+            } else if (gameState === 'COUNTDOWN' && showPitcherPreGameBubble && pitcherPreGameQuote) {
+                drawPitcherSpeechBubble(px, py - scalePx(56), pitcherPreGameQuote);
             }
+        }
+
+        function drawPitcherSpeechBubble(anchorX, pointerTipY, text) {
+            ctx.save();
+            const fontSize = Math.round(scalePx(13.5));
+            const fontFamily = getComputedStyle(document.body).fontFamily || 'sans-serif';
+            ctx.font = `900 ${fontSize}px ${fontFamily}`;
+
+            const edgeMargin = scalePx(10);
+            const padX = scalePx(12);
+            const padY = scalePx(8);
+            const maxBubbleW = Math.min(width - edgeMargin * 2, scalePx(245));
+            const maxTextW = Math.max(scalePx(80), maxBubbleW - padX * 2);
+
+            const wrapBubbleLines = (rawText) => {
+                if (ctx.measureText(rawText).width <= maxTextW) return [rawText];
+                const words = rawText.split(' ');
+                if (words.length > 1) {
+                    const lines = [];
+                    let cur = '';
+                    for (const w of words) {
+                        const next = cur ? `${cur} ${w}` : w;
+                        if (ctx.measureText(next).width <= maxTextW) {
+                            cur = next;
+                        } else {
+                            if (cur) lines.push(cur);
+                            cur = w;
+                        }
+                    }
+                    if (cur) lines.push(cur);
+                    if (lines.length <= 3) return lines;
+                }
+                // 공백이 적은 일본어/중국어 줄바꿈 폴백
+                const lines = [];
+                let cur = '';
+                for (const ch of rawText) {
+                    const next = cur + ch;
+                    if (ctx.measureText(next).width <= maxTextW) {
+                        cur = next;
+                    } else {
+                        if (cur) lines.push(cur);
+                        cur = ch;
+                    }
+                }
+                if (cur) lines.push(cur);
+                return lines;
+            };
+
+            const lines = wrapBubbleLines(text);
+            const lineH = fontSize * 1.28;
+            const textW = lines.reduce((m, l) => Math.max(m, ctx.measureText(l).width), 0);
+            const boxW = Math.min(maxBubbleW, Math.max(scalePx(70), textW + padX * 2));
+            const boxH = lines.length * lineH + padY * 2;
+            const tailH = scalePx(9);
+            const tailHalfW = scalePx(7);
+            const radius = scalePx(12);
+
+            let boxX = anchorX - boxW / 2;
+            boxX = Math.max(edgeMargin, Math.min(width - edgeMargin - boxW, boxX));
+            let boxY = pointerTipY - tailH - boxH;
+            boxY = Math.max(scalePx(8), boxY);
+
+            const tailX = Math.max(boxX + radius + tailHalfW, Math.min(boxX + boxW - radius - tailHalfW, anchorX));
+            const boxBottom = boxY + boxH;
+
+            // 말풍선 경로 (둥근 사각형 + 하단 꼬리)
+            ctx.beginPath();
+            ctx.moveTo(boxX + radius, boxY);
+            ctx.lineTo(boxX + boxW - radius, boxY);
+            ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + radius);
+            ctx.lineTo(boxX + boxW, boxBottom - radius);
+            ctx.quadraticCurveTo(boxX + boxW, boxBottom, boxX + boxW - radius, boxBottom);
+            ctx.lineTo(tailX + tailHalfW, boxBottom);
+            ctx.lineTo(tailX, boxBottom + tailH);
+            ctx.lineTo(tailX - tailHalfW, boxBottom);
+            ctx.lineTo(boxX + radius, boxBottom);
+            ctx.quadraticCurveTo(boxX, boxBottom, boxX, boxBottom - radius);
+            ctx.lineTo(boxX, boxY + radius);
+            ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+            ctx.closePath();
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+            ctx.shadowBlur = scalePx(6);
+            ctx.shadowOffsetY = scalePx(3);
+            ctx.fillStyle = '#fff8e6';
+            ctx.fill();
+
+            ctx.shadowColor = 'transparent';
+            ctx.lineWidth = scalePx(2.5);
+            ctx.strokeStyle = '#1b293a';
+            ctx.stroke();
+
+            ctx.fillStyle = '#1b293a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const centerX = boxX + boxW / 2;
+            const firstLineY = boxY + padY + lineH / 2;
+            lines.forEach((line, idx) => {
+                ctx.fillText(line, centerX, firstLineY + idx * lineH);
+            });
+            ctx.restore();
         }
 
         function varColor(name) {
