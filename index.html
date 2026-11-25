@@ -775,23 +775,17 @@
             100% { opacity: 0; transform: translate(-50%, -56%) scale(0.96); }
         }
 
-        /* 사망 순간 원인 확인 정지(Freeze) 배너 (블록 아래 · 투수 위 잔디 영역) */
+        /* 실패 원인 확인 중에 잔디 영역에 표시하는 안내 문구 */
         #death-freeze-banner {
             position: absolute;
             left: 50%;
             top: 63.5%;
             transform: translate(-50%, -50%);
-            width: 92%;
-            max-width: 960px;
-            padding: 20px 30px;
-            background: rgba(25, 39, 56, 0.96);
-            color: #fff8e6;
-            border: 6px solid #edbc57;
-            border-radius: 26px;
-            box-shadow: 0 12px 0 #000000, 0 20px 40px rgba(0, 0, 0, 0.65);
+            width: max-content;
+            max-width: calc(100% - 92px);
+            padding: 14px 8px;
+            color: var(--showa-paper);
             display: none;
-            flex-direction: column;
-            align-items: center;
             z-index: 45;
             cursor: pointer;
             word-break: keep-all;
@@ -799,27 +793,23 @@
         }
 
         #death-freeze-banner.show {
-            display: flex;
-            animation: deathBannerPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: block;
+            animation: deathPromptFadeIn .28s ease-out both,
+                deathPromptPulse 1.4s ease-in-out .28s infinite;
         }
 
-        @keyframes deathBannerPop {
-            0%   { opacity: 0; transform: translate(-50%, -46%) scale(0.88); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
+        @keyframes deathPromptFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes deathPromptPulse { 50% { opacity: .18; } }
 
         .dfb-prompt {
-            font-size: 31px;
-            font-weight: 900;
-            color: #fde047;
+            font: 900 37px/1.25 var(--font-game);
             text-align: center;
+            text-shadow: 0 2px 2px #172537, 0 2px 9px #172537;
             margin: 0;
-            animation: dfbPulse 1.1s ease-in-out infinite;
         }
 
-        @keyframes dfbPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%      { opacity: 0.72; transform: scale(0.98); }
+        @media (prefers-reduced-motion: reduce) {
+            #death-freeze-banner.show { animation: none; }
         }
 
         /* ── 다인 대전 ── */
@@ -4175,7 +4165,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=title-flame-outline">
+    <link rel="stylesheet" href="./game-art.css?v=solo-comic-results-skip">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4539,47 +4529,74 @@
             </div>
         </div>
 
-        <div id="game-over-screen" class="screen hidden">
-            <h2 class="game-over-title">GAME OVER</h2>
+        <div id="game-over-screen" class="screen comic-result hidden">
             <section class="result-record" aria-labelledby="result-score-label">
-                <div class="final-score">
-                    <span id="result-score-label" class="result-label">이번 점수</span>
-                    <span id="final-score-val">0</span>
-                </div>
-                <p class="result-best"><span id="result-best-label">나의 최고 기록</span><strong id="result-best-val">0</strong></p>
-                <div id="rank-entry" class="hidden" aria-live="polite">
-                    <div class="result-rank-heading"><span id="result-ranks-label">최고 기록 순위</span><p id="my-rank-detail" class="result-player"></p></div>
-                    <div class="result-ranks">
-                        <div><span class="result-label">GLOBAL</span><strong id="my-rank-val">—</strong></div>
-                        <div><span id="result-country-label" class="result-label">COUNTRY</span><strong id="result-country-rank">—</strong></div>
+                <div class="result-score-summary">
+                    <div class="result-score-art">
+                        <div class="final-score">
+                            <span id="result-score-label" class="result-label">이번 점수</span>
+                            <span id="final-score-val">0</span>
+                        </div>
                     </div>
+                    <p class="comic-score-reaction" aria-hidden="true">
+                        <span id="comic-score-anticipation">이번 점수는...</span>
+                        <span id="comic-score-cheer">좋았어!!!!</span>
+                    </p>
+                    <p class="result-best"><span id="result-best-label">나의 최고점수</span><strong id="result-best-val">0</strong></p>
                 </div>
             </section>
 
-            <div id="gameover-world8-wrap" class="gameover-world8-wrap hidden">
-                <div id="gameover-world8-badge" class="gameover-world8-badge">🛡️ 첫 10판 점수 하락 면제 · 첫 1승 스킨 보상!</div>
-                <button type="button" id="gameover-world8-btn" class="start-btn gameover-world8-btn" onclick="goDirectToWorld8BattleFromGameOver()">⚡ 세계 8인 배틀 출전하기</button>
+            <div id="rank-entry" class="result-ranks">
+                <button type="button" class="result-rank-row hidden" id="result-country-row" aria-haspopup="dialog" onclick="openSoloLeaderboard('country')">
+                    <span id="result-country-label" class="result-label">KR</span><strong id="result-country-rank">—</strong>
+                    <span class="result-rank-arrow" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="result-rank-row hidden" id="result-global-row" aria-haspopup="dialog" onclick="openSoloLeaderboard('global')">
+                    <span class="result-label">GLOBAL</span><strong id="my-rank-val">—</strong>
+                    <span class="result-rank-arrow" aria-hidden="true"></span>
+                </button>
             </div>
 
-            <div id="action-buttons">
-                <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
-                <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
+            <div class="result-spotlight-shade" aria-hidden="true"></div>
+
+            <div id="result-reel" class="hidden" aria-hidden="true">
+                <span class="result-reel-label"></span>
+                <div class="result-reel-window"><div class="result-reel-strip"></div></div>
+                <strong class="result-reel-value"></strong>
+                <span class="result-rank-arrow"></span>
             </div>
 
-            <button type="button" id="result-noads-btn" onclick="openPlayGateModal(null)">
-                <span id="result-noads-label">광고 제거 · 무제한 플레이</span>
-                <strong>$2.99</strong>
-            </button>
-
-            <section id="leaderboard-modal" aria-label="RANKING">
-                <h3 style="margin-top:0">🏆 RANKING</h3>
-                <div class="rank-tabs">
-                    <button type="button" class="rank-tab-btn active" id="result-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL (TOP 1000)</button>
-                    <button type="button" class="rank-tab-btn" id="result-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY (TOP 100)</button>
+            <div id="result-actions" class="hidden">
+                <div id="gameover-world8-wrap" class="gameover-world8-wrap hidden">
+                    <div id="gameover-world8-badge" class="gameover-world8-badge">🛡️ 첫 10판 점수 하락 면제 · 첫 1승 스킨 보상!</div>
+                    <button type="button" id="gameover-world8-btn" class="start-btn gameover-world8-btn" onclick="goDirectToWorld8BattleFromGameOver()">세계 8인 배틀 출전하기</button>
+                    <div id="gameover-world8-reward-patch" class="gameover-world8-badge" hidden></div>
                 </div>
-                <div id="rank-list"></div>
-            </section>
 
+                <div id="action-buttons">
+                    <button id="retry-btn" class="start-btn" onclick="startGame()">リトライ</button>
+                    <button id="home-btn" class="leaderboard-btn" onclick="goToMain()">메인화면</button>
+                </div>
+
+                <button type="button" id="result-noads-btn" onclick="openPlayGateModal(null)">
+                    <span id="result-noads-label">광고 제거 · 무제한 플레이</span>
+                    <strong>$2.99</strong>
+                </button>
+            </div>
+
+            <div id="result-leaderboard-overlay" class="hidden" onclick="if (event.target === this) closeSoloLeaderboard()" onkeydown="handleSoloLeaderboardKey(event)">
+                <section id="leaderboard-modal" role="dialog" aria-modal="true" aria-labelledby="result-leaderboard-title">
+                    <header class="result-leaderboard-header">
+                        <h3 id="result-leaderboard-title">🏆 RANKING</h3>
+                        <button type="button" id="result-leaderboard-close" onclick="closeSoloLeaderboard()" aria-label="Close">×</button>
+                    </header>
+                    <div class="rank-tabs">
+                        <button type="button" class="rank-tab-btn active" id="result-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL (TOP 1000)</button>
+                        <button type="button" class="rank-tab-btn" id="result-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY (TOP 100)</button>
+                    </div>
+                    <div id="rank-list" tabindex="0"></div>
+                </section>
+            </div>
         </div>
 
         <!-- 대전 매칭 화면 -->
@@ -5113,6 +5130,8 @@
                 registerBtn: '登録して続ける',
                 retryBtn:    'リトライ',
                 resultScore: '今回のスコア',
+                resultComicAnticipation: '今回のスコアは…',
+                resultComicCheer: 'よっしゃ!!!!',
                 resultBest: '自己ベスト',
                 resultNewBest: '自己ベスト更新！',
                 resultRanks: '自己ベストの順位',
@@ -5254,6 +5273,8 @@
                 registerBtn: 'Save and continue',
                 retryBtn:    'Retry',
                 resultScore: 'YOUR SCORE',
+                resultComicAnticipation: 'This time, I scored…',
+                resultComicCheer: 'YES!!!!',
                 resultBest: 'Personal best',
                 resultNewBest: 'New personal best!',
                 resultRanks: 'Personal best ranking',
@@ -5395,6 +5416,8 @@
                 registerBtn: '등록하고 계속하기',
                 retryBtn:    '다시 하기',
                 resultScore: '이번 점수',
+                resultComicAnticipation: '이번 점수는...',
+                resultComicCheer: '좋았어!!!!',
                 resultBest: '나의 최고 기록',
                 resultNewBest: '최고 기록 경신!',
                 resultRanks: '최고 기록 순위',
@@ -5536,6 +5559,8 @@
                 registerBtn: '登錄並繼續',
                 retryBtn:    '再玩一次',
                 resultScore: '本次分數',
+                resultComicAnticipation: '這次的分數是…',
+                resultComicCheer: '太好了!!!!',
                 resultBest: '個人最高紀錄',
                 resultNewBest: '刷新最高紀錄！',
                 resultRanks: '最高紀錄排名',
@@ -5677,6 +5702,8 @@
                 registerBtn: 'Registrar y seguir',
                 retryBtn:    'Reintentar',
                 resultScore: 'TU PUNTUACIÓN',
+                resultComicAnticipation: 'Mi puntuación es…',
+                resultComicCheer: '¡VAMOS!!!!',
                 resultBest: 'Mejor marca',
                 resultNewBest: '¡Nueva mejor marca!',
                 resultRanks: 'Ranking de tu mejor marca',
@@ -5997,8 +6024,10 @@
             setTxt('retry-btn', t.retryBtn);
             setTxt('home-btn', t.homeBtn);
             setTxt('result-score-label', t.resultScore);
-            setTxt('result-best-label', t[document.querySelector('.result-record').classList.contains('is-new-best') ? 'resultNewBest' : 'resultBest']);
-            setTxt('result-ranks-label', t.resultRanks);
+            setTxt('comic-score-anticipation', t.resultComicAnticipation);
+            setTxt('comic-score-cheer', t.resultComicCheer);
+            setTxt('result-best-label', lang === 'ko' ? '나의 최고점수' : t.resultBest);
+            document.getElementById('result-leaderboard-close').setAttribute('aria-label', t.settingsClose);
             setTxt('result-noads-label', t.resultNoAds);
             setTxt('play-gate-title', t.playGateTitle);
             setTxt('play-gate-ad-btn', t.playGateAdBtn);
@@ -7613,11 +7642,11 @@
             if (!banner || !deathFreezeState) return;
             const lang = currentLang || 'ko';
             const promptMap = {
-                ko: '👆 화면을 터치하면 결과 화면으로 넘어갑니다',
-                en: '👆 Tap anywhere to continue to results',
-                ja: '👆 画面をタップして結果画面へ',
-                'zh-TW': '👆 點擊畫面進入結算畫面',
-                es: '👆 Toca la pantalla para ver el resultado'
+                ko: '화면을 터치하면 결과 화면으로 넘어갑니다',
+                en: 'Tap anywhere to continue to results',
+                ja: '画面をタップして結果画面へ',
+                'zh-TW': '點擊畫面進入結算畫面',
+                es: 'Toca la pantalla para ver el resultado'
             };
             const prompt = promptMap[lang] || promptMap.en;
             banner.innerHTML = `<p class="dfb-prompt">${prompt}</p>`;
@@ -7706,7 +7735,7 @@
             setPitcherThrowing(false);
             stopAllBgm();
             const canvasEl = document.getElementById('canvas');
-            if (canvasEl) canvasEl.style.display = 'none';
+            if (canvasEl && battleMode) canvasEl.style.display = 'none';
             document.getElementById('play-gate-screen').classList.add('hidden');
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
@@ -7729,13 +7758,362 @@
                     battleGameOver();
                 }
             } else {
-                document.getElementById('game-over-screen').classList.remove('hidden');
-                if (typeof updateGameOverWorld8PromoUI === 'function') updateGameOverWorld8PromoUI();
-                evaluateScore(score);
-                if (justUnlockedFireballThisRun) {
-                    justUnlockedFireballThisRun = false;
-                    setTimeout(() => openFireballUnlockModal(), 280);
+                revealSoloResults(score);
+            }
+        }
+
+        async function revealSoloResults(finalScore) {
+            const screen = document.getElementById('game-over-screen');
+            const record = screen.querySelector('.result-record');
+            const bestValue = document.getElementById('result-best-val');
+            const actions = document.getElementById('result-actions');
+            const reel = document.getElementById('result-reel');
+            const reelLabel = reel.querySelector('.result-reel-label');
+            const reelWindow = reel.querySelector('.result-reel-window');
+            const strip = reel.querySelector('.result-reel-strip');
+            const reelValue = reel.querySelector('.result-reel-value');
+            const reelArrow = reel.querySelector('.result-rank-arrow');
+            const rows = ['country', 'global'].map(scope => document.getElementById(`result-${scope}-row`));
+            const session = gameSessionId;
+            const active = () => gameSessionId === session && gameState === 'GAMEOVER' && !screen.classList.contains('hidden');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const input = new AbortController();
+            let phase;
+            let skipped;
+            const beginPhase = () => {
+                phase = new AbortController();
+                skipped = new Promise(resolve => phase.signal.addEventListener('abort', () => resolve(), { once: true }));
+            };
+            const canAnimate = () => !reducedMotion && !phase?.signal.aborted;
+            const untilSkip = promise => phase ? Promise.race([promise, skipped]) : promise;
+            const wait = ms => untilSkip(new Promise(resolve => setTimeout(resolve, ms)));
+            const animate = (element, frames, options) => {
+                const signal = phase?.signal;
+                if (signal?.aborted) return Promise.resolve();
+                const motion = element.animate(frames, options);
+                const cancel = () => motion.cancel();
+                signal?.addEventListener('abort', cancel, { once: true });
+                return motion.finished.catch(() => {}).finally(() => signal?.removeEventListener('abort', cancel));
+            };
+            screen.addEventListener('click', event => {
+                if (!active() || !phase || reducedMotion) return;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                phase.abort();
+            }, { capture: true, signal: input.signal });
+            const dropCard = (element, frame, from, to) => {
+                const unit = screen.getBoundingClientRect().width / screen.offsetWidth;
+                const pose = (rect, lift = 0, angle = 0) => {
+                    const x = (rect.left + rect.width / 2 - frame.left - frame.width / 2) / unit;
+                    const y = (rect.top + rect.height / 2 - frame.top - frame.height / 2) / unit - lift;
+                    return `translate(${x}px, ${y}px) scale(${rect.width / frame.width}, ${rect.height / frame.height}) rotate(${angle}deg)`;
+                };
+                return animate(element, [
+                    { transform: pose(from), easing: 'cubic-bezier(.24,.66,.38,1)' },
+                    { transform: pose(to, 54, -1), offset: .68, easing: 'cubic-bezier(.62,0,.95,.78)' },
+                    { transform: pose(to) }
+                ], { duration: 250, fill: 'forwards' });
+            };
+            async function dockRank(row, confirmed) {
+                const screenRect = screen.getBoundingClientRect();
+                const unit = screenRect.width / screen.offsetWidth;
+                const border = reel.clientLeft;
+                const start = reel.getBoundingClientRect();
+                const end = row.getBoundingClientRect();
+                const windowRect = reelWindow.getBoundingClientRect();
+                const targetArrow = row.querySelector('.result-rank-arrow');
+                const arrowRect = targetArrow.getBoundingClientRect();
+                const duration = 430;
+                const easing = 'cubic-bezier(.3,.72,.24,1)';
+                const px = value => `${value}px`;
+                const box = (rect, anchor, inset = 0) => ({
+                    left: px((rect.left - anchor.left) / unit - inset),
+                    top: px((rect.top - anchor.top) / unit - inset),
+                    width: px(rect.width / unit),
+                    height: px(rect.height / unit)
+                });
+                const textBox = (text, anchor) => {
+                    const style = getComputedStyle(text);
+                    return {
+                        ...box(text.getBoundingClientRect(), anchor, border),
+                        fontSize: style.fontSize, lineHeight: style.lineHeight,
+                        padding: style.padding, borderWidth: style.borderWidth, borderColor: style.borderColor,
+                        color: style.color, backgroundColor: style.backgroundColor, textShadow: style.textShadow
+                    };
+                };
+                const labelFrames = [textBox(reelLabel, start), textBox(row.querySelector('.result-label'), end)];
+                const valueFrames = [textBox(confirmed, start), textBox(row.querySelector('strong'), end)];
+                const windowBox = box(windowRect, start, border);
+                const cardFrames = [
+                    { ...box(start, screenRect), borderRadius: getComputedStyle(reel).borderRadius, boxShadow: getComputedStyle(reel).boxShadow },
+                    { ...box(end, screenRect), borderRadius: getComputedStyle(row).borderRadius, boxShadow: getComputedStyle(row).boxShadow }
+                ];
+                const arrowAtDock = {
+                    left: px((arrowRect.left + arrowRect.width / 2 - end.left) / unit - border - targetArrow.offsetWidth / 2),
+                    top: px((arrowRect.top + arrowRect.height / 2 - end.top) / unit - border - targetArrow.offsetHeight / 2)
+                };
+                reelValue.textContent = confirmed.textContent;
+                confirmed.style.visibility = 'hidden';
+                reel.classList.add('is-docking');
+                Object.assign(reelWindow.style, windowBox);
+                Object.assign(reelArrow.style, arrowAtDock);
+                const movement = { duration, easing, fill: 'both' };
+                await Promise.all([
+                    animate(reel, cardFrames, movement),
+                    animate(reelLabel, labelFrames, movement),
+                    animate(reelValue, valueFrames, movement),
+                    animate(reelWindow, [{ opacity: 1 }, { opacity: 0 }], { duration: 125, fill: 'forwards' }),
+                    animate(reelArrow, [{ opacity: 0 }, { opacity: 0, offset: .77 }, { opacity: 1 }], movement)
+                ]);
+            }
+
+            function resetRankReel() {
+                reel.classList.add('hidden');
+                reel.classList.remove('is-docking');
+                reel.getAnimations({ subtree: true }).forEach(animation => animation.cancel());
+                reelWindow.removeAttribute('style');
+                reelArrow.removeAttribute('style');
+                strip.replaceChildren();
+            }
+
+            const settleCard = (card, rank = false) => {
+                delete screen.dataset.spotlight;
+                playSfx('throw_hit', .64);
+                triggerHaptic('medium');
+                const frames = rank ? [
+                    { transform: 'none' },
+                    { transform: 'translateY(4px) scale(1.008,.985)', offset: .36 },
+                    { transform: 'none' }
+                ] : [
+                    { transform: 'translateY(10px) scale(1.025,.94)' },
+                    { transform: 'translateY(-6px) scale(.993,1.025)', offset: .42 },
+                    { transform: 'none' }
+                ];
+                return animate(card, frames, { duration: rank ? 155 : 240, easing: 'ease-out' });
+            };
+            try {
+                beginPhase();
+                screen.dataset.resultStage = 'score';
+                delete screen.dataset.spotlight;
+                if (!reducedMotion) screen.dataset.spotlight = 'score';
+                screen.scrollTop = 0;
+                [record, ...rows].forEach(card => {
+                    card.getAnimations().forEach(animation => animation.cancel());
+                });
+                rows.forEach(row => {
+                    row.classList.add('hidden');
+                    row.style.visibility = '';
+                });
+                actions.classList.add('hidden');
+                resetRankReel();
+                screen.classList.remove('hidden');
+                closeSoloLeaderboard(false);
+                updateGameOverWorld8PromoUI();
+
+                const { prevBest, ranks } = evaluateScore(finalScore);
+                const breaksRecord = finalScore > prevBest;
+                if (breaksRecord) new Image().src = './images/showa-comic-results/celebrate-ink-bubble.webp';
+                rows[0].dataset.country = userCountry;
+                rows[0].dataset.flag = countryToFlag(userCountry);
+                record.classList.remove('is-new-best');
+                bestValue.textContent = prevBest;
+                finalScoreEl.style.setProperty('--score-digits', String(Math.max(2, String(finalScore).length)));
+                finalScoreEl.textContent = '0';
+                let displayed = 0;
+
+                async function countTo(target, syncBest) {
+                    const updateScore = value => {
+                        if (value === displayed || !active()) return;
+                        displayed = value;
+                        finalScoreEl.textContent = value;
+                        if (syncBest) bestValue.textContent = value;
+                    };
+                    const start = displayed;
+                    const fastEnd = Math.max(start, target - 3);
+                    if (fastEnd > start) {
+                        const duration = Math.min(840, 310 + (fastEnd - start) * 11);
+                        const started = performance.now();
+                        await new Promise(resolve => {
+                            let lastSound = -Infinity;
+                            function frame(now) {
+                                if (!active() || !canAnimate()) return resolve();
+                                const progress = Math.min(1, (now - started) / duration);
+                                const value = start + Math.floor((fastEnd - start) * (1 - (1 - progress) ** 1.55));
+                                if (value !== displayed && now - lastSound >= 55) {
+                                    playSfx('click', .22);
+                                    lastSound = now;
+                                }
+                                updateScore(value);
+                                if (progress < 1) requestAnimationFrame(frame);
+                                else resolve();
+                            }
+                            requestAnimationFrame(frame);
+                        });
+                    }
+                    const pauses = [105, 150, 210];
+                    while (displayed < target && active() && canAnimate()) {
+                        await wait(pauses[3 - (target - displayed)]);
+                        if (!active() || !canAnimate()) return;
+                        updateScore(displayed + 1);
+                        playSfx('click', .3);
+                    }
                 }
+
+                function confirmValue(value) {
+                    const frames = [
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.18)', offset: .22 },
+                        { transform: 'translateX(-14px) scale(.96)', offset: .42 },
+                        { transform: 'translateX(10px) scale(1.05)', offset: .58 },
+                        { transform: 'translateX(-6px)', offset: .72 },
+                        { transform: 'translateX(3px)', offset: .87 },
+                        { transform: 'none' }
+                    ];
+                    return animate(value, frames, 340);
+                }
+
+                function impact(isRecord) {
+                    playSfx('throw_hit', isRecord ? .75 : .5);
+                    triggerHaptic(isRecord ? 'heavy' : 'medium');
+                    const hits = [confirmValue(finalScoreEl)];
+                    if (isRecord) hits.push(confirmValue(bestValue));
+                    return Promise.all(hits);
+                }
+
+                if (!reducedMotion) {
+                    await animate(record, [
+                        { transform: 'translateY(-95px) scale(.93)', opacity: 0 },
+                        { transform: 'none', opacity: 1 }
+                    ], { duration: 300, easing: 'ease-out' });
+                    if (!active()) return;
+                    if (canAnimate()) await countTo(breaksRecord ? prevBest : finalScore, false);
+                    if (!active()) return;
+                    if (breaksRecord && canAnimate()) {
+                        await wait(160);
+                        if (!active()) return;
+                        if (canAnimate()) {
+                            displayed = prevBest + 1;
+                            finalScoreEl.textContent = displayed;
+                            record.classList.add('is-new-best');
+                            bestValue.textContent = displayed;
+                            await impact(true);
+                            if (displayed < finalScore && canAnimate()) {
+                                await countTo(finalScore, true);
+                                if (!active()) return;
+                                if (canAnimate()) await impact(false);
+                            }
+                        }
+                    } else if (canAnimate()) {
+                        await impact(false);
+                    }
+                }
+                if (!active()) return;
+                finalScoreEl.textContent = finalScore;
+                bestValue.textContent = Math.max(prevBest, finalScore);
+                record.classList.toggle('is-new-best', breaksRecord);
+
+                const scoreFrom = record.getBoundingClientRect();
+                screen.dataset.resultStage = 'ranks';
+                if (canAnimate()) {
+                    const scoreTo = record.getBoundingClientRect();
+                    await dropCard(record, scoreTo, scoreFrom, scoreTo);
+                    if (!active()) return;
+                    record.getAnimations().forEach(animation => animation.cancel());
+                    if (canAnimate()) await settleCard(record);
+                    if (canAnimate()) await wait(160);
+                }
+                delete screen.dataset.spotlight;
+
+                for (const [index, row] of rows.entries()) {
+                    beginPhase();
+                    const result = await untilSkip(ranks[index]);
+                    if (!active()) return;
+                    const value = row.querySelector('strong');
+                    const showRank = ({ rank }) => {
+                        if (!active()) return;
+                        value.textContent = rank;
+                        value.classList.toggle('wide-rank', rank.length > 4);
+                    };
+                    if (!result) {
+                        showRank({ rank: '—' });
+                        row.classList.remove('hidden');
+                        ranks[index].then(showRank);
+                        continue;
+                    }
+                    const { rank, positions } = result;
+                    showRank(result);
+                    if (canAnimate()) {
+                        const scope = index === 0 ? 'country' : 'global';
+                        reel.dataset.scope = scope;
+                        reel.dataset.country = row.dataset.country || '';
+                        reel.dataset.flag = row.dataset.flag || '';
+                        screen.dataset.spotlight = scope;
+                        const label = row.querySelector('.result-label').textContent;
+                        reelLabel.textContent = label;
+                        const labels = soloRankReelLabels(rank, positions);
+                        strip.replaceChildren(...labels.map(label => {
+                            const item = document.createElement('span');
+                            const number = document.createElement('b');
+                            number.textContent = label;
+                            number.classList.toggle('wide-rank', label.length > 4);
+                            item.append(number);
+                            return item;
+                        }));
+                        const confirmed = strip.children[labels.length - 2].firstElementChild;
+                        reel.classList.remove('hidden');
+                        await animate(reel, [
+                            { transform: 'translateY(-130px) scale(.9)', opacity: 0 },
+                            { transform: 'none', opacity: 1 }
+                        ], { duration: 370, easing: 'cubic-bezier(.2,.8,.25,1)' });
+                        if (!active()) return;
+                        if (canAnimate() && rank !== '—') {
+                            const steps = labels.length - 3;
+                            if (steps > 0) {
+                                const distance = steps * strip.firstElementChild.offsetHeight;
+                                await animate(strip, [{ transform: 'translateY(0)' }, { transform: `translateY(-${distance}px)` }],
+                                    { duration: Math.min(1100, 420 + steps * 77), easing: 'cubic-bezier(.15,.54,.2,1)', fill: 'forwards' });
+                            }
+                            if (!active()) return;
+                            if (canAnimate()) {
+                                playSfx('click', .62);
+                                triggerHaptic('light');
+                                await confirmValue(confirmed);
+                            }
+                        }
+                        if (canAnimate()) await wait(380);
+                        if (!active()) return;
+                        row.style.visibility = 'hidden';
+                        row.classList.remove('hidden');
+                        if (canAnimate()) await dockRank(row, confirmed);
+                        if (!active()) return;
+                        resetRankReel();
+                        row.style.visibility = '';
+                        delete screen.dataset.spotlight;
+                        if (canAnimate()) await settleCard(row, true);
+                        if (canAnimate()) await wait(160);
+                    } else {
+                        row.classList.remove('hidden');
+                    }
+                }
+
+                if (!active()) return;
+                phase = null;
+                screen.dataset.resultStage = 'menu';
+                actions.classList.remove('hidden');
+                if (!reducedMotion) {
+                    actions.inert = true;
+                    await Promise.all(Array.from(actions.children).filter(el => el.getClientRects().length).map((el, index) =>
+                        animate(el, [{ transform: 'translateY(135px)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+                            { duration: 375, delay: 85 * index, easing: 'cubic-bezier(.18,.85,.3,1)', fill: 'backwards' })
+                    ));
+                    actions.inert = false;
+                }
+                if (active() && justUnlockedFireballThisRun) {
+                    justUnlockedFireballThisRun = false;
+                    openFireballUnlockModal();
+                }
+            } finally {
+                input.abort();
             }
         }
 
@@ -7746,7 +8124,7 @@
                 unlockConfirmBtn: '확인',
                 goBattleNowBtn: '⚡ 지금 세계 8인 배틀 출전하기',
                 goBattleFreeBtn: (rem, max) => `⚡ 세계 8인 배틀 무료 출전 (오늘 ${rem}/${max}회)`,
-                gameOverBtn: '⚡ 세계 8인 배틀 출전하기',
+                gameOverBtn: '세계 8인 배틀 출전하기',
                 gameOverBadgeNew: '🎁 NEW! 첫 10판 감점 면제 · 첫 1승 스킨 보상!',
                 gameOverBadgeShield: (m, max) => `🛡️ 초심자 보호 적용 중 (${m}/${max}판 · 감점 면제)`,
                 newBadge: '🔥 NEW!'
@@ -7757,7 +8135,7 @@
                 unlockConfirmBtn: 'OK',
                 goBattleNowBtn: '⚡ Enter World 8P Battle Now',
                 goBattleFreeBtn: (rem, max) => `⚡ Free World 8P Battle (${rem}/${max} left)`,
-                gameOverBtn: '⚡ Play World 8P Battle',
+                gameOverBtn: 'Play World 8P Battle',
                 gameOverBadgeNew: '🎁 NEW! First 10 Matches No Loss · 1st Win Skin!',
                 gameOverBadgeShield: (m, max) => `🛡️ Rookie Shield Active (${m}/${max} · No Loss)`,
                 newBadge: '🔥 NEW!'
@@ -7768,7 +8146,7 @@
                 unlockConfirmBtn: '確認',
                 goBattleNowBtn: '⚡ 今すぐ世界8人バトルへ参戦',
                 goBattleFreeBtn: (rem, max) => `⚡ 世界8人バトル無料参戦 (残り${rem}/${max}回)`,
-                gameOverBtn: '⚡ 世界8人バトルへ参戦',
+                gameOverBtn: '世界8人バトルへ参戦',
                 gameOverBadgeNew: '🎁 NEW! 最初の10戦レート低下なし・初勝利報酬！',
                 gameOverBadgeShield: (m, max) => `🛡️ 初心者保護適用中 (${m}/${max}戦・低下なし)`,
                 newBadge: '🔥 NEW!'
@@ -7779,7 +8157,7 @@
                 unlockConfirmBtn: '確定',
                 goBattleNowBtn: '⚡ 立即參加世界8人對戰',
                 goBattleFreeBtn: (rem, max) => `⚡ 免費參加世界8人對戰 (剩餘${rem}/${max}場)`,
-                gameOverBtn: '⚡ 參加世界8人對戰',
+                gameOverBtn: '參加世界8人對戰',
                 gameOverBadgeNew: '🎁 NEW! 前10場不扣積分・首勝送專屬造型！',
                 gameOverBadgeShield: (m, max) => `🛡️ 新手保護生效中 (${m}/${max}場・不扣積分)`,
                 newBadge: '🔥 NEW!'
@@ -7790,7 +8168,7 @@
                 unlockConfirmBtn: 'OK',
                 goBattleNowBtn: '⚡ Entrar a Batalla Mundial 8P',
                 goBattleFreeBtn: (rem, max) => `⚡ Batalla 8P Gratis (${rem}/${max} hoy)`,
-                gameOverBtn: '⚡ Jugar Batalla Mundial 8P',
+                gameOverBtn: 'Jugar Batalla Mundial 8P',
                 gameOverBadgeNew: '🎁 ¡NUEVO! 10 partidas sin bajar · Premio 1ª victoria',
                 gameOverBadgeShield: (m, max) => `🛡️ Escudo Novato Activo (${m}/${max} · Sin bajar)`,
                 newBadge: '🔥 ¡NUEVO!'
@@ -7800,6 +8178,7 @@
         function updateGameOverWorld8PromoUI() {
             const wrap = document.getElementById('gameover-world8-wrap');
             const badge = document.getElementById('gameover-world8-badge');
+            const rewardPatch = document.getElementById('gameover-world8-reward-patch');
             const btn = document.getElementById('gameover-world8-btn');
             if (!wrap || !badge || !btn) return;
             const unlocked = typeof isWorld8BattleUnlocked === 'function' && isWorld8BattleUnlocked();
@@ -7812,9 +8191,13 @@
             const matches = Number((typeof getBattleStats === 'function' ? getBattleStats().matches : 0) || 0);
             btn.textContent = pack.gameOverBtn;
             btn.classList.toggle('intro-guide-pulse', matches === 0);
+            rewardPatch.hidden = true;
             if (matches === 0) {
                 badge.style.display = '';
-                badge.textContent = pack.gameOverBadgeNew;
+                const [shield, reward] = pack.gameOverBadgeNew.split(/\s*[·・]\s*/, 2);
+                badge.textContent = shield.replace(/[!！]/g, '');
+                rewardPatch.textContent = reward || '';
+                rewardPatch.hidden = !reward;
             } else if (matches < ROOKIE_SHIELD_MATCHES) {
                 badge.style.display = '';
                 badge.textContent = pack.gameOverBadgeShield(matches, ROOKIE_SHIELD_MATCHES);
@@ -7833,8 +8216,6 @@
             triggerHaptic('medium');
             const goEl = document.getElementById('game-over-screen');
             if (goEl) goEl.classList.add('hidden');
-            const lbEl = document.getElementById('leaderboard-modal');
-            if (lbEl) lbEl.classList.add('hidden');
             startWorld8Battle();
         }
 
@@ -9904,6 +10285,7 @@
         }
 
         function gameLoop(timestamp) {
+            if (gameState === 'GAMEOVER') return;
             update(timestamp);
             draw();
             if (gameState === 'PLAYING' || gameState === 'COUNTDOWN' || gameState === 'DYING') requestAnimationFrame(gameLoop);
@@ -10189,7 +10571,7 @@
             if (scope !== 'global' && scope !== 'country') return;
             currentLeaderboardScope = scope;
             updateCountryTabLabels();
-            if (isVisibleScreen('game-over-screen')) {
+            if (isVisibleScreen('result-leaderboard-overlay')) {
                 renderRankList(lastHighlightName, lastHighlightScore);
             }
             const introModal = document.getElementById('intro-ranking-modal');
@@ -11139,6 +11521,25 @@
             return rank <= limit ? `#${rank}` : `${limit}+`;
         }
 
+        function leaderboardPositions(rows) {
+            let position = 1;
+            return rows.map((row, index) => {
+                if (index > 0 && row.score !== rows[index - 1].score) position = index + 1;
+                return position;
+            });
+        }
+
+        function soloRankReelLabels(rank, positions) {
+            if (rank === '—') return ['', rank, ''];
+            const target = Number.parseInt(rank.replace(/^#/, ''), 10);
+            if (rank.endsWith('+')) return ['', ...positions.slice(-10).map(position => `#${position}`), rank, ''];
+            const higher = positions.filter(position => position < target);
+            const lower = positions.filter(position => position > target);
+            const approach = lower.length ? lower.slice(0, 10).reverse() : higher.slice(-10);
+            const neighbor = lower.length && higher.length ? `#${higher[higher.length - 1]}` : '';
+            return ['', ...approach.map(position => `#${position}`), rank, neighbor];
+        }
+
         function saveBestScoreToServer(playerName, scoreToSave, isSilentRestore = false) {
             const cleanName = clampBattleName(playerName || getSavedPlayerName() || 'PLAYER').trim() || 'PLAYER';
             const cleanScore = Math.max(0, Math.min(3000, Math.round(Number(scoreToSave) || 0)));
@@ -11182,7 +11583,7 @@
                 updateIfHigher(countryRanksRootRef.child(userCountry).child(accountKey)),
                 syncProfileToCloud()
             ]).then(() => {
-                if (!isSilentRestore && isVisibleScreen('game-over-screen')) {
+                if (!isSilentRestore && isVisibleScreen('game-over-screen') && isVisibleScreen('result-leaderboard-overlay')) {
                     renderRankList(cleanName, cleanScore);
                 }
                 return true;
@@ -11216,59 +11617,46 @@
                 composed: true,
             }));
 
-            const rankEntryEl = document.getElementById('rank-entry');
-            const modalEl = document.getElementById('leaderboard-modal');
-            const rankDetailEl = document.getElementById('my-rank-detail');
-            document.querySelector('.result-record').classList.toggle('is-new-best', isNewPersonalBest);
-            document.getElementById('result-best-label').textContent = textFor(isNewPersonalBest ? 'resultNewBest' : 'resultBest');
-            document.getElementById('result-best-val').textContent = effectiveBestScore;
-            if (rankDetailEl) rankDetailEl.textContent = playerName;
-            if (rankEntryEl) rankEntryEl.classList.add('hidden');
+            document.getElementById('result-country-label').textContent = userCountry;
+            pendingScore = null;
+            if (isNewPersonalBest) saveBestScoreToServer(playerName, normalizedScore, false);
 
-            // 항상 리더보드 모달을 바로 표시 (이름 입력창 없음)
-            if (modalEl) modalEl.classList.remove('hidden');
-
-            if (normalizedScore <= 0 && effectiveBestScore <= 0) {
-                pendingScore = null;
-                if (rankEntryEl) rankEntryEl.classList.add('hidden');
-                renderRankList(null, null);
-                return;
-            }
-
-            // 최고 기록 경신 시 서버에 자동 등록 (이름당 최고 점수 1개만 유지)
-            if (isNewPersonalBest && normalizedScore > 0) {
-                saveBestScoreToServer(playerName, normalizedScore, false);
-            }
-
-            // 글로벌 TOP 1000 및 접속 국가 TOP 100 동시 확인 (내 최고 점수 기준)
-            fetchRanksByScope('global', (globalRanks) => {
-                fetchRanksByScope('country', (countryRanks) => {
-                    if (effectiveBestScore > 0) {
-                        const rankValEl = document.getElementById('my-rank-val');
-                        if (rankValEl) {
-                            rankValEl.textContent = resolvePlayerRankLabel(globalRanks, effectiveBestScore, playerName, LEADERBOARD_LIMIT_GLOBAL, true);
-                        }
-                        document.getElementById('result-country-rank').textContent = resolvePlayerRankLabel(countryRanks, effectiveBestScore, playerName, LEADERBOARD_LIMIT_COUNTRY, true);
-                        document.getElementById('result-country-label').textContent = `${countryToFlag(userCountry)} ${userCountry}`;
-                        if (rankEntryEl) rankEntryEl.classList.remove('hidden');
-                    } else if (rankEntryEl) {
-                        rankEntryEl.classList.add('hidden');
-                    }
-                    renderRankList(playerName, null);
+            const ranks = ['country', 'global'].map(scope => {
+                const unavailable = { rank: '—', positions: [] };
+                if (effectiveBestScore <= 0) return Promise.resolve(unavailable);
+                const limit = getLeaderboardLimit(scope);
+                const rankFrom = rows => ({
+                    rank: resolvePlayerRankLabel(rows, effectiveBestScore, playerName, limit),
+                    positions: [...new Set(leaderboardPositions(rows))]
+                });
+                const cached = getCachedRanks(scope);
+                const fallback = cached.length > 0 ? rankFrom(cached) : unavailable;
+                return new Promise(resolve => {
+                    const timeout = setTimeout(() => resolve(fallback), 1700);
+                    fetchRanksByScope(scope, (rows, meta) => {
+                        clearTimeout(timeout);
+                        resolve(rows.length || meta?.ok !== false ? rankFrom(rows) : fallback);
+                    });
                 });
             });
+            return { prevBest, ranks };
         }
 
+        let soloLeaderboardRequest = 0;
+
         function renderRankList(highlightName, highlightScore = null) {
+            const request = ++soloLeaderboardRequest;
             const list = document.getElementById('rank-list');
             enableResultRankTouchScroll(list);
             updateCountryTabLabels();
             const limit = getLeaderboardLimit(currentLeaderboardScope);
             const cached = getCachedRanks(currentLeaderboardScope);
+            list.scrollTop = 0;
             if (cached.length > 0) renderRankRows(list, cached, highlightName, highlightScore, limit);
             else list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('loadingRanks')}</div>`;
 
             fetchRanks((ranks) => {
+                if (request !== soloLeaderboardRequest || !isVisibleScreen('result-leaderboard-overlay')) return;
                 if (ranks.length === 0) {
                     list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('emptyRanks')}</div>`;
                     return;
@@ -11300,16 +11688,7 @@
             const rows = Array.isArray(ranks) ? ranks.filter(r => r && hasValidRankCountry(r.country)).slice(0, limit) : [];
 
             // 공동순위 계산: 앞 항목과 점수 같으면 같은 순위
-            const displayRanks = [];
-            let currentRank = 1;
-            rows.forEach((r, i) => {
-                if (i > 0 && r.score === rows[i - 1].score) {
-                    displayRanks.push(displayRanks[i - 1]);
-                } else {
-                    currentRank = i + 1;
-                    displayRanks.push(currentRank);
-                }
-            });
+            const displayRanks = leaderboardPositions(rows);
 
             let myRankIdx = -1;
             if (highlightName) {
@@ -11347,12 +11726,44 @@
             }
         }
 
-        function toggleLeaderboard(forceOpen = false) {
-            const modal = document.getElementById('leaderboard-modal');
-            if (forceOpen) modal.classList.remove('hidden');
-            else modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                renderRankList(null);
+        let soloLeaderboardOpener = null;
+
+        function openSoloLeaderboard(scope) {
+            const screen = document.getElementById('game-over-screen');
+            const actions = document.getElementById('result-actions');
+            if (screen.dataset.resultStage !== 'menu' || actions.inert) return;
+            soloLeaderboardOpener = document.getElementById(`result-${scope}-row`);
+            document.getElementById('rank-entry').inert = true;
+            actions.inert = true;
+            document.getElementById('result-leaderboard-overlay').classList.remove('hidden');
+            switchLeaderboardScope(scope);
+            document.getElementById('result-leaderboard-close').focus();
+        }
+
+        function closeSoloLeaderboard(restoreFocus = true) {
+            soloLeaderboardRequest++;
+            document.getElementById('result-leaderboard-overlay').classList.add('hidden');
+            document.getElementById('rank-entry').inert = false;
+            document.getElementById('result-actions').inert = false;
+            if (restoreFocus) soloLeaderboardOpener?.focus({ preventScroll: true });
+            soloLeaderboardOpener = null;
+        }
+
+        function handleSoloLeaderboardKey(event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeSoloLeaderboard();
+            } else if (event.key === 'Tab') {
+                const focusable = event.currentTarget.querySelectorAll('button, [tabindex="0"]');
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
             }
         }
 
@@ -15136,7 +15547,7 @@
                 canvasEl.style.opacity = '1';
             }
             document.getElementById('game-over-screen').classList.add('hidden');
-            document.getElementById('leaderboard-modal').classList.add('hidden');
+            closeSoloLeaderboard(false);
             setPlayHudMode();
             stopAllBgm();
             gameState = 'INTRO';
