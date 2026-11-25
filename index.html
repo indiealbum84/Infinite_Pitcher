@@ -12473,11 +12473,21 @@
         }
 
         function getBattlePlayerLabel(player, index) {
-            const name = String(player.name || '').trim();
-            if (name) return name;
-            if (player.id === battlePlayerId) return textFor('selfLabel');
-            if (player.isHost) return textFor('hostLabel');
-            return player.name || `P${index + 1}`;
+            const rawName = String((player && player.name) || '').trim();
+            let baseName = rawName;
+            if (!baseName) {
+                if (player && player.id === battlePlayerId) baseName = textFor('selfLabel');
+                else if (player && player.isHost) baseName = textFor('hostLabel');
+                else baseName = `P${index + 1}`;
+            }
+            const hasFlagPrefix = /^\p{Regional_Indicator}{2}/u.test(baseName);
+            if (!hasFlagPrefix && player && !player.isBot) {
+                const cc = player.country || (player.id === battlePlayerId ? userCountry : '');
+                if (cc && typeof countryToFlag === 'function') {
+                    return `${countryToFlag(cc)} ${baseName}`;
+                }
+            }
+            return baseName;
         }
 
         function registerBattleDisconnectHandler(roomId, playerId, role) {
@@ -12788,6 +12798,7 @@
                     league: myLeague,
                     streak: myStreak,
                     skin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
+                    country: typeof userCountry === 'string' ? userCountry : 'KR',
                     isHost: false,
                     isBot: false,
                     joinedAt
@@ -12868,6 +12879,7 @@
                 league: myLeague,
                 streak: myStreak,
                 skin: typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic',
+                country: typeof userCountry === 'string' ? userCountry : 'KR',
                 isHost: true,
                 isBot: false,
                 joinedAt: now
@@ -13790,6 +13802,7 @@
                 finishOrder: null,
                 finishedAt: null,
                 name: hostName,
+                country: typeof userCountry === 'string' ? userCountry : 'KR',
                 matches: myStats.matches,
                 wins: myStats.wins,
                 isHost: true,
@@ -13861,6 +13874,7 @@
                         finishOrder: null,
                         finishedAt: null,
                         name: nickname || `P${playerCount + 1}`,
+                        country: typeof userCountry === 'string' ? userCountry : 'KR',
                         matches: myStats.matches,
                         wins: myStats.wins,
                         isHost: false,
