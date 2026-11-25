@@ -7342,16 +7342,17 @@
             lateralMotion.previousX = null;
             lateralMotion.cartPhase = 0;
             lateralMotion.lastMoveAt = -Infinity;
+            pitcherPreGameQuote = pickPitcherPreGameQuote();
+            showPitcherPreGameBubble = Boolean(pitcherPreGameQuote);
             updateUI();
             draw();
+            requestAnimationFrame(gameLoop);
 
             const countdownScreen = document.getElementById('countdown-screen');
             const countdownText = document.getElementById('countdown-text');
             countdownScreen.classList.remove('hidden');
 
             // 안내 문구 표시 — 클릭/터치하면 카운트다운 시작
-            pitcherPreGameQuote = pickPitcherPreGameQuote();
-            showPitcherPreGameBubble = Boolean(pitcherPreGameQuote);
             countdownText.innerText = TEXTS[currentLang].instruction;
             countdownText.classList.add('countdown-instruction');
             countdownText.classList.remove('countdown-start');
@@ -7373,7 +7374,6 @@
                     cleanupCountdownListeners();
                     return;
                 }
-                showPitcherPreGameBubble = false;
                 countdownText.classList.remove('countdown-instruction');
                 countdownText.style.fontSize = '';
                 countdownText.style.whiteSpace = '';
@@ -7394,6 +7394,7 @@
                     count--;
                     setTimeout(runTick, 1000);
                 } else if (count === 0) {
+                    showPitcherPreGameBubble = false;
                     countdownText.innerText = 'START!';
                     countdownText.classList.add('countdown-start');
 
@@ -7407,6 +7408,7 @@
                     count--;
                     setTimeout(runTick, 1000);
                 } else {
+                    showPitcherPreGameBubble = false;
                     countdownScreen.classList.add('hidden');
                     gameState = 'PLAYING';
                     sessionPlayStartedAt = performance.now();
@@ -7416,7 +7418,6 @@
             };
 
             runTick();
-            requestAnimationFrame(gameLoop);
             };
 
             // 대전 모드에서는 안내 문구 없이 바로 카운트다운 시작
