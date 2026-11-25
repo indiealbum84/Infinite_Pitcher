@@ -1008,11 +1008,12 @@
         }
 
         .battle-hud-box {
+            position: relative;
             flex: 1 1 0;
             min-width: 0;
             background: #ffffff;
             color: var(--palette-ink);
-            padding: 2px 1px;
+            padding: 15px 2px 3px;
             border-radius: 6px;
             border: 1.5px solid #000000;
             box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
@@ -1026,20 +1027,38 @@
         }
 
         .battle-hud-box .bhb-num {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: #1e293b;
+            border: 1px solid #000000;
             font-size: 10px;
             font-weight: 900;
-            line-height: 1.1;
-            color: #64748b;
+            line-height: 1.05;
+            color: #ffffff;
             letter-spacing: -0.2px;
+        }
+
+        .battle-hud-box .bhb-streak {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 9px;
+            font-weight: 900;
+            line-height: 1;
+            color: #ea580c;
         }
 
         .battle-hud-box .bhb-score {
             font-family: var(--font-game);
-            font-size: 15px;
+            font-size: 20px;
             font-weight: 900;
-            line-height: 1.1;
+            line-height: 1.02;
             color: var(--palette-blue);
-            letter-spacing: 0.2px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0;
         }
 
         /* 내 번호 박스: 눈에 확 띄는 강조 테두리 + 배경 */
@@ -1052,7 +1071,9 @@
         }
 
         .battle-hud-box.me .bhb-num {
-            color: #be123c !important;
+            background: var(--showa-red) !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
             font-weight: 900;
         }
 
@@ -1063,9 +1084,15 @@
 
         /* 탈락/완료된 플레이어 */
         .battle-hud-box.done {
-            opacity: 0.45;
+            opacity: 0.48;
             background: #f1f5f9;
             border-color: #94a3b8;
+        }
+
+        .battle-hud-box.done .bhb-num {
+            background: #94a3b8;
+            border-color: #64748b;
+            color: #ffffff;
         }
 
         .battle-hud-box.done .bhb-score {
@@ -3197,12 +3224,13 @@
 
         #battle-hud {
             gap: 8px;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-bottom-width: 4px;
         }
 
         .battle-hud-box {
-            padding: 6px 4px;
+            padding: 28px 4px 8px;
+            min-height: 82px;
             border-radius: 12px;
             border-width: 3px;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
@@ -3210,13 +3238,24 @@
         }
 
         .battle-hud-box .bhb-num {
-            font-size: 18px;
-            letter-spacing: 0.5px;
+            top: 4px;
+            left: 4px;
+            padding: 3px 7px;
+            border-radius: 7px;
+            border-width: 2px;
+            font-size: 17px;
+            letter-spacing: 0.2px;
+        }
+
+        .battle-hud-box .bhb-streak {
+            top: 5px;
+            right: 5px;
+            font-size: 15px;
         }
 
         .battle-hud-box .bhb-score {
-            font-size: 28px;
-            letter-spacing: 1px;
+            font-size: 42px;
+            letter-spacing: 0.5px;
         }
 
         .battle-hud-box.me {
@@ -14193,14 +14232,14 @@
             if (hud.children.length !== count) {
                 hud.innerHTML = players.map((player, index) => {
                     const streakVal = Number(player.streak) || 0;
-                    const streakBadge = streakVal >= 2 ? ` 🔥${streakVal}` : '';
-                    const numLabel = `${index + 1}P${streakBadge}`;
+                    const streakBadge = streakVal >= 2 ? `<span class="bhb-streak">🔥${streakVal}</span>` : '';
+                    const numLabel = `${index + 1}P`;
                     const scoreText = Number(player.score || 0);
                     const isMe = player.id === battlePlayerId;
                     const meClass = isMe ? ' me' : '';
                     const doneClass = player.done ? ' done' : '';
                     return `<div class="battle-hud-box${meClass}${doneClass}" data-player-id="${player.id}">
-                        <div class="bhb-num">${numLabel}</div>
+                        <div class="bhb-num">${numLabel}</div>${streakBadge}
                         <div class="bhb-score">${scoreText}</div>
                     </div>`;
                 }).join('');
@@ -14209,11 +14248,22 @@
                     const box = hud.children[index];
                     if (!box) return;
                     const streakVal = Number(player.streak) || 0;
-                    const streakBadge = streakVal >= 2 ? ` 🔥${streakVal}` : '';
-                    const numLabel = `${index + 1}P${streakBadge}`;
+                    const streakText = streakVal >= 2 ? `🔥${streakVal}` : '';
+                    const numLabel = `${index + 1}P`;
                     const numEl = box.querySelector('.bhb-num');
                     if (numEl && numEl.textContent !== numLabel) {
                         numEl.textContent = numLabel;
+                    }
+                    let streakEl = box.querySelector('.bhb-streak');
+                    if (streakText) {
+                        if (!streakEl) {
+                            streakEl = document.createElement('span');
+                            streakEl.className = 'bhb-streak';
+                            box.insertBefore(streakEl, box.querySelector('.bhb-score'));
+                        }
+                        if (streakEl.textContent !== streakText) streakEl.textContent = streakText;
+                    } else if (streakEl) {
+                        streakEl.remove();
                     }
                     const scoreEl = box.querySelector('.bhb-score');
                     const scoreText = String(Number(player.score || 0));
