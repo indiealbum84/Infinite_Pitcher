@@ -1013,7 +1013,7 @@
             min-width: 0;
             background: #ffffff;
             color: var(--palette-ink);
-            padding: 15px 2px 3px;
+            padding: 13px 2px 2px;
             border-radius: 6px;
             border: 1.5px solid #000000;
             box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
@@ -3278,18 +3278,20 @@
         }
 
         .battle-hud-box {
-            padding: 28px 4px 8px;
-            min-height: 82px;
+            padding: 25px 4px 4px;
+            min-height: 0;
             border-radius: 12px;
             border-width: 3px;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
             min-width: 0;
+            justify-content: center;
+            align-items: center;
         }
 
         .battle-hud-box .bhb-num {
-            top: 4px;
+            top: 3px;
             left: 4px;
-            padding: 3px 7px;
+            padding: 2px 7px;
             border-radius: 7px;
             border-width: 2px;
             font-size: 17px;
@@ -3297,7 +3299,7 @@
         }
 
         .battle-hud-box .bhb-streak {
-            top: 4px;
+            top: 3px;
             right: 4px;
             padding: 2px 7px;
             border-width: 2px;
@@ -3308,7 +3310,10 @@
 
         .battle-hud-box .bhb-score {
             font-size: 42px;
+            line-height: 1;
             letter-spacing: 0.5px;
+            text-align: center;
+            width: 100%;
         }
 
         .battle-hud-box.me {
