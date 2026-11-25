@@ -3381,15 +3381,16 @@
         }
 
         .battle-score-card .bsc-rank {
-            flex: 0 0 128px;
-            width: 128px;
+            position: relative;
+            flex: 0 0 136px;
+            width: 136px;
             height: 100%;
-            padding: 6px 8px;
+            padding: 6px 8px 6px 28px;
             border-radius: 14px;
             border: 3px solid #000000;
             background: #1e293b;
             color: #ffffff;
-            font-size: 38px;
+            font-size: 36px;
             font-weight: 900;
             line-height: 1.05;
             display: flex;
@@ -3400,28 +3401,23 @@
             box-sizing: border-box;
         }
 
-        .battle-score-card .bsc-rank.rank-1 {
-            background: linear-gradient(135deg, #fbbf24, #d97706);
-            color: #111827;
-        }
-
-        .battle-score-card .bsc-rank.rank-2 {
-            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
-            color: #111827;
-        }
-
-        .battle-score-card .bsc-rank.rank-3 {
-            background: linear-gradient(135deg, #fdba74, #c2410c);
-            color: #ffffff;
+        .battle-score-card .bsc-rank .bsc-medal {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 26px;
+            line-height: 1;
         }
 
         .battle-score-card .bsc-rank.playing {
+            padding-left: 8px;
             background: #16a34a;
             color: #ffffff;
-            font-size: 24px;
+            font-size: 22px;
         }
 
-        .battle-score-card.me .bsc-rank:not(.rank-1):not(.rank-2):not(.rank-3):not(.playing) {
+        .battle-score-card.me .bsc-rank:not(.playing) {
             background: var(--showa-red);
             color: #ffffff;
         }
@@ -3430,59 +3426,53 @@
             flex: 1 1 auto;
             min-width: 0;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
+            justify-content: flex-start;
+            gap: 10px;
             overflow: hidden;
-            text-align: center;
-        }
-
-        .battle-score-card.champion {
-            border-color: #f59e0b !important;
-            background: linear-gradient(160deg, #fffbeb 0%, #fef3c7 100%) !important;
-            box-shadow: 0 5px 0 #d97706 !important;
+            text-align: left;
         }
 
         .battle-score-card.me {
+            background: var(--palette-yellow) !important;
             box-shadow: 0 5px 0 var(--palette-pink), 0 5px 0 4px #000000;
         }
 
         .battle-score-card .bsc-name {
-            width: 100%;
-            font-size: 34px;
-            line-height: 1.12;
+            flex: 0 1 auto;
+            min-width: 0;
+            font-size: 27px;
+            line-height: 1.15;
             font-weight: 900;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-align: center;
+            text-align: left;
         }
 
         .battle-score-card .bsc-score {
             flex: 0 0 auto;
             min-width: 110px;
-            font-size: 68px;
+            font-size: 64px;
             height: auto;
             line-height: 1;
             font-variant-numeric: tabular-nums;
             margin: 0;
-            text-align: center;
+            text-align: right;
         }
 
         .battle-score-card .bsc-record {
-            font-size: 25px;
-            font-weight: 900;
+            flex-shrink: 0;
+            font-size: 22px;
+            font-weight: 800;
             line-height: 1.15;
             color: #1e293b;
             background: rgba(15, 23, 42, 0.08);
             border-radius: 999px;
             white-space: nowrap;
             margin-top: 0;
-            padding: 4px 14px;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            padding: 4px 12px;
         }
 
         #battle-rematch-btn {
@@ -14631,9 +14621,9 @@
 
                 let rankHtml;
                 if (rankNum > 0) {
-                    const medal = rankNum === 1 ? '🥇 ' : (rankNum === 2 ? '🥈 ' : (rankNum === 3 ? '🥉 ' : ''));
-                    const rankTierClass = rankNum <= 3 ? ` rank-${rankNum}` : '';
-                    rankHtml = `<div class="bsc-rank${rankTierClass}">${medal}${formatBattleRankBadge(rankNum)}</div>`;
+                    const medal = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : ''));
+                    const medalHtml = medal ? `<span class="bsc-medal">${medal}</span>` : '';
+                    rankHtml = `<div class="bsc-rank">${medalHtml}<span>${formatBattleRankBadge(rankNum)}</span></div>`;
                 } else {
                     rankHtml = `<div class="bsc-rank playing">${slotNum}P · ${playingLabel}</div>`;
                 }
