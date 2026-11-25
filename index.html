@@ -2883,7 +2883,8 @@
         }
 
         .battle-rating-pill .brp-streak {
-            font-size: 24px;
+            font-size: 42px;
+            font-weight: 900;
             color: #fbbf24;
         }
 
@@ -10195,7 +10196,7 @@
                 es: `${streak} racha`,
                 en: `${streak} Streak`
             };
-            const streakBadge = streak >= 2 ? `<span class="ipp-streak-badge">🔥 ${streakLabelMap[lang] || streakLabelMap.en}</span>` : '';
+            const streakBadge = streak >= 1 ? `<span class="ipp-streak-badge">🔥 ${streakLabelMap[lang] || streakLabelMap.en}</span>` : '';
             const skinId = typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic';
             const synced = isCloudAccountLinked();
             const bestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
@@ -14070,7 +14071,7 @@
             const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
             const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
             const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
-            const streakText = streak >= 2 ? ` 🔥${streak}` : '';
+            const streakText = streak >= 1 ? ` 🔥${streak}` : '';
             return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}`;
         }
 
@@ -14209,7 +14210,7 @@
                     </div>
                     <div class="bpp-stats-row">
                         <span class="bpp-stat-tag">${matches}G 🥇${wins}W</span>
-                        ${streak >= 2 ? `<span class="bpp-streak-tag">🔥 ${streakMap[lang] || streakMap.en}</span>` : ''}
+                        ${streak >= 1 ? `<span class="bpp-streak-tag">🔥 ${streakMap[lang] || streakMap.en}</span>` : ''}
                     </div>
                 </div>`;
             });
@@ -14245,7 +14246,7 @@
             if (hud.children.length !== count) {
                 hud.innerHTML = players.map((player, index) => {
                     const streakVal = Number(player.streak) || 0;
-                    const streakBadge = streakVal >= 2 ? `<span class="bhb-streak">🔥${streakVal}</span>` : '';
+                    const streakBadge = streakVal >= 1 ? `<span class="bhb-streak">🔥${streakVal}</span>` : '';
                     const numLabel = `${index + 1}P`;
                     const scoreText = Number(player.score || 0);
                     const isMe = player.id === battlePlayerId;
@@ -14261,7 +14262,7 @@
                     const box = hud.children[index];
                     if (!box) return;
                     const streakVal = Number(player.streak) || 0;
-                    const streakText = streakVal >= 2 ? `🔥${streakVal}` : '';
+                    const streakText = streakVal >= 1 ? `🔥${streakVal}` : '';
                     const numLabel = `${index + 1}P`;
                     const numEl = box.querySelector('.bhb-num');
                     if (numEl && numEl.textContent !== numLabel) {
@@ -14773,12 +14774,12 @@
             const deltaClass = data.actualDelta > 0 ? 'plus' : (data.actualDelta < 0 ? 'minus' : 'zero');
 
             let streakHtml = '';
-            if (data.newStreak >= 2 || (data.myRank === 1 && data.newStreak >= 1)) {
+            if (data.newStreak >= 1) {
                 const fn = textFor('streakText');
                 const label = typeof fn === 'function' ? fn(data.newStreak) : `🔥 ${data.newStreak}연승!`;
                 streakHtml = `<span class="brp-streak">${label}</span>`;
-            } else if (data.prevStreak >= 2 && data.newStreak === 0) {
-                streakHtml = `<span class="brp-streak" style="color:#94a3b8;font-size:20px;">${textFor('streakEndText') || '연승 종료'}</span>`;
+            } else if (data.prevStreak >= 1 && data.newStreak === 0) {
+                streakHtml = `<span class="brp-streak" style="color:#94a3b8;font-size:24px;">${textFor('streakEndText') || '연승 종료'}</span>`;
             }
 
             let unlockHtml = '';
