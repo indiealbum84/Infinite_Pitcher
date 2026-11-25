@@ -3441,7 +3441,7 @@
         .battle-score-card .bsc-name {
             flex: 0 1 auto;
             min-width: 0;
-            font-size: 36px;
+            font-size: 32px;
             line-height: 1.12;
             font-weight: 900;
             white-space: nowrap;
@@ -3463,7 +3463,7 @@
 
         .battle-score-card .bsc-record {
             flex-shrink: 0;
-            font-size: 32px;
+            font-size: 25px;
             font-weight: 800;
             line-height: 1.12;
             color: #1e293b;
@@ -14148,12 +14148,11 @@
 
         function formatPlayerRecordBadge(player) {
             const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
-            const leagueBadge = rating > MASTER_LEAGUE_THRESHOLD ? '👑' : '🥈';
             const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
             const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
             const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
             const streakText = streak >= 1 ? ` 🔥${streak}` : '';
-            return `${leagueBadge} ${rating.toLocaleString()} PT · ${matches}G 🥇${wins}W${streakText}`;
+            return `${rating.toLocaleString()} PT, ${matches} GAME, ${wins} WIN${streakText}`;
         }
 
         function renderBattleLobby(room) {
