@@ -1045,10 +1045,14 @@
             position: absolute;
             top: 2px;
             right: 2px;
-            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 999px;
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            font-size: 11px;
             font-weight: 900;
-            line-height: 1;
-            color: #ea580c;
+            line-height: 1.05;
+            color: #b91c1c;
         }
 
         .battle-hud-box .bhb-score {
@@ -3169,28 +3173,32 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 6px;
             width: 100%;
         }
 
         .battle-player-pill .bpp-stat-tag {
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 800;
             color: #334155;
             background: rgba(15, 23, 42, 0.08);
-            padding: 3px 12px;
+            padding: 3px 11px;
             border-radius: 999px;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .battle-player-pill .bpp-streak-tag {
-            font-size: 22px;
+            font-size: 27px;
             font-weight: 900;
-            color: #b91c1c;
-            background: #fee2e2;
-            border: 2px solid #f87171;
-            padding: 2px 10px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #f97316, #dc2626);
+            border: 2.5px solid #7f1d1d;
+            padding: 4px 13px;
             border-radius: 999px;
-            line-height: 1.1;
+            line-height: 1.08;
+            white-space: nowrap;
+            box-shadow: 0 2px 0 rgba(127, 29, 29, 0.35);
         }
 
         .battle-score-card .bsc-record {
@@ -3248,9 +3256,13 @@
         }
 
         .battle-hud-box .bhb-streak {
-            top: 5px;
-            right: 5px;
-            font-size: 15px;
+            top: 4px;
+            right: 4px;
+            padding: 2px 7px;
+            border-width: 2px;
+            font-size: 19px;
+            line-height: 1.05;
+            box-shadow: 0 2px 0 rgba(220, 38, 38, 0.25);
         }
 
         .battle-hud-box .bhb-score {
