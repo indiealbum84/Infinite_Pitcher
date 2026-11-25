@@ -820,10 +820,6 @@ html[lang="zh-TW"] {
 #game-over-screen[data-result-stage="score"] .result-record {
     color: var(--showa-paper);
 }
-#game-over-screen[data-spotlight="score"] .result-record {
-    position: relative;
-    z-index: 4;
-}
 .result-spotlight-shade {
     position: absolute;
     z-index: 3;

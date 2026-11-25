@@ -4160,7 +4160,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=world8-result-lock">
+    <link rel="stylesheet" href="./game-art.css?v=solo-score-without-dim">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -7897,7 +7897,6 @@
                 beginPhase();
                 screen.dataset.resultStage = 'score';
                 delete screen.dataset.spotlight;
-                if (!reducedMotion) screen.dataset.spotlight = 'score';
                 screen.scrollTop = 0;
                 [record, ...rows].forEach(card => {
                     card.getAnimations().forEach(animation => animation.cancel());
