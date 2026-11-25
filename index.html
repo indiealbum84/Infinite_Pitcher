@@ -1180,8 +1180,11 @@
             z-index: 100;
             transition: none !important;
             overflow: hidden;
+            box-sizing: border-box;
+            align-items: center;
             justify-content: center;
             padding: 16px 14px;
+            text-align: center;
         }
 
         #battle-result-screen > * {
@@ -3350,9 +3353,9 @@
             display: flex;
             flex-direction: column;
             flex-wrap: nowrap;
-            align-items: stretch;
+            align-items: center;
             gap: 8px;
-            margin: 10px 0;
+            margin: 10px auto;
             max-width: 100%;
             width: 100%;
             position: relative;
@@ -3428,10 +3431,11 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             gap: 6px;
             overflow: hidden;
+            text-align: center;
         }
 
         .battle-score-card.champion {
@@ -3452,7 +3456,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-align: left;
+            text-align: center;
         }
 
         .battle-score-card .bsc-score {
@@ -3463,7 +3467,7 @@
             line-height: 1;
             font-variant-numeric: tabular-nums;
             margin: 0;
-            text-align: right;
+            text-align: center;
         }
 
         .battle-score-card .bsc-record {
