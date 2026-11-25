@@ -613,7 +613,6 @@
         }
 
         #my-rank-val {
-            color: #000000;
             display: inline-block;
             font-size: 54px;
             line-height: 0.9;
@@ -714,10 +713,6 @@
             align-items: center;
             gap: 8px;
             margin: 4px 0 8px;
-        }
-
-        .gameover-world8-wrap.hidden {
-            display: none !important;
         }
 
         .gameover-world8-badge {
@@ -4165,7 +4160,7 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=solo-comic-results-skip">
+    <link rel="stylesheet" href="./game-art.css?v=world8-result-lock">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4338,12 +4333,12 @@
             <div class="intro-menu">
                 <div id="intro-profile-pill" class="intro-profile-pill">👤 -  |  🏆 BEST: 0</div>
                 <div class="intro-main-actions" id="intro-main-actions">
-                    <button type="button" id="battle-quick-main-btn" class="start-btn locked" aria-labelledby="w8-button-label" aria-describedby="w8-lock-hint" disabled onclick="startWorld8Battle()">
+                    <button type="button" id="battle-quick-main-btn" class="start-btn w8-battle-card locked" aria-labelledby="w8-button-label" aria-describedby="w8-lock-hint" disabled onclick="startWorld8Battle()">
                         <span id="w8-new-badge" class="w8-new-badge" hidden>🔥 NEW!</span>
-                        <span id="w8-button-label">世界8人バトル</span>
+                        <span id="w8-button-label" class="w8-button-label">世界8人バトル</span>
                         <span class="w8-lock-overlay">
                             <span class="w8-padlock" aria-hidden="true"></span>
-                            <span id="w8-lock-hint">ひとり特訓31点で解放</span>
+                            <span id="w8-lock-hint" class="w8-lock-hint">ひとり特訓31点で解放</span>
                         </span>
                     </button>
                     <button type="button" id="start-btn-id" class="start-btn" onclick="startSoloPractice()">ひとり特訓</button>
@@ -4567,9 +4562,15 @@
             </div>
 
             <div id="result-actions" class="hidden">
-                <div id="gameover-world8-wrap" class="gameover-world8-wrap hidden">
+                <div id="gameover-world8-wrap" class="gameover-world8-wrap">
                     <div id="gameover-world8-badge" class="gameover-world8-badge">🛡️ 첫 10판 점수 하락 면제 · 첫 1승 스킨 보상!</div>
-                    <button type="button" id="gameover-world8-btn" class="start-btn gameover-world8-btn" onclick="goDirectToWorld8BattleFromGameOver()">세계 8인 배틀 출전하기</button>
+                    <button type="button" id="gameover-world8-btn" class="start-btn gameover-world8-btn w8-battle-card locked" aria-labelledby="result-w8-button-label" aria-describedby="result-w8-lock-hint" disabled onclick="goDirectToWorld8BattleFromGameOver()">
+                        <span id="result-w8-button-label" class="w8-button-label">세계 8인 배틀 출전하기</span>
+                        <span class="w8-lock-overlay">
+                            <span class="w8-padlock" aria-hidden="true"></span>
+                            <span id="result-w8-lock-hint" class="w8-lock-hint">나홀로 특훈 31점 해금</span>
+                        </span>
+                    </button>
                     <div id="gameover-world8-reward-patch" class="gameover-world8-badge" hidden></div>
                 </div>
 
@@ -6019,6 +6020,7 @@
             setTxt('start-btn', t.startBtn);
             setTxt('w8-button-label', menuModeLabel(t.battleQuickMainBtn));
             setTxt('w8-lock-hint', t.world8UnlockShort);
+            setTxt('result-w8-lock-hint', t.world8UnlockShort);
             setTxt('battle-friend-btn', menuModeLabel(t.battleFriendBtn));
             setTxt('battle-btn', t.battleBtn);
             setTxt('retry-btn', t.retryBtn);
@@ -7908,9 +7910,8 @@
                 resetRankReel();
                 screen.classList.remove('hidden');
                 closeSoloLeaderboard(false);
-                updateGameOverWorld8PromoUI();
-
                 const { prevBest, ranks } = evaluateScore(finalScore);
+                updateGameOverWorld8PromoUI();
                 const breaksRecord = finalScore > prevBest;
                 if (breaksRecord) new Image().src = './images/showa-comic-results/celebrate-ink-bubble.webp';
                 rows[0].dataset.country = userCountry;
@@ -8176,22 +8177,21 @@
         };
 
         function updateGameOverWorld8PromoUI() {
-            const wrap = document.getElementById('gameover-world8-wrap');
             const badge = document.getElementById('gameover-world8-badge');
             const rewardPatch = document.getElementById('gameover-world8-reward-patch');
             const btn = document.getElementById('gameover-world8-btn');
-            if (!wrap || !badge || !btn) return;
             const unlocked = typeof isWorld8BattleUnlocked === 'function' && isWorld8BattleUnlocked();
+            const pack = WORLD8_PROMO_I18N[currentLang] || WORLD8_PROMO_I18N.ko;
+            btn.querySelector('.w8-button-label').textContent = pack.gameOverBtn;
+            renderWorld8BattleButton(unlocked, btn);
+            rewardPatch.hidden = true;
             if (!unlocked) {
-                wrap.classList.add('hidden');
+                badge.style.display = 'none';
+                btn.classList.remove('intro-guide-pulse');
                 return;
             }
-            wrap.classList.remove('hidden');
-            const pack = WORLD8_PROMO_I18N[currentLang] || WORLD8_PROMO_I18N.ko;
             const matches = Number((typeof getBattleStats === 'function' ? getBattleStats().matches : 0) || 0);
-            btn.textContent = pack.gameOverBtn;
             btn.classList.toggle('intro-guide-pulse', matches === 0);
-            rewardPatch.hidden = true;
             if (matches === 0) {
                 badge.style.display = '';
                 const [shield, reward] = pack.gameOverBadgeNew.split(/\s*[·・]\s*/, 2);
@@ -8212,6 +8212,7 @@
         }
 
         function goDirectToWorld8BattleFromGameOver() {
+            if (!isWorld8BattleUnlocked()) return;
             playSfx('click', 0.7);
             triggerHaptic('medium');
             const goEl = document.getElementById('game-over-screen');
@@ -14039,13 +14040,12 @@
             guide.parentElement.classList.toggle('quote-only', !message);
         }
 
-        function renderWorld8BattleButton(unlocked) {
-            const worldButton = document.getElementById('battle-quick-main-btn');
+        function renderWorld8BattleButton(unlocked, worldButton = document.getElementById('battle-quick-main-btn')) {
             worldButton.classList.toggle('locked', !unlocked);
             worldButton.disabled = !unlocked;
             worldButton.querySelector('.w8-lock-overlay').hidden = unlocked;
             if (unlocked) worldButton.removeAttribute('aria-describedby');
-            else worldButton.setAttribute('aria-describedby', 'w8-lock-hint');
+            else worldButton.setAttribute('aria-describedby', worldButton.querySelector('.w8-lock-hint').id);
         }
 
         function updateWorld8BattleLockUI() {
