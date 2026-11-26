@@ -1801,19 +1801,32 @@ html[lang="zh-TW"] {
     font-variant-numeric: tabular-nums;
 }
 #play-hud #battle-hud {
-    flex: 1;
+    flex: 0 0 auto;
+    width: 100%;
     min-width: 0;
-    height: 70px;
+    height: auto;
     padding: 0;
     border: 0;
     background: transparent;
     backdrop-filter: none;
+    align-items: flex-start;
 }
 #play-hud .battle-hud-box {
-    padding: 3px 4px;
+    padding: 26px 4px 4px;
+    min-height: 0;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+}
+#play-hud .battle-hud-box .bhb-score {
+    font-size: 42px;
+    line-height: 1;
+    text-align: center;
+    width: 100%;
 }
 #play-hud[data-mode="world"] {
     flex-direction: column;
+    justify-content: flex-start;
     gap: 6px;
 }
 #play-hud[data-mode="world"] #battle-phase-pill:not(.hidden) {
