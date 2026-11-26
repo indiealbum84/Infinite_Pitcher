@@ -4236,7 +4236,8 @@
             outline: none;
         }
     </style>
-    <link rel="stylesheet" href="./game-art.css?v=solo-score-without-dim">
+    <link rel="stylesheet" href="./images/country-flags/flags.css">
+    <link rel="stylesheet" href="./game-art.css?v=country-flag-art">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -7989,8 +7990,7 @@
                 updateGameOverWorld8PromoUI();
                 const breaksRecord = finalScore > prevBest;
                 if (breaksRecord) new Image().src = './images/showa-comic-results/celebrate-ink-bubble.webp';
-                rows[0].dataset.country = userCountry;
-                rows[0].dataset.flag = countryToFlag(userCountry);
+                rows[0].dataset.flagArt = normalizeFlagArtCode(userCountry);
                 record.classList.remove('is-new-best');
                 bestValue.textContent = prevBest;
                 finalScoreEl.style.setProperty('--score-digits', String(Math.max(2, String(finalScore).length)));
@@ -8121,8 +8121,7 @@
                     if (canAnimate()) {
                         const scope = index === 0 ? 'country' : 'global';
                         reel.dataset.scope = scope;
-                        reel.dataset.country = row.dataset.country || '';
-                        reel.dataset.flag = row.dataset.flag || '';
+                        reel.dataset.flagArt = row.dataset.flagArt || '';
                         screen.dataset.spotlight = scope;
                         const label = row.querySelector('.result-label').textContent;
                         reelLabel.textContent = label;
@@ -10471,6 +10470,11 @@
 
         function inferCountryFromLocaleAndTz() {
             try {
+                const locale = new Intl.Locale(navigator.language || navigator.userLanguage || '');
+                if (/^[A-Z]{2}$/.test(locale.region || '')) return locale.region;
+            } catch (e) {}
+
+            try {
                 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
                 const tzMap = {
                     'Asia/Seoul': 'KR',
@@ -10519,6 +10523,19 @@
                 0x1F1E6 + (cc.charCodeAt(0) - 65),
                 0x1F1E6 + (cc.charCodeAt(1) - 65)
             );
+        }
+
+        function normalizeFlagArtCode(code) {
+            const cc = String(code || '').trim().toUpperCase();
+            if (cc === 'UK') return 'GB';
+            return /^[A-Z]{2}$/.test(cc) ? cc : '';
+        }
+
+        function battlePlayerFlagArt(player) {
+            const country = normalizeFlagArtCode(player.country || (player.id === battlePlayerId ? userCountry : ''));
+            if (country) return country;
+            const prefix = String(player.name || '').trim().match(/^\p{Regional_Indicator}{2}/u)?.[0];
+            return prefix ? Array.from(prefix, char => String.fromCharCode(char.codePointAt(0) - 0x1F1E6 + 65)).join('') : '';
         }
 
         let currentIntroRankTab = 'battle_global';
@@ -10615,10 +10632,12 @@
         }
 
         // 접속 국가 IP 기반 자동 감지 (최초 가입 시 1회 고정, 이후 VPN/해외 이동 시에도 국적 유지)
-        (function detectUserCountryByIp() {
+        const userCountryDetection = (async function detectUserCountryByIp() {
             updateCountryTabLabels();
             if (isUserCountryLocked()) return;
-            fetch('https://api.country.is/', { cache: 'no-store' })
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 2500);
+            await fetch('https://api.country.is/', { cache: 'no-store', signal: controller.signal })
                 .then(r => r.ok ? r.json() : null)
                 .then(data => {
                     if (isUserCountryLocked()) return;
@@ -10629,7 +10648,8 @@
                         updateCountryTabLabels();
                     }
                 })
-                .catch(() => {});
+                .catch(() => {})
+                .finally(() => clearTimeout(timeout));
         })();
 
         function switchIntroRankTab(tab) {
@@ -11135,6 +11155,7 @@
                     input?.focus();
                     return;
                 }
+                await userCountryDetection;
                 finalizePermanentNameRegistration(candidateName);
             } finally {
                 initialNameSubmitting = false;
@@ -14743,6 +14764,7 @@
 
             const renderedCards = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
+                const flag = battleViewMode === 'world8' ? battlePlayerFlagArt(player) : '';
                 const isMe = player.id === battlePlayerId;
                 const meClass = isMe ? ' me' : '';
                 const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
@@ -14763,7 +14785,7 @@
                     es: `${streak} racha`
                 };
 
-                return `<div class="battle-player-pill${meClass}${leagueClass}">
+                return `<div class="battle-player-pill${meClass}${leagueClass}"${flag ? ` data-flag-art="${flag}"` : ''}>
                     <div class="bpp-header">
                         <div class="bpp-identity">
                             <span class="bpp-slot">${index + 1}P</span>

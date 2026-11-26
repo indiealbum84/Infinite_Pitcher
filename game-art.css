@@ -1296,9 +1296,7 @@ html[lang="zh-TW"] {
 }
 .comic-result :is(#result-country-row, #result-reel[data-scope="country"]) {
     --result-rank-paper: #c8dcc3;
-}
-.comic-result :is(#result-country-row, #result-reel[data-scope="country"])[data-country="KR"] {
-    --comic-rank-art: url('./images/showa-comic-results/korea.webp');
+    --comic-rank-art: var(--country-flag-art, none);
 }
 .comic-result :is(#result-global-row, #result-reel[data-scope="global"]) {
     --result-rank-paper: #f4c17b;
@@ -1307,26 +1305,11 @@ html[lang="zh-TW"] {
 .comic-result :is(.result-rank-row, #result-reel) {
     background-image:
         linear-gradient(#fff2cf33, #fff2cf8c),
-        var(--comic-rank-art, radial-gradient(circle, #1927383b 2px, transparent 2.6px));
-    background-size: cover, cover;
+        var(--comic-rank-art, none);
+    background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     isolation: isolate;
-}
-.comic-result :is(#result-country-row, #result-reel[data-scope="country"])[data-country]:not([data-country="KR"])::before {
-    content: attr(data-flag);
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    display: grid;
-    place-items: center;
-    font-size: 284px;
-    opacity: .43;
-    filter: saturate(.75) sepia(.2);
-    transform: rotate(-9deg);
-    pointer-events: none;
-}
-.comic-result :is(#result-country-row, #result-reel[data-scope="country"])[data-country]:not([data-country="KR"]) {
-    background-size: cover, 12px 12px;
 }
 .comic-result .result-rank-row { position: relative; }
 .comic-result .result-rank-row .result-label {
@@ -1444,6 +1427,15 @@ html[lang="zh-TW"] {
 }
 .battle-player-pill.me {
     background: var(--showa-print) 0 0 / 9px 9px, var(--showa-gold);
+}
+#game-wrapper[data-battle-view="world8"] .battle-player-pill[data-flag-art] {
+    background-image: linear-gradient(90deg, #fff2cf 30%, #fff2cfa0 58%, #fff2cf50), var(--country-flag-art, none);
+    background-position: center, right center;
+    background-size: cover, auto 170%;
+    background-repeat: no-repeat;
+}
+#game-wrapper[data-battle-view="world8"] .battle-player-pill.me[data-flag-art] {
+    background-image: linear-gradient(90deg, #edbc57 30%, #edbc57b0 58%, #fff2cf50), var(--country-flag-art, none);
 }
 .battle-player-pill.empty {
     background: #fff2cf88;
