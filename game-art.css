@@ -334,7 +334,7 @@ html[lang="zh-TW"] {
 #game-over-screen #gameover-world8-btn {
     background:
         linear-gradient(#141f2bb8, #101a25d9),
-        #243146 url('./images/showa-world8-roster.webp') center 42% / cover no-repeat !important;
+        #243146 url('./images/showa-world8-roster.webp?v=varied-uniforms') center 42% / cover no-repeat !important;
     text-shadow: 0 3px 6px #101a25;
 }
 .w8-button-label {
