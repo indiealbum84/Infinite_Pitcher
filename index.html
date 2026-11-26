@@ -3006,43 +3006,11 @@
             box-sizing: border-box;
         }
 
-        #battle-quick-btn {
-            width: 860px !important;
-            padding: 22px 36px !important;
-            font-size: 46px !important;
-            background: linear-gradient(180deg, #ff6b9d 0%, #ff3d77 100%) !important;
-            color: #ffffff !important;
-            box-shadow: 0 10px 0 #b81d4e, 0 10px 0 5px #000000 !important;
-        }
-
-        #battle-quick-btn.matching {
-            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
-            box-shadow: 0 10px 0 #92400e, 0 10px 0 5px #000000 !important;
-        }
-
-        #battle-quick-btn:disabled {
-            background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%) !important;
-            box-shadow: 0 8px 0 #334155, 0 8px 0 5px #000000 !important;
-            color: #e2e8f0 !important;
-            opacity: 0.78;
-            pointer-events: none;
-            cursor: not-allowed;
-        }
-
         #battle-screen #battle-cancel-btn:disabled,
         #battle-screen #battle-lobby-back-btn:disabled {
             opacity: 0.45;
             pointer-events: none;
             cursor: not-allowed;
-        }
-
-        .battle-quick-status {
-            font-size: 30px;
-            font-weight: 900;
-            color: #0f172a;
-            margin: 0;
-            min-height: 38px;
-            text-align: center;
         }
 
         .battle-profile-panel {
@@ -4237,7 +4205,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=country-flag-art">
+    <link rel="stylesheet" href="./game-art.css?v=world8-comic-cover">
     <style>
         #game-dialog {
             width: min(340px, calc(100% - 36px));
@@ -4679,19 +4647,41 @@
 
         <!-- 대전 매칭 화면 -->
         <div id="battle-screen" class="screen hidden">
-            <button type="button" id="battle-lobby-back-btn" onclick="openExitConfirmModal(true)" aria-label="Back">←</button>
-            <p class="battle-title" id="battle-screen-title">세계 8인 배틀</p>
+            <div class="battle-lobby-topbar">
+                <button type="button" id="battle-lobby-back-btn"><span aria-hidden="true">←</span><span id="battle-lobby-nav-label"></span></button>
+                <button type="button" id="battle-league-button" aria-haspopup="dialog" aria-controls="battle-league-dialog">
+                    <span class="battle-medal" aria-hidden="true">★</span>
+                    <span class="battle-league-copy"><strong></strong><small></small></span>
+                    <span aria-hidden="true">›</span>
+                </button>
+            </div>
+            <header class="battle-lobby-cover">
+                <img src="./images/showa-world8-roster.webp" alt="" width="1600" height="534">
+                <h1 class="battle-title" id="battle-screen-title">세계 8인 배틀</h1>
+            </header>
             <div class="battle-header-badges">
-                <div class="battle-league-pill" id="battle-league-pill">🥈 일반 리그 (1,200 PT 이하)</div>
+                <div class="battle-league-pill" id="battle-league-pill"></div>
             </div>
 
-            <!-- 메인화면과 동일한 대형 내 프로필 & 배틀 레이팅 카드 (808px 너비) -->
             <div id="battle-my-profile-card" class="battle-my-profile-card"></div>
 
-            <!-- 빠른 매칭 (랜덤 온라인 + AI 챌린저) 섹션 -->
-            <div id="battle-quick-section">
-                <button class="start-btn" id="battle-quick-btn" onclick="toggleQuickMatch()">⚡ 빠른 매칭 (랜덤 대전)</button>
-                <p class="battle-quick-status" id="battle-quick-status" style="display:none;"></p>
+            <div id="battle-quick-section" data-phase="idle">
+                <div id="battle-match-idle">
+                    <button type="button" id="battle-quick-btn" onclick="startQuickMatch()">매칭 시작</button>
+                    <p id="battle-match-instructions"></p>
+                </div>
+                <div id="battle-match-progress">
+                    <div class="battle-match-face">
+                        <div><strong class="battle-match-label" role="status"></strong><small class="battle-match-detail"></small></div>
+                        <div class="battle-match-time"><span class="battle-match-seconds"></span><small class="battle-match-unit"></small></div>
+                    </div>
+                    <div class="battle-match-fill" aria-hidden="true">
+                        <div class="battle-match-face">
+                            <div><strong class="battle-match-label"></strong><small class="battle-match-detail"></small></div>
+                            <div class="battle-match-time"><span class="battle-match-seconds"></span><small class="battle-match-unit"></small></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 방 만들기 섹션 -->
@@ -4775,6 +4765,16 @@
 
         <!-- 사망 순간 원인 확인 정지(Freeze) 배너 -->
         <div id="death-freeze-banner" onclick="proceedFromDeathFreeze()" ontouchstart="if(event.cancelable) event.preventDefault(); proceedFromDeathFreeze();" aria-live="assertive"></div>
+
+        <dialog id="battle-league-dialog" aria-labelledby="battle-league-title">
+            <form method="dialog" class="battle-league-heading">
+                <h2 id="battle-league-title"></h2>
+                <button type="submit" aria-label="닫기">×</button>
+            </form>
+            <p id="battle-league-description"></p>
+            <div id="battle-league-rating"></div>
+            <div id="battle-league-tiers"></div>
+        </dialog>
 
         <dialog id="game-dialog" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
             <form method="dialog">
@@ -5235,13 +5235,6 @@
                 battleCodeLabel: '自分のルームコード (友達招待)',
                 battleJoinLabel: '友達のコード入力',
                 battleDivider: '── または ──',
-                battleQuickBtn: '⚡ マッチング開始',
-                battleQuickCancelBtn: '⏹ マッチング中止',
-                battleQuickEnteringBtn: 'バトル突入中',
-                battleQuickIdle: '世界中のプレイヤーと8人マッチング (最大20秒で開始)',
-                battleWorldIdleWaiting: '[マッチング開始] を押すと対戦相手を探します (20秒以内に開始)。',
-                battleQuickSearching: sec => `🔍 プレイヤーマッチング中... (${sec}秒)`,
-                battleQuickMatched: '✅ マッチング完了！まもなく開始します！',
                 rematchBtn: 'もう一度',
                 selfLabel: '自分',
                 hostLabel: 'ホスト',
@@ -5257,7 +5250,6 @@
                 rankText: rank => `${rank}位`,
                 othersPlaying: '👀 他のプレイヤーがプレイ中... (いつでも退出可能)',
                 matchEndedWaitExit: '🏆 全試合終了！結果確認後、戻るを押してください',
-                matchFoundCountdown: sec => `🎮 マッチング完了！${sec}秒後に試合が始まります...`,
                 roomClosingIn: sec => `⏳ ${sec}秒後にルームが自動終了します...`,
                 battleStatsText: (matches, wins) => `🏆 自分の対戦記録: ${matches}戦  |  🥇 1位: ${wins}回`,
                 playerRecordBadge: (matches, wins) => `${matches}戦 · 🥇1位 ${wins}回`,
@@ -5378,13 +5370,6 @@
                 battleCodeLabel: 'Your room code (Invite friends)',
                 battleJoinLabel: 'Enter friend code',
                 battleDivider: '── OR ──',
-                battleQuickBtn: '⚡ Start Matchmaking',
-                battleQuickCancelBtn: '⏹ Cancel Matchmaking',
-                battleQuickEnteringBtn: 'Entering Battle',
-                battleQuickIdle: '8-player global matchmaking (starts within 20s)',
-                battleWorldIdleWaiting: 'Press [Start Matchmaking] to find opponents (starts within 20s).',
-                battleQuickSearching: sec => `🔍 Matching players... (${sec}s)`,
-                battleQuickMatched: '✅ Match found! Starting game...',
                 rematchBtn: 'Rematch',
                 selfLabel: 'Me',
                 hostLabel: 'Host',
@@ -5400,7 +5385,6 @@
                 rankText: rank => `${rank}${getEnglishOrdinalSuffix(rank)}`,
                 othersPlaying: '👀 Others still playing... (Watch live or leave anytime)',
                 matchEndedWaitExit: '🏆 Match finished! Tap Back when ready',
-                matchFoundCountdown: sec => `🎮 Match found! Game starting in ${sec}s...`,
                 roomClosingIn: sec => `⏳ Room closing automatically in ${sec}s...`,
                 battleStatsText: (matches, wins) => `🏆 My Battle Record: ${matches} Played  |  🥇 1st Place: ${wins}`,
                 playerRecordBadge: (matches, wins) => `${matches}G · 🥇1st ${wins}W`,
@@ -5521,13 +5505,6 @@
                 battleCodeLabel: '내 방 코드 (친구 초대)',
                 battleJoinLabel: '친구 코드 입력',
                 battleDivider: '── 또는 ──',
-                battleQuickBtn: '⚡ 매칭 시작',
-                battleQuickCancelBtn: '⏹ 매칭 취소',
-                battleQuickEnteringBtn: '배틀 진입중',
-                battleQuickIdle: '전 세계 플레이어와 8인 매칭 (최대 20초 내 시작)',
-                battleWorldIdleWaiting: '[매칭 시작] 버튼을 누르면 상대를 찾습니다. (20초 내 경기 시작)',
-                battleQuickSearching: sec => `🔍 플레이어 탐색 중... (${sec}초)`,
-                battleQuickMatched: '✅ 매칭 완료! 잠시 후 시작합니다!',
                 rematchBtn: '다시하기',
                 selfLabel: '나',
                 hostLabel: '방장',
@@ -5543,7 +5520,6 @@
                 rankText: rank => `${rank}위`,
                 othersPlaying: '👀 다른 플레이어 경기 중... (바로 나가거나 끝까지 관전 가능)',
                 matchEndedWaitExit: '🏆 모든 경기 종료! 결과 확인 후 돌아가기를 눌러주세요',
-                matchFoundCountdown: sec => `🎮 매칭 완료! ${sec}초 후 경기가 시작됩니다...`,
                 roomClosingIn: sec => `⏳ ${sec}초 후 방이 자동으로 종료됩니다...`,
                 battleStatsText: (matches, wins) => `🏆 나의 대전 기록: ${matches}판  |  🥇 1위: ${wins}회`,
                 playerRecordBadge: (matches, wins) => `${matches}판 · 🥇1위 ${wins}회`,
@@ -5664,13 +5640,6 @@
                 battleCodeLabel: '我的房間代碼 (邀請好友)',
                 battleJoinLabel: '輸入好友代碼',
                 battleDivider: '── 或 ──',
-                battleQuickBtn: '⚡ 開始配對',
-                battleQuickCancelBtn: '⏹ 取消配對',
-                battleQuickEnteringBtn: '進入對戰中',
-                battleQuickIdle: '全球玩家 8 人即時配對 (20秒內開賽)',
-                battleWorldIdleWaiting: '點擊 [開始配對] 尋找對手 (最多20秒後開賽)。',
-                battleQuickSearching: sec => `🔍 正在配對玩家... (${sec}秒)`,
-                battleQuickMatched: '✅ 配對完成！即將開始！',
                 rematchBtn: '再戰一場',
                 selfLabel: '我',
                 hostLabel: '房主',
@@ -5686,7 +5655,6 @@
                 rankText: rank => `第${rank}名`,
                 othersPlaying: '👀 其他玩家比賽進行中... (可先離開或觀戰到底)',
                 matchEndedWaitExit: '🏆 比賽全部結束！確認結果後請按返回',
-                matchFoundCountdown: sec => `🎮 配對成功！${sec}秒後開始比賽...`,
                 roomClosingIn: sec => `⏳ 房間將於 ${sec} 秒後自動關閉...`,
                 battleStatsText: (matches, wins) => `🏆 我的對戰紀錄：${matches}場  |  🥇 第1名：${wins}次`,
                 playerRecordBadge: (matches, wins) => `${matches}場 · 🥇第1名 ${wins}次`,
@@ -5807,13 +5775,6 @@
                 battleCodeLabel: 'Tu Código de Sala (Invitar)',
                 battleJoinLabel: 'Código de Amigo',
                 battleDivider: '── O ──',
-                battleQuickBtn: '⚡ Buscar Partida',
-                battleQuickCancelBtn: '⏹ Cancelar',
-                battleQuickEnteringBtn: 'Entrando a Batalla',
-                battleQuickIdle: 'Emparejamiento global 8P (inicia en 20s)',
-                battleWorldIdleWaiting: 'Pulsa [Buscar Partida] para buscar rivales (inicia en máx. 20s).',
-                battleQuickSearching: sec => `🔍 Buscando jugadores... (${sec}s)`,
-                battleQuickMatched: '✅ ¡Partida lista! Empezando...',
                 rematchBtn: 'Revancha',
                 selfLabel: 'Tú',
                 hostLabel: 'Anfitrión',
@@ -5829,7 +5790,6 @@
                 rankText: rank => `${rank}°`,
                 othersPlaying: '👀 Otros siguen jugando... (Puedes salir o mirar)',
                 matchEndedWaitExit: '🏆 ¡Partida terminada! Pulsa Volver al revisar',
-                matchFoundCountdown: sec => `🎮 ¡Emparejado! Empieza en ${sec}s...`,
                 roomClosingIn: sec => `⏳ La sala se cerrará en ${sec}s...`,
                 battleStatsText: (matches, wins) => `🏆 Récord: ${matches}P  |  🥇 1°: ${wins}V`,
                 playerRecordBadge: (matches, wins) => `${matches}P · 🥇1° ${wins}V`,
@@ -6025,7 +5985,6 @@
                 ['play-gate-restore-btn', 18],
                 ['play-gate-close-btn', 18],
                 ['initial-name-submit-btn', 22],
-                ['battle-quick-btn', 20],
                 ['battle-join-btn', 18],
                 ['battle-start-btn', 18],
                 ['battle-exit-btn', 18],
@@ -10799,7 +10758,19 @@
                 pill.classList.toggle('is-synced', synced);
             }
             if (battleCard) {
-                battleCard.innerHTML = cardMarkup;
+                battleCard.innerHTML = battleViewMode === 'world8' ? `
+                    <div class="battle-cover-badge">${renderSkinBadge(skinId)}</div>
+                    <div class="battle-cover-identity">
+                        <strong class="ipp-player-name">${countryToFlag(userCountry)} ${safeName}</strong>
+                        ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
+                        <div class="battle-cover-best">${bestLabel}</div>
+                    </div>
+                    <div class="battle-cover-rating">
+                        <span>BATTLE RATING</span>
+                        <strong>${rating.toLocaleString()} <small>PT</small></strong>
+                    </div>
+                    <div class="battle-cover-stats"><span>${statsLabel}</span>${streakBadge}</div>
+                ` : cardMarkup;
                 battleCard.classList.toggle('is-synced', synced);
             }
         }
@@ -12358,9 +12329,10 @@
         let rematchListener = null;
         let quickMatchActive = false;
         let quickMatchTimer = null;
-        let quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
         let battleLobbyCountdownActive = false;
-        let battleLobbyCountdownTimer = null;
+        let quickMatchDeadline = 0;
+        let quickMatchFrame = 0;
+        let quickMatchAttempt = 0;
         let botSimTimers = {};
         let battleDisconnectRef = null;
         let battleHostDisconnectRef = null;
@@ -13028,14 +13000,12 @@
         }
 
         function stopQuickMatchTimer(keepPool = false) {
+            quickMatchAttempt++;
             if (quickMatchTimer) {
                 clearInterval(quickMatchTimer);
                 quickMatchTimer = null;
             }
-            if (battleLobbyCountdownTimer) {
-                clearInterval(battleLobbyCountdownTimer);
-                battleLobbyCountdownTimer = null;
-            }
+            quickMatchDeadline = 0;
             battleLobbyCountdownActive = false;
             quickMatchActive = false;
             if (!keepPool && battleRole === 'host' && battleRoomId) {
@@ -13051,88 +13021,127 @@
             updateQuickMatchUI();
         }
 
-        function getQuickMatchWaitingHtml(humanCount, sec) {
-            const lang = currentLang || 'ko';
-            if (humanCount >= 2) {
-                const map = {
-                    ko: `🎮 <b>플레이어 ${humanCount}명 참가!</b> (${sec}초)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">다른 플레이어 매칭 중... ${sec}초 뒤 경기가 시작됩니다.</span>`,
-                    en: `🎮 <b>${humanCount} Players Joined!</b> (${sec}s)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Matching more players... Match starts in ${sec}s.</span>`,
-                    ja: `🎮 <b>プレイヤー ${humanCount}人参加！</b> (${sec}秒)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">他のプレイヤーをマッチング中... ${sec}秒後に開始します。</span>`,
-                    'zh-TW': `🎮 <b>已有 ${humanCount} 位玩家加入！</b> (${sec}秒)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">正在配對其他玩家... ${sec}秒後開始比賽。</span>`,
-                    es: `🎮 <b>¡${humanCount} jugadores unidos!</b> (${sec}s)<br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Buscando más jugadores... Inicia en ${sec}s.</span>`
-                };
-                return map[lang] || map.en;
-            }
-            const map = {
-                ko: `🔍 <b>플레이어 매칭 중 (${sec}초)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">전 세계 플레이어를 찾고 있습니다. ${sec}초 뒤 경기가 시작됩니다.</span>`,
-                en: `🔍 <b>Matching Players (${sec}s)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Searching for players worldwide. Match starts in ${sec}s.</span>`,
-                ja: `🔍 <b>プレイヤーマッチング中 (${sec}秒)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">世界中のプレイヤーを探しています。${sec}秒後に開始します。</span>`,
-                'zh-TW': `🔍 <b>玩家配對中 (${sec}秒)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">正在搜尋全球玩家，${sec}秒後開始比賽。</span>`,
-                es: `🔍 <b>Buscando jugadores (${sec}s)</b><br><span style="font-size:20px;color:#94a3b8;font-weight:700;">Buscando jugadores globales. Inicia en ${sec}s.</span>`
-            };
-            return map[lang] || map.en;
+        const BATTLE_COVER_TEXT = {
+            ko: { back: '뒤로', cancel: '매칭 취소', start: '매칭 시작', idle: '전 세계 플레이어와 대결하세요', matching: '매칭 중', search: '다른 플레이어를 찾는 중', ready: '매칭 완료', entering: '경기장으로 입장 중', unit: '초', waiting: '대기 중', joined: '참가 완료', league: '리그 정보', description: '배틀 레이팅에 따라 같은 리그의 상대와 매칭됩니다.', rating: '내 배틀 레이팅', current: '현재 리그' },
+            en: { back: 'Back', cancel: 'Cancel Matchmaking', start: 'Start Matchmaking', idle: 'Play against pitchers worldwide', matching: 'Matching', search: 'Searching for other players', ready: 'Match Found', entering: 'Entering the ballpark', unit: 's', waiting: 'Waiting', joined: 'Joined', league: 'League Info', description: 'Your battle rating matches you with players in the same league.', rating: 'My Battle Rating', current: 'Current League' },
+            ja: { back: '戻る', cancel: 'マッチング中止', start: 'マッチング開始', idle: '世界中のプレイヤーと対戦', matching: 'マッチング中', search: '対戦相手を検索中', ready: 'マッチング完了', entering: '球場に入場中', unit: '秒', waiting: '待機中', joined: '参加済み', league: 'リーグ情報', description: 'バトルレーティングに応じて同じリーグの相手と対戦します。', rating: '自分のバトルレーティング', current: '現在のリーグ' },
+            'zh-TW': { back: '返回', cancel: '取消配對', start: '開始配對', idle: '和世界各地的玩家對戰', matching: '配對中', search: '正在尋找其他玩家', ready: '配對完成', entering: '正在進入球場', unit: '秒', waiting: '等待中', joined: '已加入', league: '聯賽資訊', description: '系統會依據對戰評分配對同一聯賽的對手。', rating: '我的對戰評分', current: '目前聯賽' },
+            es: { back: 'Volver', cancel: 'Cancelar búsqueda', start: 'Buscar partida', idle: 'Juega contra rivales de todo el mundo', matching: 'Buscando', search: 'Buscando a otros jugadores', ready: 'Partida lista', entering: 'Entrando al estadio', unit: 's', waiting: 'En espera', joined: 'En partida', league: 'Información de liga', description: 'Tu puntuación te empareja con jugadores de la misma liga.', rating: 'Mi puntuación de batalla', current: 'Liga actual' }
+        };
+
+        function battleCoverText() {
+            return BATTLE_COVER_TEXT[currentLang] || BATTLE_COVER_TEXT.en;
         }
 
-        function updateQuickMatchUI(customStatusText = null) {
-            const btn = document.getElementById('battle-quick-btn');
-            const statusEl = document.getElementById('battle-quick-status');
-            const cancelBtn = document.getElementById('battle-cancel-btn');
-            const topBackBtn = document.getElementById('battle-lobby-back-btn');
-            if (cancelBtn) cancelBtn.disabled = Boolean(battleLobbyCountdownActive);
-            if (topBackBtn) topBackBtn.disabled = Boolean(battleLobbyCountdownActive);
-            if (!btn || !statusEl) return;
+        function updateBattleLeagueUI(league = currentBattleLeague) {
+            const info = getLeagueInfo(league);
+            const lang = currentLang;
+            const name = info.name[lang] || info.name.en;
+            const desc = info.desc[lang] || info.desc.en;
+            const master = info.id === 'master';
+            const button = document.getElementById('battle-league-button');
+            button.dataset.league = info.id;
+            button.setAttribute('aria-label', `${name}, ${battleCoverText().league}`);
+            button.querySelector('.battle-medal').textContent = master ? '♛' : '★';
+            button.querySelector('strong').textContent = name;
+            button.querySelector('small').textContent = desc;
+            const pill = document.getElementById('battle-league-pill');
+            pill.textContent = `${info.badge} ${name} (${desc})`;
+            pill.classList.toggle('master', master);
+        }
 
-            if (battleLobbyCountdownActive) {
-                btn.classList.remove('matching');
-                btn.disabled = true;
-                btn.innerText = textFor('battleQuickEnteringBtn') || '배틀 진입중';
-                if (customStatusText) {
-                    statusEl.style.display = '';
-                    statusEl.innerText = customStatusText;
-                } else {
-                    statusEl.style.display = 'none';
-                    statusEl.innerText = '';
-                }
-                return;
+        function openBattleLeagueInfo() {
+            const dialog = document.getElementById('battle-league-dialog');
+            if (dialog.open || battleViewMode !== 'world8') return;
+            const copy = battleCoverText();
+            const activeLeague = document.getElementById('battle-league-button').dataset.league;
+            document.getElementById('battle-league-title').textContent = copy.league;
+            document.getElementById('battle-league-description').textContent = copy.description;
+            dialog.querySelector('button').setAttribute('aria-label', GAME_DIALOG_LABELS[currentLang]?.cancel || 'Close');
+            document.getElementById('battle-league-rating').innerHTML = `<span>${copy.rating}</span><strong>${getBattleRating().toLocaleString()} PT</strong>`;
+            document.getElementById('battle-league-tiers').innerHTML = ['standard', 'master'].map(league => {
+                const info = getLeagueInfo(league);
+                const active = activeLeague === league;
+                return `<article class="battle-league-tier" data-league="${league}">
+                    <span class="battle-medal" aria-hidden="true">${league === 'master' ? '♛' : '★'}</span>
+                    <div><h3>${info.name[currentLang] || info.name.en}</h3><p>${info.desc[currentLang] || info.desc.en}</p></div>
+                    ${active ? `<strong class="battle-league-current">${copy.current}</strong>` : ''}
+                </article>`;
+            }).join('');
+            dialog.showModal();
+        }
+
+        function closeBattleLeagueInfo() {
+            const dialog = document.getElementById('battle-league-dialog');
+            if (dialog.open) dialog.close();
+        }
+
+        document.getElementById('battle-league-button').addEventListener('click', openBattleLeagueInfo);
+        document.getElementById('battle-league-dialog').addEventListener('click', event => {
+            const dialog = event.currentTarget;
+            if (event.target !== dialog) return;
+            const rect = dialog.getBoundingClientRect();
+            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) {
+                dialog.close();
             }
+        });
 
-            btn.disabled = false;
-            if (quickMatchActive) {
-                btn.classList.add('matching');
-                btn.innerText = textFor('battleQuickCancelBtn');
-                if (customStatusText) {
-                    statusEl.style.display = '';
-                    statusEl.innerText = customStatusText;
-                } else {
-                    statusEl.style.display = 'none';
-                    statusEl.innerText = '';
-                }
-                if (battleViewMode === 'world8' && !battleLobbyCountdownActive) {
-                    const waitingEl = document.getElementById('battle-waiting-text');
-                    if (waitingEl) {
-                        const humanCount = Object.values(battlePlayers || {}).filter(p => !p.isBot).length;
-                        waitingEl.innerHTML = getQuickMatchWaitingHtml(humanCount, quickMatchSecondsLeft);
-                    }
-                }
-            } else {
-                btn.classList.remove('matching');
-                btn.innerText = textFor('battleQuickBtn');
-                if (customStatusText) {
-                    statusEl.style.display = '';
-                    statusEl.innerText = customStatusText;
-                } else {
-                    statusEl.style.display = 'none';
-                    statusEl.innerText = '';
-                }
+        document.getElementById('battle-lobby-back-btn').addEventListener('click', () => {
+            if (battleViewMode === 'world8' && quickMatchActive) cancelQuickMatch();
+            else openExitConfirmModal(true);
+        });
+
+        const battleQuickSection = document.getElementById('battle-quick-section');
+        const battleMatchSeconds = battleQuickSection.querySelectorAll('.battle-match-seconds');
+        const battleMatchFill = battleQuickSection.querySelector('.battle-match-fill');
+
+        function updateBattleMatchProgress() {
+            quickMatchFrame = 0;
+            const duration = QUICK_MATCH_WAIT_SECONDS * 1000;
+            const ready = battleLobbyCountdownActive;
+            const remaining = ready ? 0 : quickMatchDeadline
+                ? Math.max(0, Math.min(duration, quickMatchDeadline - getEstimatedServerTimeMs()))
+                : duration;
+            const seconds = String(Math.ceil(remaining / 1000));
+            for (const el of battleMatchSeconds) {
+                if (el.textContent !== seconds) el.textContent = seconds;
+            }
+            battleMatchFill.style.setProperty('--battle-match-edge', `${(1 - remaining / duration) * 113}%`);
+            if (quickMatchActive && quickMatchDeadline && remaining > 0 && !ready) {
+                quickMatchFrame = requestAnimationFrame(updateBattleMatchProgress);
             }
         }
 
-        function toggleQuickMatch() {
-            if (battleLobbyCountdownActive) return;
-            if (quickMatchActive) {
-                cancelQuickMatch();
+        function updateQuickMatchUI() {
+            const busy = battleLobbyCountdownActive;
+            const world = battleViewMode === 'world8';
+            const copy = battleCoverText();
+            document.getElementById('battle-cancel-btn').disabled = busy;
+            const back = document.getElementById('battle-lobby-back-btn');
+            back.disabled = busy;
+            const navLabel = world && (quickMatchActive || busy) ? copy.cancel : copy.back;
+            back.setAttribute('aria-label', navLabel);
+            document.getElementById('battle-lobby-nav-label').textContent = navLabel;
+            document.getElementById('battle-quick-btn').textContent = copy.start;
+            document.getElementById('battle-match-instructions').textContent = copy.idle;
+
+            if (quickMatchFrame) cancelAnimationFrame(quickMatchFrame);
+            quickMatchFrame = 0;
+            if (!world) return;
+            const phase = busy ? 'ready' : quickMatchActive ? 'matching' : 'idle';
+            battleQuickSection.dataset.phase = phase;
+            const count = Object.values(battlePlayers || {}).filter(player => !player.isBot).length;
+            const label = busy ? copy.ready : `${copy.matching} · ${count}/${MAX_BATTLE_PLAYERS}`;
+            for (const el of battleQuickSection.querySelectorAll('.battle-match-label')) el.textContent = label;
+            for (const el of battleQuickSection.querySelectorAll('.battle-match-detail')) el.textContent = busy ? copy.entering : copy.search;
+            for (const el of battleQuickSection.querySelectorAll('.battle-match-unit')) el.textContent = copy.unit;
+
+            if (phase === 'idle') {
+                const slots = document.getElementById('battle-player-list');
+                if (document.getElementById('battle-screen').classList.contains('hidden')) return;
+                if (!battleRoomId) slots.innerHTML = emptyBattleSlots(0, copy.waiting);
             } else {
-                startQuickMatch();
+                updateBattleMatchProgress();
             }
         }
 
@@ -13148,12 +13157,11 @@
             leaveBattleRoom(true);
             const listEl = document.getElementById('battle-player-list');
             if (listEl) listEl.innerHTML = '';
-            const waitingEl = document.getElementById('battle-waiting-text');
-            if (waitingEl) waitingEl.innerText = textFor('battleWorldIdleWaiting') || '대기 중...';
             updateQuickMatchUI();
         }
 
         function startQuickMatch() {
+            if (battleLobbyCountdownActive) return;
             if (!canPlayWithoutAd('battle')) {
                 openPlayGateModal(() => startQuickMatch(), 'battle');
                 return;
@@ -13167,7 +13175,6 @@
 
             stopQuickMatchTimer(true);
             quickMatchActive = true;
-            quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
             updateQuickMatchUI();
 
             // 2개 리그 분리 큐 (일반 리그 _QP1 vs 마스터 리그 _QP2: 4글자로 Firebase 보안 규칙 100% 통과)
@@ -13178,6 +13185,7 @@
             const now = getEstimatedServerTimeMs();
             const candidateCode = genCode();
             const candidateHostId = genBattlePlayerId();
+            const attempt = quickMatchAttempt;
 
             queueRef.transaction(current => {
                 // 현재 대기 중인 유효한 공개 방이 있는가? (생성 후 30초 이내, 대기 상태, 인원 8명 미만)
@@ -13202,6 +13210,17 @@
                 };
             }, (error, committed, snapshot) => {
                 const lobby = snapshot ? snapshot.val() : null;
+                if (attempt !== quickMatchAttempt) {
+                    // A canceled search can still complete its queue reservation.
+                    if (!error && committed && lobby) {
+                        queueRef.transaction(current => {
+                            if (!current || current.roomId !== lobby.roomId || current.status !== 'waiting') return;
+                            if (current.hostId === candidateHostId) return null;
+                            return { ...current, count: Math.max(1, Number(current.count || 1) - 1) };
+                        });
+                    }
+                    return;
+                }
                 if (!error && committed && lobby && lobby.roomId) {
                     if (lobby.hostId === candidateHostId) {
                         // 내가 호스트로 지정됨 -> 방을 생성하고 다른 실제 유저 참가를 기다림
@@ -13214,16 +13233,17 @@
                 }
 
                 // 트랜잭션 실패 시 폴백: 직접 큐 조회 및 isPublicWaiting 검색
-                findAndJoinPublicRoomFallback(candidateCode, candidateHostId, nickname);
+                findAndJoinPublicRoomFallback(candidateCode, candidateHostId, nickname, attempt);
             });
         }
 
-        function findAndJoinPublicRoomFallback(fallbackCode, fallbackHostId, nickname) {
+        function findAndJoinPublicRoomFallback(fallbackCode, fallbackHostId, nickname, attempt) {
             const now = getEstimatedServerTimeMs();
             const myLeague = getPlayerLeague();
             const activeQueueKey = getActiveQueueKey();
 
             battleRef.child(activeQueueKey).once('value').then(snap => {
+                if (attempt !== quickMatchAttempt) return;
                 const lobby = snap.val();
                 if (lobby && lobby.roomId && lobby.status === 'waiting' && (now - (lobby.createdAt || 0) < 30000)) {
                     joinPublicQuickMatchRoom(lobby.roomId, nickname);
@@ -13231,6 +13251,7 @@
                 }
                 // 큐에 없으면 isPublicWaiting 쿼리로 공개 대기방 검색 (동일 리그만 필터링)
                 battleRef.orderByChild('isPublicWaiting').equalTo(true).limitToLast(10).once('value').then(snap2 => {
+                    if (attempt !== quickMatchAttempt) return;
                     const rooms = snap2.val() || {};
                     let targetCode = null;
                     Object.keys(rooms).forEach(code => {
@@ -13251,14 +13272,15 @@
                         hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
                     }
                 }).catch(() => {
-                    hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
+                    if (attempt === quickMatchAttempt) hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
                 });
             }).catch(() => {
-                hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
+                if (attempt === quickMatchAttempt) hostPublicQuickMatchRoom(fallbackCode, fallbackHostId, nickname);
             });
         }
 
-        function joinPublicQuickMatchRoom(targetCode, nickname, retries = 0) {
+        function joinPublicQuickMatchRoom(targetCode, nickname, retries = 0, attempt = quickMatchAttempt) {
+            if (attempt !== quickMatchAttempt) return;
             const newPlayerId = genBattlePlayerId();
             const joinedAt = getEstimatedServerTimeMs();
             const myStats = getBattleStats();
@@ -13268,10 +13290,11 @@
 
             // 호스트의 방 생성 전파 대기 (최대 10회 = 3초)
             battleRef.child(targetCode).once('value').then(snap => {
+                if (attempt !== quickMatchAttempt) return;
                 const room = snap.val();
                 if (!room || !room.players) {
                     if (retries < 10) {
-                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
+                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1, attempt), 300);
                         return;
                     }
                     // 호스트 방을 찾지 못한 경우 직접 호스트로 전환
@@ -13316,12 +13339,15 @@
                     isBot: false,
                     joinedAt
                 }).then(() => {
+                    if (attempt !== quickMatchAttempt) {
+                        return battleRef.child(targetCode + '/players/' + newPlayerId).remove();
+                    }
                     battleViewMode = 'world8';
-            try {
-                localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
-                localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
-            } catch (e) {}
-            if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
+                    try {
+                        localStorage.setItem(W8_UNLOCK_ANIM_SEEN_KEY, '1');
+                        localStorage.setItem(W8_BATTLE_GUIDE_DONE_KEY, '1');
+                    } catch (e) {}
+                    if (typeof updateIntroGuideUI === 'function') updateIntroGuideUI();
                     battleRoomId = targetCode;
                     battleRole = 'guest';
                     battlePlayerId = newPlayerId;
@@ -13332,9 +13358,7 @@
                     listenBattleRoom(targetCode);
 
                     quickMatchActive = true;
-                    const deadline = Number(room.quickMatchDeadline || 0);
-                    const nowMs = getEstimatedServerTimeMs();
-                    quickMatchSecondsLeft = deadline > nowMs ? Math.ceil((deadline - nowMs) / 1000) : QUICK_MATCH_WAIT_SECONDS;
+                    quickMatchDeadline = Number(room.quickMatchDeadline) || getEstimatedServerTimeMs() + QUICK_MATCH_WAIT_SECONDS * 1000;
                     updateQuickMatchUI();
 
                     if (quickMatchTimer) clearInterval(quickMatchTimer);
@@ -13343,23 +13367,24 @@
                             stopQuickMatchTimer();
                             return;
                         }
-                        quickMatchSecondsLeft = Math.max(0, quickMatchSecondsLeft - 1);
                         updateQuickMatchUI();
-                        if (quickMatchSecondsLeft <= 0) {
+                        if (getEstimatedServerTimeMs() >= quickMatchDeadline) {
                             clearInterval(quickMatchTimer);
                             quickMatchTimer = null;
                         }
                     }, 1000);
                 }).catch(() => {
+                    if (attempt !== quickMatchAttempt) return;
                     if (retries < 3) {
-                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
+                        setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1, attempt), 300);
                     } else {
                         startQuickMatch();
                     }
                 });
             }).catch(() => {
+                if (attempt !== quickMatchAttempt) return;
                 if (retries < 3) {
-                    setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1), 300);
+                    setTimeout(() => joinPublicQuickMatchRoom(targetCode, nickname, retries + 1, attempt), 300);
                 } else {
                     startQuickMatch();
                 }
@@ -13367,6 +13392,7 @@
         }
 
         function hostPublicQuickMatchRoom(forcedCode, forcedPlayerId, nickname) {
+            const attempt = quickMatchAttempt;
             const code = forcedCode || genCode();
             const playerId = forcedPlayerId || genBattlePlayerId();
             const myStats = getBattleStats();
@@ -13431,6 +13457,7 @@
                 createdAt: now,
                 quickMatchDeadline: deadline
             }).then(() => {
+                if (attempt !== quickMatchAttempt) return battleRef.child(code).remove();
                 registerBattleDisconnectHandler(code, playerId, 'host');
                 // 호스트 대기방을 해당 리그 큐(activeQueueKey)에 등록
                 battleRef.child(activeQueueKey).transaction(curr => {
@@ -13451,10 +13478,12 @@
                     battleRef.child(activeQueueKey).onDisconnect().remove();
                 } catch (e) {}
                 listenBattleRoom(code);
+            }).catch(() => {
+                if (attempt === quickMatchAttempt) cancelBattleAfterMatchError();
             });
 
             quickMatchActive = true;
-            quickMatchSecondsLeft = QUICK_MATCH_WAIT_SECONDS;
+            quickMatchDeadline = deadline;
             updateQuickMatchUI();
 
             if (quickMatchTimer) clearInterval(quickMatchTimer);
@@ -13463,11 +13492,10 @@
                     stopQuickMatchTimer();
                     return;
                 }
-                quickMatchSecondsLeft = Math.max(0, quickMatchSecondsLeft - 1);
                 updateQuickMatchUI();
 
                 const currentCount = Object.keys(battlePlayers || {}).length;
-                if (currentCount >= MAX_BATTLE_PLAYERS || quickMatchSecondsLeft <= 0) {
+                if (currentCount >= MAX_BATTLE_PLAYERS || getEstimatedServerTimeMs() >= quickMatchDeadline) {
                     finalizeQuickMatchCountdown();
                 }
             }, 1000);
@@ -13706,7 +13734,7 @@
             }
             quickMatchActive = false;
             battleLobbyCountdownActive = true;
-            updateQuickMatchUI(textFor('battleQuickMatched'));
+            updateQuickMatchUI();
 
             [QUICK_MATCH_QUEUE_STANDARD, QUICK_MATCH_QUEUE_MASTER].forEach(qKey => {
                 try {
@@ -13719,7 +13747,11 @@
 
             battleRef.child(roomId).once('value').then(snap => {
                 const room = snap.val();
-                if (!room || room.status !== 'waiting') return;
+                if (battleRoomId !== roomId) return;
+                if (!room || room.status !== 'waiting') {
+                    cancelBattleAfterMatchError();
+                    return;
+                }
 
                 const players = room.players || {};
                 const existingList = Object.values(players);
@@ -13758,41 +13790,20 @@
                     });
                 }
 
-                battleRef.child(roomId).update(updates).then(() => {
-                    battleLobbyCountdownActive = true;
-                    let countdownSec = 5;
-                    const updateCountdownUI = () => {
-                        const waitingEl = document.getElementById('battle-waiting-text');
-                        if (waitingEl) {
-                            const fn = textFor('matchFoundCountdown');
-                            waitingEl.innerText = typeof fn === 'function' ? fn(countdownSec) : `🎮 매칭 완료! ${countdownSec}초 후 시작...`;
-                        }
-                        if (countdownSec > 0) {
-                            playSfx('click', 0.7);
-                            triggerHaptic('light');
-                        }
-                    };
-                    updateCountdownUI();
-                    if (battleLobbyCountdownTimer) {
-                        clearInterval(battleLobbyCountdownTimer);
-                        battleLobbyCountdownTimer = null;
-                    }
-                    battleLobbyCountdownTimer = setInterval(() => {
-                        countdownSec--;
-                        if (countdownSec > 0) {
-                            updateCountdownUI();
-                        } else {
-                            clearInterval(battleLobbyCountdownTimer);
-                            battleLobbyCountdownTimer = null;
-                            battleLobbyCountdownActive = false;
-                            updateQuickMatchUI();
-                            if (battleRoomId === roomId && battleRole === 'host') {
-                                startBattleRoom();
-                            }
-                        }
-                    }, 1000);
+                return battleRef.child(roomId).update(updates).then(() => {
+                    if (battleRoomId === roomId && battleRole === 'host') startBattleRoom();
                 });
+            }).catch(() => {
+                if (battleRoomId !== roomId) return;
+                cancelBattleAfterMatchError();
             });
+        }
+
+        function cancelBattleAfterMatchError() {
+            closeBattleLeagueInfo();
+            stopQuickMatchTimer();
+            cancelBattle();
+            showGameNotice(textFor('alertNeedPlayers'));
         }
 
         function stopBotSimulation() {
@@ -14080,6 +14091,7 @@
         }
 
         function returnToIntroAfterBattle(removeHostRoom = false) {
+            closeBattleLeagueInfo();
             leaveBattleRoom(removeHostRoom);
             document.getElementById('battle-screen').classList.add('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
@@ -14239,21 +14251,13 @@
 
             const listEl = document.getElementById('battle-player-list');
             if (listEl) listEl.innerHTML = '';
-            const waitingEl = document.getElementById('battle-waiting-text');
-            if (waitingEl) waitingEl.innerText = textFor('battleWorldIdleWaiting') || '대기 중...';
 
             hydrateBattleNameInput();
             applyBattleLang();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
             currentBattleLeague = getPlayerLeague();
-            const leaguePill = document.getElementById('battle-league-pill');
-            if (leaguePill) {
-                const info = getLeagueInfo(currentBattleLeague);
-                const lang = currentLang || 'ko';
-                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                leaguePill.classList.toggle('master', currentBattleLeague === 'master');
-            }
+            updateBattleLeagueUI();
             showBattleRoomStep();
         }
 
@@ -14287,13 +14291,7 @@
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             if (typeof updateBattleStatsUI === 'function') updateBattleStatsUI();
             currentBattleLeague = getPlayerLeague();
-            const leaguePill = document.getElementById('battle-league-pill');
-            if (leaguePill) {
-                const info = getLeagueInfo(currentBattleLeague);
-                const lang = currentLang || 'ko';
-                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                leaguePill.classList.toggle('master', currentBattleLeague === 'master');
-            }
+            updateBattleLeagueUI();
             showBattleRoomStep();
             createBattleRoom(permanentName);
         }
@@ -14425,12 +14423,13 @@
                 openPlayGateModal(() => startBattleRoom(), 'battle');
                 return;
             }
-            stopQuickMatchTimer();
+            if (!battleLobbyCountdownActive) stopQuickMatchTimer();
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();
                 let players = getBattlePlayerList(room);
                 if (!room || room.status !== 'waiting' || players.length < 1) {
-                    showGameNotice(textFor('alertNeedPlayers'));
+                    if (battleLobbyCountdownActive) cancelBattleAfterMatchError();
+                    else showGameNotice(textFor('alertNeedPlayers'));
                     return;
                 }
 
@@ -14489,7 +14488,10 @@
                     updates['players/' + player.id + '/finishedAt'] = null;
                     updates['players/' + player.id + '/matches'] = Math.max(0, Number(player.matches || 0)) + 1;
                 });
-                battleRef.child(battleRoomId).update(updates);
+                return battleRef.child(battleRoomId).update(updates);
+            }).catch(() => {
+                if (battleLobbyCountdownActive) cancelBattleAfterMatchError();
+                else showGameNotice(textFor('alertNeedPlayers'));
             });
         }
 
@@ -14669,83 +14671,40 @@
 
         function renderBattleLobby(room) {
             updateBattleViewModeUI();
-            const leaguePill = document.getElementById('battle-league-pill');
-            if (leaguePill) {
-                const l = room && room.league ? room.league : currentBattleLeague;
-                const info = getLeagueInfo(l);
-                const lang = currentLang || 'ko';
-                leaguePill.innerText = `${info.badge} ${info.name[lang] || info.name.ko} (${info.desc[lang] || info.desc.ko})`;
-                leaguePill.classList.toggle('master', l === 'master');
-            }
+            updateBattleLeagueUI(room?.league || currentBattleLeague);
             const players = getBattlePlayerList(room);
             const isHost = battleRole === 'host';
             const waitingEl = document.getElementById('battle-waiting-text');
             const startBtn = document.getElementById('battle-start-btn');
             const listEl = document.getElementById('battle-player-list');
 
-            const humanPlayers = players.filter(p => !p.isBot);
-            const humanCount = humanPlayers.length;
-
             const lang = currentLang || 'ko';
-            if (!battleLobbyCountdownActive) {
-                if (battleViewMode === 'world8') {
-                    if (players.length >= MAX_BATTLE_PLAYERS && !isHost) {
-                        battleLobbyCountdownActive = true;
-                        updateQuickMatchUI(textFor('battleQuickMatched'));
-                        const fn = textFor('matchFoundCountdown');
-                        const fallbackFoundMap = {
-                            ko: '🎮 매칭 완료! 잠시 후 경기가 시작됩니다...',
-                            en: '🎮 Match Found! Starting shortly...',
-                            ja: '🎮 マッチング完了！まもなく開始します...',
-                            'zh-TW': '🎮 配對完成！比賽即將開始...',
-                            es: '🎮 ¡Partida encontrada! Iniciando...'
-                        };
-                        waitingEl.innerText = typeof fn === 'function' ? fn(5) : (fallbackFoundMap[lang] || fallbackFoundMap.en);
-                    } else if (quickMatchActive) {
-                        waitingEl.innerHTML = getQuickMatchWaitingHtml(humanCount, quickMatchSecondsLeft);
-                    } else {
-                        const hostIdleMap = {
-                            ko: '대결 상대를 찾는 중입니다...',
-                            en: 'Searching for opponents...',
-                            ja: '対戦相手を探しています...',
-                            'zh-TW': '正在尋找對手...',
-                            es: 'Buscando oponentes...'
-                        };
-                        const guestIdleMap = {
-                            ko: '매칭 대기 중...',
-                            en: 'Waiting for match...',
-                            ja: 'マッチング待機中...',
-                            'zh-TW': '等待配對中...',
-                            es: 'Esperando partida...'
-                        };
-                        waitingEl.innerText = isHost
-                            ? (hostIdleMap[lang] || hostIdleMap.en)
-                            : (guestIdleMap[lang] || guestIdleMap.en);
-                    }
+            if (battleViewMode === 'world8') {
+                if (players.length >= MAX_BATTLE_PLAYERS && !isHost) battleLobbyCountdownActive = true;
+                updateQuickMatchUI();
+            } else {
+                if (players.length >= 2) {
+                    const friendHostMap = {
+                        ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`,
+                        en: `🎮 <b>Friends Joined (${players.length})!</b><br>Press [Start Game] to begin!`,
+                        ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>[ゲーム開始] を押すとスタートします！`,
+                        'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>按下 [開始遊戲] 即可開始！`,
+                        es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>¡Pulsa [Iniciar] para comenzar!`
+                    };
+                    const friendGuestMap = {
+                        ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`,
+                        en: `🎮 <b>Friends Joined (${players.length})!</b><br>Waiting for the host to start...`,
+                        ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>ホストがゲームを開始するのを待っています...`,
+                        'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>正在等待房主開始遊戲...`,
+                        es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>Esperando a que el anfitrión inicie...`
+                    };
+                    waitingEl.innerHTML = isHost
+                        ? (friendHostMap[lang] || friendHostMap.en)
+                        : (friendGuestMap[lang] || friendGuestMap.en);
                 } else {
-                    if (players.length >= 2) {
-                        const friendHostMap = {
-                            ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`,
-                            en: `🎮 <b>Friends Joined (${players.length})!</b><br>Press [Start Game] to begin!`,
-                            ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>[ゲーム開始] を押すとスタートします！`,
-                            'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>按下 [開始遊戲] 即可開始！`,
-                            es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>¡Pulsa [Iniciar] para comenzar!`
-                        };
-                        const friendGuestMap = {
-                            ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`,
-                            en: `🎮 <b>Friends Joined (${players.length})!</b><br>Waiting for the host to start...`,
-                            ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>ホストがゲームを開始するのを待っています...`,
-                            'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>正在等待房主開始遊戲...`,
-                            es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>Esperando a que el anfitrión inicie...`
-                        };
-                        waitingEl.innerHTML = isHost
-                            ? (friendHostMap[lang] || friendHostMap.en)
-                            : (friendGuestMap[lang] || friendGuestMap.en);
-                    } else {
-                        waitingEl.innerText = isHost
-                            ? textFor('lobbyStartable')(players.length)
-                            : textFor('lobbyWaitingHost')(players.length);
-                    }
+                    waitingEl.innerText = isHost
+                        ? textFor('lobbyStartable')(players.length)
+                        : textFor('lobbyWaitingHost')(players.length);
                 }
             }
 
@@ -14762,6 +14721,8 @@
                 startBtn.style.display = 'none';
             }
 
+            const world = battleViewMode === 'world8';
+            const copy = battleCoverText();
             const renderedCards = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
                 const flag = battleViewMode === 'world8' ? battlePlayerFlagArt(player) : '';
@@ -14784,6 +14745,20 @@
                     'zh-TW': `${streak}連勝`,
                     es: `${streak} racha`
                 };
+
+                if (world) {
+                    const flagAttr = flag ? ` data-flag-art="${flag}"` : '';
+                    return `<div class="battle-player-pill${meClass}${leagueClass}"${flagAttr}>
+                        <span class="bpp-slot">${index + 1}P</span>
+                        ${isMe ? `<span class="bpp-joined-mark" aria-hidden="true">✓</span>
+                            <strong class="bpp-name">${textFor('selfLabel')}</strong><small>${copy.joined}</small>`
+                        : `<span class="bpp-skin-icon">${renderSkinBadge(skinId)}</span>
+                            <strong class="bpp-name">${label}</strong>
+                            <span class="bpp-score-val">${rating.toLocaleString()} PT</span>
+                            <span class="bpp-stat-tag">${matches}G · ${wins}W</span>
+                            ${streak >= 1 ? `<small class="bpp-streak-tag">${streakMap[lang] || streakMap.en}</small>` : ''}`}
+                    </div>`;
+                }
 
                 return `<div class="battle-player-pill${meClass}${leagueClass}"${flag ? ` data-flag-art="${flag}"` : ''}>
                     <div class="bpp-header">
@@ -14808,26 +14783,20 @@
                 </div>`;
             });
 
-            const emptyWaitMap = {
-                ko: '⏳ 매칭 대기 중...',
-                en: '⏳ Waiting...',
-                ja: '⏳ 待機中...',
-                'zh-TW': '⏳ 等待配對...',
-                es: '⏳ Esperando...'
-            };
-            const emptyWaitLabel = emptyWaitMap[lang] || emptyWaitMap.en;
-            for (let i = players.length; i < MAX_BATTLE_PLAYERS; i++) {
-                renderedCards.push(`
-                    <div class="battle-player-pill empty">
-                        <div class="bpp-empty-inner">
-                            <span class="bpp-empty-slot">${i + 1}P</span>
-                            <span class="bpp-empty-text">${emptyWaitLabel}</span>
-                        </div>
-                    </div>
-                `);
-            }
+            listEl.innerHTML = renderedCards.join('') + emptyBattleSlots(
+                players.length, world ? copy.waiting : `⏳ ${copy.waiting}...`
+            );
+        }
 
-            listEl.innerHTML = renderedCards.join('');
+        function emptyBattleSlots(firstSlot, label) {
+            return Array.from({ length: Math.max(0, MAX_BATTLE_PLAYERS - firstSlot) }, (_, index) => `
+                <div class="battle-player-pill empty">
+                    <div class="bpp-empty-inner">
+                        <span class="bpp-empty-slot">${firstSlot + index + 1}P</span>
+                        <span class="bpp-empty-text">${label}</span>
+                    </div>
+                </div>`
+            ).join('');
         }
 
         function renderBattleHud(room) {
@@ -14912,11 +14881,7 @@
             if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             setTxt('battle-friend-btn', menuModeLabel(textFor('battleFriendBtn')));
             setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
-            if (battleViewMode === 'world8' && !quickMatchActive) {
-                setTxt('battle-waiting-text', textFor('battleWorldIdleWaiting'));
-            } else {
-                setTxt('battle-waiting-text', textFor('battleWaiting'));
-            }
+            if (battleViewMode === 'friend') setTxt('battle-waiting-text', textFor('battleWaiting'));
             setTxt('battle-cancel-btn', textFor('battleCancel'));
             setTxt('battle-join-btn', textFor('battleJoin'));
             setTxt('battle-exit-btn', textFor('battleExit'));
@@ -14926,12 +14891,14 @@
             setTxt('battle-divider', textFor('battleDivider'));
             updateQuickMatchUI();
             updateBattleStatsUI();
+            updateBattleLeagueUI();
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             setBattleRematchButtonText();
         }
 
         function startBattle() {
             if (battleStarted) return;
+            closeBattleLeagueInfo();
             battleStarted = true;
             battleResultShown = false;
             battleRematchStarted = false;
@@ -15425,6 +15392,7 @@
 
         function cancelBattle() {
             if (battleLobbyCountdownActive) return;
+            closeBattleLeagueInfo();
             stopQuickMatchTimer(false);
             leaveBattleRoom(true);
             battleMode = false;
@@ -15719,7 +15687,6 @@
             }
             clearRematchListener();
             if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
-            if (battleLobbyCountdownTimer) { clearInterval(battleLobbyCountdownTimer); battleLobbyCountdownTimer = null; }
             if (battleResultThrottleTimer) { clearTimeout(battleResultThrottleTimer); battleResultThrottleTimer = null; }
             battleResultPendingRoom = null;
             battleLobbyCountdownActive = false;
