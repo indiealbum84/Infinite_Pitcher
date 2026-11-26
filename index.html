@@ -10734,7 +10734,7 @@
             const cardMarkup = `
                 <div class="ipp-left">
                     <div class="ipp-name-row">
-                        <span class="ipp-user-icon" title="${collectionTitle}">${renderSkinBadge(skinId)}</span>
+                        <button type="button" class="ipp-user-icon" onclick="openSkinModal()" title="${collectionTitle}" aria-label="${collectionTitle}" style="background:transparent;border:0;padding:0;cursor:pointer;">${renderSkinBadge(skinId)}</button>
                         <span class="ipp-player-name">${safeName}</span>
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
                         <span class="ipp-best-tag">${bestLabel}</span>
@@ -10759,7 +10759,7 @@
             }
             if (battleCard) {
                 battleCard.innerHTML = battleViewMode === 'world8' ? `
-                    <div class="battle-cover-badge">${renderSkinBadge(skinId)}</div>
+                    <button type="button" class="battle-cover-badge" onclick="openSkinModal()" title="${collectionTitle}" aria-label="${collectionTitle}">${renderSkinBadge(skinId)}</button>
                     <div class="battle-cover-identity">
                         <strong class="ipp-player-name">${countryToFlag(userCountry)} ${safeName}</strong>
                         ${synced ? '<span class="ipp-cloud-icon" title="Cloud Synced">☁️</span>' : ''}
@@ -12306,6 +12306,14 @@
                 triggerHaptic('medium');
                 renderSkinGrid();
                 if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
+                if (battleRoomId && battlePlayerId && typeof battleRef !== 'undefined') {
+                    if (battlePlayers && battlePlayers[battlePlayerId]) {
+                        battlePlayers[battlePlayerId].skin = id;
+                    }
+                    try {
+                        battleRef.child(battleRoomId + '/players/' + battlePlayerId + '/skin').set(id).catch(() => {});
+                    } catch (e) {}
+                }
             }
         }
 

@@ -2006,9 +2006,17 @@ html[lang="zh-TW"] {
     display: grid;
     place-items: center;
     aspect-ratio: 1;
+    padding: 0;
     background: radial-gradient(#f7cb6e, #de9840);
     border: 5px solid #101b26;
     box-shadow: 5px 5px 0 #101b26;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.battle-cover-badge:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 #101b26;
 }
 .battle-cover-badge .skin-art-badge {
     width: 139px;
