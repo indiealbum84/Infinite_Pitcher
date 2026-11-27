@@ -539,21 +539,21 @@ html[lang="zh-TW"] {
 .special-cutin[data-move="stripeball"] { --cutin-accent: #e1c2f5; }
 .special-cutin[data-move="flashball"] { --cutin-accent: #ffe984; }
 .special-cutin.show {
-    animation: special-cutin-reveal 1.2s ease-out both;
+    animation: special-cutin-reveal 2.2s ease-out both;
 }
-#flashball-announce.show { animation-duration: 1.8s; }
+#flashball-announce.show { animation-duration: 2.8s; }
 .special-cutin > img {
     display: block;
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    inset: 4% 4% 42% 4%;
+    width: 92%;
+    height: 54%;
     object-fit: contain;
 }
 .special-cutin-title {
     position: absolute;
     z-index: 1;
-    inset: 75% 5% auto;
+    inset: 54% 5% auto;
     display: grid;
     place-items: center;
     transform: translateY(-50%);
@@ -590,10 +590,10 @@ html[lang="zh-TW"] {
 
 /* Show the rule reminder together with the illustrated move from the start. */
 #special-ball-tip-banner.show {
-    animation: specialTipAnim 2.4s ease-out both;
+    animation: specialTipAnim 2.2s ease-out both;
 }
 #special-ball-tip-banner.show[data-move="flashball"] {
-    animation-duration: 3s;
+    animation-duration: 2.8s;
 }
 
 .skin-art-badge {
