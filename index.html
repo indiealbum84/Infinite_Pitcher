@@ -3867,7 +3867,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=battle-first-place-trophy">
+    <link rel="stylesheet" href="./game-art.css?v=friend-result-wide-burst">
 
 </head>
 
@@ -4365,6 +4365,7 @@
         <div id="battle-result-screen" class="screen hidden">
             <section class="battle-result-summary" aria-labelledby="battle-result-title">
                 <span id="battle-result-title" hidden></span>
+                <div class="battle-result-status-patch" id="battle-result-phase" role="status"></div>
                 <div class="battle-result-metrics">
                     <div class="battle-result-metric">
                         <span id="battle-result-rank-label"></span>
@@ -4381,9 +4382,6 @@
                 </div>
                 <div id="battle-result-notes" hidden></div>
             </section>
-            <div class="battle-result-state" role="status">
-                <strong id="battle-result-phase"></strong><span id="battle-result-count"></span>
-            </div>
             <ol class="battle-scores" id="battle-score-list"></ol>
             <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn" disabled></button>
         </div>
@@ -11893,6 +11891,8 @@
         let battleStarted = false;
         let battleSimStarted = false;
         let battleResultShown = false;
+        let battleScoreCardsMarkup = '';
+        const celebratedBattleWinners = new Set();
         let battleResultListener = null;
         let battleRematchStarted = false;
         let battleProfileReady = false;
@@ -14712,36 +14712,31 @@
         const BATTLE_RESULT_COPY = {
             ko: {
                 world: '세계 8인 배틀 결과', friend: '친구 특훈 결과', waitingRank: '확인 중', rank: '확정 순위', tied: '공동 순위', score: '내 점수', rating: '레이팅',
-                pending: '결과 확인 중', confirmed: '내 순위 확정', finished: '순위 확정', live: '진행 중', done: '종료',
-                playing: n => `${n}명 경기 중`, ended: n => `${n}명 경기 종료`, friends: n => `${n}명 참가`,
+                pending: '결과 확인 중', confirmed: '내 순위 확정', finished: '경기 종료', live: '진행 중', done: '종료',
                 record: (matches, wins) => `${matches}전 · ${wins}승`, me: '나', streak: n => `${n}연승 달성`, unlocked: names => `새 스킨 해금 · ${names}`,
                 shield: (match, max) => `초심자 보호 ${match}/${max}판 · 감점 면제`
             },
             en: {
                 world: 'World 8P Battle Results', friend: 'Friend Practice Results', waitingRank: 'Checking', rank: 'Final Rank', tied: 'Tied Rank', score: 'My Score', rating: 'Rating',
-                pending: 'Checking results', confirmed: 'Your rank is final', finished: 'Rankings final', live: 'Playing', done: 'Finished',
-                playing: n => `${n} still playing`, ended: n => `${n} players finished`, friends: n => `${n} players`,
+                pending: 'Checking results', confirmed: 'Your rank is final', finished: 'Match over', live: 'Playing', done: 'Finished',
                 record: (matches, wins) => `${matches}G · ${wins}W`, me: 'Me', streak: n => `${n} in a row`, unlocked: names => `New skins · ${names}`,
                 shield: (match, max) => `Rookie Shield ${match}/${max} · No rating loss`
             },
             ja: {
                 world: '世界8人バトル結果', friend: 'フレンド特訓結果', waitingRank: '確認中', rank: '確定順位', tied: '同順位', score: '自分の得点', rating: 'レート',
-                pending: '結果確認中', confirmed: '自分の順位確定', finished: '順位確定', live: '対戦中', done: '終了',
-                playing: n => `${n}人対戦中`, ended: n => `${n}人対戦終了`, friends: n => `${n}人参加`,
+                pending: '結果確認中', confirmed: '自分の順位確定', finished: '試合終了', live: '対戦中', done: '終了',
                 record: (matches, wins) => `${matches}戦 · ${wins}勝`, me: '自分', streak: n => `${n}連勝達成`, unlocked: names => `新スキン解放 · ${names}`,
                 shield: (match, max) => `初心者保護 ${match}/${max}戦 · レート減少なし`
             },
             'zh-TW': {
                 world: '世界8人對戰結果', friend: '好友特訓結果', waitingRank: '確認中', rank: '確定排名', tied: '並列名次', score: '我的分數', rating: '積分',
-                pending: '正在確認結果', confirmed: '你的名次已確定', finished: '排名已確定', live: '對戰中', done: '已結束',
-                playing: n => `${n}人對戰中`, ended: n => `${n}人對戰結束`, friends: n => `${n}人參加`,
+                pending: '正在確認結果', confirmed: '你的名次已確定', finished: '比賽結束', live: '對戰中', done: '已結束',
                 record: (matches, wins) => `${matches}場 · ${wins}勝`, me: '我', streak: n => `${n}連勝達成`, unlocked: names => `新造型解鎖 · ${names}`,
                 shield: (match, max) => `新手保護 ${match}/${max}場 · 不扣積分`
             },
             es: {
                 world: 'Resultados de batalla 8P', friend: 'Resultados entre amigos', waitingRank: 'Verificando', rank: 'Puesto final', tied: 'Puesto compartido', score: 'Mi puntuación', rating: 'Puntos',
-                pending: 'Verificando resultados', confirmed: 'Tu puesto es definitivo', finished: 'Puestos definitivos', live: 'En juego', done: 'Terminó',
-                playing: n => `${n} siguen jugando`, ended: n => `${n} terminaron`, friends: n => `${n} jugadores`,
+                pending: 'Verificando resultados', confirmed: 'Tu puesto es definitivo', finished: 'Partida terminada', live: 'En juego', done: 'Terminó',
                 record: (matches, wins) => `${matches} PJ · ${wins} V`, me: 'Yo', streak: n => `${n} seguidas`, unlocked: names => `Nuevos aspectos · ${names}`,
                 shield: (match, max) => `Escudo novato ${match}/${max} · Sin pérdida de puntos`
             }
@@ -14762,7 +14757,7 @@
 
         function renderBattleScoreCards(players, ranks, isEnded, copy, stats) {
             const list = document.getElementById('battle-score-list');
-            list.innerHTML = players.map(player => {
+            const markup = players.map(player => {
                 const isMe = player.id === battlePlayerId;
                 const label = getBattlePlayerLabel(player, player.slot - 1);
                 const name = escapeBattleText(isMe ? `${label} · ${copy.me}` : label);
@@ -14789,6 +14784,41 @@
                     <strong class="bsc-score">${score}</strong>
                 </li>`;
             }).join('');
+            if (markup !== battleScoreCardsMarkup) {
+                list.innerHTML = markup;
+                battleScoreCardsMarkup = markup;
+            }
+        }
+
+        function celebrateBattleWinners() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const palette = ['#daa02f', '#ffe07b', '#ee704b', '#4ba29c', '#fff5cf'];
+            document.querySelectorAll('#battle-score-list .first').forEach(card => {
+                const playerId = card.dataset.playerId;
+                if (celebratedBattleWinners.has(playerId)) return;
+                celebratedBattleWinners.add(playerId);
+                const confetti = document.createElement('span');
+                confetti.className = 'battle-winner-confetti';
+                confetti.setAttribute('aria-hidden', 'true');
+                for (let i = 0; i < 16; i++) {
+                    const piece = document.createElement('i');
+                    const column = i % 8;
+                    const upper = i < 8;
+                    piece.style.setProperty('--confetti-x', `${8 + column * 12}%`);
+                    piece.style.setProperty('--confetti-y', upper ? '8%' : '92%');
+                    piece.style.setProperty('--confetti-dx', `${(column - 3.5) * 15}px`);
+                    piece.style.setProperty('--confetti-dy', `${(upper ? -1 : 1) * (32 + (i % 3) * 12)}px`);
+                    piece.style.setProperty('--confetti-turn', `${(i % 2 ? -1 : 1) * (90 + 18 * column)}deg`);
+                    piece.style.setProperty('--confetti-color', palette[i % palette.length]);
+                    confetti.appendChild(piece);
+                }
+                card.appendChild(confetti);
+                card.classList.add('celebrate-win');
+                setTimeout(() => {
+                    confetti.remove();
+                    card.classList.remove('celebrate-win');
+                }, 850);
+            });
         }
 
         function showBattleResult(room) {
@@ -14801,7 +14831,6 @@
             const me = players.find(player => player.id === battlePlayerId);
             if (!me) return;
             const myScore = Number(me.score) || 0;
-            const remaining = ended ? 0 : players.filter(player => !player.done).length;
             const ranks = new Map(players.map(player => [player.id, confirmedBattleRank(player, players, ended)]));
             const myRank = ranks.get(me.id) || lastBattleResultRatingData?.myRank || 0;
             ranks.set(me.id, myRank);
@@ -14816,6 +14845,7 @@
             setPlayHudMode();
             document.getElementById('game-over-screen').classList.add('hidden');
             if (firstRender) {
+                celebratedBattleWinners.clear();
                 document.getElementById('battle-final-vignette')?.classList.remove('active');
                 document.getElementById('battle-phase-banner')?.classList.remove('show');
                 const canvasEl = document.getElementById('canvas');
@@ -14845,14 +14875,14 @@
             const scoreText = String(myScore);
             scoreEl.textContent = scoreText;
             scoreEl.style.setProperty('--battle-score-digits', scoreText.length);
-            document.getElementById('battle-result-phase').textContent = phase === 'ended' ? copy.finished : phase === 'confirmed' ? copy.confirmed : copy.pending;
-            document.getElementById('battle-result-count').textContent = ended
-                ? (friend ? copy.friends(players.length) : copy.ended(players.length))
-                : copy.playing(remaining);
+            const statusPatch = document.getElementById('battle-result-phase');
+            const statusText = phase === 'ended' ? copy.finished : phase === 'confirmed' ? copy.confirmed : copy.pending;
+            if (statusPatch.textContent !== statusText) statusPatch.textContent = statusText;
             document.getElementById('battle-exit-btn').disabled = !myRank;
             renderBattleScoreCards(sorted, ranks, ended, copy, getBattleStats());
 
             screen.classList.remove('hidden');
+            if (ended) celebrateBattleWinners();
             battleResultShown = true;
         }
 
