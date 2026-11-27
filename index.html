@@ -7922,7 +7922,7 @@
                                 const progress = Math.min(1, (now - started) / duration);
                                 const value = start + Math.floor((fastEnd - start) * (1 - (1 - progress) ** 1.55));
                                 if (value !== displayed && now - lastSound >= 55) {
-                                    playSfx('click', .22);
+                                    playSfx('rank_count', .55);
                                     lastSound = now;
                                 }
                                 updateScore(value);
@@ -7937,7 +7937,7 @@
                         await wait(pauses[3 - (target - displayed)]);
                         if (!active() || !canAnimate()) return;
                         updateScore(displayed + 1);
-                        playSfx('click', .3);
+                        playSfx('rank_count', .65);
                     }
                 }
 
