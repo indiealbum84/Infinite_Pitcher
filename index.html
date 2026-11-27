@@ -13556,7 +13556,7 @@
                     if (quickStatus) {
                         const readyMsgMap = {
                             ko: '🎮 8명 매칭 완료! 곧 경기가 시작됩니다...',
-                            en: '🎮 All 8 Ready! Starting in 2s...',
+                            en: '🎮 All 8 Ready! Starting in 3s...',
                             ja: '🎮 8人マッチング完了！まもなく開始...',
                             'zh-TW': '🎮 8人配對完成！即將開始比賽...',
                             es: '🎮 ¡8 jugadores listos! Empezando...'
@@ -13565,7 +13565,7 @@
                     }
                     setTimeout(() => {
                         if (battleRoomId === roomId && battleRole === 'host') startBattleRoom();
-                    }, 2000);
+                    }, 3000);
                 });
             }).catch(() => {
                 if (battleRoomId !== roomId) return;
