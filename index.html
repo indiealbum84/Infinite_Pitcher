@@ -4766,6 +4766,7 @@
             throw_mirrorball: './sounds/throw_mirrorball.mp3',
             stripeball:       './sounds/stripeball.mp3',
             flashball:        './sounds/flashball.mp3',
+            rank_count:       './sounds/rank_count.mp3',
         };
         Object.entries(sfxFiles).forEach(([key, url]) => {
             const audio = new Audio(url);
@@ -8042,9 +8043,25 @@
                         if (canAnimate() && rank !== '—') {
                             const steps = labels.length - 3;
                             if (steps > 0) {
-                                const distance = steps * strip.firstElementChild.offsetHeight;
+                                const itemHeight = strip.firstElementChild.offsetHeight;
+                                const distance = steps * itemHeight;
+                                const duration = Math.min(1100, 420 + steps * 77);
+                                let lastTickStep = 0;
+                                let rolling = true;
+                                const trackReelTicks = () => {
+                                    if (!rolling || !active() || !canAnimate()) return;
+                                    const ty = new DOMMatrixReadOnly(getComputedStyle(strip).transform).m42;
+                                    const curStep = Math.min(steps, Math.floor(Math.abs(ty) / Math.max(1, itemHeight)));
+                                    if (curStep > lastTickStep) {
+                                        lastTickStep = curStep;
+                                        playSfx('rank_count', 0.65);
+                                    }
+                                    if (curStep < steps) requestAnimationFrame(trackReelTicks);
+                                };
+                                requestAnimationFrame(trackReelTicks);
                                 await animate(strip, [{ transform: 'translateY(0)' }, { transform: `translateY(-${distance}px)` }],
-                                    { duration: Math.min(1100, 420 + steps * 77), easing: 'cubic-bezier(.15,.54,.2,1)', fill: 'forwards' });
+                                    { duration, easing: 'cubic-bezier(.15,.54,.2,1)', fill: 'forwards' });
+                                rolling = false;
                             }
                             if (!active()) return;
                             if (canAnimate()) {
