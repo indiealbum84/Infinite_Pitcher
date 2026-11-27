@@ -3867,7 +3867,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=battle-standing-row-height">
+    <link rel="stylesheet" href="./game-art.css?v=battle-first-place-trophy">
 
 </head>
 
@@ -14779,6 +14779,7 @@
                 const winStreak = isMe ? getBattleStreak() : Math.max(0, parseInt(player.streak, 10) || 0) + 1;
                 const streak = isEnded && rank === 1 && winStreak >= 2;
                 return `<li class="battle-score-card${isMe ? ' me' : ''}${live ? ' live' : ''}${rank === 1 ? ' first' : ''}${streak ? ' has-streak' : ''}" data-player-id="${escapeBattleText(player.id)}">
+                    ${rank === 1 ? '<span class="bsc-trophy" aria-hidden="true">🏆</span>' : ''}
                     <strong class="bsc-rank">${place}</strong>
                     <span class="bsc-badge">${renderSkinBadge(skin, { decorative: true })}</span>
                     <div class="bsc-info"><strong class="bsc-name" title="${name}">${name}</strong>

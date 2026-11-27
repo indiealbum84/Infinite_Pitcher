@@ -3163,14 +3163,39 @@ html[lang="zh-TW"] #battle-result-screen .battle-score-card {
     background: #edf1d8;
 }
 #battle-result-screen .battle-score-card.first {
+    position: relative;
     border-inline-start-width: 11px;
     border-inline-start-color: var(--result-stamp);
     padding-inline-start: 11px;
+    background: radial-gradient(#8b552433 15%, transparent 23%) right top / 13px 13px,
+        linear-gradient(110deg, #ffe09a, var(--result-row) 38%, #fff0bc);
+    box-shadow: inset 0 0 0 3px #c38b45;
 }
 #battle-result-screen .battle-score-card.me {
     border-width: 5px;
     background: var(--result-highlight);
     box-shadow: 3px 4px var(--result-ink);
+}
+#battle-result-screen .battle-score-card.first.me {
+    background: radial-gradient(#8b552433 15%, transparent 23%) right top / 13px 13px,
+        linear-gradient(110deg, #f8ce70, var(--result-highlight) 48%);
+    box-shadow: 3px 4px var(--result-ink), inset 0 0 0 3px #c38b45;
+}
+#battle-result-screen .bsc-trophy {
+    position: absolute;
+    inset: -12px auto auto 8px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 65px;
+    height: 53px;
+    border: 4px solid var(--result-ink);
+    background: #f5c45e;
+    box-shadow: 3px 4px var(--result-ink);
+    font-size: 34px;
+    line-height: 1;
+    transform: rotate(-9deg);
+    pointer-events: none;
 }
 #battle-result-screen .bsc-rank { font-size: 36px; line-height: 1; }
 #battle-result-screen .live .bsc-rank { color: var(--result-accent); }
