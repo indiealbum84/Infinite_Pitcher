@@ -3593,102 +3593,6 @@
             gap: 28px;
         }
 
-        .continue-card {
-            background: var(--palette-cream);
-            border: 8px solid #000000;
-            border-radius: 55px;
-            padding: 48px 40px;
-            width: min(880px, calc(100% - 72px));
-            max-height: calc(100% - 80px);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-            box-shadow: 0 22px 0 var(--palette-pink), 0 22px 0 6px #000000;
-        }
-
-        .continue-title {
-            font-family: var(--font-game);
-            font-size: 62px;
-            color: var(--palette-blue);
-            margin: 0;
-            line-height: 1.12;
-            white-space: nowrap;
-            word-break: keep-all;
-            text-shadow: 6px 6px 0 #ffffff, 11px 11px 0 #000000;
-        }
-
-        .continue-desc {
-            font-size: 31px;
-            font-weight: 900;
-            color: var(--palette-ink);
-            margin: 0;
-            line-height: 1.46;
-            white-space: pre-line;
-            word-break: keep-all;
-            overflow-wrap: break-word;
-        }
-
-        .continue-ad-btn {
-            background: var(--palette-yellow) !important;
-            color: var(--palette-ink) !important;
-            width: 100%;
-            padding: 26px 32px !important;
-            font-size: 44px;
-            letter-spacing: 0.5px !important;
-            border-radius: 34px !important;
-            margin-top: 4px !important;
-            box-shadow: 0 14px 0 var(--palette-pink), 0 14px 0 6px #000000 !important;
-            text-shadow: none !important;
-        }
-
-        .noads-buy-btn {
-            background: var(--palette-mint) !important;
-            color: #ffffff !important;
-            width: 100%;
-            padding: 26px 32px !important;
-            font-size: 42px;
-            letter-spacing: 0.5px !important;
-            border-radius: 34px !important;
-            box-shadow: 0 14px 0 var(--palette-blue), 0 14px 0 6px #000000 !important;
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25) !important;
-        }
-
-        .noads-inline-link {
-            display: inline-block;
-            margin-top: 14px;
-            color: #e11d48;
-            font-weight: 900;
-            text-decoration: underline;
-            text-underline-offset: 6px;
-            cursor: pointer;
-            touch-action: auto !important;
-        }
-
-        .play-gate-sub-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-
-        .continue-skip-btn {
-            background: #ffffff;
-            color: #475569;
-            border: 6px solid #000000;
-            border-radius: 50px;
-            padding: 14px 42px;
-            font-size: 32px;
-            font-weight: 900;
-            cursor: pointer;
-            font-family: inherit;
-            box-shadow: 0 8px 0 #cbd5e1, 0 8px 0 4px #000000;
-            touch-action: auto !important;
-        }
-
         .ticket-status-pill {
             display: inline-flex;
             align-items: center;
@@ -4205,7 +4109,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=comic-popups">
+    <link rel="stylesheet" href="./game-art.css?v=play-gate-comic">
 
 </head>
 
@@ -4514,20 +4418,30 @@
         </div>
 
         <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($2.99) 모달 -->
-        <div id="play-gate-screen" class="screen hidden">
-            <div class="continue-card">
-                <img id="play-gate-art" src="./images/showa-fireball.webp" alt="" hidden>
-                <h2 class="continue-title" id="play-gate-title">NEXT PLAY</h2>
-                <p class="continue-desc" id="play-gate-desc">오늘의 무료 플레이를 모두 사용했습니다.<br>다음 게임을 플레이하려면 광고를 시청해주세요!</p>
-                <button type="button" id="play-gate-go-battle-btn" class="start-btn gameover-world8-btn" style="display:none;margin-bottom:10px;" onclick="goDirectToWorld8BattleFromGate()">⚡ 지금 세계 8인 배틀 출전하기</button>
-                <button id="play-gate-ad-btn" class="start-btn continue-ad-btn" onclick="watchAdForNextGame()">🎬 광고 보고 플레이</button>
-                <button id="play-gate-noads-btn" class="start-btn noads-buy-btn" onclick="purchaseRemoveAds()">👑 광고 제거·무제한 플레이 ($2.99)</button>
-                <div class="play-gate-sub-actions">
-                    <button id="play-gate-test-free-btn" class="continue-skip-btn hidden" onclick="skipAdForTest()">🛠️ 무료 테스트 플레이</button>
-                    <button id="play-gate-restore-btn" class="continue-skip-btn" onclick="restoreRemoveAdsPurchase()">구매 복원</button>
-                    <button id="play-gate-close-btn" class="continue-skip-btn" onclick="closePlayGateModal()">닫기</button>
+        <div id="play-gate-screen" class="screen comic-popup-layer hidden" onclick="if(event.target===this) closePlayGateModal()">
+            <section class="comic-popup" role="dialog" aria-modal="true" aria-labelledby="play-gate-title" tabindex="-1">
+                <header class="comic-popup-head">
+                    <h2 id="play-gate-title">플레이·구매 정보</h2>
+                    <button type="button" class="comic-popup-close" onclick="closePlayGateModal()" aria-label="Close">×</button>
+                </header>
+                <div class="comic-popup-body play-gate-body" tabindex="0">
+                    <div id="play-gate-status"></div>
+                    <button type="button" id="play-gate-ad-btn" class="comic-popup-action danger play-gate-ad" onclick="watchAdForNextGame()" hidden>
+                        <strong></strong><small></small>
+                    </button>
+                    <button type="button" id="play-gate-noads-btn" class="play-gate-offer" onclick="purchaseRemoveAds()" hidden>
+                        <span><strong></strong><small></small></span><b class="play-gate-price">$2.99 <span aria-hidden="true">›</span></b>
+                    </button>
+                    <button type="button" id="play-gate-go-battle-btn" class="play-gate-alternate" onclick="goDirectToWorld8BattleFromGate()" hidden>
+                        <span></span><span class="play-gate-alternate-tickets"></span>
+                    </button>
+                    <button type="button" id="play-gate-close-btn" class="comic-popup-action primary play-gate-confirm" onclick="closePlayGateModal()" hidden>확인</button>
+                    <div id="play-gate-sub-actions" class="play-gate-links" hidden>
+                        <button type="button" id="play-gate-test-free-btn" onclick="skipAdForTest()" hidden>🛠️ 무료 테스트 플레이</button>
+                        <button type="button" id="play-gate-restore-btn" onclick="restoreRemoveAdsPurchase()">구매 복원</button>
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
 
         <!-- 웹/개발 테스트용 보상형 광고 오버레이 -->
@@ -5234,22 +5148,11 @@
                 waitingHost: 'ホストの開始待ち...',
                 rematchJoinStatus: (ready, total) => `リマッチ参加 ${ready}/${total}`,
                 rematchReady: 'リマッチ参加完了',
-                playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
-                fireballUnlockHtml: '🎉 おめでとうございます！<br>ご用意した<b>31番ファイアボールコンテンツ</b>をアンロックしました！<br><br>これより個人モードは<b>1日3回まで無料</b>でプレイでき、その後は<b>広告を1回</b>見ることでプレイできます。<br><br>広告を見たくない場合は<b>$2.99 広告削除パス</b>をご購入ください！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを今すぐ購入する</a>',
-                playGateDescNeedAdSolo: '本日の個人モード無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$2.99 広告削除パスを購入するとすぐに次のゲームをプレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを購入して無制限プレイ</a>',
-                playGateDescNeedAdBattle: '本日のオンライン対戦無料プレイ(3回)をすべて使用しました。<br>広告を1回見るか、$2.99 広告削除パスを購入するとすぐに対戦へ参加できます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを購入して無制限プレイ</a>',
-                playGateResetLine: (h, m) => `⏰ 次の無料リセット(UTC 00:00)まで あと${h}時間${m}分`,
-                playGateDescShop: (soloText, battleRem, max) => `本日の残り無料プレイ<br>・個人モード: <b>${soloText}</b><br>・オンライン対戦: <b>${battleRem}/${max}回</b><br><br>広告削除パス($2.99)を購入すると、個人・対戦ともに広告なしで永久に無制限プレイできます！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 広告削除パスを今すぐ購入</a>`,
-                soloUnlimitedLabel: '無制限無料 (31番突破前)',
-                playGateAdBtn: '🎬 広告を1回見てプレイ',
-                playGateNoAdsBtn: '👑 広告削除・無制限プレイ ($2.99)',
                 playGateRestoreBtn: '購入を復元',
-                playGateCloseBtn: '閉じる',
                 rewardAdMsg: '広告視聴後に次のゲームが始まります...',
                 ticketPillPreUnlock: (battleRem, max) => `⚾ 個人:無制限(31番前) · 対戦:${battleRem}/${max}回  |  🚫 広告削除 $2.99`,
                 ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 無料 個人:${soloRem}/${max} · 対戦:${battleRem}/${max}  |  🚫 広告削除 $2.99`,
-                ticketPillVip: '👑 広告削除パス適用中 (個人・対戦 無制限プレイ)',
                 confirmBuyNoAds: '広告削除・無制限プレイパス ($2.99) を購入しますか？\n(テスト環境では即時適用されます)',
                 alertNoAdsActivated: '👑 広告削除パス($2.99)が適用されました！無制限にプレイできます。',
                 alertRestoreNone: '復元できる購入履歴が見つかりませんでした。',
@@ -5369,22 +5272,11 @@
                 waitingHost: 'Waiting for host...',
                 rematchJoinStatus: (ready, total) => `Rematch joined ${ready}/${total}`,
                 rematchReady: 'Rematch joined',
-                playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 FIREBALL UNLOCK!',
-                fireballUnlockHtml: '🎉 Congratulations!<br>You unlocked our <b>#31 Fireball Content</b>!<br><br>From now on, you get <b>3 free Solo games</b> per day, and after that you can watch <b>1 ad</b> to play.<br><br>Don\'t want ads? Get the <b>$2.99 Remove Ads Pass</b>!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $2.99 Remove Ads Now</a>',
-                playGateDescNeedAdSolo: 'You used all 3 free Solo games for today.<br>Watch 1 ad or buy the $2.99 Remove Ads Pass to play the next game right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $2.99 Remove Ads for Unlimited Play</a>',
-                playGateDescNeedAdBattle: 'You used all 3 free Online Battle games for today.<br>Watch 1 ad or buy the $2.99 Remove Ads Pass to enter Battle right away!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Get $2.99 Remove Ads for Unlimited Play</a>',
-                playGateResetLine: (h, m) => `⏰ Next free reset (UTC 00:00) in ${h}h ${m}m`,
-                playGateDescShop: (soloText, battleRem, max) => `Free plays left today<br>• Solo Mode: <b>${soloText}</b><br>• Online Battle: <b>${battleRem}/${max}</b><br><br>Buy the Remove Ads Pass ($2.99) for unlimited ad-free Solo & Battle play forever!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Buy $2.99 Remove Ads Now</a>`,
-                soloUnlimitedLabel: 'Unlimited Free (Before #31)',
-                playGateAdBtn: '🎬 Watch 1 Ad to Play',
-                playGateNoAdsBtn: '👑 Remove Ads + Unlimited Play ($2.99)',
                 playGateRestoreBtn: 'Restore Purchases',
-                playGateCloseBtn: 'Close',
                 rewardAdMsg: 'Next game starts right after the ad...',
                 ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Unlimited(<#31) · Battle:${battleRem}/${max}  |  🚫 Remove Ads $2.99`,
                 ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Free Solo:${soloRem}/${max} · Battle:${battleRem}/${max}  |  🚫 Remove Ads $2.99`,
-                ticketPillVip: '👑 Ad-Free Pass Active (Unlimited Solo & Battle)',
                 confirmBuyNoAds: 'Purchase Remove Ads + Unlimited Play Pass ($2.99)?\n(Activated immediately in test/preview mode)',
                 alertNoAdsActivated: '👑 Remove Ads Pass ($2.99) activated! Enjoy unlimited play.',
                 alertRestoreNone: 'No previous purchase found to restore.',
@@ -5504,22 +5396,11 @@
                 waitingHost: '방장 시작 대기 중...',
                 rematchJoinStatus: (ready, total) => `다시하기 참가 ${ready}/${total}`,
                 rematchReady: '다시하기 참가 완료',
-                playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 파이어볼 콘텐츠 언락!',
-                fireballUnlockHtml: '🎉 축하합니다! 우리가 준비한 <b>31번 파이어볼 콘텐츠</b>를 언락하셨습니다!<br><br>이제부터 개인모드는 하루에 <b>무료 3번</b>의 게임을 할 수 있고, 그 이후에는 <b>광고를 1번</b> 봐야 게임을 할 수 있습니다.<br><br>그게 싫으면 <b>$2.99 광고 없애기</b>를 구매해 무제한으로 플레이하세요!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 바로 구매하기</a>',
-                playGateDescNeedAdSolo: '오늘의 개인모드 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $2.99 광고 없애기를 구매하면 바로 다음 게임을 할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 구매 (무제한 플레이)</a>',
-                playGateDescNeedAdBattle: '오늘의 온라인 대전 무료 게임(3판)을 모두 사용했습니다.<br>광고를 1회 시청하거나 $2.99 광고 없애기를 구매하면 바로 대전에 진입할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 구매 (무제한 플레이)</a>',
-                playGateResetLine: (h, m) => `⏰ 다음 무료 리셋(UTC 00:00)까지 ${h}시간 ${m}분 남음`,
-                playGateDescShop: (soloText, battleRem, max) => `오늘 남은 무료 게임<br>• 개인모드: <b>${soloText}</b><br>• 온라인 대전: <b>${battleRem}/${max}판</b><br><br>$2.99 광고 없애기를 구매하면 개인·대전 모두 광고 없이 평생 무제한 플레이할 수 있습니다!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 $2.99 광고 없애기 바로 구매하기</a>`,
-                soloUnlimitedLabel: '무제한 무료 (31번 파이어볼 돌파 전)',
-                playGateAdBtn: '🎬 광고 1회 보고 다음 판 하기',
-                playGateNoAdsBtn: '👑 광고 제거 + 무제한 플레이 ($2.99)',
                 playGateRestoreBtn: '구매 복원',
-                playGateCloseBtn: '닫기',
                 rewardAdMsg: '광고 시청 후 다음 게임이 시작됩니다...',
                 ticketPillPreUnlock: (battleRem, max) => `⚾ 개인:무제한(31번 전) · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $2.99`,
                 ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 무료 개인:${soloRem}/${max}판 · 대전:${battleRem}/${max}판  |  🚫 광고 제거 $2.99`,
-                ticketPillVip: '👑 광고 제거 패스 적용 중 (개인·대전 무제한)',
                 confirmBuyNoAds: '광고 제거 + 무제한 플레이 패스($2.99)를 구매하시겠습니까?\n(현재 테스트 모드에서는 즉시 적용됩니다)',
                 alertNoAdsActivated: '👑 광고 제거 패스($2.99)가 적용되었습니다! 무제한으로 플레이하세요.',
                 alertRestoreNone: '복원할 구매 내역이 없습니다.',
@@ -5639,22 +5520,11 @@
                 waitingHost: '等待房主開始...',
                 rematchJoinStatus: (ready, total) => `準備再戰 ${ready}/${total}`,
                 rematchReady: '已準備再戰',
-                playGateTitle: 'NEXT PLAY',
                 fireballUnlockTitle: '🔥 火球模式解鎖！',
-                fireballUnlockHtml: '🎉 恭喜！您已解鎖我們準備的 <b>第31球火球內容</b>！<br><br>從現在起單人模式每天可 <b>免費遊玩3次</b>，之後需觀看 <b>1次廣告</b> 才能繼續遊玩。<br><br>若不想看廣告，可購買 <b>$2.99 移除廣告</b> 永久無限暢玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $2.99 移除廣告</a>',
-                playGateDescNeedAdSolo: '今日單人模式免費次數(3次)已用完。<br>觀看1次廣告或購買 $2.99 移除廣告，即可立即繼續遊玩！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $2.99 移除廣告 (無限暢玩)</a>',
-                playGateDescNeedAdBattle: '今日線上對戰免費次數(3次)已用完。<br>觀看1次廣告或購買 $2.99 移除廣告，即可立即進入對戰！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 購買 $2.99 移除廣告 (無限暢玩)</a>',
-                playGateResetLine: (h, m) => `⏰ 距離下次免費重置(UTC 00:00)還有 ${h}小時 ${m}分`,
-                playGateDescShop: (soloText, battleRem, max) => `今日剩餘免費次數<br>• 單人模式：<b>${soloText}</b><br>• 線上對戰：<b>${battleRem}/${max}場</b><br><br>購買 $2.99 移除廣告即可終身免廣告無限暢玩所有模式！<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 立即購買 $2.99 移除廣告</a>`,
-                soloUnlimitedLabel: '免費無限次 (突破第31球火球前)',
-                playGateAdBtn: '🎬 觀看1次廣告繼續下一場',
-                playGateNoAdsBtn: '👑 移除廣告 + 無限暢玩 ($2.99)',
                 playGateRestoreBtn: '恢復購買',
-                playGateCloseBtn: '關閉',
                 rewardAdMsg: '廣告播放結束後將立即開始下一局...',
                 ticketPillPreUnlock: (battleRem, max) => `⚾ 單人:無限(31球前) · 對戰:${battleRem}/${max}場  |  🚫 去廣告 $2.99`,
                 ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ 免費 單人:${soloRem}/${max} · 對戰:${battleRem}/${max}  |  🚫 去廣告 $2.99`,
-                ticketPillVip: '👑 已啟用去廣告通行證 (單人·對戰無限)',
                 confirmBuyNoAds: '確定要購買 移除廣告 + 無限暢玩通行證 ($2.99) 嗎？\n(測試模式中將立即套用)',
                 alertNoAdsActivated: '👑 已啟用去廣告通行證 ($2.99)！祝您無限暢玩！',
                 alertRestoreNone: '找不到可恢復的購買紀錄。',
@@ -5774,22 +5644,11 @@
                 waitingHost: 'Esperando al anfitrión...',
                 rematchJoinStatus: (ready, total) => `Revancha ${ready}/${total}`,
                 rematchReady: 'Listo para revancha',
-                playGateTitle: 'SIGUIENTE JUEGO',
                 fireballUnlockTitle: '🔥 ¡Modo Bola de Fuego!',
-                fireballUnlockHtml: '🎉 ¡Felicidades! ¡Desbloqueaste el <b>desafío Bola #31</b>!<br><br>Ahora tienes <b>3 partidas gratis al día</b> en modo Solo; luego mira <b>1 anuncio</b> por partida.<br><br>¡O compra <b>Sin Anuncios ($2.99)</b> para jugar sin límites!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
-                playGateDescNeedAdSolo: 'Usaste tus 3 partidas gratis de Solo hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($2.99) para seguir!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
-                playGateDescNeedAdBattle: 'Usaste tus 3 batallas gratis de hoy.<br>¡Mira 1 anuncio o compra Sin Anuncios ($2.99) para entrar!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>',
-                playGateResetLine: (h, m) => `⏰ Reinicio diario (UTC 00:00) en ${h}h ${m}m`,
-                playGateDescShop: (soloText, battleRem, max) => `Partidas gratis hoy<br>• Solo: <b>${soloText}</b><br>• Batalla: <b>${battleRem}/${max}</b><br><br>¡Compra Sin Anuncios ($2.99) y juega ilimitado para siempre!<br><a href="javascript:void(0)" onclick="purchaseRemoveAds()" class="noads-inline-link">👉 Comprar Sin Anuncios ($2.99)</a>`,
-                soloUnlimitedLabel: 'Gratis ilimitado (antes de #31)',
-                playGateAdBtn: '🎬 Ver 1 anuncio y jugar',
-                playGateNoAdsBtn: '👑 Sin Anuncios + Ilimitado ($2.99)',
                 playGateRestoreBtn: 'Restaurar compra',
-                playGateCloseBtn: 'Cerrar',
                 rewardAdMsg: 'La siguiente partida iniciará tras el anuncio...',
                 ticketPillPreUnlock: (battleRem, max) => `⚾ Solo:Ilimitado(pre-#31) · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $2.99`,
                 ticketPillPostUnlock: (soloRem, battleRem, max) => `⚾ Gratis Solo:${soloRem}/${max} · Batalla:${battleRem}/${max}  |  🚫 Sin Ads $2.99`,
-                ticketPillVip: '👑 Pase Sin Anuncios Activo (Ilimitado)',
                 confirmBuyNoAds: '¿Comprar Pase Sin Anuncios + Ilimitado ($2.99)?\n(En modo prueba se activa al instante)',
                 alertNoAdsActivated: '👑 ¡Pase Sin Anuncios ($2.99) activado! Disfruta sin límites.',
                 alertRestoreNone: 'No se encontraron compras previas.',
@@ -5934,7 +5793,7 @@
         for (const [id, close] of [
             ['settings-modal', closeSettingsModal], ['skin-modal', closeSkinModal],
             ['special-guide-modal', closeSpecialGuideModal], ['intro-ranking-modal', toggleIntroRanking],
-            ['exit-confirm-modal', closeExitConfirmModal]
+            ['exit-confirm-modal', closeExitConfirmModal], ['play-gate-screen', closePlayGateModal]
         ]) {
             document.getElementById(id).addEventListener('keydown', event => handleComicPopupKey(event, close));
         }
@@ -6030,14 +5889,8 @@
                 ['battle-friend-btn', 20],
                 ['battle-quick-main-btn', 24],
                 ['intro-ticket-pill', 22],
-                ['play-gate-title', 28],
-                ['play-gate-go-battle-btn', 20],
                 ['gameover-world8-btn', 20],
                 ['gameover-world8-badge', 14],
-                ['play-gate-ad-btn', 22],
-                ['play-gate-noads-btn', 20],
-                ['play-gate-restore-btn', 18],
-                ['play-gate-close-btn', 18],
                 ['initial-name-submit-btn', 22],
                 ['battle-join-btn', 18],
                 ['battle-start-btn', 18],
@@ -6117,11 +5970,6 @@
             setTxt('intro-ranking-title', comicPopupCopy().rank);
             setTxt('result-leaderboard-title', comicPopupCopy().rank);
             setTxt('result-noads-label', t.resultNoAds);
-            setTxt('play-gate-title', t.playGateTitle);
-            setTxt('play-gate-ad-btn', t.playGateAdBtn);
-            setTxt('play-gate-noads-btn', t.playGateNoAdsBtn);
-            setTxt('play-gate-restore-btn', t.playGateRestoreBtn);
-            setTxt('play-gate-close-btn', t.playGateCloseBtn);
             setTxt('reward-ad-msg', t.rewardAdMsg);
 
             setTxt('initial-profile-title', t.initialProfileTitle);
@@ -6768,7 +6616,6 @@
             const testRow = document.getElementById('test-start-row');
             if (!testRow) return;
             testRow.style.display = TEST_MODE_ENABLED ? 'flex' : 'none';
-            document.getElementById('play-gate-test-free-btn').classList.toggle('hidden', !TEST_MODE_ENABLED);
             if (!TEST_MODE_ENABLED) {
                 testMode = false;
                 testStartNum = 1;
@@ -7357,6 +7204,44 @@
             updatePlayTicketStatusUI();
         }
 
+        const PLAY_GATE_COPY = {
+            ko: {
+                info: '플레이·구매 정보', soloEnd: '개인 특훈 무료 소진', battleEnd: '배틀 무료 소진', solo: '개인 특훈', battle: '세계 8인 배틀',
+                free: '오늘 남은 무료 플레이', reset: (h, m) => `${h}시간 ${m}분 뒤 무료 충전`, balls: (count, max) => `무료 ${max}판 중 ${count}판 남음`,
+                adSolo: '광고 보고 특훈 계속하기', adBattle: '광고 보고 배틀 참가하기', adDetail: '광고 1회로 1판', adFree: '광고 제거',
+                offer: '개인 특훈·8인 배틀 무제한', active: '광고 제거 적용 중', activeDetail: '광고 없이 계속 플레이', unlimited: '무제한',
+                trial: '무제한 무료', trialNote: '31점 돌파 전', alternate: '세계 8인 배틀로 이동', stamp: '31점 돌파', unlock: '메인 로비에서 출전할 수 있어요.'
+            },
+            en: {
+                info: 'Play & Purchases', soloEnd: 'Free Solo Plays Used', battleEnd: 'Free Battles Used', solo: 'Solo Practice', battle: 'World 8P Battle',
+                free: 'Free Plays Today', reset: (h, m) => `Refills in ${h}h ${m}m`, balls: (count, max) => `${count} of ${max} free plays left`,
+                adSolo: 'Watch Ad to Play Solo', adBattle: 'Watch Ad to Join Battle', adDetail: '1 ad for 1 game', adFree: 'Remove Ads',
+                offer: 'Unlimited Solo & 8P Battle', active: 'Ad-Free Pass Active', activeDetail: 'Play without ads', unlimited: 'Unlimited',
+                trial: 'Unlimited Free', trialNote: 'Until you reach 31 points', alternate: 'Go to World 8P Battle', stamp: '31 Points!', unlock: 'Join from the main lobby.'
+            },
+            ja: {
+                info: 'プレイ・購入情報', soloEnd: '特訓の無料回数終了', battleEnd: 'バトルの無料回数終了', solo: 'ひとり特訓', battle: '世界8人バトル',
+                free: '今日の残り無料プレイ', reset: (h, m) => `無料回復まで ${h}時間${m}分`, balls: (count, max) => `無料${max}回のうち残り${count}回`,
+                adSolo: '広告を見て特訓する', adBattle: '広告を見てバトルに参加', adDetail: '広告1回で1試合', adFree: '広告削除',
+                offer: '特訓・8人バトルが遊び放題', active: '広告削除パス適用中', activeDetail: '広告なしでプレイ', unlimited: '無制限',
+                trial: '無料で無制限', trialNote: '31点を達成するまで', alternate: '世界8人バトルへ', stamp: '31点突破', unlock: 'メインロビーから参加できます。'
+            },
+            'zh-TW': {
+                info: '遊玩與購買資訊', soloEnd: '特訓免費次數用完', battleEnd: '對戰免費次數用完', solo: '單人特訓', battle: '世界8人對戰',
+                free: '今日剩餘免費次數', reset: (h, m) => `${h}小時${m}分鐘後恢復`, balls: (count, max) => `免費${max}場剩餘${count}場`,
+                adSolo: '看廣告繼續特訓', adBattle: '看廣告參加對戰', adDetail: '看1次廣告玩1場', adFree: '移除廣告',
+                offer: '單人與8人對戰無限暢玩', active: '已啟用去廣告通行證', activeDetail: '無廣告暢玩', unlimited: '無限',
+                trial: '免費無限次', trialNote: '突破31分前', alternate: '前往世界8人對戰', stamp: '突破31分', unlock: '可從主大廳參加。'
+            },
+            es: {
+                info: 'Juego y compras', soloEnd: 'Sin partidas gratis de Solo', battleEnd: 'Sin batallas gratis', solo: 'Práctica en solitario', battle: 'Batalla mundial 8P',
+                free: 'Partidas gratis de hoy', reset: (h, m) => `Se recargan en ${h} h ${m} min`, balls: (count, max) => `Quedan ${count} de ${max} partidas gratis`,
+                adSolo: 'Ver anuncio y jugar Solo', adBattle: 'Ver anuncio y entrar a batalla', adDetail: '1 anuncio por partida', adFree: 'Quitar anuncios',
+                offer: 'Solo y batallas 8P sin límites', active: 'Pase sin anuncios activo', activeDetail: 'Juega sin anuncios', unlimited: 'Ilimitado',
+                trial: 'Gratis sin límites', trialNote: 'Hasta llegar a 31 puntos', alternate: 'Ir a la batalla mundial 8P', stamp: '¡31 puntos!', unlock: 'Entra desde el lobby principal.'
+            }
+        };
+
         function updatePlayTicketStatusUI() {
             const vip = isNoAdsPurchased();
             const soloUnlocked = isSoloFireballUnlocked();
@@ -7364,7 +7249,7 @@
             const battleRem = getRemainingDailyFreePlays('battle');
             let pillText = '';
             if (vip) {
-                pillText = textFor('ticketPillVip');
+                pillText = playGateCopy().active;
             } else if (!soloUnlocked) {
                 const fn = textFor('ticketPillPreUnlock');
                 pillText = typeof fn === 'function' ? fn(battleRem, DAILY_FREE_PLAY_LIMIT) : String(fn);
@@ -7374,7 +7259,11 @@
             }
 
             const introTicket = document.getElementById('intro-ticket-pill');
-            introTicket.textContent = pillText;
+            if (vip) {
+                introTicket.innerHTML = `<span>${pillText} · ${playGateUnlimited()}</span>`;
+            } else {
+                introTicket.textContent = pillText;
+            }
             introTicket.classList.toggle('is-vip', vip);
             document.getElementById('result-noads-btn').hidden = vip;
         }
@@ -7520,7 +7409,7 @@
             document.getElementById('intro-screen').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
             document.getElementById('battle-result-screen').classList.add('hidden');
-            document.getElementById('play-gate-screen').classList.add('hidden');
+            hideComicPopup('play-gate-screen', false);
             const canvasEl = document.getElementById('canvas');
             if (canvasEl) {
                 canvasEl.style.display = 'block';
@@ -7824,7 +7713,7 @@
             stopAllBgm();
             const canvasEl = document.getElementById('canvas');
             if (canvasEl && battleMode) canvasEl.style.display = 'none';
-            document.getElementById('play-gate-screen').classList.add('hidden');
+            hideComicPopup('play-gate-screen', false);
             finalScoreEl.innerText = score;
             updatePlayTicketStatusUI();
             if (battleMode) {
@@ -8204,10 +8093,8 @@
         const WORLD8_PROMO_I18N = {
             ko: {
                 unlockTitle: '⚡ 세계 8인 배틀 해금!',
-                unlockHtml: '🎉 <b>31점 특훈 돌파 축하합니다.</b><br>메인 모드 <b>[세계 8인 배틀]</b>이 열렸습니다.',
                 unlockConfirmBtn: '확인',
                 goBattleNowBtn: '⚡ 지금 세계 8인 배틀 출전하기',
-                goBattleFreeBtn: (rem, max) => `⚡ 세계 8인 배틀 무료 출전 (오늘 ${rem}/${max}회)`,
                 gameOverBtn: '세계 8인 배틀 출전하기',
                 gameOverBadgeNew: '🎁 NEW! 첫 10판 감점 면제 · 첫 1승 스킨 보상!',
                 gameOverBadgeShield: (m, max) => `🛡️ 초심자 보호 적용 중 (${m}/${max}판 · 감점 면제)`,
@@ -8215,10 +8102,8 @@
             },
             en: {
                 unlockTitle: '⚡ WORLD 8P BATTLE!',
-                unlockHtml: '🎉 <b>31+ Drill Cleared!</b><br>Main mode <b>[World 8P Battle]</b> is now open!',
                 unlockConfirmBtn: 'OK',
                 goBattleNowBtn: '⚡ Enter World 8P Battle Now',
-                goBattleFreeBtn: (rem, max) => `⚡ Free World 8P Battle (${rem}/${max} left)`,
                 gameOverBtn: 'Play World 8P Battle',
                 gameOverBadgeNew: '🎁 NEW! First 10 Matches No Loss · 1st Win Skin!',
                 gameOverBadgeShield: (m, max) => `🛡️ Rookie Shield Active (${m}/${max} · No Loss)`,
@@ -8226,10 +8111,8 @@
             },
             ja: {
                 unlockTitle: '⚡ 世界8人バトル解放！',
-                unlockHtml: '🎉 <b>31点特訓突破おめでとう！</b><br>メインモード<b>[世界8人バトル]</b>が解放されました。',
                 unlockConfirmBtn: '確認',
                 goBattleNowBtn: '⚡ 今すぐ世界8人バトルへ参戦',
-                goBattleFreeBtn: (rem, max) => `⚡ 世界8人バトル無料参戦 (残り${rem}/${max}回)`,
                 gameOverBtn: '世界8人バトルへ参戦',
                 gameOverBadgeNew: '🎁 NEW! 最初の10戦レート低下なし・初勝利報酬！',
                 gameOverBadgeShield: (m, max) => `🛡️ 初心者保護適用中 (${m}/${max}戦・低下なし)`,
@@ -8237,10 +8120,8 @@
             },
             'zh-TW': {
                 unlockTitle: '⚡ 世界8人對戰解鎖！',
-                unlockHtml: '🎉 <b>恭喜突破31分特訓！</b><br>主模式<b>[世界8人對戰]</b>已解鎖！',
                 unlockConfirmBtn: '確定',
                 goBattleNowBtn: '⚡ 立即參加世界8人對戰',
-                goBattleFreeBtn: (rem, max) => `⚡ 免費參加世界8人對戰 (剩餘${rem}/${max}場)`,
                 gameOverBtn: '參加世界8人對戰',
                 gameOverBadgeNew: '🎁 NEW! 前10場不扣積分・首勝送專屬造型！',
                 gameOverBadgeShield: (m, max) => `🛡️ 新手保護生效中 (${m}/${max}場・不扣積分)`,
@@ -8248,10 +8129,8 @@
             },
             es: {
                 unlockTitle: '⚡ ¡BATALLA MUNDIAL 8P!',
-                unlockHtml: '🎉 <b>¡Superaste los 31 puntos!</b><br>El modo principal <b>[Batalla Mundial 8P]</b> está abierto.',
                 unlockConfirmBtn: 'OK',
                 goBattleNowBtn: '⚡ Entrar a Batalla Mundial 8P',
-                goBattleFreeBtn: (rem, max) => `⚡ Batalla 8P Gratis (${rem}/${max} hoy)`,
                 gameOverBtn: 'Jugar Batalla Mundial 8P',
                 gameOverBadgeNew: '🎁 ¡NUEVO! 10 partidas sin bajar · Premio 1ª victoria',
                 gameOverBadgeShield: (m, max) => `🛡️ Escudo Novato Activo (${m}/${max} · Sin bajar)`,
@@ -8303,106 +8182,99 @@
             startWorld8Battle();
         }
 
+        function playGateCopy() {
+            return PLAY_GATE_COPY[currentLang] || PLAY_GATE_COPY.en;
+        }
+
+        function playGateUnlimited(label = playGateCopy().unlimited) {
+            return `<span class="play-gate-unlimited"><span class="play-gate-infinity" aria-hidden="true">∞</span><span>${label}</span></span>`;
+        }
+
+        function playGateBalls(remaining) {
+            const count = Math.min(DAILY_FREE_PLAY_LIMIT, Math.max(0, Math.trunc(remaining)));
+            const balls = Array.from({ length: DAILY_FREE_PLAY_LIMIT }, (_, index) =>
+                `<img src="./images/showa-badges/classic.webp" alt="" class="${index < count ? 'available' : 'used'}">`
+            ).join('');
+            return `<span class="play-gate-tickets" role="img" aria-label="${playGateCopy().balls(count, DAILY_FREE_PLAY_LIMIT)}">${balls}</span>`;
+        }
+
+        function renderPlayGate(state) {
+            const copy = playGateCopy();
+            const pack = WORLD8_PROMO_I18N[currentLang] || WORLD8_PROMO_I18N.ko;
+            const panel = document.getElementById('play-gate-screen');
+            const status = document.getElementById('play-gate-status');
+            const exhausted = state === 'solo' || state === 'battle';
+            const purchased = state === 'paid';
+            const unlock = state === 'unlock';
+            const canOffer = !purchased && !unlock;
+            const battleRemaining = getRemainingDailyFreePlays('battle');
+            const title = unlock ? pack.unlockTitle.replace(/^⚡\s*/, '') :
+                state === 'solo' ? copy.soloEnd : state === 'battle' ? copy.battleEnd : copy.info;
+            panel.querySelector('#play-gate-title').textContent = title;
+
+            if (unlock) {
+                status.innerHTML = `<div class="play-gate-unlock-art">
+                    <img src="./images/showa-world8-roster.webp?v=blond-pitcher" width="1600" height="534" alt="">
+                    <strong class="play-gate-stamp">${copy.stamp}</strong>
+                    <p class="play-gate-unlock-copy">${copy.unlock}</p>
+                </div>`;
+            } else if (exhausted) {
+                const { hours, minutes } = getRemainingTimeToUtcReset();
+                status.innerHTML = `<div class="play-gate-exhausted">
+                    <strong>${copy.free}</strong>${playGateBalls(getRemainingDailyFreePlays(state))}
+                    <small>${copy.reset(hours, minutes)}</small>
+                </div>`;
+            } else {
+                const solo = purchased ? playGateUnlimited() : isSoloFireballUnlocked()
+                    ? playGateBalls(getRemainingDailyFreePlays('solo'))
+                    : `<span class="play-gate-trial">${playGateUnlimited(copy.trial)}<small>${copy.trialNote}</small></span>`;
+                const battle = purchased ? playGateUnlimited() : playGateBalls(battleRemaining);
+                status.innerHTML = `${purchased ? `<div class="play-gate-active"><strong>${copy.active}</strong><small>${copy.activeDetail}</small></div>`
+                    : `<h3 class="play-gate-status-label">${copy.free}</h3>`}
+                    <dl class="play-gate-modes">
+                        <div><dt>${copy.solo}</dt><dd>${solo}</dd></div>
+                        <div><dt>${copy.battle}</dt><dd>${battle}</dd></div>
+                    </dl>`;
+            }
+
+            const ad = panel.querySelector('#play-gate-ad-btn');
+            ad.hidden = !exhausted;
+            ad.querySelector('strong').textContent = state === 'solo' ? copy.adSolo : copy.adBattle;
+            ad.querySelector('small').textContent = copy.adDetail;
+            const buy = panel.querySelector('#play-gate-noads-btn');
+            buy.hidden = !canOffer;
+            buy.querySelector('strong').textContent = copy.adFree;
+            buy.querySelector('small').textContent = copy.offer;
+            const alternate = panel.querySelector('#play-gate-go-battle-btn');
+            alternate.hidden = !(state === 'solo' && isWorld8BattleUnlocked() && battleRemaining > 0);
+            alternate.firstElementChild.textContent = copy.alternate;
+            alternate.lastElementChild.innerHTML = `${playGateBalls(battleRemaining)}<span aria-hidden="true">›</span>`;
+            const confirm = panel.querySelector('#play-gate-close-btn');
+            confirm.hidden = !purchased && !unlock;
+            confirm.textContent = pack.unlockConfirmBtn || textFor('settingsClose');
+            panel.querySelector('#play-gate-sub-actions').hidden = !canOffer;
+            panel.querySelector('#play-gate-restore-btn').textContent = textFor('playGateRestoreBtn');
+            panel.querySelector('#play-gate-test-free-btn').hidden = !TEST_MODE_ENABLED || !exhausted;
+            showComicPopup('play-gate-screen');
+        }
+
         function openFireballUnlockModal() {
             pendingPlayGateCallback = null;
             pendingPlayGateMode = 'unlock';
-            const pack = WORLD8_PROMO_I18N[currentLang] || WORLD8_PROMO_I18N.ko;
-            const titleEl = document.getElementById('play-gate-title');
-            const descEl = document.getElementById('play-gate-desc');
-            const adBtnEl = document.getElementById('play-gate-ad-btn');
-            const goBattleBtn = document.getElementById('play-gate-go-battle-btn');
-            const noadsBtn = document.getElementById('play-gate-noads-btn');
-            const restoreBtn = document.getElementById('play-gate-restore-btn');
-            const testFreeBtn = document.getElementById('play-gate-test-free-btn');
-            const closeBtn = document.getElementById('play-gate-close-btn');
-            document.getElementById('play-gate-art').hidden = false;
-            if (titleEl) titleEl.innerText = pack.unlockTitle;
-            if (descEl) descEl.innerHTML = pack.unlockHtml;
-            if (adBtnEl) adBtnEl.style.display = 'none';
-            if (goBattleBtn) goBattleBtn.style.display = 'none';
-            if (noadsBtn) noadsBtn.style.display = 'none';
-            if (restoreBtn) restoreBtn.style.display = 'none';
-            if (testFreeBtn) testFreeBtn.style.display = 'none';
-            if (closeBtn) {
-                closeBtn.classList.remove('continue-skip-btn');
-                closeBtn.classList.add('start-btn');
-                closeBtn.innerText = pack.unlockConfirmBtn || '확인';
-            }
-            document.getElementById('play-gate-screen').classList.remove('hidden');
-            requestAnimationFrame(() => { if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes(); });
+            renderPlayGate('unlock');
         }
 
         function openPlayGateModal(onTicketGranted = null, mode = 'solo') {
-            if (isNoAdsPurchased()) {
-                if (typeof onTicketGranted === 'function') onTicketGranted();
+            const callback = typeof onTicketGranted === 'function' ? onTicketGranted : null;
+            const purchased = isNoAdsPurchased();
+            if (purchased && callback) {
+                callback();
                 return;
             }
-            const targetMode = mode === 'battle' ? 'battle' : 'solo';
-            pendingPlayGateMode = targetMode;
-            pendingPlayGateCallback = typeof onTicketGranted === 'function' ? onTicketGranted : null;
-            const needAdNow = typeof onTicketGranted === 'function' && !canPlayWithoutAd(targetMode);
-            const titleEl = document.getElementById('play-gate-title');
-            const descEl = document.getElementById('play-gate-desc');
-            const adBtnEl = document.getElementById('play-gate-ad-btn');
-            const goBattleBtn = document.getElementById('play-gate-go-battle-btn');
-            const pack = WORLD8_PROMO_I18N[currentLang] || WORLD8_PROMO_I18N.ko;
-            document.getElementById('play-gate-art').hidden = true;
-            if (titleEl) titleEl.innerText = textFor('playGateTitle');
-            if (descEl) {
-                if (needAdNow) {
-                    const rem = getRemainingTimeToUtcReset();
-                    const resetFn = textFor('playGateResetLine');
-                    const resetLine = typeof resetFn === 'function' ? `<br><br>${resetFn(rem.hours, rem.minutes)}` : '';
-                    const msgKey = targetMode === 'battle' ? 'playGateDescNeedAdBattle' : 'playGateDescNeedAdSolo';
-                    descEl.innerHTML = `${textFor(msgKey)}${resetLine}`;
-                } else {
-                    const shopFn = textFor('playGateDescShop');
-                    const soloUnlocked = isSoloFireballUnlocked();
-                    const soloRem = getRemainingDailyFreePlays('solo');
-                    const battleRem = getRemainingDailyFreePlays('battle');
-                    const soloText = soloUnlocked
-                        ? `${soloRem}/${DAILY_FREE_PLAY_LIMIT}`
-                        : textFor('soloUnlimitedLabel');
-                    descEl.innerHTML = typeof shopFn === 'function'
-                        ? shopFn(soloText, battleRem, DAILY_FREE_PLAY_LIMIT)
-                        : String(shopFn);
-                }
-            }
-            if (goBattleBtn) {
-                const battleRem = getRemainingDailyFreePlays('battle');
-                const canCrossPromoteBattle = (targetMode === 'solo' && needAdNow && isWorld8BattleUnlocked() && battleRem > 0);
-                if (canCrossPromoteBattle) {
-                    goBattleBtn.style.display = 'block';
-                    goBattleBtn.innerText = pack.goBattleFreeBtn(battleRem, DAILY_FREE_PLAY_LIMIT);
-                } else {
-                    goBattleBtn.style.display = 'none';
-                }
-            }
-            if (adBtnEl) {
-                adBtnEl.style.display = needAdNow ? 'block' : 'none';
-                adBtnEl.innerText = textFor('playGateAdBtn');
-            }
-            const noadsBtn = document.getElementById('play-gate-noads-btn');
-            if (noadsBtn) {
-                noadsBtn.style.display = '';
-                noadsBtn.innerText = textFor('playGateNoAdsBtn');
-            }
-            const restoreBtn = document.getElementById('play-gate-restore-btn');
-            if (restoreBtn) {
-                restoreBtn.style.display = '';
-                restoreBtn.innerText = textFor('playGateRestoreBtn');
-            }
-            const testFreeBtn = document.getElementById('play-gate-test-free-btn');
-            if (testFreeBtn) testFreeBtn.style.display = '';
-            const closeBtn = document.getElementById('play-gate-close-btn');
-            if (closeBtn) {
-                closeBtn.classList.remove('start-btn');
-                closeBtn.classList.add('continue-skip-btn');
-                closeBtn.innerText = textFor('playGateCloseBtn');
-            }
-
-            document.getElementById('play-gate-screen').classList.remove('hidden');
-            requestAnimationFrame(() => { if (typeof fitLocalizedBoxes === 'function') fitLocalizedBoxes(); });
+            pendingPlayGateMode = mode === 'battle' ? 'battle' : 'solo';
+            pendingPlayGateCallback = callback;
+            const needsAd = callback && !canPlayWithoutAd(pendingPlayGateMode);
+            renderPlayGate(purchased ? 'paid' : needsAd ? pendingPlayGateMode : 'info');
         }
 
         function skipAdForTest() {
@@ -8413,7 +8285,7 @@
 
         function closePlayGateModal() {
             pendingPlayGateCallback = null;
-            document.getElementById('play-gate-screen').classList.add('hidden');
+            hideComicPopup('play-gate-screen');
         }
 
         // Capacitor AdMob 리워드 광고 연동 (현재 Google 공식 테스트 ID — 출시 전 본인 광고 단위 ID로 교체)
@@ -8617,6 +8489,11 @@
         async function completeRemoveAdsPurchase() {
             setNoAdsPurchased(true);
             const cb = pendingPlayGateCallback;
+            if (!cb && isVisibleScreen('play-gate-screen')) {
+                renderPlayGate('paid');
+                document.getElementById('play-gate-close-btn').focus({ preventScroll: true });
+                return;
+            }
             await showGameNotice(textFor('alertNoAdsActivated'));
             closePlayGateModal();
             if (typeof cb === 'function') cb();
