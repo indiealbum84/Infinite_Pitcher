@@ -333,8 +333,8 @@ html[lang="zh-TW"] {
 #intro-screen #battle-quick-main-btn,
 #game-over-screen #gameover-world8-btn {
     background:
-        linear-gradient(#141f2bb8, #101a25d9),
-        #243146 url('./images/showa-world8-roster.webp?v=varied-uniforms') center 42% / cover no-repeat !important;
+        linear-gradient(90deg, #141f2b66, #141f2bb3 29% 71%, #141f2b66),
+        #243146 url('./images/showa-world8-roster.webp?v=blond-pitcher') center 42% / cover no-repeat !important;
     text-shadow: 0 3px 6px #101a25;
 }
 .w8-button-label {
