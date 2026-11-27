@@ -3389,7 +3389,7 @@ html[lang="zh-TW"] #battle-result-screen .battle-score-card.first {
     --battle-caption-paper: #e7f4e6dc;
 }
 #game-wrapper[data-battle-view="friend"] #battle-result-screen .battle-result-metrics {
-    grid-template-columns: 28% 47% 25%;
+    grid-template-columns: 28% 46% 26%;
     background-position: left bottom, left center;
     background-size: 35% 66%, 106% auto;
 }
@@ -3443,9 +3443,12 @@ html[lang="zh-TW"] #battle-result-screen .battle-score-card.first {
     line-height: 1;
 }
 #game-wrapper[data-battle-view="friend"] #battle-result-screen .battle-result-metric + .battle-result-metric {
-    padding-block-end: 42px;
+    gap: 0;
+    padding-block-end: 48px;
 }
 #game-wrapper[data-battle-view="friend"] #battle-result-screen #battle-result-score {
+    margin-block-start: -8px;
+    rotate: 0deg;
     font-size: clamp(54px, calc(245px / var(--battle-score-digits, 2)), 113px);
 }
 #battle-result-screen .battle-result-meta {
