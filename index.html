@@ -7970,8 +7970,8 @@
 
                 function impact(isRecord, withSfx = true) {
                     if (withSfx) {
-                        playSfx('throw_hit', isRecord ? .75 : .5);
-                        triggerHaptic(isRecord ? 'heavy' : 'medium');
+                        playSfx('click', .62);
+                        triggerHaptic(isRecord ? 'heavy' : 'light');
                     }
                     const hits = [confirmValue(finalScoreEl)];
                     if (isRecord) hits.push(confirmValue(bestValue));
@@ -8017,7 +8017,7 @@
                     await dropCard(record, scoreTo, scoreFrom, scoreTo);
                     if (!active()) return;
                     record.getAnimations().forEach(animation => animation.cancel());
-                    if (canAnimate()) await settleCard(record, false, true);
+                    if (canAnimate()) await settleCard(record);
                     if (canAnimate()) await wait(160);
                 }
                 delete screen.dataset.spotlight;
