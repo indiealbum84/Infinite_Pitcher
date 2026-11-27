@@ -545,15 +545,15 @@ html[lang="zh-TW"] {
 .special-cutin > img {
     display: block;
     position: absolute;
-    inset: 4% 4% 42% 4%;
-    width: 92%;
-    height: 54%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 .special-cutin-title {
     position: absolute;
     z-index: 1;
-    inset: 54% 5% auto;
+    inset: 75% 5% auto;
     display: grid;
     place-items: center;
     transform: translateY(-50%);
