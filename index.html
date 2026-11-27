@@ -1250,102 +1250,6 @@
             z-index: 2;
         }
 
-        .battle-result-title {
-            font-family: var(--font-game);
-            font-size: 72px;
-            margin: 0;
-            text-shadow: 4px 4px 0 #ffffff, 7px 7px 0 #000000;
-        }
-
-        .battle-result-title.win  { color: #28594e; }
-        .battle-result-title.lose { color: #a6312c; }
-        .battle-result-title.draw { color: #365f78; }
-
-        .battle-scores {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            align-items: stretch;
-            gap: 6px;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 340px;
-        }
-
-        .battle-score-card {
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 10px;
-            padding: 6px 10px;
-            text-align: left;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            box-shadow: 0 3px 0 var(--palette-blue);
-        }
-
-        .battle-score-card.me {
-            border-color: #000000;
-            box-shadow: 0 3px 0 var(--palette-pink), 0 3px 0 2px #000000;
-            background: var(--palette-yellow);
-        }
-
-        .battle-score-card.done {
-            opacity: 0.86;
-            background: #f1f3f5;
-        }
-
-        .battle-score-card.me.done {
-            opacity: 1;
-            background: var(--palette-yellow);
-        }
-
-        .battle-score-card .bsc-rank {
-            flex-shrink: 0;
-            min-width: 44px;
-            padding: 3px 6px;
-            border-radius: 8px;
-            background: #1e293b;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 900;
-            text-align: center;
-        }
-
-        .battle-score-card .bsc-rank.playing {
-            background: #16a34a;
-            color: #ffffff;
-        }
-
-        .battle-score-card .bsc-info {
-            flex: 1 1 auto;
-            min-width: 0;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 6px;
-            overflow: hidden;
-        }
-
-        .battle-score-card .bsc-name {
-            font-size: 13px;
-            color: #1e293b;
-            font-weight: 800;
-        }
-
-        .battle-score-card.me .bsc-name {
-            color: var(--palette-ink);
-        }
-
-        .battle-score-card .bsc-score {
-            flex-shrink: 0;
-            font-family: var(--font-game);
-            font-size: 24px;
-            color: var(--palette-blue);
-        }
-
         /* 메인화면 랭킹 버튼 (좌측 상단) */
         #intro-ranking-btn {
             position: absolute;
@@ -3268,16 +3172,6 @@
             box-shadow: 0 2px 0 rgba(127, 29, 29, 0.35);
         }
 
-        .battle-score-card .bsc-record {
-            font-size: 25px;
-            font-weight: 800;
-            color: #1e293b;
-            background: rgba(15, 23, 42, 0.08);
-            border-radius: 999px;
-            padding: 4px 14px;
-            margin-top: 6px;
-        }
-
         .battle-divider {
             font-size: 30px;
         }
@@ -3380,149 +3274,6 @@
 
         .bpb-title {
             font-size: 56px;
-        }
-
-        .battle-result-title {
-            font-size: 98px;
-            text-shadow: 6px 6px 0 #ffffff, 11px 11px 0 #000000;
-            position: relative;
-            z-index: 2;
-            margin: 0 0 2px;
-        }
-
-        .battle-scores {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
-            align-items: center;
-            gap: 8px;
-            margin: 10px auto;
-            max-width: 100%;
-            width: 100%;
-            position: relative;
-            z-index: 2;
-        }
-
-        .battle-score-card {
-            position: relative;
-            border-width: 5px;
-            border-radius: 20px;
-            padding: 10px 14px;
-            width: 100%;
-            height: 118px;
-            min-height: 118px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 0 var(--palette-blue);
-            overflow: hidden;
-        }
-
-        .battle-score-card .bsc-rank {
-            position: relative;
-            flex: 0 0 136px;
-            width: 136px;
-            height: 100%;
-            padding: 6px 8px;
-            border-radius: 14px;
-            border: 3px solid #000000;
-            background: #1e293b;
-            color: #ffffff;
-            font-size: 36px;
-            font-weight: 900;
-            line-height: 1.05;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            white-space: nowrap;
-            box-sizing: border-box;
-        }
-
-        .battle-score-card .bsc-rank .bsc-medal {
-            position: absolute;
-            left: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            line-height: 1;
-        }
-
-        .battle-score-card .bsc-rank.playing {
-            background: #16a34a;
-            color: #ffffff;
-            font-size: 22px;
-        }
-
-        .battle-score-card.me .bsc-rank:not(.playing) {
-            background: var(--showa-red);
-            color: #ffffff;
-        }
-
-        .battle-score-card .bsc-info {
-            flex: 1 1 auto;
-            min-width: 0;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            overflow: hidden;
-            text-align: left;
-        }
-
-        .battle-score-card.me {
-            background: var(--palette-yellow) !important;
-            box-shadow: 0 5px 0 var(--palette-pink), 0 5px 0 4px #000000;
-        }
-
-        .battle-score-card .bsc-name {
-            flex: 0 1 auto;
-            min-width: 0;
-            font-size: 32px;
-            line-height: 1.12;
-            font-weight: 900;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-align: left;
-        }
-
-        .battle-score-card .bsc-score {
-            flex: 0 0 auto;
-            min-width: 96px;
-            font-size: 64px;
-            height: auto;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-            margin: 0;
-            text-align: right;
-        }
-
-        .battle-score-card .bsc-record {
-            flex-shrink: 0;
-            font-size: 25px;
-            font-weight: 800;
-            line-height: 1.12;
-            color: #1e293b;
-            background: rgba(15, 23, 42, 0.08);
-            border-radius: 999px;
-            white-space: nowrap;
-            margin-top: 0;
-            padding: 3px 10px;
-        }
-
-        #battle-rematch-btn {
-            margin-bottom: 22px !important;
-        }
-
-        #rematch-status {
-            font-size: 36px !important;
-            margin: 0 0 22px !important;
-            min-height: 50px !important;
         }
 
         /* Countdown Screen */
@@ -4116,7 +3867,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=special-cutin-full">
+    <link rel="stylesheet" href="./game-art.css?v=battle-standing-row-height">
 
 </head>
 
@@ -4543,14 +4294,20 @@
         <div id="battle-screen" class="screen hidden">
             <div class="battle-lobby-topbar">
                 <button type="button" id="battle-lobby-back-btn"><span aria-hidden="true">←</span><span id="battle-lobby-nav-label"></span></button>
+                <h2 id="friend-lobby-title" class="friend-lobby-only"></h2>
                 <button type="button" id="battle-league-button" aria-haspopup="dialog" aria-controls="battle-league-dialog">
                     <span class="battle-medal" aria-hidden="true">★</span>
                     <span class="battle-league-copy"><strong></strong><small></small></span>
                     <span aria-hidden="true">›</span>
                 </button>
             </div>
+            <div id="friend-lobby-entry" class="friend-lobby-only" hidden>
+                <button id="friend-create-btn" class="friend-entry-panel" type="button"><span></span></button>
+                <button id="friend-join-open" class="friend-entry-panel" type="button" aria-haspopup="dialog" aria-controls="friend-join-dialog"><span></span></button>
+            </div>
             <header class="battle-lobby-cover">
                 <img src="./images/showa-world8-roster.webp?v=blond-pitcher" alt="" width="1600" height="534">
+                <img class="friend-lobby-only friend-cover-art" src="./images/showa-friend-cover.webp" alt="" loading="lazy" width="1200" height="482">
                 <h1 class="battle-title" id="battle-screen-title">세계 8인 배틀</h1>
             </header>
             <div class="battle-header-badges">
@@ -4578,25 +4335,20 @@
                 </div>
             </div>
 
-            <!-- 방 만들기 섹션 -->
             <div id="battle-create-section">
-                <p class="battle-small-label" id="battle-code-label" style="margin:0 0 4px;">내 방 코드 (친구 초대)</p>
-                <div class="battle-code-box" id="battle-room-code">----</div>
-                <p class="battle-waiting" id="battle-waiting-text">相手を待っています...</p>
+                <div id="friend-invite-code" class="friend-lobby-only">
+                    <div><p id="battle-code-label"></p><strong id="battle-room-code">----</strong></div>
+                    <button id="friend-copy-code" type="button"></button>
+                </div>
+                <div id="friend-player-heading" class="friend-lobby-only">
+                    <span id="friend-participant-label"></span>
+                    <strong id="friend-player-count"></strong>
+                    <span id="battle-waiting-text" role="status"></span>
+                </div>
                 <div class="battle-player-list" id="battle-player-list"></div>
-                <button class="start-btn" id="battle-start-btn" onclick="startBattleRoom()" disabled>ゲーム開始</button>
+                <button class="start-btn" id="battle-start-btn" onclick="startBattleRoom()" disabled>게임 시작</button>
+                <p id="friend-guest-status" class="friend-lobby-only" role="status" hidden></p>
             </div>
-
-            <p class="battle-divider" id="battle-divider">── または ──</p>
-
-            <!-- 코드 입력 섹션 -->
-            <div id="battle-join-section" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-                <p class="battle-small-label" id="battle-join-label">코드 입력</p>
-                <input id="battle-code-input" class="battle-input" type="text" maxlength="4" placeholder="0000" />
-                <button class="start-btn" id="battle-join-btn" onclick="joinBattleRoom()">참가</button>
-            </div>
-
-            <button class="leaderboard-btn" onclick="cancelBattle()" style="margin-top:4px;color:#1e293b;border-color:#1e293b;" id="battle-cancel-btn">メインへ</button>
         </div>
 
         <!-- 대전 페이즈 전환 알림 배너 -->
@@ -4611,12 +4363,29 @@
 
         <!-- 대전 결과 화면 -->
         <div id="battle-result-screen" class="screen hidden">
-            <h2 class="battle-result-title" id="battle-result-title">WIN!</h2>
-            <div class="battle-rating-pill" id="battle-result-rating-pill" style="display:none;"></div>
-            <div class="battle-stats-pill" id="battle-result-stats-pill" style="margin-top:10px;">🏆 대전 전적: 0판  |  🥇 1위: 0회</div>
-            <div class="battle-scores" id="battle-score-list"></div>
-            <p id="rematch-status" class="battle-result-status"></p>
-            <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn">돌아가기</button>
+            <section class="battle-result-summary" aria-labelledby="battle-result-title">
+                <span id="battle-result-title" hidden></span>
+                <div class="battle-result-metrics">
+                    <div class="battle-result-metric">
+                        <span id="battle-result-rank-label"></span>
+                        <strong id="battle-result-rank" aria-live="polite"></strong>
+                    </div>
+                    <div class="battle-result-metric">
+                        <span id="battle-result-score-label"></span>
+                        <strong id="battle-result-score"></strong>
+                    </div>
+                </div>
+                <div class="battle-result-meta">
+                    <span id="battle-result-rating-pill" hidden></span>
+                    <span id="battle-result-stats-pill"></span>
+                </div>
+                <div id="battle-result-notes" hidden></div>
+            </section>
+            <div class="battle-result-state" role="status">
+                <strong id="battle-result-phase"></strong><span id="battle-result-count"></span>
+            </div>
+            <ol class="battle-scores" id="battle-score-list"></ol>
+            <button class="leaderboard-btn" onclick="exitBattle()" id="battle-exit-btn" disabled></button>
         </div>
 
         <div id="countdown-screen" class="screen hidden">
@@ -4668,6 +4437,23 @@
             <p id="battle-league-description"></p>
             <div id="battle-league-rating"></div>
             <div id="battle-league-tiers"></div>
+        </dialog>
+
+        <dialog id="friend-join-dialog" class="comic-popup comic-popup-compact" aria-labelledby="friend-join-title">
+            <form id="friend-join-form">
+                <header class="comic-popup-head">
+                    <h2 id="friend-join-title"></h2>
+                    <button type="button" class="comic-popup-close" aria-label="Close">×</button>
+                </header>
+                <div class="comic-popup-body">
+                    <label for="battle-code-input" id="battle-join-label"></label>
+                    <input id="battle-code-input" type="text" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" placeholder="0000" required>
+                    <p id="friend-join-error" role="status" hidden></p>
+                </div>
+                <footer class="comic-popup-actions">
+                    <button type="submit" class="comic-popup-action primary" id="battle-join-btn" disabled></button>
+                </footer>
+            </form>
         </dialog>
 
         <dialog id="game-dialog" class="comic-popup comic-popup-compact" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
@@ -5730,6 +5516,7 @@
         }
 
         const gameDialog = document.getElementById('game-dialog');
+        const friendJoinDialog = document.getElementById('friend-join-dialog');
         const gameDialogTitle = document.getElementById('game-dialog-title');
         const gameDialogMessage = document.getElementById('game-dialog-message');
         const gameDialogInput = document.getElementById('game-dialog-input');
@@ -5805,9 +5592,12 @@
 
         function updateGameDialogViewport() {
             const viewport = window.visualViewport;
-            if (!gameDialog.open || !viewport) return;
-            gameDialog.style.setProperty('--popup-view-height', `${viewport.height}px`);
-            gameDialog.style.setProperty('--popup-view-center', `${viewport.offsetTop + viewport.height / 2}px`);
+            if (!viewport) return;
+            for (const dialog of [gameDialog, friendJoinDialog]) {
+                if (!dialog.open) continue;
+                dialog.style.setProperty('--popup-view-height', `${viewport.height}px`);
+                dialog.style.setProperty('--popup-view-center', `${viewport.offsetTop + viewport.height / 2}px`);
+            }
         }
 
         window.visualViewport?.addEventListener('resize', updateGameDialogViewport);
@@ -5897,7 +5687,6 @@
                 ['gameover-world8-btn', 20],
                 ['gameover-world8-badge', 14],
                 ['initial-name-submit-btn', 22],
-                ['battle-join-btn', 18],
                 ['battle-start-btn', 18],
                 ['battle-exit-btn', 18],
                 ['retry-btn', 22],
@@ -9056,7 +8845,9 @@
             const msgEl = document.getElementById('exit-confirm-msg');
             const yesEl = document.getElementById('exit-confirm-yes');
             const noEl  = document.getElementById('exit-confirm-no');
-            if (msgEl) msgEl.innerText = msgMap[currentLang] || msgMap.ko;
+            const friendRoom = fromLobby && battleViewMode === 'friend' && battleRoomId;
+            document.getElementById('exit-confirm-modal').toggleAttribute('data-friend-room', Boolean(friendRoom));
+            if (msgEl) msgEl.textContent = friendRoom ? friendLobbyCopy().exitRoom : msgMap[currentLang] || msgMap.ko;
             if (yesEl) yesEl.innerText = copy.exit;
             if (noEl) noEl.innerText = copy.stay;
             showComicPopup('exit-confirm-modal', '#exit-confirm-no');
@@ -9079,7 +8870,14 @@
             hideComicPopup('exit-confirm-modal', false);
             const battleScreen = document.getElementById('battle-screen');
             if (battleScreen && !battleScreen.classList.contains('hidden')) {
-                cancelBattle();
+                if (battleViewMode === 'friend' && battleRoomId) {
+                    leaveBattleRoom(false);
+                    showBattleRoomStep();
+                    updateFriendRoomControls();
+                    document.getElementById('friend-create-btn').focus({ preventScroll: true });
+                } else {
+                    cancelBattle();
+                }
                 return;
             }
             stopFlashball();
@@ -11697,7 +11495,6 @@
 
         let currentBattleLeague = 'standard';
         let battleRatingProcessed = false;
-        let lastProvisionalBattleRank = 0;
         let lastBattleResultRatingData = null;
 
         function getBattleRating() {
@@ -12090,6 +11887,7 @@
         let battlePlayerId = null;
         let battlePlayers = {};
         let battleViewMode = 'world8'; // 'world8' | 'friend'
+        let friendRoomRequest = null;
         let battleListener = null;
         let battleMode = false;
         let battleStarted = false;
@@ -12302,7 +12100,7 @@
             const lobbyPill = document.getElementById('battle-stats-pill');
             const resultPill = document.getElementById('battle-result-stats-pill');
             if (lobbyPill) lobbyPill.innerText = label;
-            if (resultPill) resultPill.innerText = label;
+            if (resultPill) resultPill.textContent = battleResultCopy().record(stats.matches, stats.wins);
         }
 
         // ── 1,000명 고유 봇 생태계 (20개국 야구 인기 가중치 배분 + 일반 850명/마스터 150명 0G 0W 출발 + Firebase 실시간 전적 합산) ──
@@ -12678,35 +12476,29 @@
             showBattleRoomStep();
         }
 
+        const FRIEND_LOBBY_COPY = {
+            ko: { lobby: '친구 특훈 대기실', home: '로비로', back: '뒤로', exitRoom: '방에서 나가시겠습니까?', create: '방 만들기', join: '참여하기', joinTitle: '친구 방 참여', joinCode: '친구에게 받은 방 코드', enter: '입장하기', ownCode: '내 방 코드', joinedCode: '참가한 방 코드', copy: '코드 복사', copied: '복사 완료', participants: '참가자', waiting: '친구 기다리는 중', joined: '친구 참가 완료', full: '모두 참가 완료', guestWait: '방장이 게임을 시작하기를 기다리는 중', me: '나', host: '방장', friend: '친구', createError: '방을 만들지 못했어요. 다시 시도해 주세요.', joinError: '방을 찾을 수 없어요. 코드를 확인하거나 방장에게 문의해 주세요.' },
+            en: { lobby: 'Friend Lobby', home: 'Lobby', back: 'Back', exitRoom: 'Leave this room?', create: 'Create Room', join: 'Join Room', joinTitle: 'Join a Friend', joinCode: 'Code from your friend', enter: 'Enter Room', ownCode: 'My room code', joinedCode: 'Room code', copy: 'Copy Code', copied: 'Copied', participants: 'Players', waiting: 'Waiting for friends', joined: 'Friends joined', full: 'Room full', guestWait: 'Waiting for the host to start', me: 'Me', host: 'Host', friend: 'Friend', createError: 'Could not create a room. Try again.', joinError: 'Room unavailable. Check the code or ask the host.' },
+            ja: { lobby: 'フレンド特訓の待合室', home: 'ロビーへ', back: '戻る', exitRoom: '部屋から退出しますか？', create: '部屋を作る', join: '参加する', joinTitle: 'フレンドの部屋に参加', joinCode: 'フレンドからの部屋コード', enter: '入室する', ownCode: '自分の部屋コード', joinedCode: '参加中の部屋コード', copy: 'コードをコピー', copied: 'コピー完了', participants: '参加者', waiting: 'フレンドを待っています', joined: 'フレンドが参加しました', full: '定員に達しました', guestWait: 'ホストの開始操作を待っています', me: '自分', host: 'ホスト', friend: 'フレンド', createError: '部屋を作れませんでした。もう一度お試しください。', joinError: '部屋に入れません。コードを確認するか、ホストにご連絡ください。' },
+            'zh-TW': { lobby: '好友特訓等候室', home: '回大廳', back: '返回', exitRoom: '要離開房間嗎？', create: '建立房間', join: '加入房間', joinTitle: '加入好友房間', joinCode: '好友提供的房間代碼', enter: '進入房間', ownCode: '我的房間代碼', joinedCode: '目前房間代碼', copy: '複製代碼', copied: '已複製', participants: '參加者', waiting: '等待好友', joined: '好友已加入', full: '房間已滿', guestWait: '等待房主開始遊戲', me: '自己', host: '房主', friend: '好友', createError: '無法建立房間，請重試。', joinError: '無法加入房間，請確認代碼或詢問房主。' },
+            es: { lobby: 'Sala de amigos', home: 'Al lobby', back: 'Volver', exitRoom: '¿Salir de esta sala?', create: 'Crear sala', join: 'Unirse a sala', joinTitle: 'Unirse a un amigo', joinCode: 'Código de tu amigo', enter: 'Entrar', ownCode: 'Mi código de sala', joinedCode: 'Código de sala', copy: 'Copiar código', copied: 'Copiado', participants: 'Jugadores', waiting: 'Esperando amigos', joined: 'Amigos conectados', full: 'Sala llena', guestWait: 'Esperando a que el anfitrión inicie', me: 'Yo', host: 'Anfitrión', friend: 'Amigo', createError: 'No se pudo crear la sala. Inténtalo de nuevo.', joinError: 'Sala no disponible. Revisa el código o consulta al anfitrión.' }
+        };
+
+        function friendLobbyCopy() {
+            return FRIEND_LOBBY_COPY[currentLang] || FRIEND_LOBBY_COPY.en;
+        }
+
         function updateBattleViewModeUI() {
-            const titleEl = document.getElementById('battle-screen-title');
-            const quickSection = document.getElementById('battle-quick-section');
-            const createSection = document.getElementById('battle-create-section');
-            const codeLabel = document.getElementById('battle-code-label');
-            const codeBox = document.getElementById('battle-room-code');
-            const divider = document.getElementById('battle-divider');
-            const joinSection = document.getElementById('battle-join-section');
-            const startBtn = document.getElementById('battle-start-btn');
+            const friend = battleViewMode === 'friend';
+            const entry = friend && !battleRoomId;
+            const screen = document.getElementById('battle-screen');
             document.getElementById('game-wrapper').dataset.battleView = battleViewMode;
-
-            if (createSection) createSection.style.display = 'flex';
-
-            if (battleViewMode === 'world8') {
-                if (titleEl) titleEl.innerText = textFor('battleWorldTitle');
-                if (quickSection) quickSection.style.display = 'flex';
-                if (codeLabel) codeLabel.style.display = 'none';
-                if (codeBox) codeBox.style.display = 'none';
-                if (divider) divider.style.display = 'none';
-                if (joinSection) joinSection.style.display = 'none';
-                if (startBtn) startBtn.style.display = 'none';
-            } else {
-                if (titleEl) titleEl.innerText = textFor('battleFriendTitle');
-                if (quickSection) quickSection.style.display = 'none';
-                if (codeLabel) codeLabel.style.display = 'block';
-                if (codeBox) codeBox.style.display = 'block';
-                if (divider) divider.style.display = 'block';
-                if (joinSection) joinSection.style.display = 'flex';
-            }
+            screen.dataset.friendStep = entry ? 'entry' : 'room';
+            document.getElementById('friend-lobby-entry').hidden = !entry;
+            document.getElementById('battle-create-section').hidden = entry;
+            document.getElementById('battle-quick-section').style.display = friend ? 'none' : 'flex';
+            if (!friend) document.getElementById('battle-start-btn').style.display = 'none';
+            document.getElementById('battle-screen-title').textContent = friend ? friendLobbyCopy().lobby : textFor('battleWorldTitle');
         }
 
         function showBattleRoomStep() {
@@ -12863,7 +12655,8 @@
         });
 
         document.getElementById('battle-lobby-back-btn').addEventListener('click', () => {
-            if (battleViewMode === 'world8' && quickMatchActive) cancelQuickMatch();
+            if (battleViewMode === 'friend' && !battleRoomId) cancelBattle();
+            else if (battleViewMode === 'world8' && quickMatchActive) cancelQuickMatch();
             else openExitConfirmModal(true);
         });
 
@@ -12892,10 +12685,11 @@
             const busy = battleLobbyCountdownActive;
             const world = battleViewMode === 'world8';
             const copy = battleCoverText();
-            document.getElementById('battle-cancel-btn').disabled = busy;
             const back = document.getElementById('battle-lobby-back-btn');
             back.disabled = busy;
-            const navLabel = world && (quickMatchActive || busy) ? copy.cancel : copy.back;
+            const friend = friendLobbyCopy();
+            const navLabel = world ? (quickMatchActive || busy ? copy.cancel : copy.back)
+                : battleRoomId ? friend.back : friend.home;
             back.setAttribute('aria-label', navLabel);
             document.getElementById('battle-lobby-nav-label').textContent = navLabel;
             document.getElementById('battle-quick-btn').textContent = copy.start;
@@ -13794,6 +13588,7 @@
         }
 
         function leaveBattleRoom(removeHostRoom) {
+            friendRoomRequest = null;
             const roomId = battleRoomId;
             const playerId = battlePlayerId;
             const role = battleRole;
@@ -14083,128 +13878,188 @@
             currentBattleLeague = getPlayerLeague();
             updateBattleLeagueUI();
             showBattleRoomStep();
-            createBattleRoom(permanentName);
+            updateFriendRoomControls();
         }
 
         function openBattleScreen() {
             openFriendBattleScreen();
         }
 
-        function createBattleRoom(hostName) {
-            battleViewMode = 'friend';
-            const code = genCode();
-            const playerId = genBattlePlayerId();
-            const myStats = getBattleStats();
-            const hostPlayer = {
+        const friendCodeInput = document.getElementById('battle-code-input');
+        const friendJoinError = document.getElementById('friend-join-error');
+        const friendCopyButton = document.getElementById('friend-copy-code');
+
+        function updateFriendRoomControls() {
+            const pending = Boolean(friendRoomRequest);
+            document.getElementById('friend-create-btn').disabled = pending;
+            document.getElementById('friend-join-open').disabled = pending;
+            friendCodeInput.readOnly = pending;
+            document.getElementById('battle-join-btn').disabled = pending || !/^\d{4}$/.test(friendCodeInput.value);
+        }
+
+        function openFriendJoinDialog() {
+            if (friendRoomRequest || friendJoinDialog.open) return;
+            friendCodeInput.value = '';
+            friendJoinError.hidden = true;
+            updateFriendRoomControls();
+            friendJoinDialog.showModal();
+            updateGameDialogViewport();
+            friendCodeInput.focus({ preventScroll: true });
+        }
+
+        function cancelFriendJoin() {
+            if (friendRoomRequest?.type === 'join') friendRoomRequest = null;
+            updateFriendRoomControls();
+            friendJoinDialog.close();
+        }
+
+        friendJoinDialog.querySelector('.comic-popup-close').addEventListener('click', cancelFriendJoin);
+        friendJoinDialog.addEventListener('cancel', event => {
+            event.preventDefault();
+            cancelFriendJoin();
+        });
+        friendCodeInput.addEventListener('input', () => {
+            friendCodeInput.value = friendCodeInput.value.replace(/[^0-9]/g, '').slice(0, 4);
+            friendJoinError.hidden = true;
+            updateFriendRoomControls();
+        });
+        document.getElementById('friend-join-form').addEventListener('submit', event => {
+            event.preventDefault();
+            joinBattleRoom();
+        });
+        document.getElementById('friend-join-open').addEventListener('click', openFriendJoinDialog);
+        document.getElementById('friend-create-btn').addEventListener('click', () => createBattleRoom(getSavedPlayerName()));
+        friendCopyButton.addEventListener('click', async () => {
+            const code = battleRoomId;
+            if (!code) return;
+            try {
+                await navigator.clipboard.writeText(code);
+                if (battleRoomId === code) friendCopyButton.textContent = friendLobbyCopy().copied;
+            } catch {
+                const range = document.createRange();
+                range.selectNodeContents(document.getElementById('battle-room-code'));
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
+
+        function makeFriendRoomPlayer(name, isHost) {
+            const { matches, wins } = getBattleStats();
+            return {
                 score: 0,
                 done: false,
                 rank: null,
                 finishOrder: null,
-                finishedAt: null,
-                name: hostName,
+                name,
                 country: typeof userCountry === 'string' ? userCountry : 'KR',
-                matches: myStats.matches,
-                wins: myStats.wins,
-                isHost: true,
+                matches,
+                wins,
+                skin: getEquippedSkin(),
+                streak: getBattleStreak(),
+                isHost,
                 isBot: false,
                 joinedAt: getEstimatedServerTimeMs()
             };
-
-            battleRoomId = code;
-            battleRole = 'host';
-            battlePlayerId = playerId;
-            battlePlayers = { [playerId]: hostPlayer };
-
-            battleRef.child(code).set({
-                code,
-                hostId: playerId,
-                maxPlayers: MAX_BATTLE_PLAYERS,
-                players: battlePlayers,
-                status: 'waiting',
-                isPublic: false,
-                isPublicWaiting: false,
-                joinLocked: false,
-                createdAt: getEstimatedServerTimeMs()
-            }).then(() => {
-                registerBattleDisconnectHandler(code, playerId, 'host');
-                listenBattleRoom(code);
-            });
-
-            document.getElementById('battle-room-code').innerText = code;
-            renderBattleLobby({ players: battlePlayers, status: 'waiting' });
         }
 
-        function joinBattleRoom() {
-            const code = document.getElementById('battle-code-input').value.trim();
-            if (code.length !== 4) return;
-            if (battleRoomId === code) return;
-            if (!canPlayWithoutAd('battle')) {
-                openPlayGateModal(() => joinBattleRoom(), 'battle');
-                return;
-            }
+        function enterFriendRoom(code, playerId, role, room) {
+            battleRoomId = code;
+            battleRole = role;
+            battlePlayerId = playerId;
+            battlePlayers = room.players || {};
+            document.getElementById('battle-room-code').textContent = code;
+            friendCopyButton.textContent = friendLobbyCopy().copy;
+            showBattleRoomStep();
+            renderBattleLobby(room);
+            document.getElementById('battle-screen').scrollTop = 0;
+            document.getElementById('battle-lobby-back-btn').focus({ preventScroll: true });
+            registerBattleDisconnectHandler(code, playerId, role);
+            listenBattleRoom(code);
+        }
 
+        async function createBattleRoom(hostName) {
+            if (!hostName || battleViewMode !== 'friend' || !isVisibleScreen('battle-screen') || battleRoomId || friendRoomRequest) return;
+            const request = { type: 'create' };
+            friendRoomRequest = request;
+            updateFriendRoomControls();
             const playerId = genBattlePlayerId();
-            const joinedAt = getEstimatedServerTimeMs();
-            const nickname = getSavedPlayerName() || getBattleNickname() || getSavedBattleNickname();
-            if (!nickname) {
-                showGameNotice(textFor('alertNickname')).then(() => {
-                    showBattleProfileStep();
-                    document.getElementById('battle-name-input')?.focus();
-                });
-                return;
-            }
-            const myStats = getBattleStats();
-
-            battleRef.child(code).once('value').then(snap => {
-                const room = snap.val();
-                if (!room || room.status !== 'waiting' || room.joinLocked) {
-                    showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
-                    return;
-                }
-
-                battleRef.child(code + '/players').transaction(players => {
-                    players = players || {};
-                    const playerCount = Object.keys(players).length;
-                    if (playerCount >= MAX_BATTLE_PLAYERS) return;
-
-                    players[playerId] = {
-                        score: 0,
-                        done: false,
-                        rank: null,
-                        finishOrder: null,
-                        finishedAt: null,
-                        name: nickname || `P${playerCount + 1}`,
-                        country: typeof userCountry === 'string' ? userCountry : 'KR',
-                        matches: myStats.matches,
-                        wins: myStats.wins,
-                        isHost: false,
-                        isBot: false,
-                        joinedAt
+            const player = makeFriendRoomPlayer(hostName, true);
+            try {
+                for (let attempt = 0; attempt < 4; attempt++) {
+                    if (friendRoomRequest !== request) return;
+                    const code = genCode();
+                    const ref = battleRef.child(code);
+                    const room = {
+                        code, hostId: playerId, maxPlayers: MAX_BATTLE_PLAYERS,
+                        players: { [playerId]: player }, status: 'waiting', isPublic: false,
+                        isPublicWaiting: false, joinLocked: false, createdAt: player.joinedAt
                     };
-                    return players;
-                }, (error, committed) => {
-                    if (error || !committed) {
-                        showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
+                    const result = await ref.transaction(current => current === null ? room : undefined);
+                    if (!result.committed) continue;
+                    if (friendRoomRequest !== request) {
+                        await ref.transaction(current => current?.hostId === playerId ? null : undefined);
                         return;
                     }
+                    enterFriendRoom(code, playerId, 'host', result.snapshot.val());
+                    return;
+                }
+                if (friendRoomRequest === request) showGameNotice(friendLobbyCopy().createError);
+            } catch {
+                if (friendRoomRequest === request) showGameNotice(friendLobbyCopy().createError);
+            } finally {
+                if (friendRoomRequest === request) friendRoomRequest = null;
+                updateFriendRoomControls();
+            }
+        }
 
-                    leaveBattleRoom(true);
-                    battleViewMode = 'friend';
-                    battleRoomId = code;
-                    battleRole = 'guest';
-                    battlePlayerId = playerId;
-                    battleStarted = false;
-                    battleResultShown = false;
-                    battleRematchStarted = false;
-                    battleProfileReady = true;
-                    document.getElementById('battle-room-code').innerText = code;
-                    registerBattleDisconnectHandler(code, playerId, 'guest');
-                    showBattleRoomStep();
-                    listenBattleRoom(code);
+        async function joinBattleRoom(code = friendCodeInput.value) {
+            if (!/^\d{4}$/.test(code) || battleViewMode !== 'friend' || !isVisibleScreen('battle-screen') || battleRoomId || friendRoomRequest) return;
+            if (!canPlayWithoutAd('battle')) {
+                friendJoinDialog.close();
+                openPlayGateModal(() => joinBattleRoom(code), 'battle');
+                return;
+            }
+            const nickname = getSavedPlayerName();
+            if (!nickname) return;
+            const request = { type: 'join' };
+            friendRoomRequest = request;
+            friendJoinError.hidden = true;
+            updateFriendRoomControls();
+            const playerId = genBattlePlayerId();
+            const player = makeFriendRoomPlayer(nickname, false);
+            const ref = battleRef.child(code);
+            try {
+                // Seed the transaction cache before checking for a missing room.
+                await ref.once('value');
+                if (friendRoomRequest !== request) return;
+                const result = await ref.transaction(room => {
+                    if (!room || room.status !== 'waiting' || room.isPublic || room.joinLocked) return;
+                    const players = room.players || {};
+                    if (Object.keys(players).length >= MAX_BATTLE_PLAYERS) return;
+                    return { ...room, players: { ...players, [playerId]: player } };
                 });
-            }).catch(() => {
-                showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
-            });
+                if (friendRoomRequest !== request) {
+                    if (result.committed) await ref.child('players').child(playerId).remove();
+                    return;
+                }
+                if (!result.committed) throw new Error('Room unavailable');
+
+                friendRoomRequest = null;
+                friendJoinDialog.close();
+                enterFriendRoom(code, playerId, 'guest', result.snapshot.val());
+            } catch {
+                if (friendRoomRequest !== request) return;
+                if (friendJoinDialog.open) {
+                    friendJoinError.textContent = friendLobbyCopy().joinError;
+                    friendJoinError.hidden = false;
+                } else {
+                    showGameNotice(friendLobbyCopy().joinError);
+                }
+            } finally {
+                if (friendRoomRequest === request) friendRoomRequest = null;
+                updateFriendRoomControls();
+            }
         }
 
         function startBattleRoom() {
@@ -14217,7 +14072,7 @@
             battleRef.child(battleRoomId).once('value').then(snap => {
                 const room = snap.val();
                 let players = getBattlePlayerList(room);
-                if (!room || room.status !== 'waiting' || players.length < 1) {
+                if (!room || room.status !== 'waiting' || players.length < (battleViewMode === 'friend' ? 2 : 1)) {
                     if (battleLobbyCountdownActive) cancelBattleAfterMatchError();
                     else showGameNotice(textFor('alertNeedPlayers'));
                     return;
@@ -14450,84 +14305,63 @@
             battleRef.child(roomId).on('value', battleListener);
         }
 
-        function formatPlayerRecordBadge(player) {
-            const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
-            const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
-            const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
-            const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
-            const streakText = streak >= 1 ? ` 🔥${streak}` : '';
-            return `${rating.toLocaleString()} PT, ${matches} GAME, ${wins} WIN${streakText}`;
+        function renderFriendRoomPlayers(players) {
+            const copy = friendLobbyCopy();
+            const count = players.length;
+            const isHost = battleRole === 'host';
+            document.getElementById('battle-code-label').textContent = isHost ? copy.ownCode : copy.joinedCode;
+            document.getElementById('friend-player-count').textContent = `${count}/${MAX_BATTLE_PLAYERS}`;
+            document.getElementById('battle-waiting-text').textContent = count === MAX_BATTLE_PLAYERS ? copy.full : count >= 2 ? copy.joined : copy.waiting;
+            const start = document.getElementById('battle-start-btn');
+            start.style.display = isHost ? 'block' : 'none';
+            start.disabled = count < 2;
+            const guestStatus = document.getElementById('friend-guest-status');
+            guestStatus.hidden = isHost;
+            guestStatus.textContent = copy.guestWait;
+
+            const cards = players.map((player, index) => {
+                const isMe = player.id === battlePlayerId;
+                const rawLabel = String(player.name || '').trim() || (isMe ? copy.me : `P${index + 1}`);
+                const label = escapeBattleText(rawLabel);
+                const role = player.isHost ? (isMe ? `${copy.me} · ${copy.host}` : copy.host) : isMe ? copy.me : copy.friend;
+                const skin = player.skin || (isMe ? getEquippedSkin() : 'classic');
+                return `<div class="battle-player-pill${isMe ? ' me' : ''}">
+                    <span class="bpp-slot">${index + 1}P</span>
+                    <span class="bpp-skin-icon">${renderSkinBadge(skin, { decorative: true })}</span>
+                    <strong class="bpp-name" title="${label}">${label}</strong>
+                    <small>${role}</small>
+                </div>`;
+            });
+            document.getElementById('battle-player-list').innerHTML = cards.join('') + emptyBattleSlots(count, battleCoverText().waiting);
         }
 
         function renderBattleLobby(room) {
             updateBattleViewModeUI();
             updateBattleLeagueUI(room?.league || currentBattleLeague);
             const players = getBattlePlayerList(room);
-            const isHost = battleRole === 'host';
-            const waitingEl = document.getElementById('battle-waiting-text');
-            const startBtn = document.getElementById('battle-start-btn');
-            const listEl = document.getElementById('battle-player-list');
+            if (battleViewMode === 'friend') {
+                renderFriendRoomPlayers(players);
+                return;
+            }
+            if (players.length >= MAX_BATTLE_PLAYERS && battleRole !== 'host') battleLobbyCountdownActive = true;
+            updateQuickMatchUI();
+            document.getElementById('battle-start-btn').style.display = 'none';
 
             const lang = currentLang || 'ko';
-            if (battleViewMode === 'world8') {
-                if (players.length >= MAX_BATTLE_PLAYERS && !isHost) battleLobbyCountdownActive = true;
-                updateQuickMatchUI();
-            } else {
-                if (players.length >= 2) {
-                    const friendHostMap = {
-                        ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>[게임 시작] 버튼을 누르면 시작됩니다!`,
-                        en: `🎮 <b>Friends Joined (${players.length})!</b><br>Press [Start Game] to begin!`,
-                        ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>[ゲーム開始] を押すとスタートします！`,
-                        'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>按下 [開始遊戲] 即可開始！`,
-                        es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>¡Pulsa [Iniciar] para comenzar!`
-                    };
-                    const friendGuestMap = {
-                        ko: `🎮 <b>친구 참가 완료 (${players.length}명)!</b><br>방장이 게임을 시작하기를 기다리고 있습니다...`,
-                        en: `🎮 <b>Friends Joined (${players.length})!</b><br>Waiting for the host to start...`,
-                        ja: `🎮 <b>フレンド参加完了 (${players.length}人)！</b><br>ホストがゲームを開始するのを待っています...`,
-                        'zh-TW': `🎮 <b>好友已加入 (${players.length}人)！</b><br>正在等待房主開始遊戲...`,
-                        es: `🎮 <b>¡Amigos unidos (${players.length})!</b><br>Esperando a que el anfitrión inicie...`
-                    };
-                    waitingEl.innerHTML = isHost
-                        ? (friendHostMap[lang] || friendHostMap.en)
-                        : (friendGuestMap[lang] || friendGuestMap.en);
-                } else {
-                    waitingEl.innerText = isHost
-                        ? textFor('lobbyStartable')(players.length)
-                        : textFor('lobbyWaitingHost')(players.length);
-                }
-            }
-
-            if (battleViewMode === 'friend') {
-                if (isHost) {
-                    startBtn.style.display = 'block';
-                    startBtn.disabled = players.length < 2;
-                    startBtn.innerText = textFor('battleStart');
-                    startBtn.onclick = () => startBattleRoom();
-                } else {
-                    startBtn.style.display = 'none';
-                }
-            } else {
-                startBtn.style.display = 'none';
-            }
-
-            const world = battleViewMode === 'world8';
             const copy = battleCoverText();
             const renderedCards = players.map((player, index) => {
                 const label = escapeBattleText(getBattlePlayerLabel(player, index));
-                const flag = battleViewMode === 'world8' ? battlePlayerFlagArt(player) : '';
+                const flag = battlePlayerFlagArt(player);
                 const isMe = player.id === battlePlayerId;
                 const meClass = isMe ? ' me' : '';
                 const rating = Math.max(MIN_BATTLE_RATING, parseInt(player && player.rating, 10) || DEFAULT_BATTLE_RATING);
                 const isMaster = rating > MASTER_LEAGUE_THRESHOLD;
-                const leagueBadge = isMaster ? '👑' : '🥈';
                 const leagueClass = isMaster ? ' master' : ' standard';
                 const matches = Math.max(0, parseInt(player && player.matches, 10) || 0);
                 const wins = Math.max(0, parseInt(player && player.wins, 10) || 0);
                 const streak = Math.max(0, parseInt(player && player.streak, 10) || 0);
                 const skinId = (player && player.skin) ? player.skin : (isMe && typeof getEquippedSkin === 'function' ? getEquippedSkin() : 'classic');
 
-                const collectionTitle = (TEXTS[lang] && TEXTS[lang].skinModalTitle) || 'Collection';
                 const streakMap = {
                     ko: `${streak}연승`,
                     en: `${streak} Streak`,
@@ -14536,46 +14370,19 @@
                     es: `${streak} racha`
                 };
 
-                if (world) {
-                    const flagAttr = flag ? ` data-flag-art="${flag}"` : '';
-                    return `<div class="battle-player-pill${meClass}${leagueClass}"${flagAttr}>
-                        <span class="bpp-slot">${index + 1}P</span>
-                        ${isMe ? `<span class="bpp-joined-mark" aria-hidden="true">✓</span>
-                            <strong class="bpp-name">${textFor('selfLabel')}</strong><small>${copy.joined}</small>`
-                        : `<span class="bpp-skin-icon">${renderSkinBadge(skinId)}</span>
-                            <strong class="bpp-name">${label}</strong>
-                            <span class="bpp-score-val">${rating.toLocaleString()} PT</span>
-                            <span class="bpp-stat-tag">${matches}G · ${wins}W</span>
-                            ${streak >= 1 ? `<small class="bpp-streak-tag">${streakMap[lang] || streakMap.en}</small>` : ''}`}
-                    </div>`;
-                }
-
-                return `<div class="battle-player-pill${meClass}${leagueClass}"${flag ? ` data-flag-art="${flag}"` : ''}>
-                    <div class="bpp-header">
-                        <div class="bpp-identity">
-                            <span class="bpp-slot">${index + 1}P</span>
-                            <span class="bpp-name" title="${label}">${label}</span>
-                        </div>
-                        <div class="bpp-badges">
-                            <span class="bpp-skin-icon" title="${collectionTitle}">${renderSkinBadge(skinId)}</span>
-                            ${isMe ? `<span class="bpp-me-badge">ME</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="bpp-score-row">
-                        <span class="bpp-league-icon">${leagueBadge}</span>
-                        <span class="bpp-score-val">${rating.toLocaleString()}</span>
-                        <span class="bpp-score-unit">PT</span>
-                    </div>
-                    <div class="bpp-stats-row">
-                        <span class="bpp-stat-tag">${matches}G 🥇${wins}W</span>
-                        ${streak >= 1 ? `<span class="bpp-streak-tag">🔥 ${streakMap[lang] || streakMap.en}</span>` : ''}
-                    </div>
+                const flagAttr = flag ? ` data-flag-art="${flag}"` : '';
+                return `<div class="battle-player-pill${meClass}${leagueClass}"${flagAttr}>
+                    <span class="bpp-slot">${index + 1}P</span>
+                    ${isMe ? `<span class="bpp-joined-mark" aria-hidden="true">✓</span>
+                        <strong class="bpp-name">${textFor('selfLabel')}</strong><small>${copy.joined}</small>`
+                    : `<span class="bpp-skin-icon">${renderSkinBadge(skinId)}</span>
+                        <strong class="bpp-name">${label}</strong>
+                        <span class="bpp-score-val">${rating.toLocaleString()} PT</span>
+                        <span class="bpp-stat-tag">${matches}G · ${wins}W</span>
+                        ${streak >= 1 ? `<small class="bpp-streak-tag">${streakMap[lang] || streakMap.en}</small>` : ''}`}
                 </div>`;
             });
-
-            listEl.innerHTML = renderedCards.join('') + emptyBattleSlots(
-                players.length, world ? copy.waiting : `⏳ ${copy.waiting}...`
-            );
+            document.getElementById('battle-player-list').innerHTML = renderedCards.join('') + emptyBattleSlots(players.length, copy.waiting);
         }
 
         function emptyBattleSlots(firstSlot, label) {
@@ -14670,15 +14477,20 @@
             setTxt('battle-btn', TEXTS[currentLang] && TEXTS[currentLang].battleBtn);
             if (typeof updateWorld8BattleLockUI === 'function') updateWorld8BattleLockUI();
             setTxt('battle-friend-btn', menuModeLabel(textFor('battleFriendBtn')));
-            setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : textFor('battleFriendTitle'));
-            if (battleViewMode === 'friend') setTxt('battle-waiting-text', textFor('battleWaiting'));
-            setTxt('battle-cancel-btn', textFor('battleCancel'));
-            setTxt('battle-join-btn', textFor('battleJoin'));
-            setTxt('battle-exit-btn', textFor('battleExit'));
+            const friend = friendLobbyCopy();
+            setTxt('battle-screen-title', battleViewMode === 'world8' ? textFor('battleWorldTitle') : friend.lobby);
+            setTxt('friend-lobby-title', menuModeLabel(textFor('battleFriendBtn')));
+            document.querySelector('#friend-create-btn span').textContent = friend.create;
+            document.querySelector('#friend-join-open span').textContent = friend.join;
+            setTxt('friend-join-title', friend.joinTitle);
+            setTxt('battle-join-btn', friend.enter);
+            setTxt('battle-join-label', friend.joinCode);
+            setTxt('friend-participant-label', friend.participants);
+            setTxt('friend-copy-code', friend.copy);
+            friendJoinDialog.querySelector('.comic-popup-close').setAttribute('aria-label', comicPopupCopy().close);
+            setTxt('battle-exit-btn', `← ${textFor('battleExit')}`);
             setTxt('battle-start-btn', textFor('battleStart'));
-            setTxt('battle-code-label', textFor('battleCodeLabel'));
-            setTxt('battle-join-label', textFor('battleJoinLabel'));
-            setTxt('battle-divider', textFor('battleDivider'));
+            if (battleViewMode === 'friend' && battleRoomId) renderFriendRoomPlayers(getBattlePlayerList());
             updateQuickMatchUI();
             updateBattleStatsUI();
             updateBattleLeagueUI();
@@ -14694,6 +14506,8 @@
             battleRematchStarted = false;
             battleMatchCounted = false;
             battleWinCounted = false;
+            battleRatingProcessed = false;
+            lastBattleResultRatingData = null;
             recordBattleMatchPlayed();
             clearBattleResultListener();
             clearRematchListener();
@@ -14777,7 +14591,7 @@
 
                 players[targetPlayerId] = {
                     ...players[targetPlayerId],
-                    score: finalScore,
+                    score: Math.max(Number(players[targetPlayerId].score || 0), Number(finalScore) || 0),
                     done: true,
                     finishOrder,
                     rank: 0,
@@ -14895,303 +14709,192 @@
             return `${rankNum}${suffix}`;
         }
 
-        function renderBattleScoreCards(players, rankMap, isEnded) {
-            const listEl = document.getElementById('battle-score-list');
-            if (!listEl) return;
+        const BATTLE_RESULT_COPY = {
+            ko: {
+                world: '세계 8인 배틀 결과', friend: '친구 특훈 결과', waitingRank: '확인 중', rank: '확정 순위', tied: '공동 순위', score: '내 점수', rating: '레이팅',
+                pending: '결과 확인 중', confirmed: '내 순위 확정', finished: '순위 확정', live: '진행 중', done: '종료',
+                playing: n => `${n}명 경기 중`, ended: n => `${n}명 경기 종료`, friends: n => `${n}명 참가`,
+                record: (matches, wins) => `${matches}전 · ${wins}승`, me: '나', streak: n => `${n}연승 달성`, unlocked: names => `새 스킨 해금 · ${names}`,
+                shield: (match, max) => `초심자 보호 ${match}/${max}판 · 감점 면제`
+            },
+            en: {
+                world: 'World 8P Battle Results', friend: 'Friend Practice Results', waitingRank: 'Checking', rank: 'Final Rank', tied: 'Tied Rank', score: 'My Score', rating: 'Rating',
+                pending: 'Checking results', confirmed: 'Your rank is final', finished: 'Rankings final', live: 'Playing', done: 'Finished',
+                playing: n => `${n} still playing`, ended: n => `${n} players finished`, friends: n => `${n} players`,
+                record: (matches, wins) => `${matches}G · ${wins}W`, me: 'Me', streak: n => `${n} in a row`, unlocked: names => `New skins · ${names}`,
+                shield: (match, max) => `Rookie Shield ${match}/${max} · No rating loss`
+            },
+            ja: {
+                world: '世界8人バトル結果', friend: 'フレンド特訓結果', waitingRank: '確認中', rank: '確定順位', tied: '同順位', score: '自分の得点', rating: 'レート',
+                pending: '結果確認中', confirmed: '自分の順位確定', finished: '順位確定', live: '対戦中', done: '終了',
+                playing: n => `${n}人対戦中`, ended: n => `${n}人対戦終了`, friends: n => `${n}人参加`,
+                record: (matches, wins) => `${matches}戦 · ${wins}勝`, me: '自分', streak: n => `${n}連勝達成`, unlocked: names => `新スキン解放 · ${names}`,
+                shield: (match, max) => `初心者保護 ${match}/${max}戦 · レート減少なし`
+            },
+            'zh-TW': {
+                world: '世界8人對戰結果', friend: '好友特訓結果', waitingRank: '確認中', rank: '確定排名', tied: '並列名次', score: '我的分數', rating: '積分',
+                pending: '正在確認結果', confirmed: '你的名次已確定', finished: '排名已確定', live: '對戰中', done: '已結束',
+                playing: n => `${n}人對戰中`, ended: n => `${n}人對戰結束`, friends: n => `${n}人參加`,
+                record: (matches, wins) => `${matches}場 · ${wins}勝`, me: '我', streak: n => `${n}連勝達成`, unlocked: names => `新造型解鎖 · ${names}`,
+                shield: (match, max) => `新手保護 ${match}/${max}場 · 不扣積分`
+            },
+            es: {
+                world: 'Resultados de batalla 8P', friend: 'Resultados entre amigos', waitingRank: 'Verificando', rank: 'Puesto final', tied: 'Puesto compartido', score: 'Mi puntuación', rating: 'Puntos',
+                pending: 'Verificando resultados', confirmed: 'Tu puesto es definitivo', finished: 'Puestos definitivos', live: 'En juego', done: 'Terminó',
+                playing: n => `${n} siguen jugando`, ended: n => `${n} terminaron`, friends: n => `${n} jugadores`,
+                record: (matches, wins) => `${matches} PJ · ${wins} V`, me: 'Yo', streak: n => `${n} seguidas`, unlocked: names => `Nuevos aspectos · ${names}`,
+                shield: (match, max) => `Escudo novato ${match}/${max} · Sin pérdida de puntos`
+            }
+        };
 
-            const playingLabel = ({ ko: '진행중', en: 'LIVE', ja: '対戦中', 'zh-TW': '對戰中', es: 'EN JUEGO' })[currentLang || 'ko'] || 'LIVE';
+        function battleResultCopy() {
+            return BATTLE_RESULT_COPY[currentLang] || BATTLE_RESULT_COPY.en;
+        }
 
-            listEl.innerHTML = players.map((player) => {
-                const slotNum = Number(player._slotIndex || 0) + 1;
-                const label = escapeBattleText(getBattlePlayerLabel(player, slotNum - 1));
-                const scoreText = Number(player.score || 0);
+        function confirmedBattleRank(player, players, ended = false) {
+            if (!player || (!player.done && !ended)) return 0;
+            if (ended && Number(player.rank) > 0) return Number(player.rank);
+            const score = Number(player.score) || 0;
+            // An active opponent can still turn a tie or lower score into a higher score.
+            if (!ended && players.some(other => !other.done && (Number(other.score) || 0) <= score)) return 0;
+            return 1 + players.filter(other => (Number(other.score) || 0) > score).length;
+        }
+
+        function renderBattleScoreCards(players, ranks, isEnded, copy, stats) {
+            const list = document.getElementById('battle-score-list');
+            list.innerHTML = players.map(player => {
                 const isMe = player.id === battlePlayerId;
-                const meClass = isMe ? ' me' : '';
-                const doneClass = player.done ? ' done' : '';
-                const skinId = player.skin || (isMe ? getEquippedSkin() : 'classic');
-
-                const rankNum = Number((rankMap && rankMap[player.id]) || player.rank || 0);
-
-                let rankHtml;
-                if (rankNum > 0) {
-                    const medal = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : ''));
-                    const medalHtml = medal ? `<span class="bsc-medal">${medal}</span>` : '';
-                    rankHtml = `<div class="bsc-rank">${medalHtml}<span>${formatBattleRankBadge(rankNum)}</span></div>`;
-                } else {
-                    rankHtml = `<div class="bsc-rank playing">${slotNum}P · ${playingLabel}</div>`;
-                }
-
-                return `<div class="battle-score-card${meClass}${doneClass}" data-player-id="${player.id}" style="display:flex;flex-direction:row;align-items:center;justify-content:space-between;">
-                    ${rankHtml}
-                    <div class="bsc-info">
-                        <span class="bsc-badge">${renderSkinBadge(skinId, { showClassic: true })}</span>
-                        <div class="bsc-name">${label}</div>
-                        <div class="bsc-record">${escapeBattleText(formatPlayerRecordBadge(player))}</div>
+                const label = getBattlePlayerLabel(player, player.slot - 1);
+                const name = escapeBattleText(isMe ? `${label} · ${copy.me}` : label);
+                const score = Number(player.score) || 0;
+                const rank = ranks.get(player.id);
+                const live = !isEnded && !player.done;
+                const state = live ? copy.live : !rank ? copy.done : '';
+                const place = rank ? formatBattleRankBadge(rank) : `${player.slot}P`;
+                const skin = player.skin || (isMe ? getEquippedSkin() : 'classic');
+                const rating = isMe ? getBattleRating() : Math.max(MIN_BATTLE_RATING, Number(player.rating) || DEFAULT_BATTLE_RATING);
+                const record = isMe ? stats : player;
+                const figures = `${rating.toLocaleString(currentLang)} PT · ${copy.record(Number(record.matches) || 0, Number(record.wins) || 0)}`;
+                // Room players carry the streak they had when entering the match.
+                const winStreak = isMe ? getBattleStreak() : Math.max(0, parseInt(player.streak, 10) || 0) + 1;
+                const streak = isEnded && rank === 1 && winStreak >= 2;
+                return `<li class="battle-score-card${isMe ? ' me' : ''}${live ? ' live' : ''}${rank === 1 ? ' first' : ''}${streak ? ' has-streak' : ''}" data-player-id="${escapeBattleText(player.id)}">
+                    <strong class="bsc-rank">${place}</strong>
+                    <span class="bsc-badge">${renderSkinBadge(skin, { decorative: true })}</span>
+                    <div class="bsc-info"><strong class="bsc-name" title="${name}">${name}</strong>
+                        <span class="bsc-record">${escapeBattleText(state ? `${state} · ${figures}` : figures)}</span>
                     </div>
-                    <div class="bsc-score">${scoreText}</div>
-                </div>`;
+                    ${streak ? `<span class="bsc-streak"><span aria-hidden="true">🔥</span> ${copy.streak(winStreak)}</span>` : ''}
+                    <strong class="bsc-score">${score}</strong>
+                </li>`;
             }).join('');
         }
 
         function showBattleResult(room) {
-            const firstResultRender = !battleResultShown;
+            const firstRender = !battleResultShown;
+            const ended = room.status === 'ended';
+            const friend = battleViewMode === 'friend';
+            const copy = battleResultCopy();
             battlePlayers = room.players || {};
-            const isEnded = room.status === 'ended';
-
-            const allPlayers = getBattlePlayerList(room).map((p, idx) => ({ ...p, _slotIndex: idx }));
-
-            // 순위 계산 (경기 종료 시 확정 순위, 진행 중에는 아직 경기 중인 인원 아래에 탈락자 순위 배치)
-            const rankedList = [...allPlayers].sort((a, b) => {
-                if (isEnded) {
-                    const rankA = Number(a.rank || 999);
-                    const rankB = Number(b.rank || 999);
-                    if (rankA !== rankB) return rankA - rankB;
-                    return Number(b.score || 0) - Number(a.score || 0);
-                }
-                const doneA = !!a.done;
-                const doneB = !!b.done;
-                if (doneA !== doneB) return doneA ? 1 : -1;
-                if (!doneA) {
-                    // 아직 진행 중인 플레이어는 1P부터 입장 순서대로 상단 유지
-                    return a._slotIndex - b._slotIndex;
-                } else {
-                    const scoreDiff = Number(b.score || 0) - Number(a.score || 0);
-                    if (scoreDiff !== 0) return scoreDiff;
-                    return Number(b.finishOrder || 0) - Number(a.finishOrder || 0);
-                }
+            const players = getBattlePlayerList(room).map((player, index) => ({ ...player, slot: index + 1 }));
+            const me = players.find(player => player.id === battlePlayerId);
+            if (!me) return;
+            const myScore = Number(me.score) || 0;
+            const remaining = ended ? 0 : players.filter(player => !player.done).length;
+            const ranks = new Map(players.map(player => [player.id, confirmedBattleRank(player, players, ended)]));
+            const myRank = ranks.get(me.id) || lastBattleResultRatingData?.myRank || 0;
+            ranks.set(me.id, myRank);
+            const tied = myRank > 0 && players.some(player => player.id !== me.id && (ended || player.done) && Number(player.score) === myScore);
+            const sorted = [...players].sort((a, b) => {
+                if (!ended && !!a.done !== !!b.done) return a.done ? 1 : -1;
+                if (!ended && !a.done) return a.slot - b.slot;
+                return Number(b.score || 0) - Number(a.score || 0) ||
+                    Number(b.finishOrder || 0) - Number(a.finishOrder || 0) || a.slot - b.slot;
             });
 
-            // 각 플레이어의 표시 순위 맵
-            // - 경기 종료: 전체 1위~8위
-            // - 경기 진행 중: 진행중(0)은 상단 1P~순서, 탈락자는 (생존자수 + 1)위 ~ 8위
-            const rankMap = {};
-            if (isEnded) {
-                rankedList.forEach((p, idx) => {
-                    rankMap[p.id] = p.rank ? Number(p.rank) : (idx + 1);
-                });
-            } else {
-                const playingCount = rankedList.filter(p => !p.done).length;
-                let doneOrderIdx = 0;
-                let prevDoneScore = null;
-                let currentDoneRank = playingCount + 1;
-                rankedList.forEach(p => {
-                    if (!p.done) {
-                        rankMap[p.id] = 0;
-                    } else {
-                        const sc = Number(p.score || 0);
-                        if (doneOrderIdx === 0) {
-                            currentDoneRank = playingCount + 1;
-                        } else if (sc < prevDoneScore) {
-                            currentDoneRank = playingCount + doneOrderIdx + 1;
-                        }
-                        rankMap[p.id] = currentDoneRank;
-                        prevDoneScore = sc;
-                        doneOrderIdx++;
-                    }
-                });
-            }
-
-            // 한 줄 순위 리스트: 상단 진행중(1P~순서) → 하단 확정 순위(내 순위 및 아래 순위, 새로 끝난 플레이어가 내 위로 진입)
-            const displayPlayers = rankedList;
-
-            const myPlayer = allPlayers.find(player => player.id === battlePlayerId) || { score: 0 };
-            const myScore = Number(myPlayer.score || 0);
-            const myRank = isEnded ? Number(myPlayer.rank || rankMap[battlePlayerId] || 0) : 0;
-            const topScore = rankedList.length ? Number(rankedList[0].score || 0) : 0;
-
             setPlayHudMode();
-            const goScreen = document.getElementById('game-over-screen');
-            if (goScreen && !goScreen.classList.contains('hidden')) {
-                goScreen.classList.add('hidden');
-            }
-            const canvasEl = document.getElementById('canvas');
-            if (firstResultRender) {
-                const vigEl = document.getElementById('battle-final-vignette');
-                if (vigEl) vigEl.classList.remove('active');
-                const bannerEl = document.getElementById('battle-phase-banner');
-                if (bannerEl) bannerEl.classList.remove('show');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            if (firstRender) {
+                document.getElementById('battle-final-vignette')?.classList.remove('active');
+                document.getElementById('battle-phase-banner')?.classList.remove('show');
+                const canvasEl = document.getElementById('canvas');
                 if (canvasEl) {
                     canvasEl.style.display = 'none';
                     canvasEl.style.visibility = 'visible';
                     canvasEl.style.opacity = '1';
                 }
-                if (ctx && canvas) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
+                if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+                playSfx(myRank === 1 ? 'win' : 'gameover', 0.7);
             }
 
-            const rank1Count = isEnded ? allPlayers.filter(p => Number(rankMap[p.id] || p.rank || 0) === 1).length : 0;
-            let resultText, resultClass;
-            let provisionalRatingPreview = null;
-            if (!isEnded) {
-                const aheadCount = allPlayers.filter(p => p.id !== battlePlayerId && (!p.done || Number(p.score || 0) > myScore)).length;
-                const provisionalRank = Math.max(2, Math.min(allPlayers.length, aheadCount + 1));
-                lastProvisionalBattleRank = provisionalRank;
-                resultText = textFor('rankText')(provisionalRank);
-                resultClass = 'lose';
-                const curRating = typeof getBattleRating === 'function' ? getBattleRating() : 1000;
-                const playedMatches = Math.max(1, Number((typeof getBattleStats === 'function' ? getBattleStats().matches : 1) || 1));
-                const rookieShieldActive = playedMatches <= ROOKIE_SHIELD_MATCHES;
-                const rawDelta = (typeof BATTLE_RANK_DELTAS !== 'undefined' && BATTLE_RANK_DELTAS[provisionalRank] !== undefined)
-                    ? BATTLE_RANK_DELTAS[provisionalRank] : 0;
-                const estDelta = (rookieShieldActive && rawDelta < 0) ? 0 : rawDelta;
-                const estNew = Math.max(600, curRating + estDelta);
-                provisionalRatingPreview = {
-                    prevRating: curRating,
-                    newRating: estNew,
-                    actualDelta: estNew - curRating,
-                    prevStreak: 0,
-                    newStreak: 0,
-                    myRank: provisionalRank,
-                    rookieShieldActive,
-                    rookieMatchNum: playedMatches,
-                    rookieShieldSaved: Boolean(rookieShieldActive && rawDelta < 0),
-                    newlyUnlocked: null
-                };
-            } else if (myRank === 1) {
-                resultText = rank1Count > 1
-                    ? ({ en: 'TIE 1st WIN!', ja: '1位タイ WIN!', 'zh-TW': '並列第1名 WIN!', es: '¡EMPATE 1° WIN!' }[currentLang] || '공동 1위 WIN!')
-                    : textFor('resultWin');
-                resultClass = 'win';
-            } else if (myRank > 1) {
-                resultText = textFor('rankText')(myRank);
-                resultClass = 'lose';
-            } else {
-                const topCount = allPlayers.filter(player => Number(player.score || 0) === topScore).length;
-                if (myScore === topScore && topCount === 1) {
-                    resultText = textFor('resultWin');
-                    resultClass = 'win';
-                } else if (myScore === topScore) {
-                    resultText = textFor('resultDraw');
-                    resultClass = 'draw';
-                } else {
-                    resultText = textFor('resultLose');
-                    resultClass = 'lose';
-                }
-            }
-
-            // 1위 달성 시 나의 대전 전적(1등 횟수) +1 기록
-            if (isEnded && resultClass === 'win' && myRank === 1) {
-                recordBattleWin();
-            }
+            if (myRank === 1) recordBattleWin();
+            if (myRank > 0 && !battleRatingProcessed) applyBattleResultRating(myRank);
+            if (ended && typeof recordEndedMatchBotStats === 'function') recordEndedMatchBotStats(room);
             updateBattleStatsUI();
+            renderBattleResultRatingBadge(lastBattleResultRatingData, copy);
 
-            // 랭킹 승점(PT) 제로섬 배분 및 연승 계산 (경기 완전 종료 후 최종 점수 기반 순위로 판당 1회 처리)
-            if (isEnded && typeof recordEndedMatchBotStats === 'function') {
-                recordEndedMatchBotStats(room);
-            }
-            if (!battleRatingProcessed && isEnded && myRank > 0) {
-                applyBattleResultRating(myRank);
-            }
+            const screen = document.getElementById('battle-result-screen');
+            const phase = ended ? 'ended' : myRank ? 'confirmed' : 'pending';
+            screen.dataset.rankState = myRank ? 'confirmed' : 'pending';
+            document.getElementById('battle-result-title').textContent = friend ? copy.friend : copy.world;
+            document.getElementById('battle-result-rank-label').textContent = tied ? copy.tied : copy.rank;
+            document.getElementById('battle-result-rank').textContent = myRank ? formatBattleRankBadge(myRank) : copy.waitingRank;
+            document.getElementById('battle-result-score-label').textContent = copy.score;
+            const scoreEl = document.getElementById('battle-result-score');
+            const scoreText = String(myScore);
+            scoreEl.textContent = scoreText;
+            scoreEl.style.setProperty('--battle-score-digits', scoreText.length);
+            document.getElementById('battle-result-phase').textContent = phase === 'ended' ? copy.finished : phase === 'confirmed' ? copy.confirmed : copy.pending;
+            document.getElementById('battle-result-count').textContent = ended
+                ? (friend ? copy.friends(players.length) : copy.ended(players.length))
+                : copy.playing(remaining);
+            document.getElementById('battle-exit-btn').disabled = !myRank;
+            renderBattleScoreCards(sorted, ranks, ended, copy, getBattleStats());
 
-            renderBattleResultRatingBadge(lastBattleResultRatingData || provisionalRatingPreview);
-
-            if (firstResultRender) {
-                if (resultClass === 'win') playSfx('win', 0.7);
-                else playSfx('gameover', 0.7);
-            }
-
-            const titleEl = document.getElementById('battle-result-title');
-            if (titleEl) {
-                if (titleEl.innerText !== resultText) titleEl.innerText = resultText;
-                const expectedClass = 'battle-result-title ' + resultClass;
-                if (titleEl.className !== expectedClass) titleEl.className = expectedClass;
-            }
-
-            renderBattleScoreCards(displayPlayers, rankMap, isEnded);
-
-            const resultScreen = document.getElementById('battle-result-screen');
-            if (resultScreen && resultScreen.classList.contains('hidden')) {
-                resultScreen.classList.remove('hidden');
-            }
+            screen.classList.remove('hidden');
             battleResultShown = true;
-            const statusEl = document.getElementById('rematch-status');
-            if (room.status === 'ended') {
-                if (statusEl) {
-                    const endedText = textFor('matchEndedWaitExit');
-                    if (statusEl.innerText !== endedText) statusEl.innerText = endedText;
-                }
-            } else {
-                if (statusEl) {
-                    const othersText = textFor('othersPlaying');
-                    if (statusEl.innerText !== othersText) statusEl.innerText = othersText;
-                }
-            }
         }
 
-        function renderBattleResultRatingBadge(data) {
+        function renderBattleResultRatingBadge(data, copy) {
             const pill = document.getElementById('battle-result-rating-pill');
-            if (!pill) return;
-            if (!data) {
-                pill.style.display = 'none';
-                return;
-            }
-            pill.style.display = 'inline-flex';
+            const notes = document.getElementById('battle-result-notes');
+            pill.hidden = !data;
+            notes.hidden = true;
+            if (!data) return;
 
-            const league = getLeagueByRating(data.newRating);
-            const leagueInfo = getLeagueInfo(league);
-            const lang = currentLang || 'ko';
-            const leagueBadge = leagueInfo.badge;
+            const delta = data.actualDelta;
+            const deltaText = delta > 0 ? `+${delta}` : delta < 0 ? `−${Math.abs(delta)}` : '±0';
+            pill.innerHTML = `<span>${copy.rating}</span> <strong>${data.newRating.toLocaleString(currentLang)} PT</strong>
+                <b class="${delta < 0 ? 'loss' : ''}">${deltaText}</b>`;
 
-            const deltaText = data.actualDelta > 0 ? `(+${data.actualDelta})` : (data.actualDelta < 0 ? `(${data.actualDelta})` : '(±0)');
-            const deltaClass = data.actualDelta > 0 ? 'plus' : (data.actualDelta < 0 ? 'minus' : 'zero');
-
-            let streakHtml = '';
-            if (data.newStreak >= 1) {
-                const fn = textFor('streakText');
-                const label = typeof fn === 'function' ? fn(data.newStreak) : `🔥 ${data.newStreak}연승!`;
-                streakHtml = `<span class="brp-streak">${label}</span>`;
-            } else if (data.prevStreak >= 1 && data.newStreak === 0) {
-                streakHtml = `<span class="brp-streak" style="color:#94a3b8;font-size:24px;">${textFor('streakEndText') || '연승 종료'}</span>`;
-            }
-
-            let unlockHtml = '';
-            if (data.newlyUnlocked && data.newlyUnlocked.length > 0) {
-                const names = data.newlyUnlocked.map(s => s.name[lang] || s.name.ko).join(', ');
-                const unlockMap = {
-                    ko: `🎉 새 스킨 언락: ${names}!`,
-                    en: `🎉 New Collection Unlocked: ${names}!`,
-                    ja: `🎉 新コレクション解放: ${names}！`,
-                    'zh-TW': `🎉 解鎖新收藏: ${names}！`,
-                    es: `🎉 Nueva colección desbloqueada: ${names}!`
-                };
-                unlockHtml = `<div style="font-size:18px;color:#fbbf24;margin-top:4px;font-weight:900;">${unlockMap[lang] || unlockMap.en}</div>`;
-            }
-
-            let shieldHtml = '';
+            const labels = [];
             if (data.rookieShieldActive) {
-                const mNum = Math.min(ROOKIE_SHIELD_MATCHES, Math.max(1, Number(data.rookieMatchNum || 1)));
-                const shieldMap = {
-                    ko: `🛡️ 초심자 보호 (${mNum}/${ROOKIE_SHIELD_MATCHES}판): 첫 ${ROOKIE_SHIELD_MATCHES}판은 점수가 내려가지 않습니다!`,
-                    en: `🛡️ Rookie Shield (${mNum}/${ROOKIE_SHIELD_MATCHES}): No rating loss in your first ${ROOKIE_SHIELD_MATCHES} matches!`,
-                    ja: `🛡️ 初心者保護 (${mNum}/${ROOKIE_SHIELD_MATCHES}戦): 最初の${ROOKIE_SHIELD_MATCHES}戦はレートが下がりません！`,
-                    'zh-TW': `🛡️ 新手保護 (${mNum}/${ROOKIE_SHIELD_MATCHES}場): 前${ROOKIE_SHIELD_MATCHES}場對戰積分不會下降！`,
-                    es: `🛡️ Escudo Novato (${mNum}/${ROOKIE_SHIELD_MATCHES}): ¡Tus puntos no bajan en las primeras ${ROOKIE_SHIELD_MATCHES} partidas!`
-                };
-                shieldHtml = `<div style="width:100%;font-size:19px;color:#38bdf8;margin-top:6px;font-weight:900;text-align:center;">${shieldMap[lang] || shieldMap.en}</div>`;
+                const match = Math.min(ROOKIE_SHIELD_MATCHES, Math.max(1, Number(data.rookieMatchNum) || 1));
+                labels.push(copy.shield(match, ROOKIE_SHIELD_MATCHES));
             }
-
-            pill.innerHTML = `
-                <span class="brp-score">${data.newRating}</span>
-                <span class="brp-delta ${deltaClass}">${deltaText}</span>
-                ${streakHtml}
-                ${shieldHtml}
-                ${unlockHtml}
-            `;
+            if (data.newlyUnlocked?.length) {
+                const names = data.newlyUnlocked.map(skin => skin.name[currentLang] || skin.name.ko).join(', ');
+                labels.push(copy.unlocked(names));
+            }
+            notes.replaceChildren(...labels.filter(Boolean).map(label => {
+                const chip = document.createElement('span');
+                chip.textContent = label;
+                return chip;
+            }));
+            notes.hidden = !notes.childElementCount;
         }
 
         function cancelBattle() {
             if (battleLobbyCountdownActive) return;
             closeBattleLeagueInfo();
+            if (friendJoinDialog.open) cancelFriendJoin();
             stopQuickMatchTimer(false);
-            leaveBattleRoom(true);
+            leaveBattleRoom(battleViewMode !== 'friend');
             battleMode = false;
             battleStarted = false;
             battleRatingProcessed = false;
-            lastProvisionalBattleRank = 0;
             lastBattleResultRatingData = null;
-            const resRatingPill = document.getElementById('battle-result-rating-pill');
-            if (resRatingPill) resRatingPill.style.display = 'none';
+            document.getElementById('battle-result-rating-pill').hidden = true;
             const canvasEl = document.getElementById('canvas');
             if (canvasEl) {
                 canvasEl.style.display = 'none';
@@ -15202,16 +14905,6 @@
             setPlayHudMode();
             document.getElementById('intro-screen').classList.remove('hidden');
             updateIntroProfilePillUI();
-        }
-
-        function startRoomCloseCountdown() {
-            // 결과 화면은 자동 종료되지 않고 사용자가 "돌아가기"를 누를 때까지 정지(스톱) 상태 유지
-            clearRematchListener();
-            if (rematchTimer) { clearInterval(rematchTimer); rematchTimer = null; }
-            const statusEl = document.getElementById('rematch-status');
-            if (statusEl) {
-                statusEl.innerText = textFor('matchEndedWaitExit');
-            }
         }
 
         function renderComicRankStrip(bar, rank, score) {
@@ -15360,9 +15053,7 @@
 
         function exitBattle(forceRemoveRoom = false) {
             if (typeof hideDeathFreezeBanner === 'function') hideDeathFreezeBanner();
-            if (battleResultShown && !battleRatingProcessed && lastProvisionalBattleRank > 0) {
-                applyBattleResultRating(lastProvisionalBattleRank);
-            }
+            if (battleResultShown && !battleRatingProcessed && !forceRemoveRoom) return;
             gameSessionId++;
             if (typeof activeCountdownCleanup === 'function') {
                 activeCountdownCleanup();
@@ -15394,10 +15085,8 @@
             document.getElementById('battle-result-screen').classList.add('hidden');
             setPlayHudMode();
             battleRatingProcessed = false;
-            lastProvisionalBattleRank = 0;
             lastBattleResultRatingData = null;
-            const resRatingPill = document.getElementById('battle-result-rating-pill');
-            if (resRatingPill) resRatingPill.style.display = 'none';
+            document.getElementById('battle-result-rating-pill').hidden = true;
             stopAllBgm();
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
