@@ -6941,6 +6941,8 @@
          */
         let isDragging = false;
         let dragFieldScale = 1;
+        let lastCanvasTouchAt = -Infinity;
+        let lastDeathFreezeProceedAt = -Infinity;
 
         function handleStart(clientX, clientY) {
             if (gameState === 'DYING') {
@@ -6976,6 +6978,7 @@
 
         // Mouse Events
         canvas.addEventListener('mousedown', (e) => {
+            if (performance.now() - lastCanvasTouchAt < 500) return;
             handleStart(e.clientX, e.clientY);
         });
 
@@ -6989,6 +6992,7 @@
 
         // Touch Events — 터치 시 AudioContext resume (iOS 요구사항)
         canvas.addEventListener('touchstart', (e) => {
+            lastCanvasTouchAt = performance.now();
             if (audioCtx.state === 'suspended') audioCtx.resume();
             if (e.touches.length > 0) {
                 handleStart(e.touches[0].clientX, e.touches[0].clientY);
@@ -7692,9 +7696,11 @@
         }
 
         function proceedFromDeathFreeze() {
-            if (gameState !== 'DYING') return;
-            const minimumHold = deathFreezeState?.reducedMotion ? 320 : DEATH_FREEZE_MIN_MS;
-            if (deathFreezeState && performance.now() - deathFreezeState.startedAt < minimumHold) return;
+            if (gameState !== 'DYING' || !deathFreezeState || deathFreezeState.proceeding) return;
+            const minimumHold = deathFreezeState.reducedMotion ? 320 : DEATH_FREEZE_MIN_MS;
+            if (performance.now() - deathFreezeState.startedAt < minimumHold) return;
+            deathFreezeState.proceeding = true;
+            lastDeathFreezeProceedAt = performance.now();
             playSfx('click', 0.7);
             triggerHaptic('light');
             finalizeGameOver();
@@ -7774,6 +7780,7 @@
                 return motion.finished.catch(() => {}).finally(() => signal?.removeEventListener('abort', cancel));
             };
             screen.addEventListener('click', event => {
+                if (performance.now() - lastDeathFreezeProceedAt < 450) return;
                 if (!active() || !phase || reducedMotion) return;
                 event.preventDefault();
                 event.stopImmediatePropagation();
