@@ -4828,10 +4828,20 @@
             return true;
         }
 
+        let lastClickSfxAt = -Infinity;
+
         function playSfx(key, volume, onended) {
             if (pageAudioMuted || document.visibilityState === 'hidden' || sfxVolume <= 0.001) {
                 if (onended) onended();
                 return;
+            }
+            if (key === 'click') {
+                const now = performance.now();
+                if (now - lastClickSfxAt < 80) {
+                    if (onended) onended();
+                    return;
+                }
+                lastClickSfxAt = now;
             }
             const buf = sfxBuffers[key];
             if (!buf) {
@@ -4894,6 +4904,7 @@
         }
 
         function playClickSfx(e) {
+            if (e && e.target && e.target.id === 'canvas') return;
             playSfx('click', 0.7);
             if (e && e.target && typeof e.target.closest === 'function' && e.target.closest('button')) {
                 triggerHaptic('selection');
