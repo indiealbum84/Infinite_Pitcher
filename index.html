@@ -7951,7 +7951,7 @@
                         await wait(pauses[3 - (target - displayed)]);
                         if (!active() || !canAnimate()) return;
                         updateScore(displayed + 1);
-                        playSfx('rank_count', .65);
+                        if (displayed < target) playSfx('rank_count', .65);
                     }
                 }
 
@@ -8077,7 +8077,7 @@
                                     const curStep = Math.min(steps, Math.floor(Math.abs(ty) / Math.max(1, itemHeight)));
                                     if (curStep > lastTickStep) {
                                         lastTickStep = curStep;
-                                        playSfx('rank_count', 0.65);
+                                        if (curStep < steps) playSfx('rank_count', 0.65);
                                     }
                                     if (curStep < steps) requestAnimationFrame(trackReelTicks);
                                 };
