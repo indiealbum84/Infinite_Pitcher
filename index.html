@@ -4205,60 +4205,8 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=world8-blond-pitcher">
-    <style>
-        #game-dialog {
-            width: min(340px, calc(100% - 36px));
-            max-height: calc(100dvh - 40px);
-            border: 3px solid var(--showa-ink);
-            border-radius: 12px;
-            box-shadow: 5px 7px 0 var(--showa-ink);
-        }
-        .game-dialog-header {
-            gap: 9px;
-            padding: 10px 15px;
-            border-bottom: 3px solid var(--showa-ink);
-        }
-        .game-dialog-header img {
-            width: 32px;
-            height: 32px;
-        }
-        .game-dialog-header h2 {
-            font-size: 20px;
-            word-break: keep-all;
-            overflow-wrap: break-word;
-        }
-        .game-dialog-body {
-            padding: 15px;
-        }
-        #game-dialog-message {
-            margin: 0 0 15px;
-            font-size: 15px;
-            line-height: 1.5;
-            word-break: keep-all;
-            overflow-wrap: break-word;
-        }
-        #game-dialog-input {
-            min-height: 44px;
-            margin-bottom: 15px;
-            padding: 8px 10px;
-            border: 2px solid var(--showa-ink);
-            border-radius: 7px;
-            font-size: 16px;
-        }
-        .game-dialog-actions {
-            gap: 9px;
-        }
-        .game-dialog-actions button {
-            min-width: 76px;
-            min-height: 44px;
-            padding: 6px 13px;
-            border: 2px solid var(--showa-ink);
-            border-radius: 7px;
-            box-shadow: 2px 3px 0 var(--showa-ink);
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="./game-art.css?v=comic-popups">
+
 </head>
 
 <body>
@@ -4278,13 +4226,13 @@
                 <span id="battle-phase-pill-label">PHASE 1</span>
             </div>
         </div>
-        <div id="exit-confirm-modal" class="hidden" onclick="if(event.target===this) closeExitConfirmModal()">
-            <div class="exit-confirm-box" ontouchstart="event.stopPropagation()" onmousedown="event.stopPropagation()">
-                <p id="exit-confirm-msg" class="exit-confirm-msg">로비로 나가시겠습니까?</p>
-                <div class="exit-confirm-actions">
-                    <button type="button" id="exit-confirm-yes" class="exit-confirm-btn yes" onclick="confirmExitToLobby()">예</button>
-                    <button type="button" id="exit-confirm-no" class="exit-confirm-btn no" onclick="closeExitConfirmModal()">아니오</button>
-                </div>
+        <div id="exit-confirm-modal" class="comic-popup-layer hidden" onclick="if(event.target===this) closeExitConfirmModal()">
+            <div class="exit-confirm-box comic-popup comic-popup-compact" role="dialog" aria-modal="true" aria-labelledby="exit-confirm-msg" tabindex="-1" ontouchstart="event.stopPropagation()" onmousedown="event.stopPropagation()">
+                <div class="comic-popup-body"><p id="exit-confirm-msg" class="exit-confirm-msg">로비로 나가시겠습니까?</p></div>
+                <footer class="comic-popup-actions">
+                    <button type="button" id="exit-confirm-no" class="comic-popup-action" onclick="closeExitConfirmModal()">계속하기</button>
+                    <button type="button" id="exit-confirm-yes" class="comic-popup-action danger" onclick="confirmExitToLobby()">나가기</button>
+                </footer>
             </div>
         </div>
 
@@ -4405,142 +4353,164 @@
         <div id="title-scenery" aria-hidden="true"><div class="title-baseball"></div></div>
 
         <!-- 메인화면 설정 모달 -->
-        <div id="settings-modal" class="hidden" onclick="if(event.target===this) closeSettingsModal()">
-            <div class="settings-modal-inner">
-                <button type="button" class="settings-close-x" onclick="closeSettingsModal()">✕</button>
-                <h3 id="settings-modal-title" class="settings-modal-title">⚙️ 설정</h3>
-
-                <!-- 1. 언어 설정 (현재 언어 + 토글 드롭다운) -->
-                <div class="settings-section">
-                    <div class="settings-label" id="settings-lang-label">🌐 언어</div>
-                    <div class="settings-lang-toggle">
-                        <button type="button" id="settings-lang-current-btn" class="settings-lang-current-btn" onclick="toggleSettingsLangDropdown()">
-                            <span id="settings-lang-current-text">🇰🇷 한국어</span>
-                            <span id="settings-lang-chevron">▼</span>
-                        </button>
-                        <div id="settings-lang-dropdown" class="settings-lang-dropdown hidden">
-                            <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">🇺🇸 English</button>
-                            <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">🇰🇷 한국어</button>
-                            <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">🇯🇵 日本語</button>
-                            <button type="button" class="settings-lang-btn" data-lang="zh-TW" onclick="selectSettingsLanguage('zh-TW')">🇹🇼 繁體中文</button>
-                            <button type="button" class="settings-lang-btn" data-lang="es" onclick="selectSettingsLanguage('es')">🇪🇸 Español</button>
+        <div id="settings-modal" class="comic-popup-layer hidden" onclick="if(event.target===this) closeSettingsModal()">
+            <div class="settings-modal-inner comic-popup" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title" tabindex="-1">
+                <header class="comic-popup-head">
+                    <h3 id="settings-modal-title" class="settings-modal-title">⚙️ 설정</h3>
+                    <button type="button" class="comic-popup-close" onclick="closeSettingsModal()" aria-label="Close">×</button>
+                </header>
+                <div class="comic-popup-body" tabindex="0">
+                    <!-- 1. 언어 설정 (현재 언어 + 토글 드롭다운) -->
+                    <div class="settings-section">
+                        <div class="settings-label" id="settings-lang-label">🌐 언어</div>
+                        <div class="settings-lang-toggle">
+                            <button type="button" id="settings-lang-current-btn" aria-controls="settings-lang-dropdown" aria-expanded="false" class="settings-lang-current-btn" onclick="toggleSettingsLangDropdown()">
+                                <span id="settings-lang-current-text">🇰🇷 한국어</span>
+                                <span id="settings-lang-chevron">▼</span>
+                            </button>
+                            <div id="settings-lang-dropdown" class="settings-lang-dropdown hidden">
+                                <button type="button" class="settings-lang-btn" data-lang="en" onclick="selectSettingsLanguage('en')">🇺🇸 English</button>
+                                <button type="button" class="settings-lang-btn" data-lang="ko" onclick="selectSettingsLanguage('ko')">🇰🇷 한국어</button>
+                                <button type="button" class="settings-lang-btn" data-lang="ja" onclick="selectSettingsLanguage('ja')">🇯🇵 日本語</button>
+                                <button type="button" class="settings-lang-btn" data-lang="zh-TW" onclick="selectSettingsLanguage('zh-TW')">🇹🇼 繁體中文</button>
+                                <button type="button" class="settings-lang-btn" data-lang="es" onclick="selectSettingsLanguage('es')">🇪🇸 Español</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 2. BGM 볼륨 -->
-                <div class="settings-section">
-                    <div class="settings-row">
-                        <span class="settings-label" id="settings-bgm-label">🎵 배경음악 (BGM)</span>
-                        <span class="settings-val-badge" id="settings-bgm-val">80%</span>
+                    <!-- 2. BGM 볼륨 -->
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <span class="settings-label" id="settings-bgm-label">🎵 배경음악 (BGM)</span>
+                            <span class="settings-val-badge" id="settings-bgm-val">80%</span>
+                        </div>
+                        <div class="settings-slider-wrap">
+                            <input type="range" id="settings-bgm-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleBgmSliderChange(this.value)">
+                        </div>
                     </div>
-                    <div class="settings-slider-wrap">
-                        <input type="range" id="settings-bgm-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleBgmSliderChange(this.value)">
-                    </div>
-                </div>
 
-                <!-- 3. SFX 볼륨 -->
-                <div class="settings-section">
-                    <div class="settings-row">
-                        <span class="settings-label" id="settings-sfx-label">🔊 효과음 (SFX)</span>
-                        <span class="settings-val-badge" id="settings-sfx-val">80%</span>
+                    <!-- 3. SFX 볼륨 -->
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <span class="settings-label" id="settings-sfx-label">🔊 효과음 (SFX)</span>
+                            <span class="settings-val-badge" id="settings-sfx-val">80%</span>
+                        </div>
+                        <div class="settings-slider-wrap">
+                            <input type="range" id="settings-sfx-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleSfxSliderChange(this.value)">
+                        </div>
                     </div>
-                    <div class="settings-slider-wrap">
-                        <input type="range" id="settings-sfx-slider" class="retro-slider" min="0" max="100" value="80" oninput="handleSfxSliderChange(this.value)">
-                    </div>
-                </div>
 
-                <!-- 4. 로그인 / 계정 연동 -->
-                <div class="settings-section settings-account-section">
-                    <div class="settings-row">
-                        <span class="settings-label" id="settings-account-label">☁️ 로그인 / 계정 연동</span>
-                        <span class="settings-account-badge" id="settings-account-status-badge">미연동</span>
+                    <!-- 4. 로그인 / 계정 연동 -->
+                    <div class="settings-section settings-account-section">
+                        <div class="settings-row">
+                            <span class="settings-label" id="settings-account-label">☁️ 로그인 / 계정 연동</span>
+                            <span class="settings-account-badge" id="settings-account-status-badge">미연동</span>
+                        </div>
+                        <p class="settings-account-desc" id="settings-account-desc">Google 또는 Apple ID로 로그인하면 기기 변경이나 재설치 시에도 데이터가 안전하게 보관됩니다.</p>
+                        <div class="settings-account-actions" id="settings-account-actions">
+                            <button type="button" class="settings-account-btn google" id="settings-google-btn" onclick="handleSettingsAccountSync('google')">🌐 Google 로그인</button>
+                            <button type="button" class="settings-account-btn apple" id="settings-apple-btn" onclick="handleSettingsAccountSync('apple')">🍎 Apple 로그인</button>
+                        </div>
                     </div>
-                    <p class="settings-account-desc" id="settings-account-desc">Google 또는 Apple ID로 로그인하면 기기 변경이나 재설치 시에도 데이터가 안전하게 보관됩니다.</p>
-                    <div class="settings-account-actions" id="settings-account-actions">
-                        <button type="button" class="settings-account-btn google" id="settings-google-btn" onclick="handleSettingsAccountSync('google')">🌐 Google 로그인</button>
-                        <button type="button" class="settings-account-btn apple" id="settings-apple-btn" onclick="handleSettingsAccountSync('apple')">🍎 Apple 로그인</button>
-                    </div>
-                </div>
 
-                <!-- 5. 고객 지원 및 정책 -->
-                <div class="settings-section">
-                    <div class="settings-row">
-                        <span class="settings-label" id="settings-support-section-label">📩 고객 지원</span>
+                    <!-- 5. 고객 지원 및 정책 -->
+                    <div class="settings-section">
+                        <div class="settings-row">
+                            <span class="settings-label" id="settings-support-section-label">📩 고객 지원</span>
+                        </div>
+                        <div class="settings-account-actions">
+                            <button type="button" class="settings-account-btn google" id="settings-support-btn" onclick="openSupportForm()">📩 문의 / 버그 제보</button>
+                            <a class="settings-account-btn switch" id="settings-privacy-link" href="./privacy.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">🔒 개인정보처리방침</a>
+                        </div>
                     </div>
-                    <div class="settings-account-actions">
-                        <button type="button" class="settings-account-btn google" id="settings-support-btn" onclick="openSupportForm()">📩 문의 / 버그 제보</button>
-                        <a class="settings-account-btn switch" id="settings-privacy-link" href="./privacy.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">🔒 개인정보처리방침</a>
-                    </div>
+                    <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()">🧪 [TEST] 내 데이터 초기화</button>
                 </div>
-                <button type="button" id="settings-test-reset-btn" onclick="resetMyLocalDataForTest()">🧪 [TEST] 내 데이터 초기화</button>
-                <button type="button" class="start-btn settings-confirm-btn" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
+                <footer class="comic-popup-actions">
+                    <button type="button" class="comic-popup-action primary" id="settings-close-btn" onclick="closeSettingsModal()">확인</button>
+                </footer>
             </div>
         </div>
 
         <!-- 메인화면 컬렉션 모달 -->
-        <div id="skin-modal" class="hidden" onclick="if(event.target===this) closeSkinModal()">
-            <div class="skin-modal-inner">
-                <button type="button" class="settings-close-x" onclick="closeSkinModal()">✕</button>
-                <h3 id="skin-modal-title" class="settings-modal-title">🏆 컬렉션</h3>
-                <p class="skin-modal-subtitle" id="skin-modal-subtitle">업적을 달성하여 특별한 볼과 피처 컬렉션을 획득하세요!</p>
-                <div class="skin-grid" id="skin-grid"></div>
+        <div id="skin-modal" class="comic-popup-layer hidden" onclick="if(event.target===this) closeSkinModal()">
+            <div class="skin-modal-inner comic-popup" role="dialog" aria-modal="true" aria-labelledby="skin-modal-title" tabindex="-1">
+                <header class="comic-popup-head">
+                    <h3 id="skin-modal-title" class="settings-modal-title">🏆 컬렉션</h3>
+                    <button type="button" class="comic-popup-close" onclick="closeSkinModal()" aria-label="Close">×</button>
+                </header>
+                <div class="comic-popup-body" tabindex="0">
+                    <div id="skin-featured" class="skin-featured"></div>
+                    <p class="skin-modal-subtitle" id="skin-modal-subtitle">업적을 달성하여 특별한 볼과 피처 컬렉션을 획득하세요!</p>
+                    <div class="skin-grid" id="skin-grid"></div>
+                </div>
             </div>
         </div>
 
         <!-- 메인화면 특수볼 가이드 모달 -->
-        <div id="special-guide-modal" class="hidden" onclick="if(event.target===this) closeSpecialGuideModal()">
-            <div class="settings-modal-inner" style="max-width:860px;width:94%;">
-                <button type="button" class="settings-close-x" onclick="closeSpecialGuideModal()">✕</button>
-                <h3 id="special-guide-title" class="settings-modal-title">⚾ 특수볼 가이드</h3>
-                <div class="special-guide-list">
-                    <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-fireball.webp" alt="FIREBALL">
-                        <div class="special-guide-info">
-                            <p class="special-guide-name" id="sg-name-fireball">🔥 파이어볼 (FIREBALL)</p>
-                            <p class="special-guide-desc" id="sg-desc-fireball">현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.</p>
+        <div id="special-guide-modal" class="comic-popup-layer hidden" onclick="if(event.target===this) closeSpecialGuideModal()">
+            <div class="settings-modal-inner comic-popup" role="dialog" aria-modal="true" aria-labelledby="special-guide-title" tabindex="-1">
+                <header class="comic-popup-head">
+                    <h3 id="special-guide-title" class="settings-modal-title">⚾ 특수볼 가이드</h3>
+                    <button type="button" class="comic-popup-close" onclick="closeSpecialGuideModal()" aria-label="Close">×</button>
+                </header>
+                <div class="comic-popup-body" tabindex="0">
+                    <div class="special-guide-list">
+                        <div class="special-guide-card">
+                            <img class="special-guide-thumb" src="./images/showa-fireball.webp" alt="FIREBALL">
+                            <div class="special-guide-info">
+                                <p class="special-guide-name" id="sg-name-fireball">🔥 파이어볼 (FIREBALL)</p>
+                                <p class="special-guide-desc" id="sg-desc-fireball">현재 번호를 맞추면 세로 1줄 전체를 파괴합니다.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-mirrorball.webp" alt="MIRRORBALL">
-                        <div class="special-guide-info">
-                            <p class="special-guide-name" id="sg-name-mirrorball">🪞 미러볼 (MIRRORBALL)</p>
-                            <p class="special-guide-desc" id="sg-desc-mirrorball">모든 숫자가 좌우 반전됩니다.</p>
+                        <div class="special-guide-card">
+                            <img class="special-guide-thumb" src="./images/showa-mirrorball.webp" alt="MIRRORBALL">
+                            <div class="special-guide-info">
+                                <p class="special-guide-name" id="sg-name-mirrorball">🪞 미러볼 (MIRRORBALL)</p>
+                                <p class="special-guide-desc" id="sg-desc-mirrorball">모든 숫자가 좌우 반전됩니다.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-stripeball.webp" alt="STRIPEBALL">
-                        <div class="special-guide-info">
-                            <p class="special-guide-name" id="sg-name-stripeball">🦓 스트라이프볼 (STRIPEBALL)</p>
-                            <p class="special-guide-desc" id="sg-desc-stripeball">한 줄은 반전, 한 줄은 정상 숫자로 돌아옵니다.</p>
+                        <div class="special-guide-card">
+                            <img class="special-guide-thumb" src="./images/showa-stripeball.webp" alt="STRIPEBALL">
+                            <div class="special-guide-info">
+                                <p class="special-guide-name" id="sg-name-stripeball">🦓 스트라이프볼 (STRIPEBALL)</p>
+                                <p class="special-guide-desc" id="sg-desc-stripeball">한 줄은 반전, 한 줄은 정상 숫자로 돌아옵니다.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="special-guide-card">
-                        <img class="special-guide-thumb" src="./images/showa-flashball.webp" alt="FLASHBALL">
-                        <div class="special-guide-info">
-                            <p class="special-guide-name" id="sg-name-flashball">⚡ 플래시볼 (FLASHBALL)</p>
-                            <p class="special-guide-desc" id="sg-desc-flashball">숫자가 깜빡이며 사라졌다 나타납니다.</p>
+                        <div class="special-guide-card">
+                            <img class="special-guide-thumb" src="./images/showa-flashball.webp" alt="FLASHBALL">
+                            <div class="special-guide-info">
+                                <p class="special-guide-name" id="sg-name-flashball">⚡ 플래시볼 (FLASHBALL)</p>
+                                <p class="special-guide-desc" id="sg-desc-flashball">숫자가 깜빡이며 사라졌다 나타납니다.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button type="button" class="start-btn settings-confirm-btn" id="special-guide-confirm-btn" onclick="closeSpecialGuideModal()">확인</button>
+                <footer class="comic-popup-actions">
+                    <button type="button" class="comic-popup-action primary" id="special-guide-confirm-btn" onclick="closeSpecialGuideModal()">확인</button>
+                </footer>
             </div>
         </div>
 
         <!-- 메인화면 랭킹 모달 -->
-        <div id="intro-ranking-modal" class="hidden">
-            <div class="modal-inner">
-                <button id="intro-ranking-close-x" onclick="toggleIntroRanking()">✕</button>
-                <h3 id="intro-ranking-title" style="margin:0 0 10px;color:#111827;text-align:center;">🏆 RANKING</h3>
-                <div class="rank-tabs">
-                    <button type="button" class="rank-tab-btn active" id="intro-tab-battle-global" onclick="switchIntroRankTab('battle_global')">🌍 8인 세계</button>
-                    <button type="button" class="rank-tab-btn" id="intro-tab-battle-country" onclick="switchIntroRankTab('battle_country')">🏳️ 8인 국내</button>
-                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-global" onclick="switchIntroRankTab('solo_global')">🌍 개인 세계</button>
-                    <button type="button" class="rank-tab-btn" id="intro-tab-solo-country" onclick="switchIntroRankTab('solo_country')">🏳️ 개인 국내</button>
+        <div id="intro-ranking-modal" class="comic-popup-layer hidden" onclick="if(event.target===this) toggleIntroRanking()">
+            <section class="modal-inner comic-popup comic-popup-rank" role="dialog" aria-modal="true" aria-labelledby="intro-ranking-title" tabindex="-1">
+                <header class="comic-popup-head">
+                    <h3 id="intro-ranking-title">랭킹</h3>
+                    <button type="button" class="comic-popup-close" id="intro-ranking-close-x" onclick="toggleIntroRanking()" aria-label="Close">×</button>
+                </header>
+                <div class="comic-rank-nav">
+                    <div class="comic-rank-tabs comic-rank-modes">
+                        <button type="button" id="intro-rank-battle-mode" onclick="switchIntroRankMode('battle')" aria-pressed="true">8인 배틀</button>
+                        <button type="button" id="intro-rank-solo-mode" onclick="switchIntroRankMode('solo')" aria-pressed="false">개인 특훈</button>
+                    </div>
+                    <div class="comic-rank-tabs">
+                        <button type="button" id="intro-rank-global" onclick="switchIntroRankRegion('global')" aria-pressed="true"><span>GLOBAL</span><small>TOP 1000</small></button>
+                        <button type="button" id="intro-rank-country" onclick="switchIntroRankRegion('country')" aria-pressed="false"><span>KR</span><small>TOP 100</small></button>
+                    </div>
                 </div>
-                <div id="intro-my-rank-bar" class="intro-my-rank-bar"></div>
-                <div id="intro-rank-list"></div>
-            </div>
+                <div id="intro-my-rank-bar" class="comic-my-rank"></div>
+                <div id="intro-rank-list" class="comic-popup-body comic-rank-list" tabindex="0"></div>
+            </section>
         </div>
 
         <!-- 다음 판 플레이(보상형 광고 1회) & 광고 제거($2.99) 모달 -->
@@ -4630,17 +4600,20 @@
                 </button>
             </div>
 
-            <div id="result-leaderboard-overlay" class="hidden" onclick="if (event.target === this) closeSoloLeaderboard()" onkeydown="handleSoloLeaderboardKey(event)">
-                <section id="leaderboard-modal" role="dialog" aria-modal="true" aria-labelledby="result-leaderboard-title">
-                    <header class="result-leaderboard-header">
-                        <h3 id="result-leaderboard-title">🏆 RANKING</h3>
-                        <button type="button" id="result-leaderboard-close" onclick="closeSoloLeaderboard()" aria-label="Close">×</button>
+            <div id="result-leaderboard-overlay" class="comic-popup-layer hidden" onclick="if (event.target === this) closeSoloLeaderboard()" onkeydown="handleSoloLeaderboardKey(event)">
+                <section id="leaderboard-modal" class="comic-popup comic-popup-rank" role="dialog" aria-modal="true" aria-labelledby="result-leaderboard-title" tabindex="-1">
+                    <header class="comic-popup-head">
+                        <h3 id="result-leaderboard-title">랭킹</h3>
+                        <button type="button" class="comic-popup-close" id="result-leaderboard-close" onclick="closeSoloLeaderboard()" aria-label="Close">×</button>
                     </header>
-                    <div class="rank-tabs">
-                        <button type="button" class="rank-tab-btn active" id="result-tab-global" onclick="switchLeaderboardScope('global')">🌍 GLOBAL (TOP 1000)</button>
-                        <button type="button" class="rank-tab-btn" id="result-tab-country" onclick="switchLeaderboardScope('country')">🏳️ COUNTRY (TOP 100)</button>
+                    <div class="comic-rank-nav">
+                        <div class="comic-rank-tabs">
+                            <button type="button" id="result-tab-global" onclick="switchLeaderboardScope('global')" aria-pressed="true"><span>GLOBAL</span><small>TOP 1000</small></button>
+                            <button type="button" id="result-tab-country" onclick="switchLeaderboardScope('country')" aria-pressed="false"><span>KR</span><small>TOP 100</small></button>
+                        </div>
                     </div>
-                    <div id="rank-list" tabindex="0"></div>
+                    <div id="result-my-rank-bar" class="comic-my-rank" hidden></div>
+                    <div id="rank-list" class="comic-popup-body comic-rank-list" tabindex="0"></div>
                 </section>
             </div>
         </div>
@@ -4776,21 +4749,26 @@
             <div id="battle-league-tiers"></div>
         </dialog>
 
-        <dialog id="game-dialog" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
+        <dialog id="game-dialog" class="comic-popup comic-popup-compact" aria-labelledby="game-dialog-title" aria-describedby="game-dialog-message">
             <form method="dialog">
-                <header class="game-dialog-header">
-                    <img src="./images/showa-badges/classic.webp" alt="" width="32" height="32">
+                <header class="comic-popup-head">
                     <h2 id="game-dialog-title"></h2>
+                    <button type="button" class="comic-popup-close" id="game-dialog-close" aria-label="Close">×</button>
                 </header>
-                <div class="game-dialog-body">
-                    <p id="game-dialog-message"></p>
-                    <input id="game-dialog-input" type="text" inputmode="email" autocomplete="off"
-                        autocapitalize="none" spellcheck="false" aria-labelledby="game-dialog-title" hidden>
-                    <div class="game-dialog-actions">
-                        <button type="button" id="game-dialog-cancel" hidden></button>
-                        <button type="submit" id="game-dialog-accept"></button>
+                <div class="comic-popup-body">
+                    <div class="comic-purchase-banner" id="game-dialog-offer" hidden>
+                        <span id="game-dialog-offer-label"></span><strong>$2.99</strong>
                     </div>
+                    <p id="game-dialog-message"></p>
+                    <label id="game-dialog-field" hidden>
+                        <span id="game-dialog-field-label"></span>
+                        <input id="game-dialog-input" type="text" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false">
+                    </label>
                 </div>
+                <footer class="comic-popup-actions">
+                    <button type="button" class="comic-popup-action" id="game-dialog-cancel" hidden></button>
+                    <button type="submit" class="comic-popup-action primary" id="game-dialog-accept"></button>
+                </footer>
             </form>
         </dialog>
     </div>
@@ -5901,9 +5879,80 @@
             es: { notice: 'Aviso', confirm: 'Confirmación', accept: 'Aceptar', cancel: 'Cancelar' }
         };
 
+        const COMIC_POPUP_COPY = {
+            ko: { close: '닫기', exit: '나가기', stay: '계속하기', buy: '구매하기', purchaseTitle: '광고 제거 구매', offer: '광고 제거·무제한 플레이', field: '이메일 또는 계정 ID', rank: '랭킹', mine: '내 순위', room: '방을 찾을 수 없어요', restore: provider => `${provider} 계정 복원`, battle: '8인 배틀', solo: '개인 특훈' },
+            en: { close: 'Close', exit: 'Leave', stay: 'Stay Here', buy: 'Buy Pass', purchaseTitle: 'Remove Ads', offer: 'Remove Ads + Unlimited Play', field: 'Email or Account ID', rank: 'Ranking', mine: 'My Rank', room: 'Room Unavailable', restore: provider => `Restore ${provider} Account`, battle: '8P Battle', solo: 'Solo Practice' },
+            ja: { close: '閉じる', exit: '退出する', stay: '続ける', buy: '購入する', purchaseTitle: '広告削除の購入', offer: '広告削除・無制限プレイ', field: 'メールアドレスまたはID', rank: 'ランキング', mine: '自分の順位', room: '部屋が見つかりません', restore: provider => `${provider} アカウントの復元`, battle: '8人バトル', solo: 'ひとり特訓' },
+            'zh-TW': { close: '關閉', exit: '離開', stay: '繼續', buy: '購買', purchaseTitle: '購買移除廣告', offer: '移除廣告・無限暢玩', field: '電子信箱或帳號 ID', rank: '排行榜', mine: '我的排名', room: '找不到房間', restore: provider => `還原 ${provider} 帳號`, battle: '8人對戰', solo: '單人特訓' },
+            es: { close: 'Cerrar', exit: 'Salir', stay: 'Continuar', buy: 'Comprar', purchaseTitle: 'Compra sin anuncios', offer: 'Sin anuncios y juego ilimitado', field: 'Correo o ID de cuenta', rank: 'Clasificación', mine: 'Mi puesto', room: 'Sala no disponible', restore: provider => `Restaurar cuenta de ${provider}`, battle: 'Batalla 8P', solo: 'Práctica en solitario' }
+        };
+
+        function comicPopupCopy() {
+            return COMIC_POPUP_COPY[currentLang] || COMIC_POPUP_COPY.en;
+        }
+
+        const comicPopupOpeners = new WeakMap();
+
+        function showComicPopup(id, focusSelector = '.comic-popup-close') {
+            const layer = document.getElementById(id);
+            if (!layer.classList.contains('hidden')) return;
+            comicPopupOpeners.set(layer, document.activeElement);
+            layer.classList.remove('hidden');
+            const body = layer.querySelector('.comic-popup-body');
+            if (body) body.scrollTop = 0;
+            layer.querySelector(focusSelector)?.focus({ preventScroll: true });
+        }
+
+        function hideComicPopup(id, restoreFocus = true) {
+            const layer = document.getElementById(id);
+            layer.classList.add('hidden');
+            const opener = comicPopupOpeners.get(layer);
+            comicPopupOpeners.delete(layer);
+            if (restoreFocus && opener?.isConnected) opener.focus({ preventScroll: true });
+        }
+
+        function handleComicPopupKey(event, onClose) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                onClose();
+            } else if (event.key === 'Tab') {
+                const focusable = Array.from(event.currentTarget.querySelectorAll('button:not(:disabled), input:not(:disabled), a[href], [tabindex="0"]'))
+                    .filter(element => element.getClientRects().length);
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last?.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first?.focus();
+                }
+            }
+        }
+
+        for (const [id, close] of [
+            ['settings-modal', closeSettingsModal], ['skin-modal', closeSkinModal],
+            ['special-guide-modal', closeSpecialGuideModal], ['intro-ranking-modal', toggleIntroRanking],
+            ['exit-confirm-modal', closeExitConfirmModal]
+        ]) {
+            document.getElementById(id).addEventListener('keydown', event => handleComicPopupKey(event, close));
+        }
+
+        function updateGameDialogViewport() {
+            const viewport = window.visualViewport;
+            if (!gameDialog.open || !viewport) return;
+            gameDialog.style.setProperty('--popup-view-height', `${viewport.height}px`);
+            gameDialog.style.setProperty('--popup-view-center', `${viewport.offsetTop + viewport.height / 2}px`);
+        }
+
+        window.visualViewport?.addEventListener('resize', updateGameDialogViewport);
+        window.visualViewport?.addEventListener('scroll', updateGameDialogViewport);
+
         let lastGameDialog = Promise.resolve();
         let finishGameDialog;
         gameDialogCancel.addEventListener('click', () => finishGameDialog?.(false));
+        document.getElementById('game-dialog-close').addEventListener('click', () => finishGameDialog?.(false));
         gameDialog.addEventListener('cancel', event => {
             event.preventDefault();
             finishGameDialog?.(false);
@@ -5913,15 +5962,19 @@
             finishGameDialog?.(true);
         });
 
-        function showGameDialog(kind, message, { title, initialValue = '' } = {}) {
+        function showGameDialog(kind, message, { title, initialValue = '', purchase = false } = {}) {
             const request = lastGameDialog.then(() => new Promise(resolve => {
                 const labels = GAME_DIALOG_LABELS[currentLang] || GAME_DIALOG_LABELS.ja;
+                const copy = comicPopupCopy();
                 const asksForInput = kind === 'prompt';
-                gameDialogTitle.textContent = title || (kind === 'notice' ? labels.notice : labels.confirm);
+                gameDialogTitle.textContent = title || (purchase ? copy.purchaseTitle : kind === 'notice' ? labels.notice : labels.confirm);
                 gameDialogMessage.textContent = message;
-                gameDialogInput.hidden = !asksForInput;
+                document.getElementById('game-dialog-field').hidden = !asksForInput;
+                document.getElementById('game-dialog-field-label').textContent = copy.field;
+                document.getElementById('game-dialog-offer').hidden = !purchase;
+                document.getElementById('game-dialog-offer-label').textContent = copy.offer;
                 gameDialogInput.value = initialValue;
-                gameDialogAccept.textContent = labels.accept;
+                gameDialogAccept.textContent = purchase ? copy.buy : labels.accept;
                 gameDialogCancel.textContent = labels.cancel;
                 gameDialogCancel.hidden = kind === 'notice';
                 finishGameDialog = accepted => {
@@ -5932,6 +5985,7 @@
                     resolve(result);
                 };
                 gameDialog.showModal();
+                updateGameDialogViewport();
 
                 const focusTarget = asksForInput ? gameDialogInput : (kind === 'confirm' ? gameDialogCancel : gameDialogAccept);
                 focusTarget.focus();
@@ -5941,8 +5995,8 @@
             return request;
         }
 
-        function showGameNotice(message) {
-            return showGameDialog('notice', message);
+        function showGameNotice(message, options) {
+            return showGameDialog('notice', message, options);
         }
 
         function setBattleRematchButtonText(seconds = null) {
@@ -5991,12 +6045,6 @@
                 ['retry-btn', 22],
                 ['home-btn', 18],
                 ['battle-league-pill', 18],
-                ['intro-tab-battle-global', 16],
-                ['intro-tab-battle-country', 16],
-                ['intro-tab-solo-global', 16],
-                ['intro-tab-solo-country', 16],
-                ['result-tab-global', 16],
-                ['result-tab-country', 16],
                 ['settings-close-btn', 18],
                 ['settings-support-btn', 12],
                 ['skin-modal-subtitle', 13]
@@ -6065,7 +6113,9 @@
             setTxt('comic-score-anticipation', t.resultComicAnticipation);
             setTxt('comic-score-cheer', t.resultComicCheer);
             setTxt('result-best-label', lang === 'ko' ? '나의 최고점수' : t.resultBest);
-            document.getElementById('result-leaderboard-close').setAttribute('aria-label', t.settingsClose);
+            document.querySelectorAll('.comic-popup-close').forEach(button => button.setAttribute('aria-label', comicPopupCopy().close));
+            setTxt('intro-ranking-title', comicPopupCopy().rank);
+            setTxt('result-leaderboard-title', comicPopupCopy().rank);
             setTxt('result-noads-label', t.resultNoAds);
             setTxt('play-gate-title', t.playGateTitle);
             setTxt('play-gate-ad-btn', t.playGateAdBtn);
@@ -6089,13 +6139,13 @@
             document.getElementById('initial-apple-btn').setAttribute('aria-label', t.initialAppleBtn);
 
             // Settings & Collection Modal Texts
-            setTxt('settings-modal-title', t.settingsTitle);
+            setTxt('settings-modal-title', t.settingsTitle.replace(/^\S+\s/, ''));
             setTxt('settings-lang-label', t.settingsLang);
             setTxt('settings-bgm-label', t.settingsBgm);
             setTxt('settings-sfx-label', t.settingsSfx);
             setTxt('settings-account-label', t.settingsAccountLabel);
             setTxt('settings-close-btn', t.settingsClose);
-            setTxt('skin-modal-title', t.skinModalTitle);
+            setTxt('skin-modal-title', t.skinModalTitle.replace(/^\S+\s/, ''));
             setTxt('skin-modal-subtitle', t.skinModalSubtitle);
             const introSkinBtn = document.getElementById('intro-skin-btn');
             if (introSkinBtn) {
@@ -6146,7 +6196,8 @@
             if (!dd) return;
             const willOpen = forceClose ? false : dd.classList.contains('hidden');
             dd.classList.toggle('hidden', !willOpen);
-            if (chev) chev.innerText = willOpen ? '▲' : '▼';
+            if (chev) chev.innerText = willOpen ? '−' : '＋';
+            document.getElementById('settings-lang-current-btn').setAttribute('aria-expanded', String(willOpen));
             if (!forceClose) {
                 playSfx('click', 0.7);
                 triggerHaptic('light');
@@ -6158,8 +6209,7 @@
             triggerHaptic('light');
             toggleSettingsLangDropdown(true);
             updateSettingsUI();
-            const modal = document.getElementById('settings-modal');
-            if (modal) modal.classList.remove('hidden');
+            showComicPopup('settings-modal');
             if (typeof fitLocalizedBoxes === 'function') requestAnimationFrame(() => fitLocalizedBoxes());
         }
 
@@ -6167,8 +6217,7 @@
             playSfx('click', 0.7);
             triggerHaptic('light');
             toggleSettingsLangDropdown(true);
-            const modal = document.getElementById('settings-modal');
-            if (modal) modal.classList.add('hidden');
+            hideComicPopup('settings-modal');
         }
 
         function selectSettingsLanguage(lang) {
@@ -6177,6 +6226,7 @@
             triggerHaptic('selection');
             setLanguage(lang);
             toggleSettingsLangDropdown(true);
+            document.getElementById('settings-lang-current-btn').focus({ preventScroll: true });
         }
 
         function handleBgmSliderChange(val) {
@@ -8580,7 +8630,7 @@
             }
 
             // 웹/프리뷰에서 사용하는 구매 확인
-            if (await showGameDialog('confirm', textFor('confirmBuyNoAds'))) {
+            if (await showGameDialog('confirm', textFor('confirmBuyNoAds').split('\n').at(-1), { purchase: true })) {
                 await completeRemoveAdsPurchase();
             }
         }
@@ -9085,23 +9135,20 @@
                 'zh-TW': '確定要返回大廳嗎？',
                 es: '¿Volver al lobby?'
             };
-            const yesMap = { ko: '예', en: 'Yes', ja: 'はい', 'zh-TW': '是', es: 'Sí' };
-            const noMap  = { ko: '아니오', en: 'No', ja: 'いいえ', 'zh-TW': '否', es: 'No' };
+            const copy = comicPopupCopy();
             const msgEl = document.getElementById('exit-confirm-msg');
             const yesEl = document.getElementById('exit-confirm-yes');
             const noEl  = document.getElementById('exit-confirm-no');
             if (msgEl) msgEl.innerText = msgMap[currentLang] || msgMap.ko;
-            if (yesEl) yesEl.innerText = yesMap[currentLang] || yesMap.ko;
-            if (noEl)  noEl.innerText  = noMap[currentLang]  || noMap.ko;
-            const modal = document.getElementById('exit-confirm-modal');
-            if (modal) modal.classList.remove('hidden');
+            if (yesEl) yesEl.innerText = copy.exit;
+            if (noEl) noEl.innerText = copy.stay;
+            showComicPopup('exit-confirm-modal', '#exit-confirm-no');
         }
 
         function closeExitConfirmModal() {
             playSfx('click', 0.7);
             triggerHaptic('light');
-            const modal = document.getElementById('exit-confirm-modal');
-            if (modal) modal.classList.add('hidden');
+            hideComicPopup('exit-confirm-modal');
             if (exitConfirmPaused) {
                 exitConfirmPaused = false;
                 lastPitchTime = performance.now();
@@ -9112,8 +9159,7 @@
             playSfx('click', 0.7);
             triggerHaptic('medium');
             exitConfirmPaused = false;
-            const modal = document.getElementById('exit-confirm-modal');
-            if (modal) modal.classList.add('hidden');
+            hideComicPopup('exit-confirm-modal', false);
             const battleScreen = document.getElementById('battle-screen');
             if (battleScreen && !battleScreen.classList.contains('hidden')) {
                 cancelBattle();
@@ -10348,73 +10394,33 @@
 
         let currentIntroRankTab = 'battle_global';
 
-        function getIntroRankTabLabels() {
-            const flag = countryToFlag(userCountry);
-            const map = {
-                ko: {
-                    battleGlobal: '🌍 8인 세계',
-                    battleCountry: `${flag} 8인 ${userCountry}`,
-                    soloGlobal: '🌍 개인 세계',
-                    soloCountry: `${flag} 개인 ${userCountry}`
-                },
-                en: {
-                    battleGlobal: '🌍 8P Global',
-                    battleCountry: `${flag} 8P ${userCountry}`,
-                    soloGlobal: '🌍 Solo Global',
-                    soloCountry: `${flag} Solo ${userCountry}`
-                },
-                ja: {
-                    battleGlobal: '🌍 8人 世界',
-                    battleCountry: `${flag} 8人 ${userCountry}`,
-                    soloGlobal: '🌍 個人 世界',
-                    soloCountry: `${flag} 個人 ${userCountry}`
-                },
-                'zh-TW': {
-                    battleGlobal: '🌍 8人 世界',
-                    battleCountry: `${flag} 8人 ${userCountry}`,
-                    soloGlobal: '🌍 單人 世界',
-                    soloCountry: `${flag} 單人 ${userCountry}`
-                },
-                es: {
-                    battleGlobal: '🌍 8P Mundial',
-                    battleCountry: `${flag} 8P ${userCountry}`,
-                    soloGlobal: '🌍 Solo Mundial',
-                    soloCountry: `${flag} Solo ${userCountry}`
-                }
-            };
-            return map[currentLang] || map.ko;
+        function updateCountryTabLabels() {
+            const copy = comicPopupCopy();
+            const battle = currentIntroRankTab.startsWith('battle_');
+            const country = currentIntroRankTab.endsWith('_country');
+            const countryLabel = `${countryToFlag(userCountry)} ${userCountry}`;
+            for (const [id, label, active] of [
+                ['intro-rank-battle-mode', copy.battle, battle],
+                ['intro-rank-solo-mode', copy.solo, !battle],
+                ['intro-rank-global', 'GLOBAL', !country],
+                ['intro-rank-country', countryLabel, country],
+                ['result-tab-global', 'GLOBAL', currentLeaderboardScope === 'global'],
+                ['result-tab-country', countryLabel, currentLeaderboardScope === 'country']
+            ]) {
+                const button = document.getElementById(id);
+                (button.querySelector('span') || button).textContent = label;
+                button.setAttribute('aria-pressed', String(active));
+            }
         }
 
-        function updateCountryTabLabels() {
-            const flag = countryToFlag(userCountry);
-            const label = `${flag} ${userCountry} (TOP 100)`;
-            const globalLabel = '🌍 GLOBAL (TOP 1000)';
-            const introLabels = getIntroRankTabLabels();
+        function switchIntroRankMode(mode) {
+            const region = currentIntroRankTab.endsWith('_country') ? 'country' : 'global';
+            switchIntroRankTab(`${mode}_${region}`);
+        }
 
-            const tabMap = {
-                'intro-tab-battle-global': { text: introLabels.battleGlobal, active: currentIntroRankTab === 'battle_global' },
-                'intro-tab-battle-country': { text: introLabels.battleCountry, active: currentIntroRankTab === 'battle_country' },
-                'intro-tab-solo-global': { text: introLabels.soloGlobal, active: currentIntroRankTab === 'solo_global' },
-                'intro-tab-solo-country': { text: introLabels.soloCountry, active: currentIntroRankTab === 'solo_country' }
-            };
-            Object.entries(tabMap).forEach(([id, cfg]) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = cfg.text;
-                    el.classList.toggle('active', cfg.active);
-                }
-            });
-
-            const resGlobal = document.getElementById('result-tab-global');
-            const resCountry = document.getElementById('result-tab-country');
-            if (resGlobal) {
-                resGlobal.innerText = globalLabel;
-                resGlobal.classList.toggle('active', currentLeaderboardScope === 'global');
-            }
-            if (resCountry) {
-                resCountry.innerText = label;
-                resCountry.classList.toggle('active', currentLeaderboardScope === 'country');
-            }
+        function switchIntroRankRegion(region) {
+            const mode = currentIntroRankTab.startsWith('battle_') ? 'battle' : 'solo';
+            switchIntroRankTab(`${mode}_${region}`);
         }
 
         function isUserCountryLocked() {
@@ -11215,7 +11221,8 @@
             const label = providerType === 'apple' ? 'Apple ID' : 'Google ID';
             let savedRaw = '';
             try { savedRaw = localStorage.getItem(ACCOUNT_RAW_ID_STORAGE) || ''; } catch (e) {}
-            const entered = await showGameDialog('prompt', promptFn(label), { title: label, initialValue: savedRaw });
+            const title = comicPopupCopy().restore(providerType === 'apple' ? 'Apple' : 'Google');
+            const entered = await showGameDialog('prompt', promptFn(label), { title, initialValue: savedRaw });
             if (!entered || !entered.trim()) return;
             restoreCloudProfileByRawId(providerType, entered.trim(), false);
         }
@@ -11568,12 +11575,20 @@
             updateCountryTabLabels();
             const limit = getLeaderboardLimit(currentLeaderboardScope);
             const cached = getCachedRanks(currentLeaderboardScope);
+            const bar = document.getElementById('result-my-rank-bar');
+            const updateStrip = ranks => {
+                const score = Math.max(0, highlightScore || 0);
+                const rank = resolvePlayerRankLabel(ranks, score, highlightName, limit, score > 0);
+                renderComicRankStrip(bar, rank, `${score.toLocaleString()} PTS`);
+            };
+            updateStrip(cached);
             list.scrollTop = 0;
             if (cached.length > 0) renderRankRows(list, cached, highlightName, highlightScore, limit);
             else list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('loadingRanks')}</div>`;
 
             fetchRanks((ranks) => {
                 if (request !== soloLeaderboardRequest || !isVisibleScreen('result-leaderboard-overlay')) return;
+                updateStrip(ranks);
                 if (ranks.length === 0) {
                     list.innerHTML = `<div style="color:#aaa;padding:20px;">${textFor('emptyRanks')}</div>`;
                     return;
@@ -11667,21 +11682,7 @@
         }
 
         function handleSoloLeaderboardKey(event) {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                closeSoloLeaderboard();
-            } else if (event.key === 'Tab') {
-                const focusable = event.currentTarget.querySelectorAll('button, [tabindex="0"]');
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                if (event.shiftKey && document.activeElement === first) {
-                    event.preventDefault();
-                    last.focus();
-                } else if (!event.shiftKey && document.activeElement === last) {
-                    event.preventDefault();
-                    first.focus();
-                }
-            }
+            handleComicPopupKey(event, closeSoloLeaderboard);
         }
 
         function isVisibleScreen(id) {
@@ -12072,15 +12073,13 @@
         function openSkinModal() {
             checkSkinUnlocks();
             renderSkinGrid();
-            const modal = document.getElementById('skin-modal');
-            if (modal) modal.classList.remove('hidden');
+            showComicPopup('skin-modal');
             playSfx('click', 0.7);
             triggerHaptic('light');
         }
 
         function closeSkinModal() {
-            const modal = document.getElementById('skin-modal');
-            if (modal) modal.classList.add('hidden');
+            hideComicPopup('skin-modal');
             if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
             playSfx('click', 0.7);
             triggerHaptic('light');
@@ -12088,15 +12087,13 @@
 
         function openSpecialGuideModal() {
             if (typeof updateSpecialGuideModalLang === 'function') updateSpecialGuideModalLang();
-            const modal = document.getElementById('special-guide-modal');
-            if (modal) modal.classList.remove('hidden');
+            showComicPopup('special-guide-modal');
             playSfx('click', 0.7);
             triggerHaptic('light');
         }
 
         function closeSpecialGuideModal() {
-            const modal = document.getElementById('special-guide-modal');
-            if (modal) modal.classList.add('hidden');
+            hideComicPopup('special-guide-modal');
             playSfx('click', 0.7);
             triggerHaptic('light');
         }
@@ -12107,6 +12104,9 @@
             const unlocked = getUnlockedSkins();
             const equipped = getEquippedSkin();
             const lang = currentLang || 'ko';
+            const featured = SKINS_CATALOG.find(skin => skin.id === equipped) || SKINS_CATALOG[0];
+            document.getElementById('skin-featured').innerHTML = `${renderSkinBadge(featured.id, { decorative: true })}
+                <div><small>${textFor('skinEquipped')}</small><strong>${featured.name[lang] || featured.name.ko}</strong></div>`;
 
             grid.innerHTML = SKINS_CATALOG.map(skin => {
                 const isUnlocked = unlocked.includes(skin.id);
@@ -12143,17 +12143,19 @@
                         <div class="skin-card-name">${name}</div>
                         <div class="skin-card-desc">${desc}</div>
                         <div class="skin-card-condition">${isUnlocked ? '🔓\u00A0' + condition : '🔒\u00A0' + condition}</div>
-                        <button type="button" class="${btnClass}" ${btnOnClick}>${btnText}</button>
+                        <button type="button" class="${btnClass}" data-skin-equip="${skin.id}" ${btnOnClick}>${btnText}</button>
                     </div>
                 `;
             }).join('');
         }
 
         function equipSkin(id) {
+            const focusedEquip = document.activeElement?.dataset.skinEquip === id;
             if (setEquippedSkin(id)) {
                 playSfx('hit', 0.7);
                 triggerHaptic('medium');
                 renderSkinGrid();
+                if (focusedEquip) document.querySelector(`[data-skin-equip="${id}"]`)?.focus({ preventScroll: true });
                 if (typeof updateIntroProfilePillUI === 'function') updateIntroProfilePillUI();
                 if (battleRoomId && battlePlayerId && typeof battleRef !== 'undefined') {
                     if (battlePlayers && battlePlayers[battlePlayerId]) {
@@ -14239,7 +14241,7 @@
             battleRef.child(code).once('value').then(snap => {
                 const room = snap.val();
                 if (!room || room.status !== 'waiting' || room.joinLocked) {
-                    showGameNotice(textFor('alertRoomFull'));
+                    showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
                     return;
                 }
 
@@ -14265,7 +14267,7 @@
                     return players;
                 }, (error, committed) => {
                     if (error || !committed) {
-                        showGameNotice(textFor('alertRoomFull'));
+                        showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
                         return;
                     }
 
@@ -14284,7 +14286,7 @@
                     listenBattleRoom(code);
                 });
             }).catch(() => {
-                showGameNotice(textFor('alertRoomFull'));
+                showGameNotice(textFor('alertRoomFull'), { title: comicPopupCopy().room });
             });
         }
 
@@ -15295,106 +15297,21 @@
             }
         }
 
+        function renderComicRankStrip(bar, rank, score) {
+            const copy = comicPopupCopy();
+            bar.innerHTML = `<span>${copy.mine} <strong>${rank}</strong></span><b>${score}</b>`;
+            bar.hidden = false;
+        }
+
         function renderIntroMyRankBar(isBattleTab, activeScope, globalRanks, countryRanks) {
             const bar = document.getElementById('intro-my-rank-bar');
-            if (!bar) return;
-            const lang = currentLang || 'ko';
-            const myName = typeof getSavedPlayerName === 'function' ? getSavedPlayerName() : '';
-            const flag = countryToFlag(userCountry);
-            const i18n = {
-                ko: {
-                    guest: '선수 미등록',
-                    battleMode: '⚡ 8인 배틀',
-                    soloMode: '🧢 개인 특훈',
-                    globalLabel: '🌍 세계 (TOP 1000)',
-                    countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                    noBattleHint: '⚡ 첫 8인 배틀 플레이 후 내 순위가 집계됩니다',
-                    noSoloHint: '🧢 첫 나홀로 특훈 플레이 후 내 순위가 집계됩니다'
-                },
-                en: {
-                    guest: 'Unregistered',
-                    battleMode: '⚡ 8P Battle',
-                    soloMode: '🧢 Solo Drill',
-                    globalLabel: '🌍 GLOBAL (TOP 1000)',
-                    countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                    noBattleHint: '⚡ Play 1 World 8P Battle match to get ranked',
-                    noSoloHint: '🧢 Play 1 Solo Training game to get ranked'
-                },
-                ja: {
-                    guest: '未登録',
-                    battleMode: '⚡ 8人バトル',
-                    soloMode: '🧢 個人特訓',
-                    globalLabel: '🌍 世界 (TOP 1000)',
-                    countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                    noBattleHint: '⚡ 世界8人バトルを1回プレイすると順位が集計されます',
-                    noSoloHint: '🧢 ひとり特訓を1回プレイすると順位が集計されます'
-                },
-                'zh-TW': {
-                    guest: '未登錄',
-                    battleMode: '⚡ 8人對戰',
-                    soloMode: '🧢 單人特訓',
-                    globalLabel: '🌍 世界 (TOP 1000)',
-                    countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                    noBattleHint: '⚡ 完成1場世界8人對戰後即可查看排名',
-                    noSoloHint: '🧢 完成1場單人特訓後即可查看排名'
-                },
-                es: {
-                    guest: 'Sin registrar',
-                    battleMode: '⚡ Batalla 8P',
-                    soloMode: '🧢 Solo',
-                    globalLabel: '🌍 MUNDIAL (TOP 1000)',
-                    countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                    noBattleHint: '⚡ Juega 1 Batalla 8P para entrar al ranking',
-                    noSoloHint: '🧢 Juega 1 partida Solo para entrar al ranking'
-                }
-            }[lang] || {
-                guest: 'Unregistered',
-                battleMode: '⚡ 8P Battle',
-                soloMode: '🧢 Solo',
-                globalLabel: '🌍 GLOBAL (TOP 1000)',
-                countryLabel: `${flag} ${userCountry} (TOP 100)`,
-                noBattleHint: '⚡ Play 1 match to get ranked',
-                noSoloHint: '🧢 Play 1 game to get ranked'
-            };
-
-            const safeName = escapeBattleText(myName || i18n.guest);
-            const battleStats = typeof getBattleStats === 'function' ? getBattleStats() : { matches: 0, wins: 0 };
-            const myRating = typeof getBattleRating === 'function' ? getBattleRating() : DEFAULT_BATTLE_RATING;
-            const myBestScore = typeof getPersonalBestScore === 'function' ? getPersonalBestScore() : 0;
-
-            const hasPlayedMode = isBattleTab
-                ? (Boolean(myName) && Number(battleStats.matches || 0) > 0)
-                : (Boolean(myName) && myBestScore > 0);
-            const myValue = isBattleTab ? myRating : myBestScore;
-            const scoreLabel = isBattleTab ? `${myRating.toLocaleString()} PT` : `${myBestScore} PTS`;
-            const modeLabel = isBattleTab ? i18n.battleMode : i18n.soloMode;
-
-            const globalRankStr = resolvePlayerRankLabel(globalRanks, myValue, myName, LEADERBOARD_LIMIT_GLOBAL, hasPlayedMode);
-            const countryRankStr = resolvePlayerRankLabel(countryRanks, myValue, myName, LEADERBOARD_LIMIT_COUNTRY, hasPlayedMode);
-            const showHint = (globalRankStr === '—' && countryRankStr === '—');
-            const hintText = isBattleTab ? i18n.noBattleHint : i18n.noSoloHint;
-
-            bar.innerHTML = `
-                <div class="imrb-header">
-                    <div class="imrb-player">
-                        <span>👤</span>
-                        <span class="imrb-player-name">${safeName}</span>
-                        <span class="imrb-mode-tag">${modeLabel}</span>
-                    </div>
-                    <span class="imrb-score">${scoreLabel}</span>
-                </div>
-                <div class="imrb-grid">
-                    <div class="imrb-col${activeScope === 'global' ? ' active-scope' : ''}">
-                        <span class="imrb-label">${i18n.globalLabel}</span>
-                        <strong class="imrb-val">${globalRankStr}</strong>
-                    </div>
-                    <div class="imrb-col${activeScope === 'country' ? ' active-scope' : ''}">
-                        <span class="imrb-label">${i18n.countryLabel}</span>
-                        <strong class="imrb-val">${countryRankStr}</strong>
-                    </div>
-                </div>
-                ${showHint ? `<p class="imrb-hint">${hintText}</p>` : ''}
-            `;
+            const playerName = getSavedPlayerName();
+            const score = isBattleTab ? getBattleRating() : getPersonalBestScore();
+            const hasPlayedMode = Boolean(playerName) && (isBattleTab ? getBattleStats().matches > 0 : score > 0);
+            const ranks = activeScope === 'country' ? countryRanks : globalRanks;
+            const rank = resolvePlayerRankLabel(ranks, score, playerName, getLeaderboardLimit(activeScope), hasPlayedMode);
+            const scoreLabel = `${score.toLocaleString()} ${isBattleTab ? 'PT' : 'PTS'}`;
+            renderComicRankStrip(bar, rank, scoreLabel);
         }
 
         function loadIntroRankList() {
@@ -15445,29 +15362,13 @@
 
         function toggleIntroRanking() {
             const modal = document.getElementById('intro-ranking-modal');
-            const isHidden = modal.classList.contains('hidden');
-            if (isHidden) {
-                modal.classList.remove('hidden');
-                const inner = modal.querySelector('.modal-inner');
-                inner.scrollTop = 0;
-                // 터치 드래그 스크롤 직접 구현
-                if (!inner._touchBound) {
-                    inner._touchBound = true;
-                    let startY = 0, startScroll = 0;
-                    inner.addEventListener('touchstart', e => {
-                        startY = e.touches[0].clientY;
-                        startScroll = inner.scrollTop;
-                    }, { passive: true });
-                    inner.addEventListener('touchmove', e => {
-                        const dy = startY - e.touches[0].clientY;
-                        inner.scrollTop = startScroll + dy;
-                        e.stopPropagation();
-                    }, { passive: true });
-                }
-                loadIntroRankList();
-            } else {
-                modal.classList.add('hidden');
+            if (!modal.classList.contains('hidden')) {
+                hideComicPopup('intro-ranking-modal');
+                return;
             }
+            showComicPopup('intro-ranking-modal');
+            enableResultRankTouchScroll(document.getElementById('intro-rank-list'));
+            loadIntroRankList();
         }
 
         function goToMain() {

@@ -1580,121 +1580,6 @@ html[lang="zh-TW"] {
     touch-action: pan-y;
 }
 
-#game-dialog {
-    box-sizing: border-box;
-    position: fixed;
-    width: min(340px, calc(100% - 36px));
-    max-width: none;
-    max-height: calc(100dvh - 40px);
-    margin: auto;
-    padding: 0;
-    overflow: auto;
-    border: 3px solid var(--showa-ink);
-    border-radius: 12px;
-    background: var(--showa-paper);
-    color: var(--showa-ink);
-    box-shadow: 5px 7px 0 var(--showa-ink);
-    font-family: var(--font-game);
-    text-align: left;
-}
-
-#game-dialog::backdrop {
-    background: #192738b8;
-}
-
-#game-dialog,
-#game-dialog * {
-    touch-action: pan-y;
-}
-
-.game-dialog-header {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 10px 15px;
-    border-bottom: 3px solid var(--showa-ink);
-    background: var(--showa-print) 0 0 / 6px 6px, var(--showa-gold);
-}
-
-.game-dialog-header img {
-    width: 32px;
-    height: 32px;
-}
-
-.game-dialog-header h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 900;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-}
-
-.game-dialog-body {
-    padding: 15px;
-}
-
-#game-dialog-message {
-    margin: 0 0 15px;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-}
-
-#game-dialog-input {
-    width: 100%;
-    min-height: 44px;
-    margin-bottom: 15px;
-    padding: 8px 10px;
-    border: 2px solid var(--showa-ink);
-    border-radius: 7px;
-    background: #fffae8;
-    color: var(--showa-ink);
-    font: inherit;
-    font-size: 16px;
-    user-select: text;
-    -webkit-user-select: text;
-}
-
-.game-dialog-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 9px;
-}
-
-.game-dialog-actions button {
-    min-width: 76px;
-    min-height: 44px;
-    padding: 6px 13px;
-    border: 2px solid var(--showa-ink);
-    border-radius: 7px;
-    background: var(--showa-cream);
-    color: var(--showa-ink);
-    box-shadow: 2px 3px 0 var(--showa-ink);
-    font: inherit;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-#game-dialog-accept {
-    background: var(--showa-red);
-    color: var(--showa-paper);
-}
-
-.game-dialog-actions button:active {
-    transform: translate(1px, 2px);
-    box-shadow: 1px 1px 0 var(--showa-ink);
-}
-
-#game-dialog :is(input, button):focus-visible {
-    outline: 2px solid var(--showa-green);
-    outline-offset: 2px;
-}
-
 #intro-bubble-guide:not([hidden]) {
     display: block;
     margin-top: 9px;
@@ -2325,3 +2210,331 @@ html[lang="zh-TW"] {
 .battle-league-tier h3 { margin: 0; font-size: 17px; }
 .battle-league-tier p { margin: 4px 0 0; font-size: 13px; }
 .battle-league-current { color: var(--showa-green); font-size: 12px; }
+
+/* Common paper panels. Native dialogs use CSS pixels, while game overlays use stage units. */
+.comic-popup-layer {
+    background: #1421319c !important;
+    backdrop-filter: none !important;
+}
+.comic-popup-layer > .comic-popup,
+#intro-ranking-modal > .comic-popup,
+#game-over-screen #leaderboard-modal.comic-popup,
+#game-dialog.comic-popup {
+    --popup-unit: 2.75px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: min(950px, 100%);
+    max-width: none;
+    max-height: 86%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    border: calc(3 * var(--popup-unit)) solid var(--showa-ink);
+    border-radius: calc(5 * var(--popup-unit));
+    color: var(--showa-ink);
+    background: var(--showa-paper);
+    box-shadow: calc(5 * var(--popup-unit)) calc(6 * var(--popup-unit)) 0 var(--showa-ink);
+    text-align: left;
+}
+.comic-popup-layer > .comic-popup-compact { width: min(890px, 100%); }
+#settings-modal .comic-popup,
+#skin-modal .comic-popup,
+.comic-popup-layer > .comic-popup-rank,
+#game-over-screen #leaderboard-modal.comic-popup {
+    height: 83%;
+}
+.comic-popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    gap: calc(9 * var(--popup-unit));
+    padding: calc(8 * var(--popup-unit)) calc(12 * var(--popup-unit));
+    background: var(--showa-print) 0 0 / calc(5 * var(--popup-unit)) calc(5 * var(--popup-unit)), var(--showa-cream);
+    border-bottom: calc(2 * var(--popup-unit)) solid var(--showa-ink);
+}
+.comic-popup .comic-popup-head :is(h2, h3),
+#intro-ranking-modal .comic-popup .comic-popup-head h3,
+#game-over-screen #leaderboard-modal.comic-popup .comic-popup-head h3 {
+    margin: 0 !important;
+    color: var(--showa-red);
+    font: 900 calc(23 * var(--popup-unit))/1.12 var(--font-game);
+    letter-spacing: -.02em;
+    text-align: start;
+    text-shadow: none;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}
+.comic-popup .comic-popup-close,
+#intro-ranking-modal #intro-ranking-close-x.comic-popup-close,
+#game-over-screen #result-leaderboard-close.comic-popup-close {
+    position: static;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: calc(44 * var(--popup-unit));
+    height: calc(44 * var(--popup-unit));
+    padding: 0;
+    border: calc(2 * var(--popup-unit)) solid var(--showa-ink);
+    border-radius: calc(3 * var(--popup-unit));
+    color: var(--showa-ink);
+    background: var(--showa-gold);
+    box-shadow: calc(2 * var(--popup-unit)) calc(2 * var(--popup-unit)) 0 var(--showa-ink);
+    font: 800 calc(24 * var(--popup-unit))/1 system-ui, sans-serif;
+    cursor: pointer;
+}
+.comic-popup-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: calc(13 * var(--popup-unit));
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #987e5d transparent;
+}
+.comic-popup-actions {
+    display: flex;
+    flex: none;
+    gap: calc(10 * var(--popup-unit));
+    padding: calc(9 * var(--popup-unit)) calc(13 * var(--popup-unit)) calc(13 * var(--popup-unit));
+    border-top: 1px solid #19273835;
+}
+.comic-popup-actions .comic-popup-action {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+    min-height: calc(44 * var(--popup-unit));
+    margin: 0;
+    padding: calc(7 * var(--popup-unit)) calc(8 * var(--popup-unit));
+    border: calc(2 * var(--popup-unit)) solid var(--showa-ink);
+    border-radius: calc(3 * var(--popup-unit));
+    color: var(--showa-ink);
+    background: var(--showa-paper);
+    box-shadow: calc(2 * var(--popup-unit)) calc(3 * var(--popup-unit)) 0 var(--showa-ink);
+    font: 800 calc(16 * var(--popup-unit))/1.14 var(--font-game);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+.comic-popup-action.primary,
+#settings-modal #settings-close-btn.comic-popup-action {
+    color: var(--showa-ink);
+    background: var(--showa-gold);
+    text-shadow: none;
+}
+.comic-popup-action.danger {
+    color: var(--showa-paper);
+    background: var(--showa-red);
+}
+.comic-popup :is(button, a, input, [tabindex="0"]):focus-visible {
+    outline: calc(2 * var(--popup-unit)) solid var(--showa-green);
+    outline-offset: calc(2 * var(--popup-unit));
+}
+.comic-popup [hidden] { display: none !important; }
+/* The game wrapper disables panning on the field. Restore it inside these cards. */
+.comic-popup, .comic-popup * { touch-action: pan-y; }
+.comic-popup input[type="range"] { touch-action: pan-x; }
+
+#game-dialog.comic-popup {
+    --popup-unit: 1px;
+    position: fixed;
+    inset: auto;
+    top: var(--popup-view-center, 50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(350px, calc(100% - 32px));
+    max-height: calc(var(--popup-view-height, 100dvh) - 32px);
+    font-family: var(--font-game);
+}
+#game-dialog:not([open]) { display: none; }
+#game-dialog::backdrop { background: #1421319c; }
+#game-dialog form { display: flex; flex-direction: column; min-height: 0; }
+#game-dialog-message {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}
+#game-dialog-field {
+    display: grid;
+    gap: 5px;
+    margin-top: 11px;
+    font-size: 14px;
+    font-weight: 800;
+}
+#game-dialog-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 7px 9px;
+    border: 2px solid var(--showa-ink);
+    border-radius: 3px;
+    color: var(--showa-ink);
+    background: #fff9e7;
+    font: inherit;
+    font-size: 16px;
+    user-select: text;
+    -webkit-user-select: text;
+}
+.comic-purchase-banner {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 11px;
+    border: 2px solid var(--showa-ink);
+    border-radius: 3px;
+    background: linear-gradient(90deg, #edbc57 42%, #edbc5766),
+        var(--showa-gold) url('./images/showa-remove-ads.webp') center / cover;
+    font-weight: 850;
+}
+.comic-purchase-banner strong {
+    padding: 5px 8px;
+    color: var(--showa-paper);
+    background: var(--showa-ink);
+}
+#exit-confirm-modal .comic-popup-compact { width: min(810px, 100%); }
+#exit-confirm-modal .exit-confirm-msg { font-size: 46px; text-align: center; }
+#exit-confirm-modal .comic-popup-actions { border-top: 0; padding-top: 0; }
+
+#settings-modal .settings-section {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 2px solid #19273830;
+    box-shadow: none;
+    padding: 10px 0 22px;
+    margin-bottom: 15px;
+    background: transparent;
+}
+#settings-modal .settings-lang-current-btn,
+#settings-modal .settings-account-btn {
+    min-height: 110px;
+    border: 4px solid var(--showa-ink);
+    border-radius: 7px;
+    color: var(--showa-ink);
+    background: var(--showa-cream);
+    box-shadow: none;
+}
+#settings-modal .settings-lang-dropdown {
+    position: static;
+    max-height: none;
+    margin-top: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: none;
+}
+#settings-modal .settings-lang-btn {
+    min-height: 103px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+#settings-modal .settings-lang-btn.active { background: var(--showa-gold); }
+#settings-modal :is(.settings-val-badge, .settings-account-badge) { box-shadow: none; }
+#settings-modal .settings-val-badge { border: 0; background: none; }
+.skin-featured {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 20px;
+    padding: 18px 23px;
+    border: 5px solid var(--showa-ink);
+    background: #f4d991;
+}
+.skin-featured .skin-art-badge { width: 110px; height: 110px; object-fit: contain; }
+.skin-featured small { display: block; color: var(--showa-green); font-size: 34px; }
+.skin-featured strong { display: block; font-size: 49px; line-height: 1.13; }
+#skin-modal .skin-modal-subtitle { text-align: left; margin: 0 0 22px; }
+#skin-modal .skin-grid { margin: 0; gap: 15px; }
+#skin-modal .skin-card {
+    border-width: 4px;
+    border-radius: 5px;
+    box-shadow: none;
+    background: #fff7de;
+}
+#skin-modal .skin-card.equipped { background: #f4d991; }
+#skin-modal .skin-card.hidden-skin { background: var(--showa-ink); }
+#special-guide-modal .special-guide-card {
+    border-width: 4px;
+    border-radius: 5px;
+    box-shadow: none;
+}
+#special-guide-modal .special-guide-thumb {
+    width: 144px;
+    height: 144px;
+    border: 0;
+    border-radius: 0;
+    background: var(--showa-print) 0 0 / 9px 9px, var(--showa-cream);
+}
+
+.comic-rank-nav { flex: none; padding: 23px 30px 16px; }
+.comic-rank-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+.comic-rank-modes { margin-bottom: 15px; }
+.comic-rank-tabs button {
+    min-height: 111px;
+    padding: 8px;
+    border: 4px solid var(--showa-ink);
+    border-radius: 5px;
+    color: var(--showa-ink);
+    background: var(--showa-cream);
+    font: 850 37px/1.06 var(--font-game);
+    cursor: pointer;
+}
+.comic-rank-tabs button[aria-pressed="true"] { background: var(--showa-gold); }
+.comic-rank-modes button[aria-pressed="true"] {
+    color: var(--showa-paper);
+    background: var(--showa-ink);
+}
+.comic-rank-tabs small { display: block; margin-top: 4px; font-size: 26px; }
+.comic-my-rank {
+    display: flex;
+    flex: none;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin: 0 30px 12px;
+    padding: 17px 20px;
+    border: 4px solid var(--showa-ink);
+    background: #f4d991;
+    font-size: 37px;
+    font-weight: 800;
+}
+.comic-my-rank strong { color: var(--showa-red); }
+#intro-ranking-modal .comic-rank-list,
+#game-over-screen #rank-list.comic-rank-list {
+    width: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 9px 30px 24px;
+}
+#intro-ranking-modal .comic-rank-list .rank-item,
+#game-over-screen .comic-rank-list .rank-item {
+    display: grid;
+    grid-template-columns: 124px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 110px;
+    margin: 0;
+    padding: 17px 13px;
+    border: 0;
+    border-bottom: 2px solid #19273830;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+#intro-ranking-modal .comic-rank-list .rank-item.is-me,
+#game-over-screen .comic-rank-list .rank-item.is-me {
+    background: #f4d991;
+}

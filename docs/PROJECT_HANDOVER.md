@@ -217,6 +217,8 @@ cd Infinite_Pitcher
 
 ## 🚀 7. 향후 예정된 작업 (Next Steps / Roadmap)
 
+게임 화면 개선 순서와 팝업 공통화 범위는 [게임 UI 디자인 백로그](UI_DESIGN_BACKLOG.md)에 정리되어 있다.
+
 1. **디자이너 에셋 교체**:
    * 디자이너에게 전달한 `DESIGN_ORDER_SHEET`에 따라 새로 제작된 고품질 캐릭터, 타이틀, 블록, 이펙트 스프라이트로 교체.
 2. **모바일 네이티브 스토어 결제 & 광고 연동 (Capacitor Plugins)**:
