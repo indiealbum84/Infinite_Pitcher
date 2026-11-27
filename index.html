@@ -4921,10 +4921,12 @@
         titleGain.connect(audioCtx.destination);
 
         // HTMLAudioElement 폴백 (bgm_game.wav Web Audio API 실패 시)
-        const bgmGameEl  = new Audio('./sounds/bgm_game.wav');
+        const bgmGameEl  = new Audio();
+        bgmGameEl.preload = 'none';
         bgmGameEl.loop   = true;
         bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
         let bgmGameUseEl = false;
+        let gameBgmPlayToken = 0;
         const gameBgmGain = audioCtx.createGain();
         gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
         gameBgmGain.connect(audioCtx.destination);
@@ -4933,28 +4935,9 @@
             playSfx('ball_throw', 0.7);
         }
 
-        // fetch 대신 XHR 사용 — file:// 프로토콜에서도 동작
-        // 버퍼 끝의 무음 구간을 건너뛰기 위한 실제 루프 끝 지점 계산
-        function detectLoopEnd(buffer) {
-            const threshold = 0.001;
-            // 모든 채널 중 가장 늦게 소리가 있는 샘플 위치를 찾음
-            let lastSample = 0;
-            for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-                const data = buffer.getChannelData(ch);
-                for (let i = data.length - 1; i >= 0; i--) {
-                    if (Math.abs(data[i]) > threshold) {
-                        if (i > lastSample) lastSample = i;
-                        break;
-                    }
-                }
-            }
-            // 약간의 여유(0.01초)를 두고 잘라냄
-            return Math.min((lastSample + Math.floor(buffer.sampleRate * 0.01)) / buffer.sampleRate, buffer.duration);
-        }
-
         let gameBgmLoopEnd = 0;
 
-        (function loadGameBgm() {
+        const gameBgmLoadPromise = new Promise(resolve => {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', './sounds/bgm_game.wav', true);
             xhr.responseType = 'arraybuffer';
@@ -4963,17 +4946,19 @@
                     audioCtx.decodeAudioData(xhr.response)
                         .then(decoded => {
                             gameBgmBuffer = decoded;
-                            gameBgmLoopEnd = detectLoopEnd(decoded);
-                            console.log('[BGM] loopEnd:', gameBgmLoopEnd, '/ duration:', decoded.duration);
+                            gameBgmLoopEnd = decoded.duration;
+                            console.log('[BGM] decoded duration:', decoded.duration);
+                            resolve(decoded);
                         })
-                        .catch(() => { bgmGameUseEl = true; });
+                        .catch(() => { bgmGameUseEl = true; resolve(null); });
                 } else {
                     bgmGameUseEl = true;
+                    resolve(null);
                 }
             };
-            xhr.onerror = () => { bgmGameUseEl = true; };
+            xhr.onerror = () => { bgmGameUseEl = true; resolve(null); };
             xhr.send();
-        })();
+        });
 
         let fadeTimer = null;
 
@@ -4996,6 +4981,7 @@
         }
 
         function stopAllBgm(options = {}) {
+            gameBgmPlayToken++;
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
             if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
             if (titleBgmEl) {
@@ -6578,27 +6564,35 @@
         function playGameBgm() {
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
             stopAllBgm();
-            console.log('[BGM] playGameBgm called. buffer:', !!gameBgmBuffer, '/ audioCtx.state:', audioCtx.state);
-            if (gameBgmBuffer) {
+            const myToken = ++gameBgmPlayToken;
+            const startWebAudioLoop = (buf) => {
                 audioCtx.resume().then(() => {
-                    if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
-                    console.log('[BGM] AudioContext resumed, starting Web Audio loop');
+                    if (myToken !== gameBgmPlayToken || pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
+                    if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
                     const src = audioCtx.createBufferSource();
-                    src.buffer    = gameBgmBuffer;
-                    src.loop      = true;
-                    src.loopStart = 0;
-                    src.loopEnd   = gameBgmLoopEnd;
+                    src.buffer = buf;
+                    src.loop = true;
                     gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
                     src.connect(gameBgmGain);
                     src.start(0);
                     gameBgmSource = src;
                 });
+            };
+            if (gameBgmBuffer) {
+                startWebAudioLoop(gameBgmBuffer);
             } else {
-                console.log('[BGM] buffer null → fallback HTMLAudioElement');
-                bgmGameUseEl = true;
-                bgmGameEl.currentTime = 0;
-                bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
-                bgmGameEl.play().catch(e => console.warn('[BGM] fallback play failed:', e));
+                gameBgmLoadPromise.then(buf => {
+                    if (myToken !== gameBgmPlayToken || pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
+                    if (buf) {
+                        startWebAudioLoop(buf);
+                    } else {
+                        bgmGameUseEl = true;
+                        if (!bgmGameEl.src) bgmGameEl.src = './sounds/bgm_game.wav';
+                        bgmGameEl.currentTime = 0;
+                        bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
+                        bgmGameEl.play().catch(e => console.warn('[BGM] fallback play failed:', e));
+                    }
+                });
             }
         }
 
