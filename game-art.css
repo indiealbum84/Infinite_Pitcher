@@ -588,12 +588,12 @@ html[lang="zh-TW"] {
     .special-cutin.show { animation-name: special-cutin-still; }
 }
 
-/* Keep the rule reminder readable after the illustrated move. */
+/* Show the rule reminder together with the illustrated move from the start. */
 #special-ball-tip-banner.show {
-    animation: specialTipAnim 1.2s ease-out 1.1s both;
+    animation: specialTipAnim 2.4s ease-out both;
 }
 #special-ball-tip-banner.show[data-move="flashball"] {
-    animation-delay: 1.7s;
+    animation-duration: 3s;
 }
 
 .skin-art-badge {

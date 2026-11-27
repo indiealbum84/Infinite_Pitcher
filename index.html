@@ -743,20 +743,27 @@
             transform: translate(-50%, -50%) scale(0.92);
             width: 92%;
             max-width: 960px;
-            padding: 26px 34px;
+            box-sizing: border-box;
+            padding: 22px 28px;
             background: rgba(25, 39, 56, 0.95);
             color: #fff8e6;
             border: 6px solid #edbc57;
             border-radius: 28px;
             box-shadow: 0 10px 0 #192738, 0 16px 32px rgba(0, 0, 0, 0.55);
-            font-size: 44px;
+            font-size: 36px;
             font-weight: 900;
             line-height: 1.32;
             text-align: center;
-            word-break: keep-all;
+            word-break: normal;
+            overflow-wrap: anywhere;
+            white-space: normal;
             pointer-events: none;
             z-index: 32;
             opacity: 0;
+        }
+
+        html[lang="ko"] #special-ball-tip-banner {
+            word-break: keep-all;
         }
 
         #special-ball-tip-banner.show {
