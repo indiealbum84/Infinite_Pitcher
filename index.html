@@ -7873,10 +7873,12 @@
                 strip.replaceChildren();
             }
 
-            const settleCard = (card, rank = false) => {
+            const settleCard = (card, rank = false, silent = false) => {
                 delete screen.dataset.spotlight;
-                playSfx('throw_hit', .64);
-                triggerHaptic('medium');
+                if (!silent) {
+                    playSfx('throw_hit', .64);
+                    triggerHaptic('medium');
+                }
                 const frames = rank ? [
                     { transform: 'none' },
                     { transform: 'translateY(4px) scale(1.008,.985)', offset: .36 },
@@ -7966,9 +7968,11 @@
                     return animate(value, frames, 340);
                 }
 
-                function impact(isRecord) {
-                    playSfx('throw_hit', isRecord ? .75 : .5);
-                    triggerHaptic(isRecord ? 'heavy' : 'medium');
+                function impact(isRecord, withSfx = true) {
+                    if (withSfx) {
+                        playSfx('throw_hit', isRecord ? .75 : .5);
+                        triggerHaptic(isRecord ? 'heavy' : 'medium');
+                    }
                     const hits = [confirmValue(finalScoreEl)];
                     if (isRecord) hits.push(confirmValue(bestValue));
                     return Promise.all(hits);
@@ -7994,7 +7998,7 @@
                             if (displayed < finalScore && canAnimate()) {
                                 await countTo(finalScore, true);
                                 if (!active()) return;
-                                if (canAnimate()) await impact(false);
+                                if (canAnimate()) await impact(false, false);
                             }
                         }
                     } else if (canAnimate()) {
@@ -8013,7 +8017,7 @@
                     await dropCard(record, scoreTo, scoreFrom, scoreTo);
                     if (!active()) return;
                     record.getAnimations().forEach(animation => animation.cancel());
-                    if (canAnimate()) await settleCard(record);
+                    if (canAnimate()) await settleCard(record, false, true);
                     if (canAnimate()) await wait(160);
                 }
                 delete screen.dataset.spotlight;
