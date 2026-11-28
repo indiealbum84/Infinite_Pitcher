@@ -1605,15 +1605,16 @@ html[lang="zh-TW"] {
     align-items: center;
 }
 #play-hud .battle-hud-box[data-flag-art] {
-    background-image: linear-gradient(#fff2cf88, #fff2cfeb), var(--country-flag-art, none);
+    background-image: linear-gradient(rgba(255, 242, 207, 0.52), rgba(255, 242, 207, 0.64)), var(--country-flag-art, none);
     background-position: center;
-    background-size: cover;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 #play-hud .battle-hud-box.me[data-flag-art] {
-    background-image: linear-gradient(#ffde8578, #ffde85eb), var(--country-flag-art, none) !important;
+    background-image: linear-gradient(rgba(255, 222, 133, 0.46), rgba(255, 222, 133, 0.60)), var(--country-flag-art, none) !important;
 }
 #play-hud .battle-hud-box.done[data-flag-art] {
-    background-image: linear-gradient(#f1f5f9a8, #f1f5f9ee), var(--country-flag-art, none);
+    background-image: linear-gradient(rgba(241, 245, 249, 0.68), rgba(241, 245, 249, 0.78)), var(--country-flag-art, none);
 }
 #play-hud .battle-hud-box .bhb-score {
     font-size: 42px;
