@@ -1604,6 +1604,17 @@ html[lang="zh-TW"] {
     justify-content: center;
     align-items: center;
 }
+#play-hud .battle-hud-box[data-flag-art] {
+    background-image: linear-gradient(#fff2cf88, #fff2cfeb), var(--country-flag-art, none);
+    background-position: center;
+    background-size: cover;
+}
+#play-hud .battle-hud-box.me[data-flag-art] {
+    background-image: linear-gradient(#ffde8578, #ffde85eb), var(--country-flag-art, none) !important;
+}
+#play-hud .battle-hud-box.done[data-flag-art] {
+    background-image: linear-gradient(#f1f5f9a8, #f1f5f9ee), var(--country-flag-art, none);
+}
 #play-hud .battle-hud-box .bhb-score {
     font-size: 42px;
     line-height: 1;

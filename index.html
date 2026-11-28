@@ -3867,7 +3867,7 @@
         }
     </style>
     <link rel="stylesheet" href="./images/country-flags/flags.css">
-    <link rel="stylesheet" href="./game-art.css?v=friend-result-score-centered">
+    <link rel="stylesheet" href="./game-art.css?v=hud-flag-art">
 
 </head>
 
@@ -14528,7 +14528,9 @@
                     const skinBadgeHtml = `<span class="bhb-badge">${renderSkinBadge(skinId, { decorative: true })}</span>`;
                     const meClass = isMe ? ' me' : '';
                     const doneClass = player.done ? ' done' : '';
-                    return `<div class="battle-hud-box${meClass}${doneClass}" data-player-id="${player.id}">
+                    const flag = (battleViewMode === 'world8' && typeof battlePlayerFlagArt === 'function') ? battlePlayerFlagArt(player) : '';
+                    const flagAttr = flag ? ` data-flag-art="${flag}"` : '';
+                    return `<div class="battle-hud-box${meClass}${doneClass}" data-player-id="${player.id}"${flagAttr}>
                         <div class="bhb-num">${numLabel}</div>${skinBadgeHtml}${streakBadge}
                         <div class="bhb-score">${scoreText}</div>
                     </div>`;
@@ -14537,6 +14539,12 @@
                 players.forEach((player, index) => {
                     const box = hud.children[index];
                     if (!box) return;
+                    const flag = (battleViewMode === 'world8' && typeof battlePlayerFlagArt === 'function') ? battlePlayerFlagArt(player) : '';
+                    if (flag) {
+                        if (box.dataset.flagArt !== flag) box.dataset.flagArt = flag;
+                    } else if (box.dataset.flagArt) {
+                        delete box.dataset.flagArt;
+                    }
                     const streakVal = Number(player.streak) || 0;
                     const streakText = streakVal >= 1 ? `🔥${streakVal}` : '';
                     const numLabel = `${index + 1}P`;
