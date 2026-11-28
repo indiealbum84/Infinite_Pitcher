@@ -4558,6 +4558,7 @@
             stripeball:       './sounds/stripeball.mp3',
             flashball:        './sounds/flashball.mp3',
             rank_count:       './sounds/rank_count.mp3',
+            bgm_result:       './sounds/bgm_game_result.mp3',
         };
         Object.entries(sfxFiles).forEach(([key, url]) => {
             const audio = new Audio(url);
@@ -4704,6 +4705,13 @@
         titleGain.gain.value = 0.6 * bgmVolume;
         titleGain.connect(audioCtx.destination);
 
+        // bgm_game_result: 결과 화면 전용 루프 BGM
+        let resultBgmSource = null;
+        let resultBgmEl = null;
+        let resultGain = audioCtx.createGain();
+        resultGain.gain.value = 0.6 * bgmVolume;
+        resultGain.connect(audioCtx.destination);
+
         // HTMLAudioElement 폴백 (bgm_game.wav Web Audio API 실패 시)
         const bgmGameEl  = new Audio();
         bgmGameEl.preload = 'none';
@@ -4777,7 +4785,55 @@
             if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
             bgmGameEl.pause();
             bgmGameEl.currentTime = 0;
+            if (resultBgmSource) { try { resultBgmSource.stop(); } catch(e) {} resultBgmSource = null; }
+            if (resultBgmEl) {
+                resultBgmEl.pause();
+                resultBgmEl.currentTime = 0;
+                resultBgmEl = null;
+            }
+            if (resultGain) resultGain.gain.value = 0.6 * bgmVolume;
             if (options.stopSfx) stopActiveSfx();
+        }
+
+        function isResultBgmPlaying() {
+            if (resultBgmSource && audioCtx && audioCtx.state === 'running') return true;
+            if (resultBgmEl && !resultBgmEl.paused) return true;
+            return false;
+        }
+
+        function playResultBgm() {
+            if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
+            if (gameState !== 'GAMEOVER') return;
+            if (isResultBgmPlaying()) return;
+            if (!sfxBuffers['bgm_result']) {
+                const base = sfxAudioEls['bgm_result'];
+                if (!base) return;
+                resultBgmEl = base;
+                resultBgmEl.loop = true;
+                resultBgmEl.currentTime = 0;
+                resultBgmEl.volume = 0.6 * bgmVolume;
+                resultBgmEl.play().catch(e => {
+                    resultBgmEl = null;
+                    console.warn('[BGM] result fallback play failed:', e);
+                });
+                return;
+            }
+            if (audioCtx.state !== 'running') {
+                try { audioCtx.resume(); } catch (e) {}
+            }
+            if (resultBgmSource) { try { resultBgmSource.stop(); } catch(e) {} resultBgmSource = null; }
+            if (resultBgmEl) {
+                resultBgmEl.pause();
+                resultBgmEl.currentTime = 0;
+                resultBgmEl = null;
+            }
+            resultGain.gain.value = 0.6 * bgmVolume;
+            const src = audioCtx.createBufferSource();
+            src.buffer = sfxBuffers['bgm_result'];
+            src.loop = true;
+            src.connect(resultGain);
+            src.start(0);
+            resultBgmSource = src;
         }
 
         function isTitleBgmPlaying() {
@@ -5884,8 +5940,10 @@
             bgmVolume = Math.max(0, Math.min(1, Number(vol)));
             localStorage.setItem('infinite_pitcher_bgm_vol', String(bgmVolume));
             if (titleGain) titleGain.gain.value = 0.6 * bgmVolume;
+            if (resultGain) resultGain.gain.value = 0.6 * bgmVolume;
             if (gameBgmGain) gameBgmGain.gain.value = GAME_BGM_VOLUME * bgmVolume;
             if (titleBgmEl) titleBgmEl.volume = 0.6 * bgmVolume;
+            if (resultBgmEl) resultBgmEl.volume = 0.6 * bgmVolume;
             if (bgmGameEl) bgmGameEl.volume = GAME_BGM_VOLUME * bgmVolume;
             updateSettingsUI();
         }
@@ -7517,6 +7575,7 @@
             setPlayHudMode();
             setPitcherThrowing(false);
             stopAllBgm();
+            playResultBgm();
             const canvasEl = document.getElementById('canvas');
             if (canvasEl && battleMode) canvasEl.style.display = 'none';
             hideComicPopup('play-gate-screen', false);
@@ -11429,6 +11488,11 @@
                 }
                 lastPitchTime = performance.now();
                 playGameBgm();
+                return;
+            }
+
+            if (gameState === 'GAMEOVER' && (isVisibleScreen('game-over-screen') || isVisibleScreen('battle-result-screen'))) {
+                playResultBgm();
                 return;
             }
 
