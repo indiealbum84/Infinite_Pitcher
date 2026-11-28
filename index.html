@@ -7572,10 +7572,8 @@
             };
 
             triggerHaptic('error');
-            if (!battleMode) {
-                playSfx('gameover', 0.7);
-            } else {
-                playSfx('throw_hit', 0.9);
+            playSfx('gameover', 0.7);
+            if (battleMode) {
                 if (battleRoomId && battlePlayerId) {
                     deathFreezeState.battleReported = true;
                     const savedScore = score;
@@ -14978,7 +14976,7 @@
                     canvasEl.style.opacity = '1';
                 }
                 if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
-                playSfx(myRank === 1 ? 'win' : 'gameover', 0.7);
+                if (myRank === 1) playSfx('win', 0.7);
             }
 
             if (myRank === 1) recordBattleWin();
