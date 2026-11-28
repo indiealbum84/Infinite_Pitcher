@@ -4775,6 +4775,7 @@
         function stopAllBgm(options = {}) {
             gameBgmPlayToken++;
             if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+            if (!options.fadeResult && resultFadeTimer) { clearInterval(resultFadeTimer); resultFadeTimer = null; }
             if (titleBgmSource) { try { titleBgmSource.stop(); } catch(e) {} titleBgmSource = null; }
             if (titleBgmEl) {
                 titleBgmEl.pause();
@@ -4785,13 +4786,17 @@
             if (gameBgmSource) { try { gameBgmSource.stop(); } catch(e) {} gameBgmSource = null; }
             bgmGameEl.pause();
             bgmGameEl.currentTime = 0;
-            if (resultBgmSource) { try { resultBgmSource.stop(); } catch(e) {} resultBgmSource = null; }
-            if (resultBgmEl) {
-                resultBgmEl.pause();
-                resultBgmEl.currentTime = 0;
-                resultBgmEl = null;
+            if (options.fadeResult && isResultBgmPlaying()) {
+                fadeResultBgm(options.fadeResultDuration || 700, options.onResultFaded || null);
+            } else {
+                if (resultBgmSource) { try { resultBgmSource.stop(); } catch(e) {} resultBgmSource = null; }
+                if (resultBgmEl) {
+                    resultBgmEl.pause();
+                    resultBgmEl.currentTime = 0;
+                    resultBgmEl = null;
+                }
+                if (resultGain) resultGain.gain.value = 0.6 * bgmVolume;
             }
-            if (resultGain) resultGain.gain.value = 0.6 * bgmVolume;
             if (options.stopSfx) stopActiveSfx();
         }
 
@@ -4801,7 +4806,10 @@
             return false;
         }
 
+        let resultFadeTimer = null;
+
         function playResultBgm() {
+            if (resultFadeTimer) { clearInterval(resultFadeTimer); resultFadeTimer = null; }
             if (pageAudioMuted || document.visibilityState === 'hidden' || bgmVolume <= 0.001) return;
             if (gameState !== 'GAMEOVER') return;
             if (isResultBgmPlaying()) return;
@@ -4908,6 +4916,38 @@
                         titleBgmEl = null;
                     }
                     titleGain.gain.value = 0.6 * bgmVolume;
+                }
+            }, interval);
+        }
+
+        function fadeResultBgm(duration = 700, onComplete = null) {
+            if (resultFadeTimer) { clearInterval(resultFadeTimer); resultFadeTimer = null; }
+            if (!isResultBgmPlaying()) {
+                if (typeof onComplete === 'function') onComplete();
+                return;
+            }
+            const steps = 24;
+            const interval = Math.max(16, duration / steps);
+            const startVolume = resultBgmEl ? resultBgmEl.volume : resultGain.gain.value;
+            const delta = startVolume / steps;
+            resultFadeTimer = setInterval(() => {
+                if (resultBgmEl) {
+                    resultBgmEl.volume = Math.max(0, resultBgmEl.volume - delta);
+                } else {
+                    resultGain.gain.value = Math.max(0, resultGain.gain.value - delta);
+                }
+                const currentVolume = resultBgmEl ? resultBgmEl.volume : resultGain.gain.value;
+                if (currentVolume <= 0.001) {
+                    clearInterval(resultFadeTimer);
+                    resultFadeTimer = null;
+                    if (resultBgmSource) { try { resultBgmSource.stop(); } catch(e) {} resultBgmSource = null; }
+                    if (resultBgmEl) {
+                        resultBgmEl.pause();
+                        resultBgmEl.currentTime = 0;
+                        resultBgmEl = null;
+                    }
+                    resultGain.gain.value = 0.6 * bgmVolume;
+                    if (typeof onComplete === 'function') onComplete();
                 }
             }, interval);
         }
@@ -7303,6 +7343,7 @@
             let count = 3;
             const mySessionId = gameSessionId;
             fadeTitleBgm(5000);
+            if (isResultBgmPlaying()) fadeResultBgm(1200);
 
             const cleanupCountdownListeners = () => {
                 countdownScreen.removeEventListener('click', startCountdownTick);
@@ -8072,6 +8113,7 @@
             if (!isWorld8BattleUnlocked()) return;
             playSfx('click', 0.7);
             triggerHaptic('medium');
+            if (isResultBgmPlaying()) fadeResultBgm(700);
             const goEl = document.getElementById('game-over-screen');
             if (goEl) goEl.classList.add('hidden');
             startWorld8Battle();
@@ -15114,10 +15156,15 @@
             document.getElementById('game-over-screen').classList.add('hidden');
             closeSoloLeaderboard(false);
             setPlayHudMode();
-            stopAllBgm();
+            const fadingResult = isResultBgmPlaying();
+            stopAllBgm({
+                fadeResult: fadingResult,
+                fadeResultDuration: 700,
+                onResultFaded: () => { if (gameState === 'INTRO') playTitleBgm(); }
+            });
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
-            playTitleBgm();
+            if (!fadingResult) playTitleBgm();
         }
 
         function applyBattleResultRating(rank) {
@@ -15191,10 +15238,15 @@
             battleRatingProcessed = false;
             lastBattleResultRatingData = null;
             document.getElementById('battle-result-rating-pill').hidden = true;
-            stopAllBgm();
+            const fadingResult = isResultBgmPlaying();
+            stopAllBgm({
+                fadeResult: fadingResult,
+                fadeResultDuration: 700,
+                onResultFaded: () => { if (gameState === 'INTRO') playTitleBgm(); }
+            });
             gameState = 'INTRO';
             document.getElementById('intro-screen').classList.remove('hidden');
-            playTitleBgm();
+            if (!fadingResult) playTitleBgm();
             updateIntroProfilePillUI();
         }
 
