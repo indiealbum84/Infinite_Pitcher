@@ -12024,6 +12024,7 @@
         let battleStarted = false;
         let battleSimStarted = false;
         let battleResultShown = false;
+        let battleWinSfxPlayed = false;
         let battleScoreCardsMarkup = '';
         const celebratedBattleWinners = new Set();
         let battleResultListener = null;
@@ -13791,6 +13792,7 @@
             battleStarted = false;
             battleSimStarted = false;
             battleResultShown = false;
+            battleWinSfxPlayed = false;
             battleRematchStarted = false;
             battleProfileReady = false;
             battlePhase = 1;
@@ -14372,6 +14374,7 @@
                     battleSimStarted = false;
                     battleMode = false;
                     battleResultShown = false;
+                    battleWinSfxPlayed = false;
                     battleRematchStarted = false;
                     document.getElementById('battle-result-screen').classList.add('hidden');
                     setPlayHudMode();
@@ -14644,6 +14647,7 @@
             closeBattleLeagueInfo();
             battleStarted = true;
             battleResultShown = false;
+            battleWinSfxPlayed = false;
             battleRematchStarted = false;
             battleMatchCounted = false;
             battleWinCounted = false;
@@ -14996,7 +15000,16 @@
                     canvasEl.style.opacity = '1';
                 }
                 if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (myRank === 1) playSfx('win', 0.7);
+            }
+            if (myRank === 1 && !battleWinSfxPlayed) {
+                battleWinSfxPlayed = true;
+                stopAllBgm();
+                playSfx('win', 0.7, () => {
+                    const resultEl = document.getElementById('battle-result-screen');
+                    if (gameState === 'GAMEOVER' && resultEl && !resultEl.classList.contains('hidden')) {
+                        playResultBgm();
+                    }
+                });
             }
 
             if (myRank === 1) recordBattleWin();
