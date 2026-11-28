@@ -4574,6 +4574,20 @@
                     audioCtx.decodeAudioData(xhr.response)
                         .then(buf => {
                             sfxBuffers[key] = buf;
+                            if (key === 'countdown') {
+                                let firstAttack = 0;
+                                const maxScan = Math.min(buf.length, Math.floor(buf.sampleRate * 0.15));
+                                for (let ch = 0; ch < buf.numberOfChannels; ch++) {
+                                    const data = buf.getChannelData(ch);
+                                    for (let i = 0; i < maxScan; i++) {
+                                        if (Math.abs(data[i]) > 0.015) {
+                                            if (firstAttack === 0 || i < firstAttack) firstAttack = i;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (firstAttack > 0) sfxStartOffsets[key] = firstAttack / buf.sampleRate;
+                            }
                             if (key === 'bgm_title' && typeof ensureTitleBgmOnIntro === 'function') {
                                 ensureTitleBgmOnIntro();
                             }
@@ -4613,6 +4627,7 @@
             return true;
         }
 
+        const sfxStartOffsets = {};
         let lastClickSfxAt = -Infinity;
 
         function playSfx(key, volume, onended) {
@@ -4633,7 +4648,7 @@
                 playHtmlSfx(key, volume, onended);
                 return;
             }
-            audioCtx.resume().then(() => {
+            const startBuffer = () => {
                 if (pageAudioMuted || document.visibilityState === 'hidden' || sfxVolume <= 0.001) {
                     if (onended) onended();
                     return;
@@ -4649,8 +4664,13 @@
                     activeSfxSources.delete(src);
                     if (onended) onended();
                 };
-                src.start(0);
-            }).catch(() => playHtmlSfx(key, volume, onended));
+                src.start(0, sfxStartOffsets[key] || 0);
+            };
+            if (audioCtx.state === 'running') {
+                startBuffer();
+            } else {
+                audioCtx.resume().then(startBuffer).catch(() => playHtmlSfx(key, volume, onended));
+            }
         }
 
         let lastHapticAt = 0;
