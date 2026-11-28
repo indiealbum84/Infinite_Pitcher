@@ -7886,7 +7886,7 @@
                     }
                     const { rank, positions } = result;
                     showRank(result);
-                    if (canAnimate()) {
+                    if (canAnimate() && breaksRecord) {
                         const scope = index === 0 ? 'country' : 'global';
                         reel.dataset.scope = scope;
                         reel.dataset.flagArt = row.dataset.flagArt || '';
@@ -7950,6 +7950,15 @@
                         delete screen.dataset.spotlight;
                         if (canAnimate()) await settleCard(row, true);
                         if (canAnimate()) await wait(160);
+                    } else if (canAnimate()) {
+                        row.classList.remove('hidden');
+                        await animate(row, [
+                            { transform: 'translateY(-130px) scale(.93)', opacity: 0 },
+                            { transform: 'none', opacity: 1 }
+                        ], { duration: 240, easing: 'ease-out' });
+                        if (!active()) return;
+                        if (canAnimate()) await settleCard(row, true);
+                        if (canAnimate()) await wait(140);
                     } else {
                         row.classList.remove('hidden');
                     }
