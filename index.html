@@ -8131,9 +8131,16 @@
             if (!isWorld8BattleUnlocked()) return;
             playSfx('click', 0.7);
             triggerHaptic('medium');
-            if (isResultBgmPlaying()) fadeResultBgm(700);
             const goEl = document.getElementById('game-over-screen');
             if (goEl) goEl.classList.add('hidden');
+            gameState = 'INTRO';
+            const fadingResult = isResultBgmPlaying();
+            stopAllBgm({
+                fadeResult: fadingResult,
+                fadeResultDuration: 700,
+                onResultFaded: () => { if (gameState === 'INTRO') playTitleBgm(); }
+            });
+            if (!fadingResult) playTitleBgm();
             startWorld8Battle();
         }
 
